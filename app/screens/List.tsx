@@ -2,17 +2,37 @@ import { View, Text, Button, StyleSheet, TextInput } from "react-native";
 import React, { useEffect, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../FirebaseConfig";
-import { addDoc, collection } from "firebase/firestore";
+import { addDoc, collection, onSnapshot } from "firebase/firestore";
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
 const List = ({ navigation }: RouterProps) => {
-  const [todos, setTodos] = useState<any[]>([]);
-  const [todo, setTodo] = useState("");
+  const [todos, setTodos] = useState<any[]>([]); // Displayed list of todos
+  const [todo, setTodo] = useState(""); // Set todo from user input
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const todoRef = collection(FIRESTORE_DB, "todos"); // refer to todos collection in firestore
+    const subscriber = onSnapshot(todoRef, {
+      // observer
+      next: (snapshot) => {
+        console.log("UPDATING DISPLAYED TODOS");
+        const todos: any[] = []; // Array tracking todos of any type
+        snapshot.docs.forEach((doc) => {
+          console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
+          todos.push({
+            id: doc.id,
+            ...doc.data(), // ... means repeat for all data from doc.data
+          });
+        });
+        setTodos(todos); // set displayed list to fetched array
+        console.log("FINISHED UPDATING DISPLAYED TODOS");
+      },
+    });
+
+    return () => subscriber(); // Remove subscription to clear it
+  }, []);
 
   const addTodo = async () => {
     const doc = await addDoc(collection(FIRESTORE_DB, "todos"), {
