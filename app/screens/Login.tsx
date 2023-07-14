@@ -65,7 +65,7 @@ const Login = () => {
           value={password}
           secureTextEntry={true}
           style={styles.input}
-          placeholder="password"
+          placeholder="Password"
           autoCapitalize="none"
           onChangeText={(text) => setPassword(text)}
         ></TextInput>
@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     marginVertical: 4,
     height: 50,
     borderWidth: 1,
-    borderRadius: 4,
+    borderRadius: 100,
     padding: 10,
     backgroundColor: "#fff",
   },

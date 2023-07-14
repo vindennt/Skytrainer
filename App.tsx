@@ -12,10 +12,11 @@ import { FIREBASE_AUTH } from "./FirebaseConfig";
 const Stack = createNativeStackNavigator(); // create nav stack
 const InsideStack = createNativeStackNavigator();
 
+// Screens after login
 function InsideLayout() {
   return (
     <InsideStack.Navigator>
-      <InsideStack.Screen name="Home" component={List} />
+      <InsideStack.Screen name="List" component={List} />
       <InsideStack.Screen name="Details" component={Details} />
     </InsideStack.Navigator>
   );
@@ -33,8 +34,16 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        {user ? (
+      {/* Enable these lines to skip login screen */}
+      <Stack.Navigator initialRouteName="List">
+        <Stack.Screen
+          name="Inside"
+          component={InsideLayout}
+          options={{ headerShown: false }}
+        />
+        {/* <Stack.Navigator initialRouteName="Login">*/}
+        {/* Enable these lines to add login screen */}
+        {/* {user ? (
           // If logged in (user not null), bring inside
           <Stack.Screen
             name="Inside"
@@ -48,7 +57,7 @@ export default function App() {
             component={Login}
             options={{ headerShown: false }}
           />
-        )}
+        )} */}
       </Stack.Navigator>
     </NavigationContainer>
   );
