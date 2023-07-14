@@ -1,15 +1,39 @@
-import { View, Text, Button, StyleSheet, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../FirebaseConfig";
-import { addDoc, collection, onSnapshot } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  updateDoc,
+} from "firebase/firestore";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { Entypo } from "@expo/vector-icons";
+
+// Interface for Todo data structure
+export interface Todo {
+  title: string;
+  done: boolean;
+  id: string;
+}
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
 const List = ({ navigation }: RouterProps) => {
-  const [todos, setTodos] = useState<any[]>([]); // Displayed list of todos
+  const [todos, setTodos] = useState<Todo[]>([]); // Displayed list of todos
   const [todo, setTodo] = useState(""); // Set todo from user input
 
   useEffect(() => {
@@ -18,15 +42,16 @@ const List = ({ navigation }: RouterProps) => {
       // observer
       next: (snapshot) => {
         console.log("UPDATING DISPLAYED TODOS");
-        const todos: any[] = []; // Array tracking todos of any type
+
+        const fetchedtodos: Todo[] = []; // Array tracking todos of any type, not the same as the const
         snapshot.docs.forEach((doc) => {
           console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
-          todos.push({
+          fetchedtodos.push({
             id: doc.id,
-            ...doc.data(), // ... means repeat for all data from doc.data
-          });
+            ...doc.data(),
+          } as Todo); // necessary line to pass typecheck
         });
-        setTodos(todos); // set displayed list to fetched array
+        setTodos(fetchedtodos); // set displayed list to fetched array
         console.log("FINISHED UPDATING DISPLAYED TODOS");
       },
     });
@@ -43,6 +68,35 @@ const List = ({ navigation }: RouterProps) => {
     setTodo(""); // reset todo to empty after new one added
   };
 
+  // fn to display todos from fetched list
+  const renderTodo = ({ item }: any) => {
+    const ref = doc(FIRESTORE_DB, `todos/${item.id}`); // reference to single item
+
+    const setDone = async () => {
+      updateDoc(ref, { done: !item.done });
+    };
+
+    const deleteItem = async () => {
+      deleteDoc(ref);
+    };
+
+    return (
+      <View style={styles.todosContainer}>
+        <TouchableOpacity onPress={setDone} style={styles.todo}>
+          {item.done && (
+            <Ionicons name="md-checkmark-circle" size={30} color="green" />
+          )}
+          {!item.done && <Entypo name="circle" size={32} color="black" />}
+
+          <Text style={styles.todosText}>{item.title}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={deleteItem}>
+          <Ionicons name="trash-bin-outline" size={24} color="red" />
+        </TouchableOpacity>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.form}>
@@ -54,6 +108,16 @@ const List = ({ navigation }: RouterProps) => {
         />
         <Button onPress={addTodo} title="Add todo" disabled={todo === ""} />
       </View>
+      {todos.length > 0 && (
+        <View>
+          <FlatList
+            data={todos}
+            renderItem={renderTodo}
+            keyExtractor={(todo: Todo) => todo.id}
+          />
+        </View>
+      )}
+
       <Button
         onPress={() => navigation.navigate("Details")}
         title="Open Details"
@@ -69,8 +133,9 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 20,
     flex: 1,
-    justifyContent: "center", // center login contents
-    alignItems: "center",
+    padding: 10,
+    // justifyContent: "center", // center login contents
+    // alignItems: "center",
   },
   form: {
     flexDirection: "row",
@@ -78,11 +143,25 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    marginVertical: 4,
     height: 50,
     borderWidth: 1,
     borderRadius: 12,
     padding: 10,
+    marginVertical: 10,
     backgroundColor: "#fff",
+  },
+  todosContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: 10,
+    marginVertical: 4,
+    borderRadius: 12,
+  },
+  todosText: { flex: 1, paddingHorizontal: 4 },
+  todo: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
