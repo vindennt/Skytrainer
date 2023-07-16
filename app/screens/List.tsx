@@ -52,9 +52,9 @@ const List = ({ navigation }: RouterProps) => {
       if (user) {
         setUid(user.uid);
         setDisplayName(user.displayName);
+        console.log(uid + displayName);
       }
     });
-    console.log(uid + displayName);
 
     const todoRef = collection(FIRESTORE_DB, `todos/${uid}/todos`); // refer to todos collection in firestore
     const subscriber = onSnapshot(todoRef, {
@@ -73,28 +73,27 @@ const List = ({ navigation }: RouterProps) => {
         console.log("FINISHED UPDATING DISPLAYED TODOS");
       },
     });
-
-    // const todoRef = collection(FIRESTORE_DB, "todos"); // refer to todos collection in firestore
-    // const subscriber = onSnapshot(todoRef, {
-    //   // observer
-    //   next: (snapshot) => {
-    //     console.log("UPDATING DISPLAYED TODOS");
-    //     const fetchedtodos: Todo[] = []; // Array tracking todos of any type, not the same as the const
-    //     snapshot.docs.forEach((doc) => {
-    //       console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
-    //       fetchedtodos.push({
-    //         id: doc.id,
-    //         ...doc.data().todo,
-    //       } as Todo); // necessary line to pass typecheck
-    //     });
-    //     setTodos(fetchedtodos); // set displayed list to fetched array
-    //     console.log(fetchedtodos.length);
-    //     console.log("FINISHED UPDATING DISPLAYED TODOS");
-    //   },
-    // });
-
     return () => subscriber(); // Remove subscription to clear it
-  }, []);
+  }, [auth, displayName, uid]);
+
+  // const todoRef = collection(FIRESTORE_DB, "todos"); // refer to todos collection in firestore
+  // const subscriber = onSnapshot(todoRef, {
+  //   // observer
+  //   next: (snapshot) => {
+  //     console.log("UPDATING DISPLAYED TODOS");
+  //     const fetchedtodos: Todo[] = []; // Array tracking todos of any type, not the same as the const
+  //     snapshot.docs.forEach((doc) => {
+  //       console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
+  //       fetchedtodos.push({
+  //         id: doc.id,
+  //         ...doc.data().todo,
+  //       } as Todo); // necessary line to pass typecheck
+  //     });
+  //     setTodos(fetchedtodos); // set displayed list to fetched array
+  //     console.log(fetchedtodos.length);
+  //     console.log("FINISHED UPDATING DISPLAYED TODOS");
+  //   },
+  // });
 
   const addTodo = async () => {
     await addDoc(collection(FIRESTORE_DB, `todos/${uid}/todos`), {
