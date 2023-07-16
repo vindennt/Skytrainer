@@ -43,7 +43,7 @@ export default function App() {
         /> */}
       <Stack.Navigator initialRouteName="Login">
         {/* Enable these lines to add login screen */}
-        {user ? (
+        {user && user.uid ? (
           // If logged in (user not null), bring inside
           <Stack.Screen
             name="Inside"

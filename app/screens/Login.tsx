@@ -59,7 +59,7 @@ const Login = () => {
       });
 
       console.log(response);
-      alert("Check your email");
+      // alert("Check your email");
     } catch (error: any) {
       console.log(error);
       alert("Registration failed: " + error.message);

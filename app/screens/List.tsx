@@ -42,15 +42,20 @@ const List = ({ navigation }: RouterProps) => {
   const [todo, setTodo] = useState(""); // Set todo from user input
   const [user, setUser] = useState<User | null>(null);
   const auth = FIREBASE_AUTH;
-
-  onAuthStateChanged(auth, (user) => {
-    setUser(user);
-  });
-
-  const displayName = user ? user.displayName : "none";
-  const uid = user ? user.uid : "default";
+  // const [displayName, displayName] = useState("string");
+  const [displayName, setDisplayName] = useState<string | null>("default");
+  const [uid, setUid] = useState<string>("default");
 
   useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      if (user) {
+        setUid(user.uid);
+        setDisplayName(user.displayName);
+      }
+    });
+    console.log(uid + displayName);
+
     const todoRef = collection(FIRESTORE_DB, `todos/${uid}/todos`); // refer to todos collection in firestore
     const subscriber = onSnapshot(todoRef, {
       // observer
