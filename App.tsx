@@ -35,15 +35,15 @@ export default function App() {
   return (
     <NavigationContainer>
       {/* Enable these lines to skip login screen */}
-      <Stack.Navigator initialRouteName="List">
+      {/* <Stack.Navigator initialRouteName="List">
         <Stack.Screen
           name="Inside"
           component={InsideLayout}
           options={{ headerShown: false }}
-        />
-        {/* <Stack.Navigator initialRouteName="Login">*/}
+        /> */}
+      <Stack.Navigator initialRouteName="Login">
         {/* Enable these lines to add login screen */}
-        {/* {user ? (
+        {user ? (
           // If logged in (user not null), bring inside
           <Stack.Screen
             name="Inside"
@@ -57,7 +57,7 @@ export default function App() {
             component={Login}
             options={{ headerShown: false }}
           />
-        )} */}
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

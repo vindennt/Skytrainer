@@ -1,3 +1,5 @@
+// Todo list modified from Simon Grimm Tutorial: https://www.youtube.com/watch?v=TwxdOFcEah4
+
 import {
   View,
   Text,
@@ -20,6 +22,7 @@ import {
 } from "firebase/firestore";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Entypo } from "@expo/vector-icons";
+import { User, onAuthStateChanged } from "firebase/auth";
 
 // Interface for Todo data structure
 export interface Todo {
@@ -35,6 +38,12 @@ interface RouterProps {
 const List = ({ navigation }: RouterProps) => {
   const [todos, setTodos] = useState<Todo[]>([]); // Displayed list of todos
   const [todo, setTodo] = useState(""); // Set todo from user input
+  const [user, setUser] = useState<User | null>(null);
+  const auth = FIREBASE_AUTH;
+
+  onAuthStateChanged(auth, (user) => {
+    setUser(user);
+  });
 
   useEffect(() => {
     const todoRef = collection(FIRESTORE_DB, "todos"); // refer to todos collection in firestore
@@ -64,7 +73,7 @@ const List = ({ navigation }: RouterProps) => {
       title: todo,
       done: false,
     });
-    console.log("~ file: List.tsx.12 ~ addTodo ~ doc:", doc);
+    console.log("added todo: " + todo);
     setTodo(""); // reset todo to empty after new one added
   };
 
@@ -99,6 +108,8 @@ const List = ({ navigation }: RouterProps) => {
 
   return (
     <View style={styles.container}>
+      <Text>Welcome {user ? user.displayName : ""}</Text>
+      {/* <Text>Welcome {displayName}</Text> */}
       <View style={styles.form}>
         <TextInput
           style={styles.input}

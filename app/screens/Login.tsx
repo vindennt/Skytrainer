@@ -7,12 +7,19 @@ import {
   Button,
   KeyboardAvoidingView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FIREBASE_AUTH } from "../../FirebaseConfig";
 import {
+  User,
+  AuthCredential,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  onAuthStateChanged,
+  updateProfile,
+  updateCurrentUser,
 } from "firebase/auth";
+import { FIRESTORE_DB } from "../../FirebaseConfig";
+import { addDoc, doc, setDoc, collection } from "firebase/firestore";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -40,7 +47,17 @@ const Login = () => {
         auth,
         email,
         password
-      );
+      ).then((result) => {
+        // If current user is not null
+        if (auth.currentUser) {
+          updateProfile(auth.currentUser, {
+            displayName: email,
+          });
+          const uid = auth.currentUser.uid;
+          initiateUserDoc(uid, email);
+        }
+      });
+
       console.log(response);
       alert("Check your email");
     } catch (error: any) {
@@ -49,6 +66,15 @@ const Login = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const initiateUserDoc = async (uid: string, email: string) => {
+    //
+    await setDoc(doc(FIRESTORE_DB, "users", uid), {
+      uid: uid,
+      email: email,
+      displayName: email,
+    });
   };
 
   return (
