@@ -14,10 +14,12 @@ import { NavigationProp } from "@react-navigation/native";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../FirebaseConfig";
 import {
   addDoc,
+  arrayUnion,
   collection,
   deleteDoc,
   doc,
   onSnapshot,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -45,15 +47,17 @@ const List = ({ navigation }: RouterProps) => {
     setUser(user);
   });
 
+  const displayName = user ? user.displayName : "none";
+  const uid = user ? user.uid : "default";
+
   useEffect(() => {
-    const todoRef = collection(FIRESTORE_DB, "todos"); // refer to todos collection in firestore
+    const todoRef = collection(FIRESTORE_DB, `todos/${uid}/todos`); // refer to todos collection in firestore
     const subscriber = onSnapshot(todoRef, {
       // observer
       next: (snapshot) => {
         console.log("UPDATING DISPLAYED TODOS");
-
         const fetchedtodos: Todo[] = []; // Array tracking todos of any type, not the same as the const
-        snapshot.docs.forEach((doc) => {
+        snapshot.forEach((doc) => {
           console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
           fetchedtodos.push({
             id: doc.id,
@@ -65,21 +69,48 @@ const List = ({ navigation }: RouterProps) => {
       },
     });
 
+    // const todoRef = collection(FIRESTORE_DB, "todos"); // refer to todos collection in firestore
+    // const subscriber = onSnapshot(todoRef, {
+    //   // observer
+    //   next: (snapshot) => {
+    //     console.log("UPDATING DISPLAYED TODOS");
+    //     const fetchedtodos: Todo[] = []; // Array tracking todos of any type, not the same as the const
+    //     snapshot.docs.forEach((doc) => {
+    //       console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
+    //       fetchedtodos.push({
+    //         id: doc.id,
+    //         ...doc.data().todo,
+    //       } as Todo); // necessary line to pass typecheck
+    //     });
+    //     setTodos(fetchedtodos); // set displayed list to fetched array
+    //     console.log(fetchedtodos.length);
+    //     console.log("FINISHED UPDATING DISPLAYED TODOS");
+    //   },
+    // });
+
     return () => subscriber(); // Remove subscription to clear it
   }, []);
 
   const addTodo = async () => {
-    const doc = await addDoc(collection(FIRESTORE_DB, "todos"), {
+    await addDoc(collection(FIRESTORE_DB, `todos/${uid}/todos`), {
       title: todo,
       done: false,
     });
     console.log("added todo: " + todo);
     setTodo(""); // reset todo to empty after new one added
+
+    //   const ref = doc(FIRESTORE_DB, "todos", uid);
+    //   const newTodo = { title: todo, done: false };
+    //   await updateDoc(ref, {
+    //     todos: arrayUnion(newTodo),
+    //   });
+    //   setTodo(""); // reset todo to empty after new one added
   };
 
   // fn to display todos from fetched list
   const renderTodo = ({ item }: any) => {
-    const ref = doc(FIRESTORE_DB, `todos/${item.id}`); // reference to single item
+    const ref = doc(FIRESTORE_DB, `todos/${uid}/todos/${item.id}`); // reference to single item
+    // const ref = doc(FIRESTORE_DB, "todos", uid); // reference to single item
 
     const setDone = async () => {
       updateDoc(ref, { done: !item.done });
@@ -108,7 +139,7 @@ const List = ({ navigation }: RouterProps) => {
 
   return (
     <View style={styles.container}>
-      <Text>Welcome {user ? user.displayName : ""}</Text>
+      <Text>Welcome {displayName}</Text>
       {/* <Text>Welcome {displayName}</Text> */}
       <View style={styles.form}>
         <TextInput
@@ -124,7 +155,8 @@ const List = ({ navigation }: RouterProps) => {
           <FlatList
             data={todos}
             renderItem={renderTodo}
-            keyExtractor={(todo: Todo) => todo.id}
+            // renderItem={({ item }) => <Text>{item.title}</Text>}
+            keyExtractor={(item: Todo) => item.id}
           />
         </View>
       )}

@@ -54,7 +54,7 @@ const Login = () => {
             displayName: email,
           });
           const uid = auth.currentUser.uid;
-          initiateUserDoc(uid, email);
+          initiateUserDocs(uid, email);
         }
       });
 
@@ -68,13 +68,14 @@ const Login = () => {
     }
   };
 
-  const initiateUserDoc = async (uid: string, email: string) => {
+  const initiateUserDocs = async (uid: string, email: string) => {
     //
     await setDoc(doc(FIRESTORE_DB, "users", uid), {
       uid: uid,
       email: email,
       displayName: email,
     });
+    // await addDoc(doc(FIRESTORE_DB, "todos", uid, "todos"));
   };
 
   return (
