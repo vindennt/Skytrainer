@@ -3,8 +3,11 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./app/screens/Login";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import List from "./app/screens/List";
-import Details from "./app/screens/Details";
+import Home from "./app/screens/Home";
+import Account from "./app/screens/Account";
+import Gacha from "./app/screens/Gacha";
+import Shop from "./app/screens/Shop";
+import Team from "./app/screens/Team";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { FIREBASE_AUTH } from "./FirebaseConfig";
@@ -16,8 +19,11 @@ const InsideStack = createNativeStackNavigator();
 function InsideLayout() {
   return (
     <InsideStack.Navigator>
-      <InsideStack.Screen name="List" component={List} />
-      <InsideStack.Screen name="Details" component={Details} />
+      <InsideStack.Screen name="Home" component={Home} />
+      <InsideStack.Screen name="Account" component={Account} />
+      <InsideStack.Screen name="Gacha" component={Gacha} />
+      <InsideStack.Screen name="Shop" component={Shop} />
+      <InsideStack.Screen name="Team" component={Team} />
     </InsideStack.Navigator>
   );
 }

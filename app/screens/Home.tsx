@@ -12,6 +12,9 @@ import {
 import React, { useEffect, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../FirebaseConfig";
+import Gacha from "./Gacha";
+import Shop from "./Shop";
+import Team from "./Team";
 import {
   addDoc,
   arrayUnion,
@@ -37,7 +40,7 @@ interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
-const List = ({ navigation }: RouterProps) => {
+const Home = ({ navigation }: RouterProps) => {
   const [todos, setTodos] = useState<Todo[]>([]); // Displayed list of todos
   const [todo, setTodo] = useState(""); // Set todo from user input
   const [user, setUser] = useState<User | null>(null);
@@ -165,16 +168,16 @@ const List = ({ navigation }: RouterProps) => {
         </View>
       )}
 
-      <Button
-        onPress={() => navigation.navigate("Details")}
-        title="Open Details"
-      />
+      <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
+      <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
+      <Button onPress={() => navigation.navigate("Team")} title="Team" />
+      <Button onPress={() => navigation.navigate("Account")} title="Account" />
       <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
     </View>
   );
 };
 
-export default List;
+export default Home;
 
 const styles = StyleSheet.create({
   container: {

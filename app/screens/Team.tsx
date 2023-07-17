@@ -1,12 +1,12 @@
 import { View, Text } from "react-native";
 import React from "react";
 
-const Details = () => {
+const Team = () => {
   return (
     <View>
-      <Text>Details</Text>
+      <Text>Team</Text>
     </View>
   );
 };
 
-export default Details;
+export default Team;
