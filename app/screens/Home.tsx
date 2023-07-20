@@ -40,6 +40,11 @@ interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
+const fiveMinuteTimer = () => {};
+const tenMinuteTimer = () => {};
+const thirtyMinuteTimer = () => {};
+const sixtyMinuteTimer = () => {};
+
 const Home = ({ navigation }: RouterProps) => {
   const [todos, setTodos] = useState<Todo[]>([]); // Displayed list of todos
   const [todo, setTodo] = useState(""); // Set todo from user input
@@ -79,25 +84,6 @@ const Home = ({ navigation }: RouterProps) => {
     return () => subscriber(); // Remove subscription to clear it
   }, [auth, displayName, uid]);
 
-  // const todoRef = collection(FIRESTORE_DB, "todos"); // refer to todos collection in firestore
-  // const subscriber = onSnapshot(todoRef, {
-  //   // observer
-  //   next: (snapshot) => {
-  //     console.log("UPDATING DISPLAYED TODOS");
-  //     const fetchedtodos: Todo[] = []; // Array tracking todos of any type, not the same as the const
-  //     snapshot.docs.forEach((doc) => {
-  //       console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
-  //       fetchedtodos.push({
-  //         id: doc.id,
-  //         ...doc.data().todo,
-  //       } as Todo); // necessary line to pass typecheck
-  //     });
-  //     setTodos(fetchedtodos); // set displayed list to fetched array
-  //     console.log(fetchedtodos.length);
-  //     console.log("FINISHED UPDATING DISPLAYED TODOS");
-  //   },
-  // });
-
   const addTodo = async () => {
     await addDoc(collection(FIRESTORE_DB, `todos/${uid}/todos`), {
       title: todo,
@@ -105,13 +91,6 @@ const Home = ({ navigation }: RouterProps) => {
     });
     console.log("added todo: " + todo);
     setTodo(""); // reset todo to empty after new one added
-
-    //   const ref = doc(FIRESTORE_DB, "todos", uid);
-    //   const newTodo = { title: todo, done: false };
-    //   await updateDoc(ref, {
-    //     todos: arrayUnion(newTodo),
-    //   });
-    //   setTodo(""); // reset todo to empty after new one added
   };
 
   // fn to display todos from fetched list
@@ -168,10 +147,15 @@ const Home = ({ navigation }: RouterProps) => {
         </View>
       )}
 
-      <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
+      <Button onPress={fiveMinuteTimer} title="5 min" />
+      <Button onPress={tenMinuteTimer} title="10 min" />
+      <Button onPress={thirtyMinuteTimer} title="30 min" />
+      <Button onPress={sixtyMinuteTimer} title="60 min" />
+
+      {/* <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
       <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
       <Button onPress={() => navigation.navigate("Team")} title="Team" />
-      <Button onPress={() => navigation.navigate("Account")} title="Account" />
+      <Button onPress={() => navigation.navigate("Account")} title="Account" /> */}
       <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
     </View>
   );
@@ -184,8 +168,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     flex: 1,
     padding: 10,
-    // justifyContent: "center", // center login contents
-    // alignItems: "center",
   },
   form: {
     flexDirection: "row",
