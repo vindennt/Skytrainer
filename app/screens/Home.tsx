@@ -1,6 +1,6 @@
 // Todo list modified from Simon Grimm Tutorial: https://www.youtube.com/watch?v=TwxdOFcEah4
 
-import TRANSLINK_API_KEY from "../../apikey"; //TODO:  Set up rate limits and proxy server at deployment
+import OPENWEATHER_API_KEY from "../../apikey"; //TODO:  Set up rate limits and proxy server at deployment
 import {
   View,
   Text,
@@ -30,6 +30,11 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Entypo } from "@expo/vector-icons";
 import { User, onAuthStateChanged } from "firebase/auth";
 
+const METRO_VANCOUVER_COORDINATES = {
+  latitude: 49.232937,
+  longtidute: -123.0299,
+};
+
 // Interface for Todo data structure
 export interface Todo {
   title: string;
@@ -55,22 +60,24 @@ const Home = ({ navigation }: RouterProps) => {
   const [displayName, setDisplayName] = useState<string | null>("default");
   const [uid, setUid] = useState<string>("default");
 
-  const [apiData, setApiData] = useState(null);
+  const [weather, setWeather] = useState<null | any>();
+  const fetchWeather = async () => {
+    const data = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${METRO_VANCOUVER_COORDINATES.latitude}&lon=${METRO_VANCOUVER_COORDINATES.longtidute}&appid=${OPENWEATHER_API_KEY}&units=metric`
+    );
+    const weather = (await data.json()) as any;
+    setWeather(weather);
+  };
 
   useEffect(() => {
-    fetch(
-      `https://api.translink.ca/rttiapi/v1/buses?apikey=${TRANSLINK_API_KEY}&routeNo=099`,
-      {
-        headers: {
-          Accept: "application/JSON", // Specify JSON in the Accept header
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => setApiData(data));
-    console.log("-----------Start of call");
-    console.log(apiData);
-    console.log("-----------End of call");
+    fetchWeather();
+    console.log(
+      "Present Metro Vancouver Conditions: " +
+        weather?.weather[0].main +
+        " with Temps: " +
+        weather?.main.temp
+    );
+    // console.log("-----------End of weather call");
 
     onAuthStateChanged(auth, (user) => {
       setUser(user);
@@ -145,6 +152,10 @@ const Home = ({ navigation }: RouterProps) => {
   return (
     <View style={styles.container}>
       <Text>Welcome {displayName}</Text>
+      <Text>
+        Weather: {weather?.weather[0].main}, {Math.trunc(weather?.main.temp)}°C{" "}
+      </Text>
+
       {/* <Text>Welcome {displayName}</Text> */}
       <View style={styles.form}>
         <TextInput

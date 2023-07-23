@@ -1,3 +1,3 @@
-const TRANSLINK_API_KEY = "m4ee34FUn450U25ZECRd";
+const OPENWEATHER_API_KEY = "b491fe5000be6691bf8eb499d87bb5ee";
 
-export default TRANSLINK_API_KEY;
+export default OPENWEATHER_API_KEY;
