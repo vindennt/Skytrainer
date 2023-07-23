@@ -1,5 +1,6 @@
 // Todo list modified from Simon Grimm Tutorial: https://www.youtube.com/watch?v=TwxdOFcEah4
 
+import TRANSLINK_API_KEY from "../../apikey"; //TODO:  Set up rate limits and proxy server at deployment
 import {
   View,
   Text,
@@ -54,13 +55,31 @@ const Home = ({ navigation }: RouterProps) => {
   const [displayName, setDisplayName] = useState<string | null>("default");
   const [uid, setUid] = useState<string>("default");
 
+  const [apiData, setApiData] = useState(null);
+
   useEffect(() => {
+    fetch(
+      `https://api.translink.ca/rttiapi/v1/buses?apikey=${TRANSLINK_API_KEY}&routeNo=099`,
+      {
+        headers: {
+          Accept: "application/JSON", // Specify JSON in the Accept header
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => setApiData(data));
+    console.log("-----------Start of call");
+    console.log(apiData);
+    console.log("-----------End of call");
+
     onAuthStateChanged(auth, (user) => {
       setUser(user);
       if (user) {
         setUid(user.uid);
         setDisplayName(user.displayName);
-        console.log(uid + displayName);
+        console.log(
+          uid + " with name " + displayName + " is currently logged in"
+        );
       }
     });
 
@@ -68,7 +87,7 @@ const Home = ({ navigation }: RouterProps) => {
     const subscriber = onSnapshot(todoRef, {
       // observer
       next: (snapshot) => {
-        console.log("UPDATING DISPLAYED TODOS");
+        // console.log("UPDATING DISPLAYED TODOS");
         const fetchedtodos: Todo[] = []; // Array tracking todos of any type, not the same as the const
         snapshot.forEach((doc) => {
           console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
@@ -78,19 +97,19 @@ const Home = ({ navigation }: RouterProps) => {
           } as Todo); // necessary line to pass typecheck
         });
         setTodos(fetchedtodos); // set displayed list to fetched array
-        console.log("FINISHED UPDATING DISPLAYED TODOS");
+        // console.log("FINISHED UPDATING DISPLAYED TODOS");
       },
     });
     return () => subscriber(); // Remove subscription to clear it
   }, [auth, displayName, uid]);
 
   const addTodo = async () => {
-    await addDoc(collection(FIRESTORE_DB, `todos/${uid}/todos`), {
+    await addDoc(collection(FIRESTORE_DB, `toddasdaos/${uid}/todos`), {
       title: todo,
       done: false,
     });
-    console.log("added todo: " + todo);
     setTodo(""); // reset todo to empty after new one added
+    console.log("added todo: " + todo);
   };
 
   // fn to display todos from fetched list

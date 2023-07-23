@@ -1,0 +1,3 @@
+const TRANSLINK_API_KEY = "m4ee34FUn450U25ZECRd";
+
+export default TRANSLINK_API_KEY;
