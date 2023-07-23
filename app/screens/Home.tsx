@@ -1,6 +1,6 @@
 // Todo list modified from Simon Grimm Tutorial: https://www.youtube.com/watch?v=TwxdOFcEah4
 
-import OPENWEATHER_API_KEY from "../../apikey"; //TODO:  Set up rate limits and proxy server at deployment
+import OPENWEATHER_API_KEY from "../../api/apikey"; //TODO:  Set up rate limits and proxy server at deployment
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
@@ -71,13 +72,6 @@ const Home = ({ navigation }: RouterProps) => {
 
   useEffect(() => {
     fetchWeather();
-    console.log(
-      "Present Metro Vancouver Conditions: " +
-        weather?.weather[0].main +
-        " with Temps: " +
-        weather?.main.temp
-    );
-    // console.log("-----------End of weather call");
 
     onAuthStateChanged(auth, (user) => {
       setUser(user);
@@ -111,7 +105,7 @@ const Home = ({ navigation }: RouterProps) => {
   }, [auth, displayName, uid]);
 
   const addTodo = async () => {
-    await addDoc(collection(FIRESTORE_DB, `toddasdaos/${uid}/todos`), {
+    await addDoc(collection(FIRESTORE_DB, `todos/${uid}/todos`), {
       title: todo,
       done: false,
     });
@@ -152,9 +146,18 @@ const Home = ({ navigation }: RouterProps) => {
   return (
     <View style={styles.container}>
       <Text>Welcome {displayName}</Text>
-      <Text>
-        Weather: {weather?.weather[0].main}, {Math.trunc(weather?.main.temp)}°C{" "}
-      </Text>
+      <View style={styles.weatherBox}>
+        <Image
+          style={styles.tinyLogo}
+          source={{
+            uri: `https://openweathermap.org/img/wn/${weather?.weather[0].icon}@2x.png`,
+          }}
+        />
+        <Text>
+          {weather?.weather[0].main}, {Math.trunc(weather?.main.temp)}
+          °C{" "}
+        </Text>
+      </View>
 
       {/* <Text>Welcome {displayName}</Text> */}
       <View style={styles.form}>
@@ -223,6 +226,18 @@ const styles = StyleSheet.create({
   todosText: { flex: 1, paddingHorizontal: 4 },
   todo: {
     flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  tinyLogo: {
+    width: 30,
+    height: 30,
+    alignItems: "center",
+    backgroundColor: "#fff",
+    borderRadius: 100,
+    marginRight: 10,
+  },
+  weatherBox: {
     flexDirection: "row",
     alignItems: "center",
   },
