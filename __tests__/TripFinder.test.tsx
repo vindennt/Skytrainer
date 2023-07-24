@@ -1,6 +1,6 @@
 import React from "react";
 import { Graph, Edge, Station, newStation, newEdge } from "../utils/Graph";
-import { findViableTrips } from "../utils/TripPlanner";
+import { findViableTrips } from "../utils/TripFinder";
 
 // Template test
 test("TEMPLATE", () => {
@@ -8,26 +8,26 @@ test("TEMPLATE", () => {
 });
 //
 
-// (4, 7) -3- (8, 7) -5- (42, 0) -68- (140,80)
+// (4, 7) -3- (8, 7) -5- (42, 7) -68- (140,80)
 const largeGraph = new Graph();
 const stationFourSeven = newStation(4, 7);
 const stationEightSeven = newStation(8, 7);
-const stationFourtyTwoZero = newStation(42, 0);
-const stationHundredFourtyEighty = newStation(140, 80);
+const stationFourtyTwoSeven = newStation(42, 7);
+const stationHundredFourtySeven = newStation(140, 7);
 largeGraph.addEdge(stationFourSeven, stationEightSeven, 3);
-largeGraph.addEdge(stationEightSeven, stationFourtyTwoZero, 5);
-largeGraph.addEdge(stationFourtyTwoZero, stationHundredFourtyEighty, 68);
+largeGraph.addEdge(stationEightSeven, stationFourtyTwoSeven, 5);
+largeGraph.addEdge(stationFourtyTwoSeven, stationHundredFourtySeven, 68);
 // expected result
 const expectedShortPath = [[stationFourSeven, stationEightSeven]];
 const expectedMedPath = [
-  [stationFourSeven, stationEightSeven, stationFourtyTwoZero],
+  [stationFourSeven, stationEightSeven, stationFourtyTwoSeven],
 ];
 const expectedLongPath = [
   [
     stationFourSeven,
     stationEightSeven,
-    stationFourtyTwoZero,
-    stationHundredFourtyEighty,
+    stationFourtyTwoSeven,
+    stationHundredFourtySeven,
   ],
 ];
 test("findViableTrips; return one path, deadend start, one way", () => {
@@ -58,24 +58,13 @@ test("findViableTrips; return one path, deadend start, one way", () => {
   expect(findViableTrips(largeGraph, stationFourSeven, 100)).toStrictEqual([]); // no viable path
 });
 
-// (4, 7) -3- (8, 7) -5- (42, 0) -68- (140,80)
-// const largeGraph = new Graph();
-// const stationFourSeven = newStation(4, 7);
-// const stationEightSeven = newStation(8, 7);
-// const stationFourtyTwoZero = newStation(42, 0);
-// const stationHundredFourtyEighty = newStation(140, 80);
-// largeGraph.addEdge(stationFourSeven, stationEightSeven, 3);
-// largeGraph.addEdge(stationEightSeven, stationFourtyTwoZero, 5);
-// largeGraph.addEdge(stationFourtyTwoZero, stationHundredFourtyEighty, 68);
-// // expected result
-// const expectedShortPath = [[stationFourSeven, stationEightSeven]];
-const expectedMiddleShortPath = [[stationEightSeven, stationFourtyTwoZero]];
+const expectedMiddleShortPath = [[stationEightSeven, stationFourtyTwoSeven]];
 const expectedMiddleMedPath = [
   [stationEightSeven, stationFourSeven],
-  [stationEightSeven, stationFourtyTwoZero],
+  [stationEightSeven, stationFourtyTwoSeven],
 ];
 const expectedMiddleLongPath = [
-  [stationEightSeven, stationFourtyTwoZero, stationHundredFourtyEighty],
+  [stationEightSeven, stationFourtyTwoSeven, stationHundredFourtySeven],
 ];
 
 test("findViableTrips; return two paths, middle start, two way", () => {
@@ -96,7 +85,7 @@ test("findViableTrips; return two paths, middle start, two way", () => {
 // At transfer station (2, 2), ensure that lines 2 and 3 are explored in all directions
 const transferGraph = new Graph();
 const stnOneTwo = newStation(1, 2);
-const stnTwoTwo = newStation(2, 2);
+const stnTwoTwo = newStation(2, 2, true);
 const stnThreeTwo = newStation(3, 2);
 const stnFourTwo = newStation(4, 2);
 const stnElevenThree = newStation(11, 3);
@@ -126,3 +115,71 @@ test("findViableTrips; transfer stations have multiple paths explored", () => {
     [stnTwoTwo, stnElevenThree, stnTwelveThree, stnThirtnThree],
   ]);
 });
+
+// (1, 2) -5- (2, 2) -6- (3, 2) -3- (4, 2) -7- (13, 3)
+//            (2, 2) -3- (11, 3) -5- (12, 3) -10- (13, 3)
+// (2, 2) and (13, 3) allow for a loop that satisfies further trip conditions
+
+// test("findViableTrips; if transfer station loop exists, allow revisiting other lines", () => {
+//   const loopGraph = new Graph();
+//   const stnOneTwo = newStation(1, 2);
+//   const stnTwoTwo = newStation(2, 2);
+//   const stnThreeTwo = newStation(3, 2);
+//   const stnFourTwo = newStation(4, 2);
+//   const stnElevenThree = newStation(11, 3);
+//   const stnTwelveThree = newStation(12, 3);
+//   const stnThirtnThree = newStation(13, 3);
+//   loopGraph.addEdge(stnOneTwo, stnTwoTwo, 5);
+//   loopGraph.addEdge(stnTwoTwo, stnThreeTwo, 6);
+//   loopGraph.addEdge(stnThreeTwo, stnFourTwo, 3);
+//   loopGraph.addEdge(stnTwoTwo, stnElevenThree, 3);
+//   loopGraph.addEdge(stnElevenThree, stnTwelveThree, 5);
+//   loopGraph.addEdge(stnTwelveThree, stnThirtnThree, 10);
+//   loopGraph.addEdge(stnThirtnThree, stnFourTwo, 7);
+//   expect(findViableTrips(loopGraph, stnOneTwo, 30)).toStrictEqual([
+//     [
+//       stnOneTwo,
+//       stnTwoTwo,
+//       stnThreeTwo,
+//       stnFourTwo,
+//       stnThirtnThree,
+//       stnTwelveThree,
+//     ],
+//     [
+//       stnOneTwo,
+//       stnTwoTwo,
+//       stnElevenThree,
+//       stnTwelveThree,
+//       stnThirtnThree,
+//       stnFourTwo,
+//     ],
+//   ]);
+// });
+// test("findViableTrips; loop back to same line", () => {
+//   expect(findViableTrips(transferGraph, stnOneTwo, 47)).toStrictEqual([
+//     [
+//       stnOneTwo,
+//       stnTwoTwo,
+//       stnThreeTwo,
+//       stnFourTwo,
+//       stnThirtnThree,
+//       stnTwelveThree,
+//       stnElevenThree,
+//       stnTwoTwo,
+//       stnThreeTwo,
+//       stnFourTwo,
+//     ],
+//     [
+//       stnOneTwo,
+//       stnTwoTwo,
+//       stnElevenThree,
+//       stnTwelveThree,
+//       stnThirtnThree,
+//       stnFourTwo,
+//       stnThreeTwo,
+//       stnTwoTwo,
+//       stnElevenThree,
+//       stnTwelveThree,
+//     ],
+//   ]);
+// });

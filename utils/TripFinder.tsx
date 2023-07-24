@@ -31,11 +31,16 @@ export function findViableTrips(
       // Terminate this path exploration in this direction
       return;
     } else {
-      for (const neighbor of graph.getNeighbours(current)) {
+      const neighbours = graph.getNeighbours(current);
+      for (const neighbour of neighbours) {
         // for each neighbour edge of the current station
-        if (!visited.has(neighbor.station)) {
+        if (!visited.has(neighbour.station)) {
           // if not visited, explore it as the next path recursively
-          dfsHelper(neighbor.station, [...path], currentLength + neighbor.time);
+          dfsHelper(
+            neighbour.station,
+            [...path],
+            currentLength + neighbour.time
+          );
         }
       }
     }

@@ -1,10 +1,22 @@
 export type Station = {
   id: number;
   lineid: number;
+  transfer: boolean;
 };
 type Time = number;
 
-export function newStation(id: number, lineid: number): Station {
+export function newStation(id: number, lineid: number): Station;
+export function newStation(
+  id: number,
+  lineid: number,
+  transfer: boolean
+): Station;
+
+export function newStation(
+  id: number,
+  lineid: number,
+  transfer?: boolean
+): Station {
   if (id < 0) {
     console.log("Cannot have negative id. Defaulting to 0");
     id = 0;
@@ -16,6 +28,7 @@ export function newStation(id: number, lineid: number): Station {
   return {
     id: id,
     lineid: lineid,
+    transfer: transfer !== undefined ? transfer : false,
   };
 }
 

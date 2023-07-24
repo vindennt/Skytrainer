@@ -19,6 +19,15 @@ test("newStation; station instantiation if id is out of bounds", () => {
   expect(testStationNegativeOne.lineid).toBe(4);
 });
 
+const testStationTransfer: Station = newStation(2, 4, true);
+const testStationNonTransfer: Station = newStation(2, 4, false);
+const testStationUnspecifiedTransfer: Station = newStation(2, 4);
+test("newStation; station instantiation with transfer specified", () => {
+  expect(testStationTransfer.transfer).toBe(true);
+  expect(testStationNonTransfer.transfer).toBe(false);
+  expect(testStationUnspecifiedTransfer.transfer).toBe(false);
+});
+
 const testStationTwoNegativeOne: Station = newStation(2, -1);
 test("newStation; station instantiation if lineid is out of bounds", () => {
   expect(testStationTwoNegativeOne?.id).toBe(2);
