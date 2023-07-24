@@ -10,7 +10,7 @@ import Shop from "./app/screens/Shop";
 import Team from "./app/screens/Team";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
-import { FIREBASE_AUTH } from "./FirebaseConfig";
+import { FIREBASE_AUTH } from "./api/FirebaseConfig";
 
 const Stack = createNativeStackNavigator(); // create nav stack
 const InsideStack = createNativeStackNavigator();

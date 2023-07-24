@@ -9,6 +9,10 @@ export function newStation(id: number, lineid: number): Station {
     console.log("Cannot have negative id. Defaulting to 0");
     id = 0;
   }
+  if (lineid < 0) {
+    console.log("Cannot have negative line id. Defaulting to 0");
+    lineid = 0;
+  }
   return {
     id: id,
     lineid: lineid,
@@ -66,43 +70,53 @@ export class Graph {
   }
 
   // Traversal algorithm that keeps track of path length
+  // RETURNS array of sorted arrays of stations that, if visited in order, will result in desired trip length. null if no findable path.
   // TODO: test building graph and traverse all possible paths within a certain total path length.
   // TODO: make it return all possible results that fit, in one travel direction for now.
-  dfsWithLength(
+  // TODO: algorithm that ensures there is a findable path for every reasonable timer length (5-120)
+  // TODO: trust in the natural recursion
+  // start: starting station
+  // goal: desired trip length
+  // length: current trip length
+  // visited: visited stations to avoid revisiting. Reset if transfer/deadend met
+  // path: path taken so far. Should be different for branching recursive calls
+  dfsViablePath(
     start: Station,
-    end: Station,
+    goal: number,
+    length: number,
     visited: Set<Station>,
     path: Station[],
-    length: number
-  ): [Station[], number] | null {
+    viableResults: Station[][]
+  ): Station[][] | null {
+    // init viableResults if first iteration
+    if (visited.size === 0) {
+      viableResults = [];
+    }
+
     visited.add(start);
     path.push(start);
 
-    if (start === end) {
-      console.log(path);
-      return [path, length]; // Found the end vertex, return the path and length
+    if (length >= goal) {
+      console.log("Viable path found: " + path);
+      viableResults.push(path);
     }
 
     for (const neighbor of this.getNeighbours(start)) {
       if (!visited.has(neighbor.station)) {
         const newPath = [...path];
         const newLength = length + neighbor.time;
-        this.dfsWithLength(neighbor.station, end, visited, newPath, newLength); // recursive call
+        this.dfsViablePath(
+          neighbor.station,
+          goal,
+          newLength,
+          visited,
+          newPath,
+          viableResults
+        ); // recursive call
       }
     }
 
-    console.log("No path found");
-    return null;
+    // console.log("No path found");
+    return viableResults;
   }
 }
-
-// TEST USAGE
-// const testStation: Station = { id: 1, lineid: 2 };
-
-// const graph = new Graph();
-// graph.addEdge(testStation, testStation, 10);
-// graph.addEdge(testStation, testStation, 15);
-// graph.addEdge(testStation, testStation, 5);
-
-// console.log(graph.getGraph());
-// console.log(graph.getNeighbors(testStation));

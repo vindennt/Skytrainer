@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
-import { FIREBASE_AUTH, FIRESTORE_DB } from "../../FirebaseConfig";
+import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
 import Gacha from "./Gacha";
 import Shop from "./Shop";
 import Team from "./Team";

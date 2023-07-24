@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
-import { FIREBASE_AUTH } from "../../FirebaseConfig";
+import { FIREBASE_AUTH } from "../../api/FirebaseConfig";
 import { User, onAuthStateChanged } from "firebase/auth";
 
 const Account = () => {

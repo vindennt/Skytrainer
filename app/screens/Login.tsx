@@ -8,7 +8,7 @@ import {
   KeyboardAvoidingView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { FIREBASE_AUTH } from "../../FirebaseConfig";
+import { FIREBASE_AUTH } from "../../api/FirebaseConfig";
 import {
   User,
   AuthCredential,
@@ -18,7 +18,7 @@ import {
   updateProfile,
   updateCurrentUser,
 } from "firebase/auth";
-import { FIRESTORE_DB } from "../../FirebaseConfig";
+import { FIRESTORE_DB } from "../../api/FirebaseConfig";
 import { addDoc, doc, setDoc, collection } from "firebase/firestore";
 
 const Login = () => {

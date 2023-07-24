@@ -19,6 +19,12 @@ test("newStation; station instantiation if id is out of bounds", () => {
   expect(testStationNegativeOne.lineid).toBe(4);
 });
 
+const testStationTwoNegativeOne: Station = newStation(2, -1);
+test("newStation; station instantiation if lineid is out of bounds", () => {
+  expect(testStationTwoNegativeOne?.id).toBe(2);
+  expect(testStationTwoNegativeOne.lineid).toBe(0);
+});
+
 const testEdgeZeroFive: Edge = newEdge(testStationZeroOne, 5);
 test("newEdge; edge instantiation", () => {
   expect(testEdgeZeroFive.station).toStrictEqual(testStationZeroOne);
@@ -43,7 +49,7 @@ test("addStation; Adding Station", () => {
 const testStationTWoFour: Station = newStation(2, 4);
 const graphRepeat = new Graph();
 const testGraphRepeat = new Map<Station, Edge[]>();
-test("addStation; Adding Same Station repeated shouldnt add another", () => {
+test("addStation; Adding Same Station repeated shouldnt add duplicate", () => {
   graph.addStation(testStationTWoFour);
   graph.addStation(testStationTWoFour);
   testGraph.set(testStationTWoFour, []);
@@ -77,7 +83,7 @@ test("addEdge; Bidirectional edges added", () => {
   );
 });
 
-// (4, 7) -3mins-> (8, 7) -5mins->(42, 0)-68mins->(140,80)
+// (4, 7) -3- (8, 7) -5- (42, 0) -68- (140,80)
 const largeGraph = new Graph();
 const stationFourSeven = newStation(4, 7);
 const stationEightSeven = newStation(8, 7);
