@@ -2,6 +2,13 @@ import { Station, Edge, Graph, newStation, newEdge } from "./Graph";
 
 // Given start station and desired length, Find viable paths greater or equal to desired length
 // return array of station paths
+// RETURNS array of sorted arrays of stations that, if visited in order, will result in desired trip length. Empty if no findable path.
+// graph: Adjacency list of stations and edges
+// start: starting station
+// desiredLength: desired trip length.
+// TODO: algorithm that ensures there is a findable path for every reasonable timer length (5-120)
+// TODO: Test connection stations
+// TODO: Test reaching a deadend and turning around.
 export function findViableTrips(
   graph: Graph,
   start: Station,
@@ -20,9 +27,8 @@ export function findViableTrips(
     path.push(current);
 
     if (currentLength >= desiredLength) {
-      // Check if the current path length is greather than or equal to desired length
       paths.push([...path]);
-      // Terminate this path exploration
+      // Terminate this path exploration in this direction
       return;
     } else {
       for (const neighbor of graph.getNeighbours(current)) {
@@ -40,11 +46,4 @@ export function findViableTrips(
   return paths;
 }
 
-// // Usage example
-// const graph = new Graph();
-// // ... Add stations and edges to the graph ...
-// const startStation = newStation(1, 100); // Replace the station parameters with your desired starting station
-// const desiredPathLength = 30; // Replace with your desired path length
-
-// const pathsNearLength = findViableTrips(graph, startStation, desiredPathLength);
-// console.log(pathsNearLength);
+// Use example: See tests
