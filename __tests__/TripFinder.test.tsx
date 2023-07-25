@@ -97,6 +97,9 @@ transferGraph.addEdge(stnThreeTwo, stnFourTwo, 3);
 transferGraph.addEdge(stnTwoTwo, stnElevenThree, 3);
 transferGraph.addEdge(stnElevenThree, stnTwelveThree, 5);
 transferGraph.addEdge(stnTwelveThree, stnThirtnThree, 10);
+
+// TODO
+// console.log(findViableTrips(transferGraph, stnTwoTwo, 15));
 test("findViableTrips; transfer stations have multiple paths explored", () => {
   expect(findViableTrips(transferGraph, stnTwoTwo, 2)).toStrictEqual([
     [stnTwoTwo, stnOneTwo],
@@ -120,66 +123,88 @@ test("findViableTrips; transfer stations have multiple paths explored", () => {
 //            (2, 2) -3- (11, 3) -5- (12, 3) -10- (13, 3)
 // (2, 2) and (13, 3) allow for a loop that satisfies further trip conditions
 
-// test("findViableTrips; if transfer station loop exists, allow revisiting other lines", () => {
-//   const loopGraph = new Graph();
-//   const stnOneTwo = newStation(1, 2);
-//   const stnTwoTwo = newStation(2, 2);
-//   const stnThreeTwo = newStation(3, 2);
-//   const stnFourTwo = newStation(4, 2);
-//   const stnElevenThree = newStation(11, 3);
-//   const stnTwelveThree = newStation(12, 3);
-//   const stnThirtnThree = newStation(13, 3);
-//   loopGraph.addEdge(stnOneTwo, stnTwoTwo, 5);
-//   loopGraph.addEdge(stnTwoTwo, stnThreeTwo, 6);
-//   loopGraph.addEdge(stnThreeTwo, stnFourTwo, 3);
-//   loopGraph.addEdge(stnTwoTwo, stnElevenThree, 3);
-//   loopGraph.addEdge(stnElevenThree, stnTwelveThree, 5);
-//   loopGraph.addEdge(stnTwelveThree, stnThirtnThree, 10);
-//   loopGraph.addEdge(stnThirtnThree, stnFourTwo, 7);
-//   expect(findViableTrips(loopGraph, stnOneTwo, 30)).toStrictEqual([
-//     [
-//       stnOneTwo,
-//       stnTwoTwo,
-//       stnThreeTwo,
-//       stnFourTwo,
-//       stnThirtnThree,
-//       stnTwelveThree,
-//     ],
-//     [
-//       stnOneTwo,
-//       stnTwoTwo,
-//       stnElevenThree,
-//       stnTwelveThree,
-//       stnThirtnThree,
-//       stnFourTwo,
-//     ],
-//   ]);
-// });
-// test("findViableTrips; loop back to same line", () => {
-//   expect(findViableTrips(transferGraph, stnOneTwo, 47)).toStrictEqual([
-//     [
-//       stnOneTwo,
-//       stnTwoTwo,
-//       stnThreeTwo,
-//       stnFourTwo,
-//       stnThirtnThree,
-//       stnTwelveThree,
-//       stnElevenThree,
-//       stnTwoTwo,
-//       stnThreeTwo,
-//       stnFourTwo,
-//     ],
-//     [
-//       stnOneTwo,
-//       stnTwoTwo,
-//       stnElevenThree,
-//       stnTwelveThree,
-//       stnThirtnThree,
-//       stnFourTwo,
-//       stnThreeTwo,
-//       stnTwoTwo,
-//       stnElevenThree,
-//       stnTwelveThree,
-//     ],
-//   ]);
-// });
+test("findViableTrips; if transfer station loop exists, traverse onto it", () => {
+  const loopGraph = new Graph();
+  const stnOneTwo = newStation(1, 2);
+  const stnTwoTwo = newStation(2, 2, true);
+  const stnThreeTwo = newStation(3, 2);
+  const stnFourTwo = newStation(4, 2);
+  const stnElevenThree = newStation(11, 3);
+  const stnTwelveThree = newStation(12, 3);
+  const stnThirtnThreeT = newStation(13, 3, true);
+  loopGraph.addEdge(stnOneTwo, stnTwoTwo, 5);
+  loopGraph.addEdge(stnTwoTwo, stnThreeTwo, 6);
+  loopGraph.addEdge(stnThreeTwo, stnFourTwo, 3);
+  loopGraph.addEdge(stnTwoTwo, stnElevenThree, 3);
+  loopGraph.addEdge(stnElevenThree, stnTwelveThree, 5);
+  loopGraph.addEdge(stnTwelveThree, stnThirtnThreeT, 10);
+  loopGraph.addEdge(stnThirtnThreeT, stnFourTwo, 7);
+
+  expect(findViableTrips(loopGraph, stnOneTwo, 30)).toStrictEqual([
+    [
+      stnOneTwo,
+      stnTwoTwo,
+      stnThreeTwo,
+      stnFourTwo,
+      stnThirtnThreeT,
+      stnTwelveThree,
+    ],
+    [
+      stnOneTwo,
+      stnTwoTwo,
+      stnElevenThree,
+      stnTwelveThree,
+      stnThirtnThreeT,
+      stnFourTwo,
+    ],
+  ]);
+});
+// console.log(findViableTrips(loopGraph, stnOneTwo, 30));
+
+// (1, 2) -5- (2, 2) -6- (3, 2) -3- (4, 2) -7- (13, 3)
+//            (2, 2) -3- (11, 3) -5- (12, 3) -10- (13, 3)
+// (2, 2) and (13, 3) allow for a loop that satisfies further trip conditions
+test("findViableTrips; loop back to same line", () => {
+  const loopGraph = new Graph();
+  const stnOneTwo = newStation(1, 2);
+  const stnTwoTwo = newStation(2, 2, true);
+  const stnThreeTwo = newStation(3, 2);
+  const stnFourTwo = newStation(4, 2);
+  const stnElevenThree = newStation(11, 3);
+  const stnTwelveThree = newStation(12, 3);
+  const stnThirtnThreeT = newStation(13, 3, true);
+  loopGraph.addEdge(stnOneTwo, stnTwoTwo, 5);
+  loopGraph.addEdge(stnTwoTwo, stnThreeTwo, 6);
+  loopGraph.addEdge(stnThreeTwo, stnFourTwo, 3);
+  loopGraph.addEdge(stnTwoTwo, stnElevenThree, 3);
+  loopGraph.addEdge(stnElevenThree, stnTwelveThree, 5);
+  loopGraph.addEdge(stnTwelveThree, stnThirtnThreeT, 10);
+  loopGraph.addEdge(stnThirtnThreeT, stnFourTwo, 7);
+  console.log(findViableTrips(loopGraph, stnOneTwo, 47));
+  expect(findViableTrips(loopGraph, stnOneTwo, 47)).toStrictEqual([
+    [
+      stnOneTwo,
+      stnTwoTwo,
+      stnThreeTwo,
+      stnFourTwo,
+      stnThirtnThreeT,
+      stnTwelveThree,
+      stnElevenThree,
+      stnTwoTwo,
+      stnThreeTwo,
+      stnFourTwo,
+    ],
+    [
+      stnOneTwo,
+      stnTwoTwo,
+      stnElevenThree,
+      stnTwelveThree,
+      stnThirtnThreeT,
+      stnFourTwo,
+      stnThreeTwo,
+      stnTwoTwo,
+      stnElevenThree,
+      stnTwelveThree,
+    ],
+  ]);
+});
