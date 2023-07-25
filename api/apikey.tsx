@@ -1,3 +1,0 @@
-const OPENWEATHER_API_KEY = "b491fe5000be6691bf8eb499d87bb5ee";
-
-export default OPENWEATHER_API_KEY;
