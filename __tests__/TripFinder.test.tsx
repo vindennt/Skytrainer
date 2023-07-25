@@ -3,9 +3,9 @@ import { Graph, Edge, Station, newStation, newEdge } from "../utils/Graph";
 import { findViableTrips } from "../utils/TripFinder";
 
 // Template test
-test("TEMPLATE", () => {
-  expect(12345678).toStrictEqual(12345678);
-});
+// test("TEMPLATE", () => {
+//   expect(12345678).toStrictEqual(12345678);
+// });
 //
 
 // (4, 7) -3- (8, 7) -5- (42, 7) -68- (140,80)
