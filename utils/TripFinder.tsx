@@ -40,11 +40,13 @@ export function findViableTrips(
     } else {
       const neighbours = graph.getNeighbours(current);
       for (const neighbour of neighbours) {
-        // If neighbour is an already explored transfer station that hasnt just been visited, delete it from visited to allow looping
+        // Delete viable tranfser station neighbours from visited to allow looping
         if (
-          neighbour.station.transfer &&
-          visited.has(neighbour.station) &&
-          !areEqual([neighbour.station], [path[path.length - 2]])
+          isLoopableTransfer(
+            neighbour.station,
+            path,
+            visited.has(neighbour.station)
+          )
         ) {
           visited.delete(neighbour.station);
           // Allow revisiting stations along new line that is about to be traversed
@@ -89,5 +91,16 @@ function areEqual(path1: Station[], path2: Station[]): boolean {
   }
   return true;
 }
-
+// If neighbour is an already explored transfer station that hasnt just been visited, it can be looped
+function isLoopableTransfer(
+  neighbour: Station,
+  path: Station[],
+  visited: boolean
+) {
+  return (
+    visited &&
+    neighbour.transfer &&
+    !areEqual([neighbour], [path[path.length - 2]])
+  );
+}
 // Use example: See tests
