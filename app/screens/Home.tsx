@@ -105,7 +105,7 @@ const Home = ({ navigation }: RouterProps) => {
   }, [auth, displayName, uid]);
 
   const addTodo = async () => {
-    await addDoc(collection(FIRESTORE_DB, `todos/${uid}/todos`), {
+    await addDoc(collection(FIRESTORE_DB, `todo/${uid}/todos`), {
       title: todo,
       done: false,
     });

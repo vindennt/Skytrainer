@@ -1,7 +1,7 @@
 export type Station = {
   id: number;
   lineid: number;
-  transfer: boolean;
+  transfer: boolean; // is a transfer station? ; Whether a station is adjacent to a station from a different line
 };
 type Time = number;
 
