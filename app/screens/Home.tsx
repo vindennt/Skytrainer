@@ -15,6 +15,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { IconButton } from "react-native-paper";
 import { useCallback } from "react";
 import * as React from "react";
 import { useEffect, useState, useRef } from "react";
@@ -42,6 +43,8 @@ import {
 } from "firebase/firestore";
 import { Entypo } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Icon from "@mdi/react";
+import { mdiTrashCanOutline } from "@mdi/js";
 // import { EvaIconsPack } from "@ui-kitten/eva-icons";
 // import { Icon, Button } from "@ui-kitten/components";
 import Animated, {
@@ -208,9 +211,16 @@ const Home = ({ navigation }: RouterProps) => {
           </Text>
           {/* </Button> */}
         </TouchableOpacity>
-        <TouchableOpacity onPress={deleteItem}>
-          <Ionicons name="trash-bin-outline" size={24} color="red" />
-        </TouchableOpacity>
+        <IconButton
+          icon="trash-can-outline"
+          onPress={deleteItem}
+          size={20}
+          iconColor="red"
+        />
+
+        {/* <Icon path={"mdiTrashCanOutline"} size={1} color={"red"} /> */}
+        {/* <TouchableOpacity onPress={deleteItem}></TouchableOpacity> */}
+        {/* <Ionicons name="trash-bin-outline" size={24} color="red" /> */}
       </View>
     );
   };
@@ -344,7 +354,7 @@ const Home = ({ navigation }: RouterProps) => {
             snapPoints={["35%"]}
             backdropComponent={renderBackdrop}
             backgroundStyle={{
-              borderRadius: 20,
+              borderRadius: 40,
               shadowColor: "black",
               shadowOffset: { width: 10, height: 3 },
               shadowOpacity: 0.2,
@@ -403,6 +413,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 4,
     borderRadius: 12,
+    maxHeight: 50,
   },
   todosText: { flex: 1, paddingHorizontal: 4 },
   todo: {

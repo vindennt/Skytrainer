@@ -13,6 +13,7 @@ import { User, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { FIREBASE_AUTH } from "./api/FirebaseConfig";
 import "react-native-gesture-handler";
+import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 
 import { default as theme } from "./theme.json";
 
@@ -103,32 +104,34 @@ export default function App() {
   }, []);
 
   return (
-    <NavigationContainer>
-      {/* Enable these lines to skip login screen */}
-      {/* <Stack.Navigator initialRouteName="List">
+    <PaperProvider>
+      <NavigationContainer>
+        {/* Enable these lines to skip login screen */}
+        {/* <Stack.Navigator initialRouteName="List">
         <Stack.Screen
           name="Inside"
           component={InsideLayout}
           options={{ headerShown: false }}
         /> */}
-      <Stack.Navigator initialRouteName="Login">
-        {/* Enable these lines to add login screen */}
-        {user ? (
-          // If logged in (user not null), bring inside
-          <Stack.Screen
-            name="Inside"
-            component={InsideLayout}
-            options={{ headerShown: false }}
-          />
-        ) : (
-          // Show login screen if not logged in
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{ headerShown: false }}
-          />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+        <Stack.Navigator initialRouteName="Login">
+          {/* Enable these lines to add login screen */}
+          {user ? (
+            // If logged in (user not null), bring inside
+            <Stack.Screen
+              name="Inside"
+              component={InsideLayout}
+              options={{ headerShown: false }}
+            />
+          ) : (
+            // Show login screen if not logged in
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{ headerShown: false }}
+            />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
   );
 }

@@ -1,16 +1,41 @@
 import React from "react";
+import { useState } from "react";
 // import { useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { Todo } from "../app/screens/Home";
 // import DropdownComponent from "../utils/Dropdown";
+import {
+  Appbar,
+  DefaultTheme,
+  Provider,
+  Surface,
+  ThemeProvider,
+} from "react-native-paper";
+import DropDown from "react-native-paper-dropdown";
 
 interface TodoItemProps {
   item: Todo;
 }
 
 // const controlSelectState = useSelectState();
+const commuterList = [
+  {
+    label: "Stanley",
+    value: "1",
+  },
+  {
+    label: "Eddie",
+    value: "2",
+  },
+  {
+    label: "Nathan",
+    value: "3",
+  },
+];
 
 const TodoItem: React.FC<TodoItemProps> = ({ item }) => {
+  const [showDropDown, setShowDropDown] = useState(false);
+  const [commuter, setCommuter] = useState<string>();
   return (
     <View style={styles.container}>
       {/* <Text style={styles.overview}>Task Details</Text> */}
@@ -23,6 +48,26 @@ const TodoItem: React.FC<TodoItemProps> = ({ item }) => {
           width: "80%",
         }}
       >
+        <DropDown
+          label={"Commuter"}
+          mode={"outlined"}
+          visible={showDropDown}
+          showDropDown={() => setShowDropDown(true)}
+          onDismiss={() => setShowDropDown(false)}
+          value={commuter}
+          setValue={setCommuter}
+          list={commuterList}
+          activeColor="blue"
+          dropDownContainerMaxHeight={200}
+          dropDownItemStyle={{ backgroundColor: "white" }}
+          dropDownItemSelectedStyle={{ backgroundColor: "white" }}
+          dropDownItemTextStyle={{ backgroundColor: "white" }}
+          theme={{
+            colors: {
+              background: "white", // Customize the primary color
+            },
+          }}
+        />
         {/* TODO: implement character selection */}
       </View>
       <View
