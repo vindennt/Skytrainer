@@ -13,7 +13,10 @@ import {
   TouchableOpacity,
   Image,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import FadingEdge from "react-native-fading-edge";
+
 import { NavigationProp } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
 import Gacha from "./Gacha";
@@ -184,9 +187,9 @@ const Home = ({ navigation }: RouterProps) => {
 
   return (
     <View style={styles.container}>
-      <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
+      {/* <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
       <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
-      <Button onPress={() => navigation.navigate("Team")} title="Team" />
+      <Button onPress={() => navigation.navigate("Team")} title="Team" /> */}
       <Button onPress={() => navigation.navigate("Account")} title="Account" />
       <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
       <View style={styles.setTodoContainer}>
@@ -232,7 +235,12 @@ const Home = ({ navigation }: RouterProps) => {
         </View>
       )}
       {todos.length > 0 && (
-        <View>
+        <View
+          style={{
+            borderRadius: 12,
+            backgroundColor: "#ffdd25",
+          }}
+        >
           <FlatList
             style={styles.flatList}
             data={todos}
@@ -334,12 +342,24 @@ const styles = StyleSheet.create({
   },
   flatList: {
     // minHeight: "20%",
-    height: 142,
-    backgroundColor: "#ffdd25",
+    height: 150,
     paddingVertical: 2,
     paddingHorizontal: 5,
     flexGrow: 0,
     borderRadius: 12,
+    elevation: 5,
+    // backgroundColor: "#ffdd25",
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+  },
+  shadow: {
+    elevation: 5,
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.4,
+    shadowRadius: 3,
   },
   blankflatList: {
     // maxHeight: "20%",

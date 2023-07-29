@@ -32,10 +32,58 @@ function InsideLayout() {
           },
         }}
       />
-      <InsideStack.Screen name="Account" component={Account} />
-      <InsideStack.Screen name="Gacha" component={Gacha} />
-      <InsideStack.Screen name="Shop" component={Shop} />
-      <InsideStack.Screen name="Team" component={Team} />
+      <InsideStack.Screen
+        name="Account"
+        component={Account}
+        options={{
+          headerStyle: {
+            backgroundColor: "#085cac",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <InsideStack.Screen
+        name="Gacha"
+        component={Gacha}
+        options={{
+          headerStyle: {
+            backgroundColor: "#085cac",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <InsideStack.Screen
+        name="Shop"
+        component={Shop}
+        options={{
+          headerStyle: {
+            backgroundColor: "#085cac",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <InsideStack.Screen
+        name="Team"
+        component={Team}
+        options={{
+          headerStyle: {
+            backgroundColor: "#085cac",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
     </InsideStack.Navigator>
   );
 }
