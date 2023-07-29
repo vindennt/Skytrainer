@@ -11,6 +11,7 @@ import Team from "./app/screens/Team";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { FIREBASE_AUTH } from "./api/FirebaseConfig";
+import "react-native-gesture-handler";
 
 const Stack = createNativeStackNavigator(); // create nav stack
 const InsideStack = createNativeStackNavigator();
