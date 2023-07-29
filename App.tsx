@@ -8,6 +8,7 @@ import Account from "./app/screens/Account";
 import Gacha from "./app/screens/Gacha";
 import Shop from "./app/screens/Shop";
 import Team from "./app/screens/Team";
+import { SafeAreaView } from "react-native";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { FIREBASE_AUTH } from "./api/FirebaseConfig";
@@ -100,6 +101,7 @@ export default function App() {
   }, []);
 
   return (
+    // <SafeAreaView>
     <NavigationContainer>
       {/* Enable these lines to skip login screen */}
       {/* <Stack.Navigator initialRouteName="List">
@@ -127,5 +129,6 @@ export default function App() {
         )}
       </Stack.Navigator>
     </NavigationContainer>
+    // </SafeAreaView>
   );
 }
