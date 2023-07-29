@@ -40,6 +40,8 @@ import {
 } from "firebase/firestore";
 import { Entypo } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { EvaIconsPack } from "@ui-kitten/eva-icons";
+// import { Icon, Button } from "@ui-kitten/components";
 import Animated from "react-native-reanimated";
 
 const METRO_VANCOUVER_COORDINATES = {
@@ -70,7 +72,7 @@ const Home = ({ navigation }: RouterProps) => {
   const [displayName, setDisplayName] = useState<string | null>("default");
   const [uid, setUid] = useState<string>("default");
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const snapPoints = ["45%"]; // size of modal
+  const snapPoints = ["35%"]; // size of modal
   const [item, setItem] = useState<Todo>({
     title: "default",
     done: false,
@@ -91,6 +93,8 @@ const Home = ({ navigation }: RouterProps) => {
     // });
     navigation.setOptions({ headerTitle: () => <HomeHeader /> });
   };
+  const [range, setRange] = useState(25);
+  const [sliding, setSliding] = useState("Inactive");
   function HomeHeader() {
     return (
       <View style={styles.headerContainer}>
@@ -110,9 +114,6 @@ const Home = ({ navigation }: RouterProps) => {
       </View>
     );
   }
-  const [range, setRange] = useState(25);
-  const [sliding, setSliding] = useState("Inactive");
-
   useEffect(() => {
     fetchWeather();
     onAuthStateChanged(auth, (user) => {
@@ -197,14 +198,10 @@ const Home = ({ navigation }: RouterProps) => {
           onPress={(item) => handlePresentModal()}
           style={styles.todo}
         >
-          {/* {item.done && (
-            <Ionicons name="md-checkmark-circle" size={30} color="green" />
-          )} */}
-          {/* {!item.done && <Entypo name="circle" size={32} color="black" />} */}
-
           <Text style={styles.todosText}>
             {item.title + ", " + item.time + " mins"}
           </Text>
+          {/* </Button> */}
         </TouchableOpacity>
         <TouchableOpacity onPress={deleteItem}>
           <Ionicons name="trash-bin-outline" size={24} color="red" />
@@ -231,6 +228,15 @@ const Home = ({ navigation }: RouterProps) => {
             onPress={() => navigation.navigate("Account")}
             title="Account"
           />
+          {/* <Button style={styles.button} onPress={() => FIREBASE_AUTH.signOut()}>
+            Logout
+          </Button>
+          <Button
+            style={styles.button}
+            onPress={() => navigation.navigate("Account")}
+          >
+            Account
+          </Button> */}
           <View style={styles.setTodoContainer}>
             <View style={styles.form}>
               <TextInput
@@ -262,52 +268,63 @@ const Home = ({ navigation }: RouterProps) => {
                 onSlidingStart={() => setSliding("Sliding")}
                 onSlidingComplete={() => setSliding("Inactive")}
               ></Slider>
+              <Button
+                onPress={addTodo}
+                title="Add task"
+                disabled={!canAddToDo()}
+              />
+              {/* <Button
+                style={styles.button}
+                disabled={!canAddToDo()}
+                onPress={addTodo}
+                appearance="ghost"
+              >
+                Add Task
+              </Button> */}
             </View>
             {/* <Text style={styles.timer}>{sliding}</Text> */}
-
-            <Button
-              onPress={addTodo}
-              title="Add task"
-              disabled={!canAddToDo()}
-            />
+            {todos.length == 0 && (
+              <View style={styles.blankflatList}>
+                <Text style={{ fontSize: 20, color: "white" }}>
+                  All tasks finished
+                </Text>
+              </View>
+            )}
+            {todos.length > 0 && (
+              <View
+                style={{
+                  borderRadius: 12,
+                  backgroundColor: "#ffdd25",
+                  marginTop: 5,
+                }}
+              >
+                <FlatList
+                  style={[
+                    styles.flatList,
+                    // { backgroundColor: isOpen ? "lightgray" : "#ffdd25" },
+                  ]}
+                  data={todos}
+                  renderItem={renderTodo}
+                  // renderItem={({ item }) => <Text>{item.title}</Text>}
+                  keyExtractor={(item: Todo) => item.id}
+                />
+              </View>
+            )}
           </View>
-          {todos.length == 0 && (
-            <View style={styles.blankflatList}>
-              <Text style={{ fontSize: 20, color: "white" }}>
-                All tasks finished
-              </Text>
-            </View>
-          )}
-          {todos.length > 0 && (
-            <View
-              style={{
-                borderRadius: 12,
-                backgroundColor: "#ffdd25",
-              }}
-            >
-              <FlatList
-                style={[
-                  styles.flatList,
-                  // { backgroundColor: isOpen ? "lightgray" : "#ffdd25" },
-                ]}
-                data={todos}
-                renderItem={renderTodo}
-                // renderItem={({ item }) => <Text>{item.title}</Text>}
-                keyExtractor={(item: Todo) => item.id}
-              />
-            </View>
-          )}
 
           <BottomSheetModal
             ref={bottomSheetModalRef}
             index={0}
             snapPoints={snapPoints}
+            bottomInset={46}
+            detached={true}
             backgroundStyle={{
-              borderRadius: 40,
+              borderRadius: 20,
               shadowColor: "black",
               shadowOffset: { width: 10, height: 3 },
-              shadowOpacity: 2,
+              shadowOpacity: 0.2,
               shadowRadius: 20,
+              marginHorizontal: 20,
             }}
             onDismiss={() => setIsOpen(false)}
           >
@@ -329,10 +346,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     backgroundColor: "lightgray", // save my eyes
+    alignItems: "center",
   },
   form: {
+    minWidth: "100%",
+    // flex: 1,
+
     flexDirection: "row",
-    alignItems: "center",
+  },
+  button: {
+    margin: 2,
+    flexWrap: "wrap",
+    // width: "50%",
   },
   input: {
     flex: 1,
@@ -341,7 +366,8 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     borderColor: "whitesmoke",
     padding: 10,
-    marginVertical: 10,
+    margin: 10,
+    // marginVertical: 10,
     // backgroundColor: "#fff",
     backgroundColor: "whitesmoke",
   },
@@ -377,10 +403,10 @@ const styles = StyleSheet.create({
   timer: {
     fontSize: 18,
     fontWeight: "bold",
-    paddingLeft: 5,
+    paddingTop: 5,
   },
   slider: {
-    width: "100%",
+    width: "90%",
     height: 40,
     paddingHorizontal: 10,
   },
@@ -390,7 +416,8 @@ const styles = StyleSheet.create({
   },
   setTodoContainer: {
     // padding: 5,
-    paddingHorizontal: 10,
+
+    // padding: 10,
     marginVertical: 10,
     borderRadius: 12,
     backgroundColor: "#fff",
@@ -413,6 +440,7 @@ const styles = StyleSheet.create({
     height: 150,
     paddingVertical: 2,
     paddingHorizontal: 5,
+
     flexGrow: 0,
     borderRadius: 12,
     elevation: 5,
