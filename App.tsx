@@ -24,7 +24,7 @@ function InsideLayout() {
         component={Home}
         options={{
           headerStyle: {
-            backgroundColor: "royalblue",
+            backgroundColor: "#085cac",
           },
           headerTintColor: "#fff",
           headerTitleStyle: {

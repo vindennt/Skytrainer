@@ -54,6 +54,7 @@ const setTimer = () => {};
 const Home = ({ navigation }: RouterProps) => {
   const [todos, setTodos] = useState<Todo[]>([]); // Displayed list of todos
   const [todo, setTodo] = useState(""); // Set todo from user input
+  var canAddTodo = true;
   const [user, setUser] = useState<User | null>(null);
   const auth = FIREBASE_AUTH;
   // const [displayName, displayName] = useState("string");
@@ -128,13 +129,25 @@ const Home = ({ navigation }: RouterProps) => {
   }, [auth, displayName, uid]);
 
   const addTodo = async () => {
-    await addDoc(collection(FIRESTORE_DB, `todos/${uid}/todos`), {
-      title: todo,
-      done: false,
-      time: range,
-    });
-    setTodo(""); // reset todo to empty after new one added
-    console.log("added todo: " + todo);
+    if (canAddToDo()) {
+      const title = todo;
+      setTodo(""); // reset todo to empty after new one added
+      await addDoc(collection(FIRESTORE_DB, `todos/${uid}/todos`), {
+        title: title,
+        done: false,
+        time: range,
+      });
+      console.log("added todo: " + todo);
+      // canAddTodo = true;
+    }
+  };
+
+  const canAddToDo = () => {
+    if (todo === "" || range === 0) {
+      return false;
+    }
+    // canAddTodo = false;
+    return true;
   };
 
   // fn to display todos from fetched list
@@ -171,6 +184,11 @@ const Home = ({ navigation }: RouterProps) => {
 
   return (
     <View style={styles.container}>
+      <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
+      <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
+      <Button onPress={() => navigation.navigate("Team")} title="Team" />
+      <Button onPress={() => navigation.navigate("Account")} title="Account" />
+      <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
       <View style={styles.setTodoContainer}>
         <View style={styles.form}>
           <TextInput
@@ -184,16 +202,16 @@ const Home = ({ navigation }: RouterProps) => {
           <Text style={styles.timer}>{range + " mins"}</Text>
           <Slider
             style={styles.slider}
-            minimumValue={5}
+            minimumValue={0}
             maximumValue={120}
-            lowerLimit={5}
+            lowerLimit={0}
             upperLimit={120}
             value={25} // initial value
             step={5}
-            minimumTrackTintColor="royalblue"
+            minimumTrackTintColor="#085cac"
             maximumTrackTintColor="silver"
             tapToSeek={true}
-            thumbTintColor="royalblue"
+            thumbTintColor="#085cac"
             onValueChange={(value) => {
               setRange(value);
               // console.log(value);
@@ -204,8 +222,15 @@ const Home = ({ navigation }: RouterProps) => {
         </View>
         {/* <Text style={styles.timer}>{sliding}</Text> */}
 
-        <Button onPress={addTodo} title="Add task" disabled={todo === ""} />
+        <Button onPress={addTodo} title="Add task" disabled={!canAddToDo()} />
       </View>
+      {todos.length == 0 && (
+        <View style={styles.blankflatList}>
+          <Text style={{ fontSize: 20, color: "white" }}>
+            All tasks finished
+          </Text>
+        </View>
+      )}
       {todos.length > 0 && (
         <View>
           <FlatList
@@ -217,12 +242,6 @@ const Home = ({ navigation }: RouterProps) => {
           />
         </View>
       )}
-
-      <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
-      <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
-      <Button onPress={() => navigation.navigate("Team")} title="Team" />
-      <Button onPress={() => navigation.navigate("Account")} title="Account" />
-      <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
     </View>
   );
 };
@@ -233,7 +252,7 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 20,
     flex: 1,
-    padding: 10,
+    paddingVertical: 10,
   },
   form: {
     flexDirection: "row",
@@ -280,7 +299,7 @@ const styles = StyleSheet.create({
     paddingRight: 30,
   },
   timer: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     paddingLeft: 5,
   },
@@ -294,9 +313,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   setTodoContainer: {
-    padding: 5,
-    paddingHorizontal: 12,
-    marginBottom: 5,
+    // padding: 5,
+    paddingHorizontal: 10,
+    marginVertical: 10,
     borderRadius: 12,
     backgroundColor: "#fff",
   },
@@ -314,8 +333,21 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   flatList: {
-    height: "45%",
-    // backgroundColor: "gray",
+    // minHeight: "20%",
+    height: 142,
+    backgroundColor: "#ffdd25",
+    paddingVertical: 2,
+    paddingHorizontal: 5,
     flexGrow: 0,
+    borderRadius: 12,
+  },
+  blankflatList: {
+    // maxHeight: "20%",
+    height: 40,
+    backgroundColor: "lightsteelblue",
+    paddingHorizontal: 5,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
