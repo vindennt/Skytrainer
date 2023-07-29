@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 // import { useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
-import { Todo, startTrip } from "../app/screens/Home";
+import { Todo } from "../app/screens/Home";
 // import DropdownComponent from "../utils/Dropdown";
 import {
   Appbar,
@@ -16,7 +16,7 @@ import { User } from "firebase/auth";
 
 interface TripMenuProps {
   item: Todo;
-  startTrip: () => void; // Function prop to start the trip
+  startTrip: (todo: Todo, commuter: string) => void; // Function prop to start the trip
   user: User | undefined; // "user" prop of type "User"
 }
 
@@ -46,7 +46,7 @@ const TodoItem: React.FC<TripMenuProps> = ({ startTrip, user, item }) => {
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.time}>{item.time + " minutes"}</Text>
         {/* TODO: Temporary indictors of user */}
-        <Text>User Email: {user?.email}</Text>
+        <Text>User: {user?.displayName}</Text>
       </View>
       <View
         style={{
@@ -86,7 +86,13 @@ const TodoItem: React.FC<TripMenuProps> = ({ startTrip, user, item }) => {
 
         {/* TODO: Enable this button on release. Quick delete is useful */}
         {/* <Button onPress={() => {}} title="Delete" disabled={true} /> */}
-        <Button onPress={startTrip} title="Start" />
+        <Button
+          onPress={() => {
+            startTrip(item, commuter);
+          }}
+          title="Start"
+          disabled={!commuter}
+        />
       </View>
     </View>
   );

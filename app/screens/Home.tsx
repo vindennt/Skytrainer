@@ -70,8 +70,10 @@ interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
-export const startTrip = (): void => {
-  console.log("Trip started");
+const startTrip = (todo: Todo, commuter: string): void => {
+  console.log(
+    "Trip for todo " + todo.title + " started with commuter " + commuter
+  );
 };
 
 const setTimer = () => {
@@ -80,7 +82,7 @@ const setTimer = () => {
 
 const Home = ({ navigation }: RouterProps) => {
   const [todos, setTodos] = useState<Todo[]>([]); // Displayed list of todos
-  const [todo, setTodo] = useState(""); // Set todo from user input
+  const [todo, setTodo] = useState(""); // wSet todo from user input
   const [user, setUser] = useState<User>();
   const auth = FIREBASE_AUTH;
   // const [displayName, displayName] = useState("string");
@@ -130,7 +132,6 @@ const Home = ({ navigation }: RouterProps) => {
     );
   }
   useEffect(() => {
-    fetchWeather();
     onAuthStateChanged(auth, (user) => {
       if (user) {
         setUser(user);
@@ -141,7 +142,9 @@ const Home = ({ navigation }: RouterProps) => {
         );
       }
     });
+    fetchWeather();
 
+    // Fetch Todo list
     const todoRef = collection(FIRESTORE_DB, `todos/${uid}/todos`); // refer to todos collection in firestore
     const subscriber = onSnapshot(todoRef, {
       // observer
@@ -162,6 +165,14 @@ const Home = ({ navigation }: RouterProps) => {
     return () => subscriber(); // Remove subscription to clear it
   }, [auth, displayName, uid]);
 
+  const canAddToDo = () => {
+    if (todo === "" || range === 0) {
+      return false;
+    }
+    // canAddTodo = false;
+    return true;
+  };
+
   const addTodo = async () => {
     if (canAddToDo()) {
       const title = todo;
@@ -174,14 +185,6 @@ const Home = ({ navigation }: RouterProps) => {
       console.log("added todo: " + todo);
       // canAddTodo = true;
     }
-  };
-
-  const canAddToDo = () => {
-    if (todo === "" || range === 0) {
-      return false;
-    }
-    // canAddTodo = false;
-    return true;
   };
 
   // fn to display todos from fetched list
