@@ -171,42 +171,45 @@ const Home = ({ navigation }: RouterProps) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.form}>
-        <TextInput
-          style={styles.input}
-          placeholder="Add new todo"
-          onChangeText={(text: string) => setTodo(text)}
-          value={todo}
-        />
-      </View>
-      <View style={styles.timerContainer}>
-        <Text style={styles.timer}>{range + " mins"}</Text>
-        <Slider
-          style={styles.slider}
-          minimumValue={5}
-          maximumValue={120}
-          lowerLimit={5}
-          upperLimit={120}
-          value={25} // initial value
-          step={5}
-          minimumTrackTintColor="royalblue"
-          maximumTrackTintColor="gray"
-          tapToSeek={true}
-          thumbTintColor="royalblue"
-          onValueChange={(value) => {
-            setRange(value);
-            // console.log(value);
-          }}
-          onSlidingStart={() => setSliding("Sliding")}
-          onSlidingComplete={() => setSliding("Inactive")}
-        ></Slider>
-      </View>
-      {/* <Text style={styles.timer}>{sliding}</Text> */}
+      <View style={styles.setTodoContainer}>
+        <View style={styles.form}>
+          <TextInput
+            style={styles.input}
+            placeholder="New task"
+            onChangeText={(text: string) => setTodo(text)}
+            value={todo}
+          />
+        </View>
+        <View style={styles.timerContainer}>
+          <Text style={styles.timer}>{range + " mins"}</Text>
+          <Slider
+            style={styles.slider}
+            minimumValue={5}
+            maximumValue={120}
+            lowerLimit={5}
+            upperLimit={120}
+            value={25} // initial value
+            step={5}
+            minimumTrackTintColor="royalblue"
+            maximumTrackTintColor="silver"
+            tapToSeek={true}
+            thumbTintColor="royalblue"
+            onValueChange={(value) => {
+              setRange(value);
+              // console.log(value);
+            }}
+            onSlidingStart={() => setSliding("Sliding")}
+            onSlidingComplete={() => setSliding("Inactive")}
+          ></Slider>
+        </View>
+        {/* <Text style={styles.timer}>{sliding}</Text> */}
 
-      <Button onPress={addTodo} title="Add todo" disabled={todo === ""} />
+        <Button onPress={addTodo} title="Add task" disabled={todo === ""} />
+      </View>
       {todos.length > 0 && (
         <View>
           <FlatList
+            style={styles.flatList}
             data={todos}
             renderItem={renderTodo}
             // renderItem={({ item }) => <Text>{item.title}</Text>}
@@ -215,10 +218,10 @@ const Home = ({ navigation }: RouterProps) => {
         </View>
       )}
 
-      {/* <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
+      <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
       <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
       <Button onPress={() => navigation.navigate("Team")} title="Team" />
-      <Button onPress={() => navigation.navigate("Account")} title="Account" /> */}
+      <Button onPress={() => navigation.navigate("Account")} title="Account" />
       <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
     </View>
   );
@@ -241,9 +244,11 @@ const styles = StyleSheet.create({
     height: 50,
     borderWidth: 1,
     borderRadius: 12,
+    borderColor: "whitesmoke",
     padding: 10,
     marginVertical: 10,
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
+    backgroundColor: "whitesmoke",
   },
   todosContainer: {
     flexDirection: "row",
@@ -263,7 +268,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     // alignItems: "center",
-    backgroundColor: "#fff",
+    backgroundColor: "white",
     borderRadius: 100,
     marginRight: 10,
   },
@@ -290,6 +295,9 @@ const styles = StyleSheet.create({
   },
   setTodoContainer: {
     padding: 5,
+    paddingHorizontal: 12,
+    marginBottom: 5,
+    borderRadius: 12,
     backgroundColor: "#fff",
   },
   nameBox: {
@@ -304,5 +312,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     // backgroundColor: "red",
     flex: 1,
+  },
+  flatList: {
+    height: "45%",
+    // backgroundColor: "gray",
+    flexGrow: 0,
   },
 });
