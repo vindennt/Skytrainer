@@ -3,13 +3,6 @@ import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { Todo } from "../app/screens/Home";
 // import DropdownComponent from "../utils/Dropdown";
-import {
-  IndexPath,
-  Layout,
-  Select,
-  SelectItem,
-  SelectProps,
-} from "@ui-kitten/components";
 
 interface TodoItemProps {
   item: Todo;
@@ -18,9 +11,6 @@ interface TodoItemProps {
 // const controlSelectState = useSelectState();
 
 const TodoItem: React.FC<TodoItemProps> = ({ item }) => {
-  const [selectedIndex, setSelectedIndex] = React.useState<
-    IndexPath | IndexPath[]
-  >(new IndexPath(0));
   return (
     <View style={styles.container}>
       {/* <Text style={styles.overview}>Task Details</Text> */}
@@ -33,19 +23,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ item }) => {
           width: "80%",
         }}
       >
-        <Select
-          label="Commuter"
-          selectedIndex={selectedIndex}
-          placeholder="Choose commuter"
-          onSelect={(index) => {
-            setSelectedIndex(index);
-            console.log(index);
-          }}
-        >
-          <SelectItem title="Eddie" />
-          <SelectItem title="Nathan" />
-          <SelectItem title="Stanley" />
-        </Select>
+        {/* TODO: implement character selection */}
       </View>
       <View
         style={{
@@ -56,10 +34,9 @@ const TodoItem: React.FC<TodoItemProps> = ({ item }) => {
         }}
       >
         {/* <Button onPress={() => {}} title="Edit" disabled={true} /> */}
-        {/* TODO: implement character selection */}
-        {/* <Button onPress={() => {}} title="Change Commuter" disabled={true} /> */}
+
         {/* TODO: Enable this button on release. Quick delete is useful */}
-        <Button onPress={() => {}} title="Delete" disabled={true} />
+        {/* <Button onPress={() => {}} title="Delete" disabled={true} /> */}
         <Button onPress={() => {}} title="Start" />
       </View>
     </View>

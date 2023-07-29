@@ -42,14 +42,13 @@ import {
 } from "firebase/firestore";
 import { Entypo } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { EvaIconsPack } from "@ui-kitten/eva-icons";
+// import { EvaIconsPack } from "@ui-kitten/eva-icons";
 // import { Icon, Button } from "@ui-kitten/components";
 import Animated, {
   Extrapolate,
   interpolate,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import CustomBackdrop from "../../utils/DimBackdrop";
 
 const METRO_VANCOUVER_COORDINATES = {
   latitude: 49.232937,

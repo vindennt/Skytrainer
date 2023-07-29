@@ -10,15 +10,12 @@
     "test": "jest"
   },
   "dependencies": {
-    "@eva-design/eva": "^2.2.0",
     "@gorhom/bottom-sheet": "^4.4.7",
     "@react-native-community/slider": "^4.4.2",
     "@react-native-firebase/firestore": "^18.2.0",
     "@react-native-masked-view/masked-view": "0.2.8",
     "@react-navigation/native": "^6.1.7",
     "@react-navigation/native-stack": "^6.9.13",
-    "@ui-kitten/components": "^5.3.1",
-    "@ui-kitten/eva-icons": "^5.3.1",
     "expo": "~48.0.18",
     "expo-status-bar": "~1.4.4",
     "firebase": "^10.0.0",
@@ -28,10 +25,11 @@
     "react-native-fading-edge": "^1.0.0",
     "react-native-gesture-handler": "~2.9.0",
     "react-native-linear-gradient": "^2.8.1",
+    "react-native-paper": "^5.9.1",
     "react-native-reanimated": "~2.14.4",
     "react-native-safe-area-context": "4.5.0",
     "react-native-screen": "^1.0.1",
-    "react-native-svg": "^13.4.0"
+    "react-native-svg": "13.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
