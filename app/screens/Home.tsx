@@ -15,12 +15,14 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { useCallback } from "react";
 import * as React from "react";
 import { useEffect, useState, useRef } from "react";
 import "react-native-gesture-handler";
 import {
   BottomSheetModal,
   BottomSheetModalProvider,
+  BottomSheetBackdrop,
 } from "@gorhom/bottom-sheet";
 import { NavigationProp } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
@@ -42,7 +44,12 @@ import { Entypo } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { EvaIconsPack } from "@ui-kitten/eva-icons";
 // import { Icon, Button } from "@ui-kitten/components";
-import Animated from "react-native-reanimated";
+import Animated, {
+  Extrapolate,
+  interpolate,
+  useAnimatedStyle,
+} from "react-native-reanimated";
+import CustomBackdrop from "../../utils/DimBackdrop";
 
 const METRO_VANCOUVER_COORDINATES = {
   latitude: 49.232937,
@@ -72,7 +79,6 @@ const Home = ({ navigation }: RouterProps) => {
   const [displayName, setDisplayName] = useState<string | null>("default");
   const [uid, setUid] = useState<string>("default");
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const snapPoints = ["35%"]; // size of modal
   const [item, setItem] = useState<Todo>({
     title: "default",
     done: false,
@@ -210,12 +216,30 @@ const Home = ({ navigation }: RouterProps) => {
     );
   };
 
+  // const handleSheetChanges = useCallback((index: number) => {
+  //   console.log("handleSheetChanges", index);
+  // }, []);
+
+  // renders
+  const renderBackdrop = useCallback(
+    (props: any) => (
+      <BottomSheetBackdrop
+        // style={{ containerAnimatedStyle }}
+        appearsOnIndex={0}
+        disappearsOnIndex={-1}
+        pressBehavior={"close"}
+        animatedIndex={{ value: 1 }}
+        {...props}
+      />
+    ),
+    []
+  );
+
   return (
     <BottomSheetModalProvider>
       <TouchableWithoutFeedback
         onPress={() => {
           Keyboard.dismiss();
-          bottomSheetModalRef.current?.close();
         }}
         accessible={false}
       >
@@ -315,9 +339,11 @@ const Home = ({ navigation }: RouterProps) => {
           <BottomSheetModal
             ref={bottomSheetModalRef}
             index={0}
-            snapPoints={snapPoints}
+            // snapPoints={snapPoints}
             bottomInset={46}
             detached={true}
+            snapPoints={["35%"]}
+            backdropComponent={renderBackdrop}
             backgroundStyle={{
               borderRadius: 20,
               shadowColor: "black",

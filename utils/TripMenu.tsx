@@ -27,12 +27,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ item }) => {
       <View style={styles.taskContainer}>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.time}>{item.time + " minutes"}</Text>
-        {/* <Text style={styles.status}>{item.done ? "Done" : "Not Done"}</Text> */}
-        {/* <Text style={styles.id}>{"ID: " + item.id}</Text> */}
       </View>
-      {/* <View style={{ width: "100%" }}>
-        <DropdownComponent />
-      </View> */}
       <View
         style={{
           width: "80%",
