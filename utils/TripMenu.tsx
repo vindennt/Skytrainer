@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 // import { useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
-import { Todo } from "../app/screens/Home";
+import { Todo, startTrip } from "../app/screens/Home";
 // import DropdownComponent from "../utils/Dropdown";
 import {
   Appbar,
@@ -12,9 +12,12 @@ import {
   ThemeProvider,
 } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
+import { User } from "firebase/auth";
 
-interface TodoItemProps {
+interface TripMenuProps {
   item: Todo;
+  startTrip: () => void; // Function prop to start the trip
+  user: User | undefined; // "user" prop of type "User"
 }
 
 // const controlSelectState = useSelectState();
@@ -33,7 +36,7 @@ const commuterList = [
   },
 ];
 
-const TodoItem: React.FC<TodoItemProps> = ({ item }) => {
+const TodoItem: React.FC<TripMenuProps> = ({ startTrip, user, item }) => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [commuter, setCommuter] = useState<string>();
   return (
@@ -42,6 +45,8 @@ const TodoItem: React.FC<TodoItemProps> = ({ item }) => {
       <View style={styles.taskContainer}>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.time}>{item.time + " minutes"}</Text>
+        {/* TODO: Temporary indictors of user */}
+        <Text>User Email: {user?.email}</Text>
       </View>
       <View
         style={{
@@ -68,7 +73,6 @@ const TodoItem: React.FC<TodoItemProps> = ({ item }) => {
             },
           }}
         />
-        {/* TODO: implement character selection */}
       </View>
       <View
         style={{
@@ -82,7 +86,7 @@ const TodoItem: React.FC<TodoItemProps> = ({ item }) => {
 
         {/* TODO: Enable this button on release. Quick delete is useful */}
         {/* <Button onPress={() => {}} title="Delete" disabled={true} /> */}
-        <Button onPress={() => {}} title="Start" />
+        <Button onPress={startTrip} title="Start" />
       </View>
     </View>
   );

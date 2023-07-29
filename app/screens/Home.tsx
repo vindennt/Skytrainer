@@ -70,12 +70,18 @@ interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
-const setTimer = () => {};
+export const startTrip = (): void => {
+  console.log("Trip started");
+};
+
+const setTimer = () => {
+  return;
+};
 
 const Home = ({ navigation }: RouterProps) => {
   const [todos, setTodos] = useState<Todo[]>([]); // Displayed list of todos
   const [todo, setTodo] = useState(""); // Set todo from user input
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User>();
   const auth = FIREBASE_AUTH;
   // const [displayName, displayName] = useState("string");
   const [displayName, setDisplayName] = useState<string | null>("default");
@@ -101,6 +107,7 @@ const Home = ({ navigation }: RouterProps) => {
     // });
     navigation.setOptions({ headerTitle: () => <HomeHeader /> });
   };
+
   const [range, setRange] = useState(25);
   const [sliding, setSliding] = useState("Inactive");
   function HomeHeader() {
@@ -125,8 +132,8 @@ const Home = ({ navigation }: RouterProps) => {
   useEffect(() => {
     fetchWeather();
     onAuthStateChanged(auth, (user) => {
-      setUser(user);
       if (user) {
+        setUser(user);
         setUid(user.uid);
         setDisplayName(user.displayName);
         console.log(
@@ -364,7 +371,7 @@ const Home = ({ navigation }: RouterProps) => {
             onDismiss={() => setIsOpen(false)}
           >
             {/* <Text>{item.title + item.done + item.time}</Text> */}
-            <TripMenu item={item}></TripMenu>
+            <TripMenu item={item} user={user} startTrip={startTrip}></TripMenu>
           </BottomSheetModal>
         </View>
       </TouchableWithoutFeedback>
@@ -415,7 +422,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     maxHeight: 50,
   },
-  todosText: { flex: 1, paddingHorizontal: 4 },
+  todosText: { flex: 1, paddingHorizontal: 4, fontSize: 16 },
   todo: {
     flex: 1,
     flexDirection: "row",
