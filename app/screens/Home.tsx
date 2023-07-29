@@ -11,9 +11,8 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  StatusBar,
-  SafeAreaView,
   TouchableWithoutFeedback,
+  Modal,
 } from "react-native";
 import * as React from "react";
 import { useEffect, useState, useRef } from "react";
@@ -22,7 +21,7 @@ import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
-// import { BottomPopup } from "../../utils/BottomPopup";
+import DimOverlay from "../../utils/DimOverlay";
 import { NavigationProp } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
 import Gacha from "./Gacha";
@@ -67,6 +66,8 @@ const Home = ({ navigation }: RouterProps) => {
   const [user, setUser] = useState<User | null>(null);
   const auth = FIREBASE_AUTH;
   // const [displayName, displayName] = useState("string");
+  const [range, setRange] = useState(25);
+  const [sliding, setSliding] = useState("Inactive");
   const [displayName, setDisplayName] = useState<string | null>("default");
   const [uid, setUid] = useState<string>("default");
   const bottomSheetModalRef = useRef<any>(null);
@@ -78,7 +79,8 @@ const Home = ({ navigation }: RouterProps) => {
     time: 0,
   }); // Will be a ToDo that gets rendered in the modal
   const [isOpen, setIsOpen] = useState(false); // Modal open state
-  let popupRef: any = React.createRef();
+  // let popupRef: any = React.createRef();
+  const [showOverlay, setShowOverlay] = useState(false); // Dimming overlay when click on task
 
   const [weather, setWeather] = useState<null | any>();
   const fetchWeather = async () => {
@@ -111,8 +113,6 @@ const Home = ({ navigation }: RouterProps) => {
       </View>
     );
   }
-  const [range, setRange] = useState(25);
-  const [sliding, setSliding] = useState("Inactive");
 
   useEffect(() => {
     fetchWeather();
@@ -183,6 +183,7 @@ const Home = ({ navigation }: RouterProps) => {
     };
 
     const handlePresentModal = () => {
+      // toggleOverlay();
       // setIsOpen(true);
       bottomSheetModalRef?.current?.present();
       setItem(item);
@@ -215,13 +216,18 @@ const Home = ({ navigation }: RouterProps) => {
     );
   };
 
-  function onShowPopup(): void {
-    popupRef.show();
-  }
-
-  const onClosePopup = () => {
-    popupRef.close();
+  // Toggle dimming overlay
+  const toggleOverlay = () => {
+    setShowOverlay(!showOverlay);
   };
+
+  // function onShowPopup(): void {
+  //   popupRef.show();
+  // }
+
+  // const onClosePopup = () => {
+  //   popupRef.close();
+  // };
   return (
     <BottomSheetModalProvider>
       <View
@@ -230,10 +236,14 @@ const Home = ({ navigation }: RouterProps) => {
           { backgroundColor: isOpen ? "lightgray" : "gainsboro" },
         ]}
       >
+        {/* {showOverlay && <DimOverlay onClose={toggleOverlay} />} */}
+        {/* {showOverlay && <View style={styles.overlay} />} */}
         <View style={styles.container}>
           {/* <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
       <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
-      <Button onPress={() => navigation.navigate("Team")} title="Team" /> */}
+    <Button onPress={() => navigation.navigate("Team")} title="Team" /> */}
+          {/* // Container for dimming */}
+
           <Button
             onPress={() => navigation.navigate("Account")}
             title="Account"
@@ -278,6 +288,7 @@ const Home = ({ navigation }: RouterProps) => {
               disabled={!canAddToDo()}
             />
           </View>
+
           {todos.length == 0 && (
             <View style={styles.blankflatList}>
               <Text style={{ fontSize: 20, color: "white" }}>
@@ -325,6 +336,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
+  },
+  dimContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   form: {
     flexDirection: "row",
@@ -433,5 +449,9 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
+  },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black color for the dim effect
   },
 });
