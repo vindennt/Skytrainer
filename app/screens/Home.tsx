@@ -1,4 +1,5 @@
 // Todo list modified from Simon Grimm Tutorial: https://www.youtube.com/watch?v=TwxdOFcEah4
+
 import OPENWEATHER_API_KEY from "../../api/apikey"; //TODO:  Set up rate limits and proxy server at deployment
 import { User, onAuthStateChanged } from "firebase/auth";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
@@ -11,8 +12,6 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
-  TouchableWithoutFeedback,
-  Modal,
 } from "react-native";
 import * as React from "react";
 import { useEffect, useState, useRef } from "react";
@@ -21,7 +20,6 @@ import {
   BottomSheetModal,
   BottomSheetModalProvider,
 } from "@gorhom/bottom-sheet";
-import DimOverlay from "../../utils/DimOverlay";
 import { NavigationProp } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
 import Gacha from "./Gacha";
@@ -59,20 +57,6 @@ interface RouterProps {
 }
 
 const setTimer = () => {};
-const popupListSample = [
-  {
-    id: 1,
-    name: "task1",
-  },
-  {
-    id: 2,
-    name: "task2",
-  },
-  {
-    id: 3,
-    name: "task3",
-  },
-];
 
 const Home = ({ navigation }: RouterProps) => {
   const [todos, setTodos] = useState<Todo[]>([]); // Displayed list of todos
@@ -80,8 +64,6 @@ const Home = ({ navigation }: RouterProps) => {
   const [user, setUser] = useState<User | null>(null);
   const auth = FIREBASE_AUTH;
   // const [displayName, displayName] = useState("string");
-  const [range, setRange] = useState(25);
-  const [sliding, setSliding] = useState("Inactive");
   const [displayName, setDisplayName] = useState<string | null>("default");
   const [uid, setUid] = useState<string>("default");
   const bottomSheetModalRef = useRef<any>(null);
@@ -93,8 +75,6 @@ const Home = ({ navigation }: RouterProps) => {
     time: 0,
   }); // Will be a ToDo that gets rendered in the modal
   const [isOpen, setIsOpen] = useState(false); // Modal open state
-  // let popupRef: any = React.createRef();
-  const [showOverlay, setShowOverlay] = useState(false); // Dimming overlay when click on task
 
   const [weather, setWeather] = useState<null | any>();
   const fetchWeather = async () => {
@@ -127,6 +107,8 @@ const Home = ({ navigation }: RouterProps) => {
       </View>
     );
   }
+  const [range, setRange] = useState(25);
+  const [sliding, setSliding] = useState("Inactive");
 
   useEffect(() => {
     fetchWeather();
@@ -197,7 +179,6 @@ const Home = ({ navigation }: RouterProps) => {
     };
 
     const handlePresentModal = () => {
-      // toggleOverlay();
       // setIsOpen(true);
       bottomSheetModalRef?.current?.present();
       setItem(item);
@@ -210,8 +191,7 @@ const Home = ({ navigation }: RouterProps) => {
     return (
       <View style={styles.todosContainer}>
         <TouchableOpacity
-          // onPress={(item) => handlePresentModal()}
-          // onPress={(item) => setDone()}
+          onPress={(item) => handlePresentModal()}
           style={styles.todo}
         >
           {item.done && (
@@ -230,18 +210,6 @@ const Home = ({ navigation }: RouterProps) => {
     );
   };
 
-  // Toggle dimming overlay
-  const toggleOverlay = () => {
-    setShowOverlay(!showOverlay);
-  };
-
-  // function onShowPopup(): void {
-  //   popupRef.show();
-  // }
-
-  // const onClosePopup = () => {
-  //   popupRef.close();
-  // };
   return (
     <BottomSheetModalProvider>
       <View
@@ -250,79 +218,89 @@ const Home = ({ navigation }: RouterProps) => {
           { backgroundColor: isOpen ? "lightgray" : "gainsboro" },
         ]}
       >
-        {/* {showOverlay && <DimOverlay onClose={toggleOverlay} />} */}
-        {/* {showOverlay && <View style={styles.overlay} />} */}
         <View style={styles.container}>
           {/* <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
       <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
-    <Button onPress={() => navigation.navigate("Team")} title="Team" /> */}
-          {/* // Container for dimming */}
-
+      <Button onPress={() => navigation.navigate("Team")} title="Team" /> */}
           <Button
             onPress={() => navigation.navigate("Account")}
             title="Account"
           />
+          <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
+          <View style={styles.setTodoContainer}>
+            <View style={styles.form}>
+              <TextInput
+                style={styles.input}
+                placeholder="New task"
+                onChangeText={(text: string) => setTodo(text)}
+                value={todo}
+              />
+            </View>
+            <View style={styles.timerContainer}>
+              <Text style={styles.timer}>{range + " mins"}</Text>
+              <Slider
+                style={styles.slider}
+                minimumValue={0}
+                maximumValue={120}
+                lowerLimit={0}
+                upperLimit={120}
+                value={25} // initial value
+                step={5}
+                minimumTrackTintColor="#085cac"
+                maximumTrackTintColor="silver"
+                tapToSeek={true}
+                thumbTintColor="#085cac"
+                onValueChange={(value) => {
+                  setRange(value);
+                  // console.log(value);
+                }}
+                onSlidingStart={() => setSliding("Sliding")}
+                onSlidingComplete={() => setSliding("Inactive")}
+              ></Slider>
+            </View>
+            {/* <Text style={styles.timer}>{sliding}</Text> */}
+
+            <Button
+              onPress={addTodo}
+              title="Add task"
+              disabled={!canAddToDo()}
+            />
+          </View>
+          {todos.length == 0 && (
+            <View style={styles.blankflatList}>
+              <Text style={{ fontSize: 20, color: "white" }}>
+                All tasks finished
+              </Text>
+            </View>
+          )}
+          {todos.length > 0 && (
+            <View
+              style={{
+                borderRadius: 12,
+                backgroundColor: "#ffdd25",
+              }}
+            >
+              <FlatList
+                style={styles.flatList}
+                data={todos}
+                renderItem={renderTodo}
+                // renderItem={({ item }) => <Text>{item.title}</Text>}
+                keyExtractor={(item: Todo) => item.id}
+              />
+            </View>
+          )}
+
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={0}
+            snapPoints={snapPoints}
+            backgroundStyle={{ borderRadius: 30 }}
+            onDismiss={() => setIsOpen(false)}
+          >
+            <Text>{item.title + item.done + item.time}</Text>
+          </BottomSheetModal>
         </View>
-        <View style={styles.timerContainer}>
-          <Text style={styles.timer}>{range + " mins"}</Text>
-          <Slider
-            style={styles.slider}
-            minimumValue={0}
-            maximumValue={120}
-            lowerLimit={0}
-            upperLimit={120}
-            value={25} // initial value
-            step={5}
-            minimumTrackTintColor="#085cac"
-            maximumTrackTintColor="silver"
-            tapToSeek={true}
-            thumbTintColor="#085cac"
-            onValueChange={(value) => {
-              setRange(value);
-              // console.log(value);
-            }}
-            onSlidingStart={() => setSliding("Sliding")}
-            onSlidingComplete={() => setSliding("Inactive")}
-          ></Slider>
-        </View>
-        {/* <Text style={styles.timer}>{sliding}</Text> */}
-        <Button onPress={addTodo} title="Add task" disabled={!canAddToDo()} />
       </View>
-
-      {todos.length == 0 && (
-        <View style={styles.blankflatList}>
-          <Text style={{ fontSize: 20, color: "white" }}>
-            All tasks finished
-          </Text>
-        </View>
-      )}
-      {todos.length > 0 && (
-        <View
-          style={{
-            borderRadius: 12,
-            backgroundColor: "#ffdd25",
-          }}
-        >
-          <FlatList
-            style={styles.flatList}
-            data={todos}
-            renderItem={renderTodo}
-            // renderItem={({ item }) => <Text>{item.title}</Text>}
-            keyExtractor={(item: Todo) => item.id}
-          />
-        </View>
-      )}
-
-      <BottomSheetModal
-        ref={bottomSheetModalRef}
-        index={0}
-        snapPoints={snapPoints}
-        backgroundStyle={{ borderRadius: 30 }}
-        onDismiss={() => setIsOpen(false)}
-      >
-        <Text>{item.title + item.done + item.time}</Text>
-      </BottomSheetModal>
-      {/* </View> */}
     </BottomSheetModalProvider>
   );
 };
@@ -335,11 +313,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     paddingVertical: 10,
-  },
-  dimContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
   form: {
     flexDirection: "row",
@@ -448,9 +421,5 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
-  },
-  overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent black color for the dim effect
   },
 });
