@@ -1,6 +1,8 @@
 // Todo list modified from Simon Grimm Tutorial: https://www.youtube.com/watch?v=TwxdOFcEah4
 
 import OPENWEATHER_API_KEY from "../../api/apikey"; //TODO:  Set up rate limits and proxy server at deployment
+import { User, onAuthStateChanged } from "firebase/auth";
+import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
 import {
   View,
   Text,
@@ -13,7 +15,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { NavigationProp } from "@react-navigation/native";
-import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
+import Slider from "@react-native-community/slider";
 import Gacha from "./Gacha";
 import Shop from "./Shop";
 import Team from "./Team";
@@ -27,9 +29,8 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import { Entypo } from "@expo/vector-icons";
-import { User, onAuthStateChanged } from "firebase/auth";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 const METRO_VANCOUVER_COORDINATES = {
   latitude: 49.232937,
@@ -41,16 +42,14 @@ export interface Todo {
   title: string;
   done: boolean;
   id: string;
+  time: number;
 }
 
 interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
-const fiveMinuteTimer = () => {};
-const tenMinuteTimer = () => {};
-const thirtyMinuteTimer = () => {};
-const sixtyMinuteTimer = () => {};
+const setTimer = () => {};
 
 const Home = ({ navigation }: RouterProps) => {
   const [todos, setTodos] = useState<Todo[]>([]); // Displayed list of todos
@@ -68,11 +67,35 @@ const Home = ({ navigation }: RouterProps) => {
     );
     const weather = (await data.json()) as any;
     setWeather(weather);
+    // navigation.setOptions({
+    //   title: weather?.weather[0].main + Math.trunc(weather?.main.temp) + "°C ",
+    // });
+    navigation.setOptions({ headerTitle: () => <HomeHeader /> });
   };
+  function HomeHeader() {
+    return (
+      <View style={styles.headerContainer}>
+        <Text style={styles.nameBox}>Welcome {displayName}</Text>
+        <View style={styles.weatherBox}>
+          <Image
+            style={styles.tinyLogo}
+            source={{
+              uri: `https://openweathermap.org/img/wn/${weather?.weather[0].icon}@2x.png`,
+            }}
+          />
+          <Text style={{ color: "white" }}>
+            {weather?.weather[0].main}, {Math.trunc(weather?.main.temp)}
+            °C
+          </Text>
+        </View>
+      </View>
+    );
+  }
+  const [range, setRange] = useState(25);
+  const [sliding, setSliding] = useState("Inactive");
 
   useEffect(() => {
     fetchWeather();
-
     onAuthStateChanged(auth, (user) => {
       setUser(user);
       if (user) {
@@ -105,9 +128,10 @@ const Home = ({ navigation }: RouterProps) => {
   }, [auth, displayName, uid]);
 
   const addTodo = async () => {
-    await addDoc(collection(FIRESTORE_DB, `todo/${uid}/todos`), {
+    await addDoc(collection(FIRESTORE_DB, `todos/${uid}/todos`), {
       title: todo,
       done: false,
+      time: range,
     });
     setTodo(""); // reset todo to empty after new one added
     console.log("added todo: " + todo);
@@ -134,7 +158,9 @@ const Home = ({ navigation }: RouterProps) => {
           )}
           {!item.done && <Entypo name="circle" size={32} color="black" />}
 
-          <Text style={styles.todosText}>{item.title}</Text>
+          <Text style={styles.todosText}>
+            {item.title + ", " + item.time + " mins"}
+          </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={deleteItem}>
           <Ionicons name="trash-bin-outline" size={24} color="red" />
@@ -145,21 +171,6 @@ const Home = ({ navigation }: RouterProps) => {
 
   return (
     <View style={styles.container}>
-      <Text>Welcome {displayName}</Text>
-      <View style={styles.weatherBox}>
-        <Image
-          style={styles.tinyLogo}
-          source={{
-            uri: `https://openweathermap.org/img/wn/${weather?.weather[0].icon}@2x.png`,
-          }}
-        />
-        <Text>
-          {weather?.weather[0].main}, {Math.trunc(weather?.main.temp)}
-          °C{" "}
-        </Text>
-      </View>
-
-      {/* <Text>Welcome {displayName}</Text> */}
       <View style={styles.form}>
         <TextInput
           style={styles.input}
@@ -167,8 +178,32 @@ const Home = ({ navigation }: RouterProps) => {
           onChangeText={(text: string) => setTodo(text)}
           value={todo}
         />
-        <Button onPress={addTodo} title="Add todo" disabled={todo === ""} />
       </View>
+      <View style={styles.timerContainer}>
+        <Text style={styles.timer}>{range + " mins"}</Text>
+        <Slider
+          style={styles.slider}
+          minimumValue={5}
+          maximumValue={120}
+          lowerLimit={5}
+          upperLimit={120}
+          value={25} // initial value
+          step={5}
+          minimumTrackTintColor="royalblue"
+          maximumTrackTintColor="gray"
+          tapToSeek={true}
+          thumbTintColor="royalblue"
+          onValueChange={(value) => {
+            setRange(value);
+            // console.log(value);
+          }}
+          onSlidingStart={() => setSliding("Sliding")}
+          onSlidingComplete={() => setSliding("Inactive")}
+        ></Slider>
+      </View>
+      {/* <Text style={styles.timer}>{sliding}</Text> */}
+
+      <Button onPress={addTodo} title="Add todo" disabled={todo === ""} />
       {todos.length > 0 && (
         <View>
           <FlatList
@@ -179,11 +214,6 @@ const Home = ({ navigation }: RouterProps) => {
           />
         </View>
       )}
-
-      <Button onPress={fiveMinuteTimer} title="5 min" />
-      <Button onPress={tenMinuteTimer} title="10 min" />
-      <Button onPress={thirtyMinuteTimer} title="30 min" />
-      <Button onPress={sixtyMinuteTimer} title="60 min" />
 
       {/* <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
       <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
@@ -232,7 +262,7 @@ const styles = StyleSheet.create({
   tinyLogo: {
     width: 30,
     height: 30,
-    alignItems: "center",
+    // alignItems: "center",
     backgroundColor: "#fff",
     borderRadius: 100,
     marginRight: 10,
@@ -240,5 +270,39 @@ const styles = StyleSheet.create({
   weatherBox: {
     flexDirection: "row",
     alignItems: "center",
+    // backgroundColor: "green",
+    // paddingHorizontal: 10,
+    paddingRight: 30,
+  },
+  timer: {
+    fontSize: 20,
+    fontWeight: "bold",
+    paddingLeft: 5,
+  },
+  slider: {
+    width: "100%",
+    height: 40,
+    paddingHorizontal: 10,
+  },
+  timerContainer: {
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  setTodoContainer: {
+    padding: 5,
+    backgroundColor: "#fff",
+  },
+  nameBox: {
+    alignItems: "center",
+    // backgroundColor: "orange",
+    color: "white",
+  },
+  headerContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "center",
+    justifyContent: "space-between",
+    // backgroundColor: "red",
+    flex: 1,
   },
 });

@@ -73,7 +73,7 @@ export function findViableTrips(
     }
   }
 
-  console.log("____STARTING FROM " + start.id);
+  // console.log("____STARTING FROM " + start.id);
   dfsHelper(start, [], 0, new Set());
   // console.log(paths);
   return paths;

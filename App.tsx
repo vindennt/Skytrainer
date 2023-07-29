@@ -19,7 +19,19 @@ const InsideStack = createNativeStackNavigator();
 function InsideLayout() {
   return (
     <InsideStack.Navigator>
-      <InsideStack.Screen name="Home" component={Home} />
+      <InsideStack.Screen
+        name="Home"
+        component={Home}
+        options={{
+          headerStyle: {
+            backgroundColor: "royalblue",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
       <InsideStack.Screen name="Account" component={Account} />
       <InsideStack.Screen name="Gacha" component={Gacha} />
       <InsideStack.Screen name="Shop" component={Shop} />
