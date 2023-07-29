@@ -223,99 +223,97 @@ const Home = ({ navigation }: RouterProps) => {
         accessible={false}
       >
         <View style={[styles.container]}>
-          <View style={styles.container}>
-            {/* <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
+          {/* <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
       <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
       <Button onPress={() => navigation.navigate("Team")} title="Team" /> */}
-            <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
-            <Button
-              onPress={() => navigation.navigate("Account")}
-              title="Account"
-            />
-            <View style={styles.setTodoContainer}>
-              <View style={styles.form}>
-                <TextInput
-                  style={styles.input}
-                  placeholder="New task"
-                  onChangeText={(text: string) => setTodo(text)}
-                  value={todo}
-                  maxLength={60}
-                />
-              </View>
-              <View style={styles.timerContainer}>
-                <Text style={styles.timer}>{range + " mins"}</Text>
-                <Slider
-                  style={styles.slider}
-                  minimumValue={0}
-                  maximumValue={120}
-                  lowerLimit={0}
-                  upperLimit={120}
-                  value={25} // initial value
-                  step={5}
-                  minimumTrackTintColor="#085cac"
-                  maximumTrackTintColor="silver"
-                  tapToSeek={true}
-                  thumbTintColor="#085cac"
-                  onValueChange={(value) => {
-                    setRange(value);
-                    // console.log(value);
-                  }}
-                  onSlidingStart={() => setSliding("Sliding")}
-                  onSlidingComplete={() => setSliding("Inactive")}
-                ></Slider>
-              </View>
-              {/* <Text style={styles.timer}>{sliding}</Text> */}
-
-              <Button
-                onPress={addTodo}
-                title="Add task"
-                disabled={!canAddToDo()}
+          <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
+          <Button
+            onPress={() => navigation.navigate("Account")}
+            title="Account"
+          />
+          <View style={styles.setTodoContainer}>
+            <View style={styles.form}>
+              <TextInput
+                style={styles.input}
+                placeholder="New task"
+                onChangeText={(text: string) => setTodo(text)}
+                value={todo}
+                maxLength={60}
               />
             </View>
-            {todos.length == 0 && (
-              <View style={styles.blankflatList}>
-                <Text style={{ fontSize: 20, color: "white" }}>
-                  All tasks finished
-                </Text>
-              </View>
-            )}
-            {todos.length > 0 && (
-              <View
-                style={{
-                  borderRadius: 12,
-                  backgroundColor: "#ffdd25",
+            <View style={styles.timerContainer}>
+              <Text style={styles.timer}>{range + " mins"}</Text>
+              <Slider
+                style={styles.slider}
+                minimumValue={0}
+                maximumValue={120}
+                lowerLimit={0}
+                upperLimit={120}
+                value={25} // initial value
+                step={5}
+                minimumTrackTintColor="#085cac"
+                maximumTrackTintColor="silver"
+                tapToSeek={true}
+                thumbTintColor="#085cac"
+                onValueChange={(value) => {
+                  setRange(value);
+                  // console.log(value);
                 }}
-              >
-                <FlatList
-                  style={[
-                    styles.flatList,
-                    // { backgroundColor: isOpen ? "lightgray" : "#ffdd25" },
-                  ]}
-                  data={todos}
-                  renderItem={renderTodo}
-                  // renderItem={({ item }) => <Text>{item.title}</Text>}
-                  keyExtractor={(item: Todo) => item.id}
-                />
-              </View>
-            )}
+                onSlidingStart={() => setSliding("Sliding")}
+                onSlidingComplete={() => setSliding("Inactive")}
+              ></Slider>
+            </View>
+            {/* <Text style={styles.timer}>{sliding}</Text> */}
 
-            <BottomSheetModal
-              ref={bottomSheetModalRef}
-              index={0}
-              snapPoints={snapPoints}
-              backgroundStyle={{
-                borderRadius: 40,
-                shadowColor: "black",
-                shadowOffset: { width: 10, height: 3 },
-                shadowOpacity: 2,
-                shadowRadius: 20,
-              }}
-              onDismiss={() => setIsOpen(false)}
-            >
-              {/* <Text>{item.title + item.done + item.time}</Text> */}
-              <TripMenu item={item}></TripMenu>
-            </BottomSheetModal>
+            <Button
+              onPress={addTodo}
+              title="Add task"
+              disabled={!canAddToDo()}
+            />
           </View>
+          {todos.length == 0 && (
+            <View style={styles.blankflatList}>
+              <Text style={{ fontSize: 20, color: "white" }}>
+                All tasks finished
+              </Text>
+            </View>
+          )}
+          {todos.length > 0 && (
+            <View
+              style={{
+                borderRadius: 12,
+                backgroundColor: "#ffdd25",
+              }}
+            >
+              <FlatList
+                style={[
+                  styles.flatList,
+                  // { backgroundColor: isOpen ? "lightgray" : "#ffdd25" },
+                ]}
+                data={todos}
+                renderItem={renderTodo}
+                // renderItem={({ item }) => <Text>{item.title}</Text>}
+                keyExtractor={(item: Todo) => item.id}
+              />
+            </View>
+          )}
+
+          <BottomSheetModal
+            ref={bottomSheetModalRef}
+            index={0}
+            snapPoints={snapPoints}
+            backgroundStyle={{
+              borderRadius: 40,
+              shadowColor: "black",
+              shadowOffset: { width: 10, height: 3 },
+              shadowOpacity: 2,
+              shadowRadius: 20,
+            }}
+            onDismiss={() => setIsOpen(false)}
+          >
+            {/* <Text>{item.title + item.done + item.time}</Text> */}
+            <TripMenu item={item}></TripMenu>
+          </BottomSheetModal>
         </View>
       </TouchableWithoutFeedback>
     </BottomSheetModalProvider>
@@ -328,7 +326,7 @@ const styles = StyleSheet.create({
   container: {
     // marginHorizontal: 10,
     flex: 1,
-    paddingHorizontal: 10,
+    paddingHorizontal: 20,
     paddingVertical: 10,
     backgroundColor: "lightgray", // save my eyes
   },

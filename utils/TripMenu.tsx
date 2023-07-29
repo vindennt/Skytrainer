@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { Todo } from "../app/screens/Home";
+import DropdownComponent from "../utils/Dropdown";
 
 interface TodoItemProps {
   item: Todo;
@@ -13,14 +14,16 @@ const TodoItem: React.FC<TodoItemProps> = ({ item }) => {
       <View style={styles.taskContainer}>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.time}>{item.time + " minutes"}</Text>
-        <Text style={styles.time}>Commuter: Eddie</Text>
         {/* <Text style={styles.status}>{item.done ? "Done" : "Not Done"}</Text> */}
         {/* <Text style={styles.id}>{"ID: " + item.id}</Text> */}
+      </View>
+      <View style={{ width: "100%" }}>
+        <DropdownComponent />
       </View>
       <Button onPress={() => {}} title="Start" />
       {/* <Button onPress={() => {}} title="Edit" disabled={true} /> */}
       {/* TODO: implement character selection */}
-      <Button onPress={() => {}} title="Change Commuter" disabled={true} />
+      {/* <Button onPress={() => {}} title="Change Commuter" disabled={true} /> */}
       {/* TODO: Enable this button on release. Quick delete is useful */}
       <Button onPress={() => {}} title="Delete" disabled={true} />
     </View>

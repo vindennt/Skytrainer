@@ -6,6 +6,8 @@ import {
   ActivityIndicator,
   Button,
   KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FIREBASE_AUTH } from "../../api/FirebaseConfig";
@@ -79,33 +81,40 @@ const Login = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <KeyboardAvoidingView behavior="padding">
-        <TextInput
-          value={email}
-          style={styles.input}
-          placeholder="Email"
-          autoCapitalize="none"
-          onChangeText={(text) => setEmail(text)} // when typing, text  updated
-        ></TextInput>
-        <TextInput
-          value={password}
-          secureTextEntry={true}
-          style={styles.input}
-          placeholder="Password"
-          autoCapitalize="none"
-          onChangeText={(text) => setPassword(text)}
-        ></TextInput>
-        {loading ? (
-          <ActivityIndicator size="large" color="#000ff" />
-        ) : (
-          <>
-            <Button title="Login" onPress={signIn} />
-            <Button title="Create Account" onPress={signUp} />
-          </>
-        )}
-      </KeyboardAvoidingView>
-    </View>
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+      }}
+      accessible={false}
+    >
+      <View style={styles.container}>
+        <KeyboardAvoidingView behavior="padding">
+          <TextInput
+            value={email}
+            style={styles.input}
+            placeholder="Email"
+            autoCapitalize="none"
+            onChangeText={(text) => setEmail(text)} // when typing, text  updated
+          ></TextInput>
+          <TextInput
+            value={password}
+            secureTextEntry={true}
+            style={styles.input}
+            placeholder="Password"
+            autoCapitalize="none"
+            onChangeText={(text) => setPassword(text)}
+          ></TextInput>
+          {loading ? (
+            <ActivityIndicator size="large" color="#000ff" />
+          ) : (
+            <>
+              <Button title="Login" onPress={signIn} />
+              <Button title="Create Account" onPress={signUp} />
+            </>
+          )}
+        </KeyboardAvoidingView>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -116,6 +125,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     flex: 1,
     justifyContent: "center", // center login contents
+    // backgroundColor: "blue",
   },
   input: {
     marginVertical: 4,
