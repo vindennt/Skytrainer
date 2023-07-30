@@ -5,5 +5,5 @@ import { Todo } from "../app/screens/Home";
 // NavigationTypes.ts
 export type RootStackParamList = {
   Home: undefined;
-  Trip: { user: User; characterid: string | undefined; todo: Todo };
+  Trip: { user: User; characterid: string; todo: Todo; navigation: any };
 };

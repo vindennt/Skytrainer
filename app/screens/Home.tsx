@@ -15,6 +15,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
 } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import { IconButton } from "react-native-paper";
 import { useCallback } from "react";
 import * as React from "react";
@@ -41,6 +42,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
+// import { getDatabase, ref, child, get, onValue } from "firebase/database";
 import { Entypo } from "@expo/vector-icons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import Icon from "@mdi/react";
@@ -80,21 +82,27 @@ interface RouterProps {
 const Home = ({ navigation }: RouterProps) => {
   const [todos, setTodos] = useState<Todo[]>([]); // Displayed list of todos
   const [todo, setTodo] = useState(""); // wSet todo from user input
+  // Firebase/store
   const [user, setUser] = useState<User>();
   const auth = FIREBASE_AUTH;
-  // const [displayName, displayName] = useState("string");
   const [displayName, setDisplayName] = useState<string | null>("default");
   const [uid, setUid] = useState<string>("default");
+  const [money, setMoney] = useState(0);
+  // Ui compoennts
+  const isFocused = useIsFocused();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const [range, setRange] = useState(25);
+  const [sliding, setSliding] = useState("Inactive");
+  const [isOpen, setIsOpen] = useState(false); // Modal open state
+  // Will be a Todo that gets rendered in the modal
   const [item, setItem] = useState<Todo>({
     title: "default",
     done: false,
     id: "0",
     time: 0,
-  }); // Will be a ToDo that gets rendered in the modal
-  const [isOpen, setIsOpen] = useState(false); // Modal open state
-
+  });
   const [weather, setWeather] = useState<null | any>();
+
   const fetchWeather = async () => {
     const data = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${METRO_VANCOUVER_COORDINATES.latitude}&lon=${METRO_VANCOUVER_COORDINATES.longtidute}&appid=${OPENWEATHER_API_KEY}&units=metric`
@@ -107,8 +115,6 @@ const Home = ({ navigation }: RouterProps) => {
     navigation.setOptions({ headerTitle: () => <HomeHeader /> });
   };
 
-  const [range, setRange] = useState(25);
-  const [sliding, setSliding] = useState("Inactive");
   function HomeHeader() {
     return (
       <View style={styles.headerContainer}>
@@ -128,6 +134,7 @@ const Home = ({ navigation }: RouterProps) => {
       </View>
     );
   }
+
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -156,10 +163,15 @@ const Home = ({ navigation }: RouterProps) => {
           } as Todo); // necessary line to pass typecheck
         });
         setTodos(fetchedtodos); // set displayed list to fetched array
+
         // console.log("FINISHED UPDATING DISPLAYED TODOS");
+        return () => subscriber(); // Remove subscription to clear it
       },
     });
-    return () => subscriber(); // Remove subscription to clear it
+
+    // Fetch money
+
+    const moneyRef = doc(FIRESTORE_DB, `user/${uid}`); // refer to todos collection in firestore
   }, [auth, displayName, uid]);
 
   const canAddToDo = () => {
@@ -261,13 +273,13 @@ const Home = ({ navigation }: RouterProps) => {
         onPress={() => {
           Keyboard.dismiss();
         }}
-        accessible={false}
+        // accessible={false}
       >
         <View style={[styles.container]}>
           {/* <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
       <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
       <Button onPress={() => navigation.navigate("Team")} title="Team" /> */}
-          <Button onPress={() => navigation.navigate("Trip")} title="Trip" />
+
           <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
           <Button
             onPress={() => navigation.navigate("Account")}

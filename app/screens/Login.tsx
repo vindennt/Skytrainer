@@ -76,6 +76,8 @@ const Login = () => {
       uid: uid,
       email: email,
       displayName: email,
+      money: 0,
+      gems: 0,
     });
     // await addDoc(doc(FIRESTORE_DB, "todos", uid, "todos"));
   };

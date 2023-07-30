@@ -2,6 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 // import { useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
+import { useIsFocused } from "@react-navigation/native";
 import { Todo } from "../app/screens/Home";
 // import DropdownComponent from "../utils/Dropdown";
 import DropDown from "react-native-paper-dropdown";
@@ -27,15 +28,15 @@ export type Character = {
 export const characterList: Character[] = [
   {
     label: "Stanley",
-    value: "Stanley",
+    value: "001",
   },
   {
     label: "Eddie",
-    value: "Eddie",
+    value: "002",
   },
   {
     label: "Nathan",
-    value: "Nathan",
+    value: "003",
   },
 ];
 
@@ -58,10 +59,17 @@ const TripMenu: React.FC<TripMenuProps> = ({
 }) => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [character, setCharacter] = useState<string>();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    setCharacter(character);
-  }, [character]);
+    // Recheck todos. Delete ones that just finished
+    if (isFocused) {
+      // If item is done (just came from Trip), delete it
+      if (item.done) {
+        deleteTodo(item);
+      }
+    }
+  }, [isFocused, item]);
 
   const deleteTodo = async (todo: Todo) => {
     console.log("deleting todo: " + todo.title);
@@ -82,10 +90,12 @@ const TripMenu: React.FC<TripMenuProps> = ({
         " for user " +
         user?.displayName
     );
+
     navigation.navigate("Trip", {
       user: user,
       characterid: character,
       todo: todo,
+      navigation: navigation,
     });
   };
 
