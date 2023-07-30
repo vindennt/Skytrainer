@@ -8,6 +8,7 @@ import Account from "./app/screens/Account";
 import Gacha from "./app/screens/Gacha";
 import Shop from "./app/screens/Shop";
 import Team from "./app/screens/Team";
+import Trip from "./app/screens/Trip";
 import { SafeAreaView } from "react-native";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
@@ -79,6 +80,19 @@ function InsideLayout() {
       <InsideStack.Screen
         name="Team"
         component={Team}
+        options={{
+          headerStyle: {
+            backgroundColor: "#085cac",
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold",
+          },
+        }}
+      />
+      <InsideStack.Screen
+        name="Trip"
+        component={Trip}
         options={{
           headerStyle: {
             backgroundColor: "#085cac",

@@ -4,37 +4,17 @@ import { useState } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { Todo } from "../app/screens/Home";
 // import DropdownComponent from "../utils/Dropdown";
-import {
-  Appbar,
-  DefaultTheme,
-  Provider,
-  Surface,
-  ThemeProvider,
-} from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
 import { User } from "firebase/auth";
 import { FIRESTORE_DB } from "../api/FirebaseConfig";
-import {
-  addDoc,
-  arrayUnion,
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
-import {
-  BottomSheetModal,
-  BottomSheetModalProvider,
-  BottomSheetBackdrop,
-} from "@gorhom/bottom-sheet";
+import { deleteDoc, doc } from "firebase/firestore";
 
 interface TripMenuProps {
   item: Todo;
-  startTrip: (todo: Todo, character: Character | undefined) => void; // Function prop to start the trip
+  //   startTrip: (todo: Todo, character: Character | undefined) => void; // Function prop to start the trip
   user: User | undefined; // "user" prop of type "User"
   modalCloseMethod: () => void;
+  navigation: any;
 }
 
 // Dropdown menu prop only takes this form of data
@@ -60,10 +40,11 @@ const characterList: Character[] = [
 ];
 
 const TodoItem: React.FC<TripMenuProps> = ({
-  startTrip,
+  //   startTrip,
   user,
   item,
   modalCloseMethod,
+  navigation,
 }) => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [character, setCharacter] = useState<Character>();
@@ -75,6 +56,13 @@ const TodoItem: React.FC<TripMenuProps> = ({
       deleteDoc(ref);
       modalCloseMethod();
     }
+  };
+
+  const startTrip = (todo: Todo, character: Character | undefined): void => {
+    console.log(
+      "Trip for todo " + todo.title + " started with character " + character
+    );
+    navigation.navigate("Trip");
   };
 
   return (
@@ -117,6 +105,7 @@ const TodoItem: React.FC<TripMenuProps> = ({
           flexDirection: "row",
           width: "100%",
           justifyContent: "space-evenly",
+          margin: 10,
           //   paddingHorizontal: 50,
         }}
       >
@@ -139,7 +128,7 @@ const TodoItem: React.FC<TripMenuProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    margin: 8,
+    marginHorizontal: 8,
     alignItems: "center",
   },
   taskContainer: {
@@ -168,6 +157,9 @@ const styles = StyleSheet.create({
   },
   overview: {
     fontSize: 20,
+  },
+  button: {
+    margin: 20,
   },
 });
 

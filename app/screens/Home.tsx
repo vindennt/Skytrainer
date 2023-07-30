@@ -71,15 +71,15 @@ interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
-const startTrip = (todo: Todo, character: Character | undefined): void => {
-  console.log(
-    "Trip for todo " + todo.title + " started with character " + character
-  );
-};
-
 const setTimer = () => {
   return;
 };
+
+// const startTrip = (todo: Todo, character: Character | undefined): void => {
+//   console.log(
+//     "Trip for todo " + todo.title + " started with character " + character
+//   );
+// };
 
 const Home = ({ navigation }: RouterProps) => {
   const [todos, setTodos] = useState<Todo[]>([]); // Displayed list of todos
@@ -271,6 +271,7 @@ const Home = ({ navigation }: RouterProps) => {
           {/* <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
       <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
       <Button onPress={() => navigation.navigate("Team")} title="Team" /> */}
+          <Button onPress={() => navigation.navigate("Trip")} title="Trip" />
           <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
           <Button
             onPress={() => navigation.navigate("Account")}
@@ -366,14 +367,10 @@ const Home = ({ navigation }: RouterProps) => {
             // snapPoints={snapPoints}
             bottomInset={46}
             detached={true}
-            snapPoints={["35%"]}
+            snapPoints={["36%"]}
             backdropComponent={renderBackdrop}
             backgroundStyle={{
               borderRadius: 40,
-              shadowColor: "black",
-              shadowOffset: { width: 10, height: 3 },
-              shadowOpacity: 0.2,
-              shadowRadius: 20,
               marginHorizontal: 20,
             }}
             onDismiss={() => setIsOpen(false)}
@@ -382,8 +379,9 @@ const Home = ({ navigation }: RouterProps) => {
             <TripMenu
               item={item}
               user={user}
-              startTrip={startTrip}
+              // startTrip={startTrip}
               modalCloseMethod={closeModal}
+              navigation={navigation}
             ></TripMenu>
           </BottomSheetModal>
         </View>
