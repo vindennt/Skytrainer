@@ -1,4 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  setDoc,
+  getDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { View, Text, StyleSheet } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../Types/NavigationTypes";
@@ -19,6 +31,38 @@ const CharacterTable: StringToStringDictionary = {
 const Trip: React.FC = () => {
   const route = useRoute<TripRouteProp>();
   const { user, characterid, todo, navigation } = route.params;
+  const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
+  const rewardMoney = 5;
+  const rewardGems = 2;
+  var money = -1;
+  var gems = -1;
+
+  const getSnapshot = async () => {
+    const docSnap = await getDoc(userRef);
+    if (docSnap.exists()) {
+      console.log("In-trip:", docSnap.data());
+      console.log("money: " + docSnap.data().money);
+      console.log("gems: " + docSnap.data().gems);
+      money = docSnap.data().money;
+      gems = docSnap.data().gems;
+    } else {
+      // docSnap.data() will be undefined in this case
+      console.log("No such document!");
+    }
+  };
+
+  const updateRewards = async () => {
+    await getSnapshot();
+    // Set the "capital" field of the city 'DC'
+    const newMoney: number = money + rewardMoney;
+    const newGems: number = gems + rewardGems;
+    console.log("new money should be: " + newMoney);
+    console.log("new gems should be: " + newGems);
+    await updateDoc(userRef, {
+      money: newMoney,
+      gems: newGems,
+    });
+  };
 
   // Log occurence
   console.log(
@@ -48,11 +92,15 @@ const Trip: React.FC = () => {
       <Text style={styles.text}>Waterfront to Richmond-Brighouse</Text>
       <Text style={styles.text}>Time elapsed: {todo.time} mins</Text>
       {/* TODO: inject  calculated  rewards */}
-      <Text style={styles.text}>Rewards: 10000g</Text>
+      <Text style={styles.text}>
+        Rewards: ${rewardMoney}, {rewardGems} gems
+      </Text>
       <Button
         icon="chevron-left"
         mode="outlined"
+        textColor="royalblue"
         onPress={() => {
+          updateRewards();
           navigation.goBack();
         }}
         style={styles.button}

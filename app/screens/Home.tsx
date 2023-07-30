@@ -138,6 +138,7 @@ const Home = ({ navigation }: RouterProps) => {
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
+      fetchWeather();
       if (user) {
         setUser(user);
         setUid(user.uid);
@@ -147,7 +148,6 @@ const Home = ({ navigation }: RouterProps) => {
         );
       }
     });
-    fetchWeather();
 
     // Fetch Todo list
     const todoRef = collection(FIRESTORE_DB, `todos/${uid}/todos`); // refer to todos collection in firestore
@@ -178,6 +178,7 @@ const Home = ({ navigation }: RouterProps) => {
       setMoney(userData?.money);
       setGems(userData?.gems);
     });
+    return () => unsub();
   }, [auth, displayName, uid]);
 
   const canAddToDo = () => {
