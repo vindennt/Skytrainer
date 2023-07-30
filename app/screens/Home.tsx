@@ -95,7 +95,14 @@ const Home = ({ navigation }: RouterProps) => {
   const [range, setRange] = useState(25);
   const [sliding, setSliding] = useState("Inactive");
   const [isOpen, setIsOpen] = useState(false); // Modal open state
-  // Will be a Todo that gets rendered in the modal
+  const slider = {
+    min: 0,
+    max: 100,
+    proportion: 120,
+    visualStep: 1,
+    step: 5,
+    initialValue: 21,
+  };
   const [item, setItem] = useState<Todo>({
     title: "default",
     done: false,
@@ -173,13 +180,13 @@ const Home = ({ navigation }: RouterProps) => {
     // Fetch money and gems
     const userRef = doc(FIRESTORE_DB, `users/${uid}`);
     const unsub = onSnapshot(userRef, (doc) => {
-      console.log("User info: ", doc.data());
+      console.log("Money fetch user: ", doc.data());
       const userData = doc.data();
       setMoney(userData?.money);
       setGems(userData?.gems);
     });
     return () => unsub();
-  }, [auth, displayName, uid]);
+  }, [auth, displayName, uid, money]);
 
   const canAddToDo = () => {
     if (todo === "" || range === 0) {
@@ -341,18 +348,22 @@ const Home = ({ navigation }: RouterProps) => {
               <Text style={styles.timer}>{range + " mins"}</Text>
               <Slider
                 style={styles.slider}
-                minimumValue={0}
-                maximumValue={120}
-                lowerLimit={0}
-                upperLimit={120}
-                value={25} // initial value
-                step={5}
+                minimumValue={slider.min}
+                maximumValue={slider.max}
+                lowerLimit={slider.min}
+                upperLimit={slider.max}
+                value={slider.initialValue} // initial value
+                step={slider.visualStep}
                 minimumTrackTintColor="#085cac"
                 maximumTrackTintColor="silver"
                 tapToSeek={true}
                 thumbTintColor="#085cac"
                 onValueChange={(value) => {
-                  setRange(value);
+                  const newValue =
+                    Math.round(
+                      ((value / slider.max) * slider.proportion) / slider.step
+                    ) * slider.step;
+                  setRange(newValue);
                   // console.log(value);
                 }}
                 onSlidingStart={() => setSliding("Sliding")}

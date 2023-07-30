@@ -106,6 +106,7 @@ function InsideLayout() {
           headerTitleStyle: {
             fontWeight: "bold",
           },
+          headerBackVisible: false,
         }}
       />
     </InsideStack.Navigator>

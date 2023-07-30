@@ -32,6 +32,7 @@ const Trip: React.FC = () => {
   const route = useRoute<TripRouteProp>();
   const { user, characterid, todo, navigation } = route.params;
   const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
+  // TODO: implement calculation of rewards
   const rewardMoney = 5;
   const rewardGems = 2;
   var money = -1;
@@ -91,7 +92,6 @@ const Trip: React.FC = () => {
       </Text>
       <Text style={styles.text}>Waterfront to Richmond-Brighouse</Text>
       <Text style={styles.text}>Time elapsed: {todo.time} mins</Text>
-      {/* TODO: inject  calculated  rewards */}
       <Text style={styles.text}>
         Rewards: ${rewardMoney}, {rewardGems} gems
       </Text>

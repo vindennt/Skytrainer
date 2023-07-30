@@ -102,10 +102,6 @@ const TripMenu: React.FC<TripMenuProps> = ({
   return (
     <View style={styles.container}>
       {/* <Text style={styles.overview}>Task Details</Text> */}
-      <View style={styles.taskContainer}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.time}>{item.time + " minutes"}</Text>
-      </View>
       <View
         style={{
           width: "80%",
@@ -122,7 +118,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
           list={characterList}
           activeColor="blue"
           dropDownContainerMaxHeight={200}
-          dropDownStyle={{ top: 300 }}
+          dropDownStyle={{ top: 400 }}
           dropDownItemStyle={{ backgroundColor: "white" }}
           dropDownItemSelectedStyle={{ backgroundColor: "white" }}
           dropDownItemTextStyle={{ backgroundColor: "white" }}
@@ -132,6 +128,10 @@ const TripMenu: React.FC<TripMenuProps> = ({
             },
           }}
         />
+      </View>
+      <View style={styles.taskContainer}>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.time}>{item.time + " minutes"}</Text>
       </View>
       <View
         style={{
