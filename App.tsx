@@ -18,6 +18,11 @@ import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 
 import { default as theme } from "./theme.json";
 
+export type RootStackParamList = {
+  Home: undefined;
+  Trip: { name: string }; // Specify the type of the 'name' prop for NewScreen
+};
+
 const Stack = createNativeStackNavigator(); // create nav stack
 const InsideStack = createNativeStackNavigator();
 

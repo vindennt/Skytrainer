@@ -39,7 +39,7 @@ const characterList: Character[] = [
   },
 ];
 
-const TodoItem: React.FC<TripMenuProps> = ({
+const TripMenu: React.FC<TripMenuProps> = ({
   //   startTrip,
   user,
   item,
@@ -59,10 +59,16 @@ const TodoItem: React.FC<TripMenuProps> = ({
   };
 
   const startTrip = (todo: Todo, character: Character | undefined): void => {
+    // const username: string | null | undefined = user?.displayName;
     console.log(
-      "Trip for todo " + todo.title + " started with character " + character
+      "Trip for todo " +
+        todo.title +
+        " started with character " +
+        character +
+        " for user " +
+        user?.displayName
     );
-    navigation.navigate("Trip");
+    navigation.navigate("Trip", { name: user?.displayName });
   };
 
   return (
@@ -71,8 +77,6 @@ const TodoItem: React.FC<TripMenuProps> = ({
       <View style={styles.taskContainer}>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.time}>{item.time + " minutes"}</Text>
-        {/* TODO: Temporary indicate of user */}
-        <Text>User: {user?.displayName}</Text>
       </View>
       <View
         style={{
@@ -90,6 +94,7 @@ const TodoItem: React.FC<TripMenuProps> = ({
           list={characterList}
           activeColor="blue"
           dropDownContainerMaxHeight={200}
+          dropDownStyle={{ top: 300 }}
           dropDownItemStyle={{ backgroundColor: "white" }}
           dropDownItemSelectedStyle={{ backgroundColor: "white" }}
           dropDownItemTextStyle={{ backgroundColor: "white" }}
@@ -163,4 +168,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TodoItem;
+export default TripMenu;
