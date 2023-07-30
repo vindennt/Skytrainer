@@ -52,6 +52,7 @@ import Animated, {
   interpolate,
   useAnimatedStyle,
 } from "react-native-reanimated";
+import { Character } from "../../utils/TripMenu";
 
 const METRO_VANCOUVER_COORDINATES = {
   latitude: 49.232937,
@@ -70,9 +71,9 @@ interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
-const startTrip = (todo: Todo, commuter: string): void => {
+const startTrip = (todo: Todo, character: Character | undefined): void => {
   console.log(
-    "Trip for todo " + todo.title + " started with commuter " + commuter
+    "Trip for todo " + todo.title + " started with character " + character
   );
 };
 
@@ -213,7 +214,7 @@ const Home = ({ navigation }: RouterProps) => {
     return (
       <View style={styles.todosContainer}>
         <TouchableOpacity
-          onPress={(item) => handlePresentModal()}
+          onPress={() => handlePresentModal()}
           style={styles.todo}
         >
           <Text style={styles.todosText}>
@@ -253,6 +254,10 @@ const Home = ({ navigation }: RouterProps) => {
     ),
     []
   );
+
+  const closeModal = () => {
+    bottomSheetModalRef?.current?.close();
+  };
 
   return (
     <BottomSheetModalProvider>
@@ -374,7 +379,12 @@ const Home = ({ navigation }: RouterProps) => {
             onDismiss={() => setIsOpen(false)}
           >
             {/* <Text>{item.title + item.done + item.time}</Text> */}
-            <TripMenu item={item} user={user} startTrip={startTrip}></TripMenu>
+            <TripMenu
+              item={item}
+              user={user}
+              startTrip={startTrip}
+              modalCloseMethod={closeModal}
+            ></TripMenu>
           </BottomSheetModal>
         </View>
       </TouchableWithoutFeedback>

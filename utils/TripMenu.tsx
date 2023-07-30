@@ -13,39 +13,77 @@ import {
 } from "react-native-paper";
 import DropDown from "react-native-paper-dropdown";
 import { User } from "firebase/auth";
+import { FIRESTORE_DB } from "../api/FirebaseConfig";
+import {
+  addDoc,
+  arrayUnion,
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+  BottomSheetBackdrop,
+} from "@gorhom/bottom-sheet";
 
 interface TripMenuProps {
   item: Todo;
-  startTrip: (todo: Todo, commuter: string) => void; // Function prop to start the trip
+  startTrip: (todo: Todo, character: Character | undefined) => void; // Function prop to start the trip
   user: User | undefined; // "user" prop of type "User"
+  modalCloseMethod: () => void;
+}
+
+// Dropdown menu prop only takes this form of data
+export interface Character {
+  label: string; // display name
+  value: string; // character id
 }
 
 // const controlSelectState = useSelectState();
-const commuterList = [
+const characterList: Character[] = [
   {
     label: "Stanley",
-    value: "1",
+    value: "Stanley",
   },
   {
     label: "Eddie",
-    value: "2",
+    value: "Eddie",
   },
   {
     label: "Nathan",
-    value: "3",
+    value: "Nathan",
   },
 ];
 
-const TodoItem: React.FC<TripMenuProps> = ({ startTrip, user, item }) => {
+const TodoItem: React.FC<TripMenuProps> = ({
+  startTrip,
+  user,
+  item,
+  modalCloseMethod,
+}) => {
   const [showDropDown, setShowDropDown] = useState(false);
-  const [commuter, setCommuter] = useState<string>();
+  const [character, setCharacter] = useState<Character>();
+
+  const deleteTodo = async (todo: Todo) => {
+    console.log("deleting todo: " + todo.title);
+    if (user) {
+      const ref = doc(FIRESTORE_DB, `todos/${user?.uid}/todos/${item.id}`);
+      deleteDoc(ref);
+      modalCloseMethod();
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* <Text style={styles.overview}>Task Details</Text> */}
       <View style={styles.taskContainer}>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.time}>{item.time + " minutes"}</Text>
-        {/* TODO: Temporary indictors of user */}
+        {/* TODO: Temporary indicate of user */}
         <Text>User: {user?.displayName}</Text>
       </View>
       <View
@@ -54,14 +92,14 @@ const TodoItem: React.FC<TripMenuProps> = ({ startTrip, user, item }) => {
         }}
       >
         <DropDown
-          label={"Commuter"}
+          label={"Character"}
           mode={"outlined"}
           visible={showDropDown}
           showDropDown={() => setShowDropDown(true)}
           onDismiss={() => setShowDropDown(false)}
-          value={commuter}
-          setValue={setCommuter}
-          list={commuterList}
+          value={character}
+          setValue={setCharacter}
+          list={characterList}
           activeColor="blue"
           dropDownContainerMaxHeight={200}
           dropDownItemStyle={{ backgroundColor: "white" }}
@@ -85,13 +123,14 @@ const TodoItem: React.FC<TripMenuProps> = ({ startTrip, user, item }) => {
         {/* <Button onPress={() => {}} title="Edit" disabled={true} /> */}
 
         {/* TODO: Enable this button on release. Quick delete is useful */}
-        {/* <Button onPress={() => {}} title="Delete" disabled={true} /> */}
+        <Button onPress={() => deleteTodo(item)} title="Delete" />
         <Button
           onPress={() => {
-            startTrip(item, commuter);
+            console.log("starting trip for " + user?.uid);
+            startTrip(item, character);
           }}
           title="Start"
-          disabled={!commuter}
+          disabled={!character}
         />
       </View>
     </View>
