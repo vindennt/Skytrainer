@@ -6,7 +6,7 @@ import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
 import {
   View,
   Text,
-  Button,
+  Button as Button,
   StyleSheet,
   TextInput,
   FlatList,
@@ -16,7 +16,7 @@ import {
   Keyboard,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
-import { IconButton } from "react-native-paper";
+import { IconButton, Button as PaperButton } from "react-native-paper";
 import { useCallback } from "react";
 import * as React from "react";
 import { useEffect, useState, useRef } from "react";
@@ -88,6 +88,7 @@ const Home = ({ navigation }: RouterProps) => {
   const [displayName, setDisplayName] = useState<string | null>("default");
   const [uid, setUid] = useState<string>("default");
   const [money, setMoney] = useState(0);
+  const [gems, setGems] = useState(0);
   // Ui compoennts
   const isFocused = useIsFocused();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -169,9 +170,14 @@ const Home = ({ navigation }: RouterProps) => {
       },
     });
 
-    // Fetch money
-
-    const moneyRef = doc(FIRESTORE_DB, `user/${uid}`); // refer to todos collection in firestore
+    // Fetch money and gems
+    const userRef = doc(FIRESTORE_DB, `users/${uid}`);
+    const unsub = onSnapshot(userRef, (doc) => {
+      console.log("User info: ", doc.data());
+      const userData = doc.data();
+      setMoney(userData?.money);
+      setGems(userData?.gems);
+    });
   }, [auth, displayName, uid]);
 
   const canAddToDo = () => {
@@ -279,6 +285,32 @@ const Home = ({ navigation }: RouterProps) => {
           {/* <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
       <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
       <Button onPress={() => navigation.navigate("Team")} title="Team" /> */}
+          <View style={styles.currencyContainer}>
+            <PaperButton
+              icon="cash-multiple"
+              mode="outlined"
+              textColor="gray"
+              onPress={() => {
+                navigation.goBack();
+              }}
+              style={styles.button}
+              labelStyle={{ fontSize: 22 }} // icon size
+            >
+              <Text style={styles.text}>{money}</Text>
+            </PaperButton>
+            <PaperButton
+              icon="diamond-stone"
+              mode="outlined"
+              textColor="royalblue"
+              onPress={() => {
+                navigation.goBack();
+              }}
+              style={styles.button}
+              labelStyle={{ fontSize: 22 }} // icon size
+            >
+              <Text style={styles.text}>{gems}</Text>
+            </PaperButton>
+          </View>
 
           <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
           <Button
@@ -420,6 +452,9 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     // width: "50%",
   },
+  text: {
+    fontSize: 16,
+  },
   input: {
     flex: 1,
     height: 50,
@@ -520,5 +555,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     justifyContent: "center",
+  },
+  currencyContainer: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
   },
 });
