@@ -10,10 +10,10 @@ import { findViableTrips } from "../utils/TripFinder";
 
 // (4, 7) -3- (8, 7) -5- (42, 7) -68- (140,80)
 const largeGraph = new Graph();
-const stationFourSeven = newStation(4, 7);
-const stationEightSeven = newStation(8, 7);
-const stationFourtyTwoSeven = newStation(42, 7);
-const stationHundredFourtySeven = newStation(140, 7);
+const stationFourSeven = newStation("4", "7");
+const stationEightSeven = newStation("8", "7");
+const stationFourtyTwoSeven = newStation("42", "7");
+const stationHundredFourtySeven = newStation("140", "7");
 largeGraph.addEdge(stationFourSeven, stationEightSeven, 3);
 largeGraph.addEdge(stationEightSeven, stationFourtyTwoSeven, 5);
 largeGraph.addEdge(stationFourtyTwoSeven, stationHundredFourtySeven, 68);
@@ -84,13 +84,13 @@ test("findViableTrips; return two paths, middle start, two way", () => {
 //            (2, 2) -3- (11, 3) -5- (12, 3) -10- (13, 3)
 // At transfer station (2, 2), ensure that lines 2 and 3 are explored in all directions
 const transferGraph = new Graph();
-const stnOneTwo = newStation(1, 2);
-const stnTwoTwo = newStation(2, 2, true);
-const stnThreeTwo = newStation(3, 2);
-const stnFourTwo = newStation(4, 2);
-const stnElevenThree = newStation(11, 3);
-const stnTwelveThree = newStation(12, 3);
-const stnThirtnThree = newStation(13, 3);
+const stnOneTwo = newStation("1", "2");
+const stnTwoTwo = newStation("2", "2", true);
+const stnThreeTwo = newStation("3", "2");
+const stnFourTwo = newStation("4", "2");
+const stnElevenThree = newStation("11", "3");
+const stnTwelveThree = newStation("12", "3");
+const stnThirtnThree = newStation("13", "3");
 transferGraph.addEdge(stnOneTwo, stnTwoTwo, 5);
 transferGraph.addEdge(stnTwoTwo, stnThreeTwo, 6);
 transferGraph.addEdge(stnThreeTwo, stnFourTwo, 3);
@@ -125,13 +125,13 @@ test("findViableTrips; transfer stations have multiple paths explored", () => {
 
 test("findViableTrips; if transfer station loop exists, traverse onto it", () => {
   const loopGraph = new Graph();
-  const stnOneTwo = newStation(1, 2);
-  const stnTwoTwo = newStation(2, 2, true);
-  const stnThreeTwo = newStation(3, 2);
-  const stnFourTwo = newStation(4, 2);
-  const stnElevenThree = newStation(11, 3);
-  const stnTwelveThree = newStation(12, 3);
-  const stnThirtnThreeT = newStation(13, 3, true);
+  const stnOneTwo = newStation("1", "2");
+  const stnTwoTwo = newStation("2", "2", true);
+  const stnThreeTwo = newStation("3", "2");
+  const stnFourTwo = newStation("4", "2");
+  const stnElevenThree = newStation("11", "3");
+  const stnTwelveThree = newStation("12", "3");
+  const stnThirtnThreeT = newStation("13", "3", true);
   loopGraph.addEdge(stnOneTwo, stnTwoTwo, 5);
   loopGraph.addEdge(stnTwoTwo, stnThreeTwo, 6);
   loopGraph.addEdge(stnThreeTwo, stnFourTwo, 3);
@@ -166,13 +166,13 @@ test("findViableTrips; if transfer station loop exists, traverse onto it", () =>
 // (2, 2) and (13, 3) allow for a loop that satisfies further trip conditions
 test("findViableTrips; loop back to same line", () => {
   const loopGraph = new Graph();
-  const stnOneTwo = newStation(1, 2);
-  const stnTwoTwo = newStation(2, 2, true);
-  const stnThreeTwo = newStation(3, 2);
-  const stnFourTwo = newStation(4, 2);
-  const stnElevenThree = newStation(11, 3);
-  const stnTwelveThree = newStation(12, 3);
-  const stnThirtnThreeT = newStation(13, 3, true);
+  const stnOneTwo = newStation("1", "2");
+  const stnTwoTwo = newStation("2", "2", true);
+  const stnThreeTwo = newStation("3", "2");
+  const stnFourTwo = newStation("4", "2");
+  const stnElevenThree = newStation("11", "3");
+  const stnTwelveThree = newStation("12", "3");
+  const stnThirtnThreeT = newStation("13", "3", true);
   loopGraph.addEdge(stnOneTwo, stnTwoTwo, 5);
   loopGraph.addEdge(stnTwoTwo, stnThreeTwo, 6);
   loopGraph.addEdge(stnThreeTwo, stnFourTwo, 3);

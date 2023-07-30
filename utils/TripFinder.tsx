@@ -8,11 +8,15 @@ import { Station, Edge, Graph, newStation, newEdge } from "./Graph";
 // start: starting station
 // desiredLength: desired trip length.
 // TODO: algorithm that ensures there is a findable path for every reasonable timer length (5-120)
+
+// const SKYTRAIN_GRAPH: Graph = ;
+
 export function findViableTrips(
   graph: Graph,
   start: Station,
   desiredLength: number
 ): Station[][] {
+  // const graph = SKYTRAIN_GRAPH;
   const paths: Station[][] = [];
 
   // Helper to run DFS and search for paths, adding viable to paths

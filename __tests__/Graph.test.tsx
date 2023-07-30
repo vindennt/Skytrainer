@@ -7,31 +7,34 @@ test("TEMPLATE", () => {
 });
 //
 
-const testStationZeroOne: Station = newStation(0, 1);
+const testStationZeroOne: Station = newStation("0", "1");
 test("newStation; station instantiation", () => {
-  expect(testStationZeroOne?.id).toBe(0);
-  expect(testStationZeroOne.lineid).toBe(1);
+  expect(testStationZeroOne?.id).toBe("0");
+  expect(testStationZeroOne.lineid).toBe("1");
 });
 
-const testStationNegativeOne: Station = newStation(-2, 4);
-test("newStation; station instantiation if id is out of bounds", () => {
-  expect(testStationNegativeOne?.id).toBe(0);
-  expect(testStationNegativeOne.lineid).toBe(4);
+test("newStation; station instantiation iis invalid id", () => {
+  expect(() => newStation("-0", "L001")).toThrow(
+    new Error("Invalid id or lineid")
+  );
+  expect(() => newStation("0x", "L001")).toThrow("Invalid id or lineid");
+  expect(() => newStation("", "L001")).toThrow("Invalid id or lineid");
 });
 
-const testStationTransfer: Station = newStation(2, 4, true);
-const testStationNonTransfer: Station = newStation(2, 4, false);
-const testStationUnspecifiedTransfer: Station = newStation(2, 4);
+const testStationTransfer: Station = newStation("2", "4", true);
+const testStationNonTransfer: Station = newStation("2", "4", false);
+const testStationUnspecifiedTransfer: Station = newStation("2", "4");
 test("newStation; station instantiation with transfer specified", () => {
   expect(testStationTransfer.transfer).toBe(true);
   expect(testStationNonTransfer.transfer).toBe(false);
   expect(testStationUnspecifiedTransfer.transfer).toBe(false);
 });
 
-const testStationTwoNegativeOne: Station = newStation(2, -1);
-test("newStation; station instantiation if lineid is out of bounds", () => {
-  expect(testStationTwoNegativeOne?.id).toBe(2);
-  expect(testStationTwoNegativeOne.lineid).toBe(0);
+test("newStation; station instantiation if lineid is invalid", () => {
+  expect(() => newStation("001", "L001")).toThrow("Invalid id or lineid");
+  expect(() => newStation("002", "da-r3")).toThrow("Invalid id or lineid");
+  expect(() => newStation("002", "-001")).toThrow("Invalid id or lineid");
+  expect(() => newStation("003", "")).toThrow("Invalid id or lineid");
 });
 
 const testEdgeZeroFive: Edge = newEdge(testStationZeroOne, 5);
@@ -40,22 +43,20 @@ test("newEdge; edge instantiation", () => {
   expect(testEdgeZeroFive.time).toBe(5);
 });
 
-const testEdgeZeroNegative: Edge = newEdge(testStationZeroOne, -10);
 test("newEdge; edge instantiation with negative time", () => {
-  expect(testEdgeZeroNegative.station).toStrictEqual(testStationZeroOne);
-  expect(testEdgeZeroNegative.time).toBe(1);
+  expect(() => newEdge(testStationZeroOne, -10)).toThrow("Invalid time");
 });
 
 const graph = new Graph();
 const testGraph = new Map<Station, Edge[]>();
-const testStationOneThree: Station = newStation(1, 3);
+const testStationOneThree: Station = newStation("1", "3");
 test("addStation; Adding Station", () => {
   graph.addStation(testStationOneThree);
   testGraph.set(testStationOneThree, []);
   expect(graph.getGraph()).toStrictEqual(testGraph);
 });
 
-const testStationTWoFour: Station = newStation(2, 4);
+const testStationTWoFour: Station = newStation("2", "4");
 const graphRepeat = new Graph();
 const testGraphRepeat = new Map<Station, Edge[]>();
 test("addStation; Adding Same Station repeated shouldnt add duplicate", () => {
@@ -65,8 +66,8 @@ test("addStation; Adding Same Station repeated shouldnt add duplicate", () => {
   expect(graphRepeat.getGraph()).toStrictEqual(testGraphRepeat);
 });
 
-const testStationTWoThree: Station = newStation(2, 3);
-const testStationTWoThreeDupe: Station = newStation(2, 3);
+const testStationTWoThree: Station = newStation("2", "3");
+const testStationTWoThreeDupe: Station = newStation("2", "3");
 const graphDupe = new Graph();
 const testGraphDupe = new Map<Station, Edge[]>();
 test("addStation; Adding Station same values should be blocked", () => {
@@ -94,10 +95,10 @@ test("addEdge; Bidirectional edges added", () => {
 
 // (4, 7) -3- (8, 7) -5- (42, 0) -68- (140,80)
 const largeGraph = new Graph();
-const stationFourSeven = newStation(4, 7);
-const stationEightSeven = newStation(8, 7);
-const stationFourtyTwoZero = newStation(42, 0);
-const stationHundredFourtyEighty = newStation(140, 80);
+const stationFourSeven = newStation("4", "7");
+const stationEightSeven = newStation("8", "7");
+const stationFourtyTwoZero = newStation("42", "0");
+const stationHundredFourtyEighty = newStation("140", "80");
 const resultFourSeven = [newEdge(stationEightSeven, 3)];
 const resultEightSeven = [
   newEdge(stationFourSeven, 3),

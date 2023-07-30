@@ -15,6 +15,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../Types/NavigationTypes";
 import { Button } from "react-native-paper";
+import { findViableTrips } from "../../utils/TripFinder";
 
 type TripRouteProp = RouteProp<RootStackParamList, "Trip">;
 
@@ -32,6 +33,8 @@ const Trip: React.FC = () => {
   const route = useRoute<TripRouteProp>();
   const { user, characterid, todo, navigation } = route.params;
   const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
+  // TODO: find viable trip and display a random one
+  const viableTrips = findViableTrips(characterid, todo.time);
   // TODO: implement calculation of rewards
   const rewardMoney = 5;
   const rewardGems = 2;

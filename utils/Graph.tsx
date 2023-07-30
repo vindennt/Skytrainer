@@ -1,33 +1,33 @@
+type CustomID = string & { __custom_id__: never };
+const isValidID = (id: string): id is CustomID =>
+  /^[0-9]+$/.test(id) && id.length > 0; // regex: id can contain only numbers
+
 export type Station = {
-  id: number;
-  lineid: number;
+  id: CustomID;
+  lineid: CustomID;
   transfer: boolean; // is a transfer station? ; Whether a station is adjacent to a station from a different line
 };
 type Time = number;
 
-export function newStation(id: number, lineid: number): Station;
+export function newStation(id: string, lineid: string): Station;
 export function newStation(
-  id: number,
-  lineid: number,
+  id: string,
+  lineid: string,
   transfer: boolean
 ): Station;
 
 export function newStation(
-  id: number,
-  lineid: number,
+  id: string,
+  lineid: string,
   transfer?: boolean
 ): Station {
-  if (id < 0) {
-    console.log("Cannot have negative id. Defaulting to 0");
-    id = 0;
+  if (!isValidID(id) || !isValidID(lineid)) {
+    throw new Error("Invalid id or lineid"); // Handle invalid input, you can also return a default or null station object here if needed.
   }
-  if (lineid < 0) {
-    console.log("Cannot have negative line id. Defaulting to 0");
-    lineid = 0;
-  }
+
   return {
-    id: id,
-    lineid: lineid,
+    id,
+    lineid,
     transfer: transfer !== undefined ? transfer : false,
   };
 }
@@ -39,8 +39,9 @@ export type Edge = {
 
 export function newEdge(station: Station, time: number): Edge {
   if (time < 0) {
-    console.log("Cannot have negative time. Defaulting to 1");
-    time = 1;
+    // console.log("Cannot have negative time. Defaulting to 1");
+    throw new Error("Invalid time");
+    // time = 1;
   }
   return {
     station: station,
@@ -81,56 +82,4 @@ export class Graph {
   getGraph(): Map<Station, Edge[]> {
     return this.adjacencyList;
   }
-
-  // ***NOTE: This is the old, untested traversal algorithm that was more complex than necessary
-  // // Traversal algorithm that keeps track of path length
-  // // RETURNS array of sorted arrays of stations that, if visited in order, will result in desired trip length. null if no findable path.
-  // // TODO: test building graph and traverse all possible paths within a certain total path length.
-  // // TODO: make it return all possible results that fit, in one travel direction for now.
-  // // TODO: algorithm that ensures there is a findable path for every reasonable timer length (5-120)
-  // // TODO: trust in the natural recursion
-  // // start: starting station
-  // // goal: desired trip length
-  // // length: current trip length
-  // // visited: visited stations to avoid revisiting. Reset if transfer/deadend met
-  // // path: path taken so far. Should be different for branching recursive calls
-  // dfsViablePath(
-  //   start: Station,
-  //   goal: number,
-  //   length: number,
-  //   visited: Set<Station>,
-  //   path: Station[],
-  //   viableResults: Station[][]
-  // ): Station[][] | null {
-  //   // init viableResults if first iteration
-  //   if (visited.size === 0) {
-  //     viableResults = [];
-  //   }
-
-  //   visited.add(start);
-  //   path.push(start);
-
-  //   if (length >= goal) {
-  //     console.log("Viable path found: " + path);
-  //     viableResults.push(path);
-  //   }
-
-  //   for (const neighbor of this.getNeighbours(start)) {
-  //     if (!visited.has(neighbor.station)) {
-  //       const newPath = [...path];
-  //       const newLength = length + neighbor.time;
-  //       this.dfsViablePath(
-  //         neighbor.station,
-  //         goal,
-  //         newLength,
-  //         visited,
-  //         newPath,
-  //         viableResults
-  //       ); // recursive call
-  //     }
-  //   }
-
-  //   // console.log("No path found");
-  //   return viableResults;
-  // }
 }

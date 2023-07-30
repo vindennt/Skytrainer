@@ -97,12 +97,13 @@ const Home = ({ navigation }: RouterProps) => {
   const [isOpen, setIsOpen] = useState(false); // Modal open state
   const slider = {
     min: 0,
-    max: 100,
+    max: 300,
     proportion: 120,
     visualStep: 1,
     step: 5,
-    initialValue: 21,
   };
+  const sliderInitial: number = (25 / slider.proportion) * slider.max;
+
   const [item, setItem] = useState<Todo>({
     title: "default",
     done: false,
@@ -296,25 +297,19 @@ const Home = ({ navigation }: RouterProps) => {
           <View style={styles.currencyContainer}>
             <PaperButton
               icon="cash-multiple"
+              style={styles.button}
               mode="outlined"
               textColor="gray"
-              onPress={() => {
-                navigation.goBack();
-              }}
-              style={styles.button}
-              labelStyle={{ fontSize: 22 }} // icon size
+              labelStyle={{ fontSize: 20 }} // icon size
             >
               <Text style={styles.text}>{money}</Text>
             </PaperButton>
             <PaperButton
               icon="diamond-stone"
+              style={styles.button}
               mode="outlined"
               textColor="royalblue"
-              onPress={() => {
-                navigation.goBack();
-              }}
-              style={styles.button}
-              labelStyle={{ fontSize: 22 }} // icon size
+              labelStyle={{ fontSize: 20 }} // icon size
             >
               <Text style={styles.text}>{gems}</Text>
             </PaperButton>
@@ -352,7 +347,7 @@ const Home = ({ navigation }: RouterProps) => {
                 maximumValue={slider.max}
                 lowerLimit={slider.min}
                 upperLimit={slider.max}
-                value={slider.initialValue} // initial value
+                value={sliderInitial} // initial value
                 step={slider.visualStep}
                 minimumTrackTintColor="#085cac"
                 maximumTrackTintColor="silver"
@@ -462,7 +457,6 @@ const styles = StyleSheet.create({
   button: {
     margin: 2,
     flexWrap: "wrap",
-    // width: "50%",
   },
   text: {
     fontSize: 16,
@@ -498,16 +492,17 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     // alignItems: "center",
-    backgroundColor: "white",
+    // backgroundColor: "li9ghtgray",
     borderRadius: 100,
     marginRight: 10,
   },
   weatherBox: {
     flexDirection: "row",
     alignItems: "center",
+    maxWidth: "100%",
     // backgroundColor: "green",
     // paddingHorizontal: 10,
-    paddingRight: 30,
+    paddingHorizontal: 40,
   },
   timer: {
     fontSize: 18,
