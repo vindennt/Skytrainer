@@ -49,6 +49,11 @@ export function newEdge(station: Station, time: number): Edge {
   };
 }
 
+export function setTransfer(station: Station): void {
+  station.transfer = true;
+  return;
+}
+
 // Adjacency list that represents Stations and the time it takes to travel between each one
 // Duplicate stations are not allowed
 // Connected, undirected, unsorted graph. Directionality will be implemented with the traversal algorithm
