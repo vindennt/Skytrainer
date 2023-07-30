@@ -71,10 +71,6 @@ interface RouterProps {
   navigation: NavigationProp<any, any>;
 }
 
-const setTimer = () => {
-  return;
-};
-
 // const startTrip = (todo: Todo, character: Character | undefined): void => {
 //   console.log(
 //     "Trip for todo " + todo.title + " started with character " + character

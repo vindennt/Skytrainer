@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // import { useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { Todo } from "../app/screens/Home";
@@ -18,13 +18,13 @@ interface TripMenuProps {
 }
 
 // Dropdown menu prop only takes this form of data
-export interface Character {
+export type Character = {
   label: string; // display name
   value: string; // character id
-}
+};
 
 // const controlSelectState = useSelectState();
-const characterList: Character[] = [
+export const characterList: Character[] = [
   {
     label: "Stanley",
     value: "Stanley",
@@ -39,6 +39,16 @@ const characterList: Character[] = [
   },
 ];
 
+const characterNameReader = (character: Character): string => {
+  if (character !== undefined) {
+    console.log(character.label);
+    console.log(character.value);
+    return character.value;
+  }
+  console.log(character);
+  return `brute force: ${character}`;
+};
+
 const TripMenu: React.FC<TripMenuProps> = ({
   //   startTrip,
   user,
@@ -47,7 +57,11 @@ const TripMenu: React.FC<TripMenuProps> = ({
   navigation,
 }) => {
   const [showDropDown, setShowDropDown] = useState(false);
-  const [character, setCharacter] = useState<Character>();
+  const [character, setCharacter] = useState<string>();
+
+  useEffect(() => {
+    setCharacter(character);
+  }, [character]);
 
   const deleteTodo = async (todo: Todo) => {
     console.log("deleting todo: " + todo.title);
@@ -58,7 +72,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
     }
   };
 
-  const startTrip = (todo: Todo, character: Character | undefined): void => {
+  const startTrip = (todo: Todo, character: string): void => {
     // const username: string | null | undefined = user?.displayName;
     console.log(
       "Trip for todo " +
@@ -68,7 +82,11 @@ const TripMenu: React.FC<TripMenuProps> = ({
         " for user " +
         user?.displayName
     );
-    navigation.navigate("Trip", { name: user?.displayName });
+    navigation.navigate("Trip", {
+      user: user,
+      characterid: character,
+      todo: todo,
+    });
   };
 
   return (
@@ -120,8 +138,12 @@ const TripMenu: React.FC<TripMenuProps> = ({
         <Button onPress={() => deleteTodo(item)} title="Delete" />
         <Button
           onPress={() => {
-            console.log("starting trip for " + user?.uid);
-            startTrip(item, character);
+            if (character === undefined) {
+              console.log("character is undefined");
+            } else {
+              console.log("starting trip for " + user?.uid);
+              startTrip(item, character);
+            }
           }}
           title="Start"
           disabled={!character}
