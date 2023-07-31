@@ -1,6 +1,7 @@
 import React from "react";
 import { Graph, Edge, Station, newStation, newEdge } from "../utils/Graph";
 import { findViableTrips } from "../utils/TripFinder";
+import * as SKYTRAIN_DATA from "../utils/SKYTRAIN_DATA";
 
 // Template test
 // test("TEMPLATE", () => {
@@ -207,4 +208,33 @@ test("findViableTrips; loop back to same line", () => {
       stnTwelveThree,
     ],
   ]);
+});
+
+// const actualGraph: Graph = SKYTRAIN_DATA.buildGraph();
+const ScottRoad: Station = newStation("017", "00", false);
+const Gateway: Station = newStation("018", "00", false);
+const SurreyCentral: Station = newStation("019", "00", false);
+const KingGeorge: Station = newStation("020", "00", false);
+const testActualGraph: Graph = new Graph();
+testActualGraph.addEdge(ScottRoad, Gateway, 3);
+testActualGraph.addEdge(Gateway, SurreyCentral, 2);
+testActualGraph.addEdge(SurreyCentral, KingGeorge, 1);
+console.log(findViableTrips(testActualGraph, KingGeorge, 5));
+// const STATION_MAP: Map<string, StationInfo> = SKYTRAIN_DATA.STATION_MAP;
+test("findViableTrips; Actual skytrain graph", () => {
+  expect(findViableTrips(testActualGraph, ScottRoad, 2)).toStrictEqual([
+    [ScottRoad, Gateway],
+  ]);
+  expect(findViableTrips(testActualGraph, KingGeorge, 2)).toStrictEqual([
+    [KingGeorge, SurreyCentral, Gateway],
+  ]);
+  SKYTRAIN_DATA.buildGraph();
+
+  console.log(SKYTRAIN_DATA.SKYTRAIN_GRAPH.getGraph());
+  expect(
+    findViableTrips(SKYTRAIN_DATA.SKYTRAIN_GRAPH, ScottRoad, 2)
+  ).toStrictEqual([[ScottRoad, Gateway]]);
+  expect(
+    findViableTrips(SKYTRAIN_DATA.SKYTRAIN_GRAPH, KingGeorge, 2)
+  ).toStrictEqual([[KingGeorge, SurreyCentral, Gateway]]);
 });
