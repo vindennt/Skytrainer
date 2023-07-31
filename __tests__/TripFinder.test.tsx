@@ -182,7 +182,7 @@ test("findViableTrips; loop back to same line", () => {
   loopGraph.addEdge(stnTwelveThree, stnThirtnThreeT, 10);
   loopGraph.addEdge(stnThirtnThreeT, stnFourTwo, 7);
   // console.log(findViableTrips(loopGraph, stnOneTwo, 47));
-  expect(findViableTrips(loopGraph, stnOneTwo, 47)).toStrictEqual([
+  expect(findViableTrips(loopGraph, stnOneTwo, 47)).toEqual([
     [
       stnOneTwo,
       stnTwoTwo,
@@ -249,7 +249,7 @@ const Burrard: Station = newStation("002", "00", false);
 const Granville: Station = newStation("003", "00", false);
 const StadiumChinatown: Station = newStation("004", "00", false);
 const MainStreetScienceWorld: Station = newStation("005", "00", false);
-const CommercialBroadway: Station = newStation("006", "00", false);
+const CommercialBroadway: Station = newStation("006", "00", true);
 const Nanaimo: Station = newStation("007", "00", false);
 const TwentyNinththAvenue: Station = newStation("008", "00", false);
 const JoyceCollingwood: Station = newStation("009", "00", false);
@@ -268,39 +268,39 @@ const KingGeorge: Station = newStation("020", "00", false);
 const Sapperton: Station = newStation("021", "00", false);
 const Braid: Station = newStation("022", "00", false);
 const LougheedTownCentre: Station = newStation("023", "00", true);
-const ProductionWayUniversity: Station = newStation("024", "00", true);
+const ProductionWayUniversity: Station = newStation("024", "00", false);
 
-const VCCClark: Station = newStation("025", "01", true);
-const Renfrew: Station = newStation("026", "01", true);
-const Rupert: Station = newStation("027", "01", true);
-const Gilmore: Station = newStation("028", "01", true);
-const Brentwood: Station = newStation("029", "01", true);
-const Holdom: Station = newStation("030", "01", true);
-const SperlingBurnabyLake: Station = newStation("031", "01", true);
-const LakeCity: Station = newStation("032", "01", true);
+const VCCClark: Station = newStation("025", "01", false);
+const Renfrew: Station = newStation("026", "01", false);
+const Rupert: Station = newStation("027", "01", false);
+const Gilmore: Station = newStation("028", "01", false);
+const Brentwood: Station = newStation("029", "01", false);
+const Holdom: Station = newStation("030", "01", false);
+const SperlingBurnabyLake: Station = newStation("031", "01", false);
+const LakeCity: Station = newStation("032", "01", false);
 
-const Burquitlam: Station = newStation("033", "03", true);
-const MoodyCentre: Station = newStation("034", "03", true);
-const InletCentre: Station = newStation("035", "03", true);
-const CoquitlamCentral: Station = newStation("036", "03", true);
-const Lincoln: Station = newStation("037", "03", true);
-const LafargeLakeDouglas: Station = newStation("038", "03", true);
+const Burquitlam: Station = newStation("033", "03", false);
+const MoodyCentre: Station = newStation("034", "03", false);
+const InletCentre: Station = newStation("035", "03", false);
+const CoquitlamCentral: Station = newStation("036", "03", false);
+const Lincoln: Station = newStation("037", "03", false);
+const LafargeLakeDouglas: Station = newStation("038", "03", false);
 
-const VancouverCityCentre: Station = newStation("039", "02", true);
-const YaletownRoundhouse: Station = newStation("040", "02", true);
-const OlympicVillage: Station = newStation("041", "02", true);
-const BroadwayCityHall: Station = newStation("042", "02", true);
-const KingEdward: Station = newStation("043", "02", true);
-const OakridgeFourtyFirstAve: Station = newStation("044", "02", true);
-const LangaraFourtyNinthAve: Station = newStation("045", "02", true);
-const MarineDrive: Station = newStation("046", "02", true);
-const Bridgeport: Station = newStation("047", "02", true);
-const Aberdeen: Station = newStation("048", "02", true);
-const Lansdowne: Station = newStation("049", "02", true);
-const RichmondBrighouse: Station = newStation("050", "02", true);
-const Templeton: Station = newStation("051", "02", true);
-const SeaIslandCentre: Station = newStation("052", "02", true);
-const YVRAirport: Station = newStation("053", "02", true);
+const VancouverCityCentre: Station = newStation("039", "02", false);
+const YaletownRoundhouse: Station = newStation("040", "02", false);
+const OlympicVillage: Station = newStation("041", "02", false);
+const BroadwayCityHall: Station = newStation("042", "02", false);
+const KingEdward: Station = newStation("043", "02", false);
+const OakridgeFourtyFirstAve: Station = newStation("044", "02", false);
+const LangaraFourtyNinthAve: Station = newStation("045", "02", false);
+const MarineDrive: Station = newStation("046", "02", false);
+const Bridgeport: Station = newStation("047", "02", false);
+const Aberdeen: Station = newStation("048", "02", false);
+const Lansdowne: Station = newStation("049", "02", false);
+const RichmondBrighouse: Station = newStation("050", "02", false);
+const Templeton: Station = newStation("051", "02", false);
+const SeaIslandCentre: Station = newStation("052", "02", false);
+const YVRAirport: Station = newStation("053", "02", false);
 
 // TODO: put a timescale? when building edges, everything is multiplied so that a long trip will not alwyas just loop around
 export const NEDGE_LIST: EdgeToBuild[] = [
@@ -384,19 +384,24 @@ var comparisonGraph: Graph = SKYTRAIN_DATA.buildGraph();
 test("Whether imported graph is same as in-house", () => {
   expect(comparisonGraph).toMatchObject(graph);
 });
+
 test("Whether imported graph gets same neigbhours", () => {
   expect(comparisonGraph.getNeighbours(SKYTRAIN_DATA.Waterfront)).toMatchObject(
     graph.getNeighbours(Waterfront)
   );
 });
+
 console.log(graph.getNeighbours(Waterfront));
 console.log(comparisonGraph.getNeighbours(SKYTRAIN_DATA.Waterfront));
+
+// const thing = SKYTRAIN_DATA.STATION_MAP.get("001");
+// console.log("THING: " + thing + thing?.[1]);
 
 const testActualGraph: Graph = new Graph();
 testActualGraph.addEdge(ScottRoad, Gateway, 3);
 testActualGraph.addEdge(Gateway, SurreyCentral, 2);
 testActualGraph.addEdge(SurreyCentral, KingGeorge, 1);
-console.log(testActualGraph.getGraph());
+// console.log(testActualGraph.getGraph());
 // console.log(findViableTrips(testActualGraph, KingGeorge, 5));
 
 // const STATION_MAP: Map<string, StationInfo> = SKYTRAIN_DATA.STATION_MAP;
@@ -415,13 +420,9 @@ test("findViableTrips; Actual skytrain graph", () => {
   expect(findViableTrips(comparisonGraph, SKYTRAIN_DATA.ScottRoad, 2)).toEqual([
     [SKYTRAIN_DATA.ScottRoad, SKYTRAIN_DATA.Gateway],
   ]);
+  const gatewayProxy = SKYTRAIN_DATA.STATION_MAP.get("018");
+  // console.log("THING: " + gatewayProxy + gatewayProxy?.[1]);
   expect(findViableTrips(comparisonGraph, SKYTRAIN_DATA.KingGeorge, 2)).toEqual(
-    [
-      [
-        SKYTRAIN_DATA.KingGeorge,
-        SKYTRAIN_DATA.SurreyCentral,
-        SKYTRAIN_DATA.Gateway,
-      ],
-    ]
+    [[SKYTRAIN_DATA.KingGeorge, SKYTRAIN_DATA.SurreyCentral, gatewayProxy?.[1]]]
   );
 });

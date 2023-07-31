@@ -14,7 +14,7 @@ import { Station, Edge, Graph, newStation, newEdge } from "./Graph";
 
 export function findViableTrips(
   graph: Graph,
-  start: Station,
+  start: Station | undefined,
   desiredLength: number
 ): Station[][] {
   // const graph = SKYTRAIN_GRAPH;
@@ -26,11 +26,14 @@ export function findViableTrips(
   // currentLength: current path length
   // visited: visited Stations. Every recursive call has their own visited set, allowing loops
   function dfsHelper(
-    current: Station,
+    current: Station | undefined,
     path: Station[],
     currentLength: number,
     visited: Set<Station>
   ): void {
+    if (!current) {
+      return; // no current station
+    }
     visited.add(current);
     path.push(current);
 
