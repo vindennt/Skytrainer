@@ -81,6 +81,10 @@ export class Graph {
   }
 
   getNeighbours(station: Station): Edge[] {
+    // return this.adjacencyList.get(station) || []; // return empty if no edges
+    if (this.adjacencyList.get(station) === undefined) {
+      throw new Error("nothing??");
+    }
     return this.adjacencyList.get(station) || []; // return empty if no edges
   }
 

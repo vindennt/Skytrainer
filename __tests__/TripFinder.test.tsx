@@ -378,6 +378,19 @@ export function buildTestGraph(): Graph {
 }
 
 var graph: Graph = buildTestGraph();
+var comparisonGraph: Graph = SKYTRAIN_DATA.buildGraph();
+// console.log(graph.getGraph());
+// console.log(comparisonGraph.getGraph());
+test("Whether imported graph is same as in-house", () => {
+  expect(comparisonGraph).toMatchObject(graph);
+});
+test("Whether imported graph gets same neigbhours", () => {
+  expect(comparisonGraph.getNeighbours(SKYTRAIN_DATA.Waterfront)).toMatchObject(
+    graph.getNeighbours(Waterfront)
+  );
+});
+console.log(graph.getNeighbours(Waterfront));
+console.log(comparisonGraph.getNeighbours(SKYTRAIN_DATA.Waterfront));
 
 const testActualGraph: Graph = new Graph();
 testActualGraph.addEdge(ScottRoad, Gateway, 3);
@@ -399,4 +412,16 @@ test("findViableTrips; Actual skytrain graph", () => {
   expect(findViableTrips(graph, KingGeorge, 2)).toEqual([
     [KingGeorge, SurreyCentral, Gateway],
   ]);
+  expect(findViableTrips(comparisonGraph, SKYTRAIN_DATA.ScottRoad, 2)).toEqual([
+    [SKYTRAIN_DATA.ScottRoad, SKYTRAIN_DATA.Gateway],
+  ]);
+  expect(findViableTrips(comparisonGraph, SKYTRAIN_DATA.KingGeorge, 2)).toEqual(
+    [
+      [
+        SKYTRAIN_DATA.KingGeorge,
+        SKYTRAIN_DATA.SurreyCentral,
+        SKYTRAIN_DATA.Gateway,
+      ],
+    ]
+  );
 });

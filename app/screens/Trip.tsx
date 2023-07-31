@@ -16,6 +16,8 @@ import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../Types/NavigationTypes";
 import { Button } from "react-native-paper";
 import { findViableTrips } from "../../utils/TripFinder";
+import * as SKYTRAIN_DATA from "../../utils/SKYTRAIN_DATA";
+import { Graph, Station, newStation } from "../../utils/Graph";
 
 type TripRouteProp = RouteProp<RootStackParamList, "Trip">;
 
@@ -30,11 +32,13 @@ const CharacterTable: StringToStringDictionary = {
 };
 
 const Trip: React.FC = () => {
+  const graph: Graph = SKYTRAIN_DATA.buildGraph();
+  const Waterfront: Station = newStation("001", "00", true);
   const route = useRoute<TripRouteProp>();
   const { user, characterid, todo, navigation } = route.params;
   const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
   // TODO: find viable trip and display a random one
-  const viableTrips = findViableTrips(characterid, todo.time);
+  const viableTrips = findViableTrips(graph, Waterfront, todo.time);
   // TODO: implement calculation of rewards
   const rewardMoney = 5;
   const rewardGems = 2;
@@ -75,6 +79,7 @@ const Trip: React.FC = () => {
       " arridasdaved during task " +
       todo.title
   );
+  console.log(graph);
   todo.done = true;
 
   return (
