@@ -35,6 +35,10 @@ export const characterList: Character[] = [
     value: "002",
   },
   {
+    label: "Kyle",
+    value: "004",
+  },
+  {
     label: "Nathan",
     value: "003",
   },

@@ -122,7 +122,7 @@ STATION_MAP.set("025", ["VCC Clark", VCCClark]);
 STATION_MAP.set("026", ["Renfrew", Renfrew]);
 STATION_MAP.set("027", ["Rupert", Rupert]);
 STATION_MAP.set("028", ["Gilmore", Gilmore]);
-STATION_MAP.set("029", ["Brentwood", Brentwood]);
+STATION_MAP.set("029", ["Brentwood Town Centre", Brentwood]);
 STATION_MAP.set("030", ["Holdom", Holdom]);
 STATION_MAP.set("031", ["Sperling Burnaby Lake", SperlingBurnabyLake]);
 STATION_MAP.set("032", ["Lake City", LakeCity]);
@@ -166,8 +166,9 @@ export const EDGE_LIST: EdgeToBuild[] = [
   edgeToBuild(Metrotown, RoyalOak, 3),
   edgeToBuild(RoyalOak, Edmonds, 3),
   edgeToBuild(Edmonds, TwentySecondStreet, 3),
-  edgeToBuild(TwentySecondStreet, NewWestminister, 1),
+  edgeToBuild(TwentySecondStreet, NewWestminister, 3),
   edgeToBuild(NewWestminister, Columbia, 1),
+  edgeToBuild(Columbia, ScottRoad, 1),
   edgeToBuild(ScottRoad, Gateway, 3),
   edgeToBuild(Gateway, SurreyCentral, 2),
   edgeToBuild(SurreyCentral, KingGeorge, 1),
@@ -177,7 +178,8 @@ export const EDGE_LIST: EdgeToBuild[] = [
   edgeToBuild(Braid, LougheedTownCentre, 3),
   edgeToBuild(LougheedTownCentre, ProductionWayUniversity, 2),
   // Millenium line
-  edgeToBuild(VCCClark, Renfrew, 1),
+  edgeToBuild(VCCClark, CommercialBroadway, 1),
+  edgeToBuild(CommercialBroadway, Renfrew, 3),
   edgeToBuild(Renfrew, Rupert, 3),
   edgeToBuild(Rupert, Gilmore, 1),
   edgeToBuild(Gilmore, Brentwood, 2),
@@ -205,7 +207,7 @@ export const EDGE_LIST: EdgeToBuild[] = [
   edgeToBuild(Bridgeport, Aberdeen, 2),
   edgeToBuild(Aberdeen, Lansdowne, 2),
   edgeToBuild(Lansdowne, RichmondBrighouse, 2),
-  edgeToBuild(RichmondBrighouse, Templeton, 9),
+  edgeToBuild(Bridgeport, Templeton, 5),
   edgeToBuild(Templeton, SeaIslandCentre, 2),
   edgeToBuild(SeaIslandCentre, YVRAirport, 2),
 ];

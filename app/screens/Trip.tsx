@@ -29,28 +29,23 @@ const CharacterTable: StringToStringDictionary = {
   "001": "001",
   "002": "002",
   "003": "003",
+  "004": "004",
 };
 
 const Trip: React.FC = () => {
   const route = useRoute<TripRouteProp>();
   const { user, characterid, todo, navigation } = route.params;
   const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
-  // TODO: find viable trip and display a random one
+
+  // Trip details
   const stationToRetrieve = SKYTRAIN_DATA.STATION_MAP.get(characterid);
   var graph: Graph = SKYTRAIN_DATA.buildGraph();
   const viableTrips = findViableTrips(graph, stationToRetrieve?.[1], todo.time);
   let firstStationName: string | undefined = "";
   let lastStationName: string | undefined = "";
+
+  // reward calculation
   let stationsPassed = 0;
-  // TODO: implement calculation of rewards
-  // const [firstStation, setFirstStation] = useState<Station>();
-  // const [lastStation, setLastStation] = useState<Station>();
-  // const [firstStationName, setFirstStationName] = useState<string | undefined>(
-  //   ""
-  // );
-  // const [lastStationName, setLastStationName] = useState<string | undefined>(
-  //   ""
-  // );
   const rewardMoney = 5;
   const rewardGems = 2;
   var money = -1;
