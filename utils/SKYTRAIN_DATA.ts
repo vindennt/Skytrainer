@@ -94,8 +94,7 @@ const Templeton: Station = newStation("051", "02", true);
 const SeaIslandCentre: Station = newStation("052", "02", true);
 const YVRAirport: Station = newStation("053", "02", true);
 
-// TODO: insert every station
-// To translate station id to the station line id
+// To translate station id to the name
 export const STATION_MAP: Map<string, string> = new Map();
 STATION_MAP.set("001", "Waterfront");
 STATION_MAP.set("002", "Burrard");
@@ -218,8 +217,8 @@ export const EDGE_LIST: EdgeToBuild[] = [
 // TODO: implement memoization on each calculation that is made, storing the start station and the time, and empty array if never existed
 // TODO: Push graph data into a firestore entry to be accessed via queries
 
-export const SKYTRAIN_GRAPH = new Graph();
-export function buildGraph() {
+export function buildGraph(): Graph {
+  const SKYTRAIN_GRAPH: Graph = new Graph();
   EDGE_LIST.forEach((edgeToAdd) => {
     SKYTRAIN_GRAPH.addEdge(
       edgeToAdd.start,
@@ -227,6 +226,7 @@ export function buildGraph() {
       edgeToAdd.time
     );
   });
+  return SKYTRAIN_GRAPH;
 }
 //  default SKYTRAIN_GRAPH;
 
