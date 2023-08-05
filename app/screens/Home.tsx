@@ -17,6 +17,8 @@ import {
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { IconButton, Button as PaperButton } from "react-native-paper";
+import Moment from "react-moment";
+import "moment-timezone";
 import { useCallback } from "react";
 import * as React from "react";
 import { useEffect, useState, useRef } from "react";
@@ -55,6 +57,7 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { Character } from "../../utils/TripMenu";
+import moment from "moment";
 
 const METRO_VANCOUVER_COORDINATES = {
   latitude: 49.232937,
@@ -89,6 +92,7 @@ const Home = ({ navigation }: RouterProps) => {
   const [uid, setUid] = useState<string>("default");
   const [money, setMoney] = useState(0);
   const [gems, setGems] = useState(0);
+  const [currentDate, setCurrentDate] = useState("");
   // Ui compoennts
   const isFocused = useIsFocused();
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -278,6 +282,19 @@ const Home = ({ navigation }: RouterProps) => {
     []
   );
 
+  // TODO: This is just sample unlocking method
+  const unlockWaterfront = async () => {
+    console.log("unlokcing waterfront");
+    const date = moment().utcOffset("-08:00").format();
+    // setCurrentDate(date + "/" + month + "/" + year);
+    await setDoc(doc(FIRESTORE_DB, "users", uid, "characters", "001"), {
+      level: 1,
+      fragments: 0,
+      unlocked: true,
+      dateUnlocked: date,
+    });
+  };
+
   const closeModal = () => {
     bottomSheetModalRef?.current?.close();
   };
@@ -320,6 +337,7 @@ const Home = ({ navigation }: RouterProps) => {
             onPress={() => navigation.navigate("Account")}
             title="Account"
           />
+          <Button onPress={unlockWaterfront} title="Unlock Waterfront" />
           {/* <Button style={styles.button} onPress={() => FIREBASE_AUTH.signOut()}>
             Logout
           </Button>
@@ -414,7 +432,7 @@ const Home = ({ navigation }: RouterProps) => {
             // snapPoints={snapPoints}
             bottomInset={46}
             detached={true}
-            snapPoints={["36%"]}
+            snapPoints={["50%"]}
             backdropComponent={renderBackdrop}
             backgroundStyle={{
               borderRadius: 40,

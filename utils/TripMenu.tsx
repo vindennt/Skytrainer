@@ -9,6 +9,7 @@ import DropDown from "react-native-paper-dropdown";
 import { User } from "firebase/auth";
 import { FIRESTORE_DB } from "../api/FirebaseConfig";
 import { deleteDoc, doc } from "firebase/firestore";
+import GridSelector from "./GridSelector";
 
 interface TripMenuProps {
   item: Todo;
@@ -35,12 +36,20 @@ export const characterList: Character[] = [
     value: "002",
   },
   {
+    label: "Nathan",
+    value: "003",
+  },
+  {
     label: "Kyle",
     value: "004",
   },
   {
-    label: "Nathan",
-    value: "003",
+    label: "Andy",
+    value: "005",
+  },
+  {
+    label: "Jasper",
+    value: "006",
   },
 ];
 
@@ -64,6 +73,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
   const [showDropDown, setShowDropDown] = useState(false);
   const [character, setCharacter] = useState<string>();
   const isFocused = useIsFocused();
+  const [isPopupVisible, setPopupVisible] = useState(true);
 
   useEffect(() => {
     // Recheck todos. Delete ones that just finished
@@ -108,10 +118,38 @@ const TripMenu: React.FC<TripMenuProps> = ({
       {/* <Text style={styles.overview}>Task Details</Text> */}
       <View
         style={{
-          width: "80%",
+          marginTop: 15,
+          width: "90%",
+          alignItems: "center",
         }}
       >
-        <DropDown
+        <View
+          // style={{ backgroundColor: "royalblue", padding: 16, borderRadius: 8 }}
+          style={{
+            // justifyContent: "center",
+            backgroundColor: "royalblue",
+            justifyContent: "space-between",
+            padding: 16,
+            borderRadius: 12,
+            minHeight: "55%",
+            maxHeight: "55%",
+            maxWidth: "100%",
+          }}
+        >
+          <GridSelector
+            visible={isPopupVisible}
+            images={characterList}
+            onClose={() => {
+              console.log("close selector opup");
+              setPopupVisible(false);
+            }}
+            onSelect={(item) => {
+              console.log("Selected character: " + item.label);
+              setCharacter(item.value);
+            }}
+          />
+        </View>
+        {/* <DropDown
           label={"Character"}
           mode={"outlined"}
           visible={showDropDown}
@@ -131,37 +169,38 @@ const TripMenu: React.FC<TripMenuProps> = ({
               background: "white", // Customize the primary color
             },
           }}
-        />
-      </View>
-      <View style={styles.taskContainer}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.time}>{item.time + " minutes"}</Text>
-      </View>
-      <View
-        style={{
-          flexDirection: "row",
-          width: "100%",
-          justifyContent: "space-evenly",
-          margin: 10,
-          //   paddingHorizontal: 50,
-        }}
-      >
-        {/* <Button onPress={() => {}} title="Edit" disabled={true} /> */}
+        /> */}
 
-        {/* TODO: Enable this button on release. Quick delete is useful */}
-        <Button onPress={() => deleteTodo(item)} title="Delete" />
-        <Button
-          onPress={() => {
-            if (character === undefined) {
-              console.log("character is undefined");
-            } else {
-              console.log("starting trip for " + user?.uid);
-              startTrip(item, character);
-            }
+        <View style={styles.taskContainer}>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.time}>{item.time + " minutes"}</Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            width: "100%",
+            justifyContent: "space-evenly",
+            // margin: 10,
+            //   paddingHorizontal: 50,
           }}
-          title="Start"
-          disabled={!character}
-        />
+        >
+          {/* <Button onPress={() => {}} title="Edit" disabled={true} /> */}
+
+          {/* TODO: Enable this button on release. Quick delete is useful */}
+          <Button onPress={() => deleteTodo(item)} title="Delete" />
+          <Button
+            onPress={() => {
+              if (character === undefined) {
+                console.log("character is undefined");
+              } else {
+                console.log("starting trip for " + user?.uid);
+                startTrip(item, character);
+              }
+            }}
+            title="Start"
+            disabled={!character}
+          />
+        </View>
       </View>
     </View>
   );

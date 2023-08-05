@@ -26,10 +26,10 @@ interface StringToStringDictionary {
 }
 // TODO: implement firestore retrieval of character information
 const CharacterTable: StringToStringDictionary = {
-  "001": "001",
-  "002": "002",
-  "003": "003",
-  "004": "004",
+  "001": "Stanley",
+  "002": "Eddie",
+  "003": "Nathan",
+  "004": "Kyle",
 };
 
 const Trip: React.FC = () => {
@@ -86,10 +86,7 @@ const Trip: React.FC = () => {
 
   // Log occurence
   console.log(
-    "Character " +
-      CharacterTable[characterid] +
-      " arrived during task " +
-      todo.title
+    CharacterTable[characterid] + " arrived during task " + todo.title
   );
   // console.log(viableTrips);
 
