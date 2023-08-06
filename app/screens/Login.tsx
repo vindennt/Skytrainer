@@ -76,7 +76,7 @@ const Login = () => {
   // Initiate character information in user file
   // TODO: changed unlokced to false when deploying
   const initCharacter = async (id: string, uid: string) => {
-    return new Promise((resolve) => {
+    return new Promise(() => {
       console.log("Unlocking " + id + " for " + uid);
       setDoc(doc(FIRESTORE_DB, "users", uid, "characters", id), {
         level: 1,

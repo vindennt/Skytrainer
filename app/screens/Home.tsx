@@ -308,7 +308,6 @@ const Home = ({ navigation }: RouterProps) => {
         // accessible={false}
       >
         <View style={[styles.container]}>
-          {/* <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" /> */}
           {/* <Button onPress={() => navigation.navigate("Team")} title="Team" /> */}
           <View style={styles.currencyContainer}>
             <PaperButton
@@ -337,6 +336,7 @@ const Home = ({ navigation }: RouterProps) => {
             title="Account"
           />
           <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
+          <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
           {/* <Button onPress={unlockWaterfront} title="Unlock Waterfront" /> */}
           {/* <Button style={styles.button} onPress={() => FIREBASE_AUTH.signOut()}>
             Logout

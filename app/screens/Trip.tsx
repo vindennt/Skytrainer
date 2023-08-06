@@ -42,8 +42,6 @@ const Trip: React.FC = () => {
   const rewardGems = 2;
   var money = -1;
   var gems = -1;
-  let calculatedMoneyReward = 0;
-  let calculatedGemReward = 0;
 
   const getSnapshot = async () => {
     const docSnap = await getDoc(userRef);
@@ -63,9 +61,9 @@ const Trip: React.FC = () => {
     await getSnapshot();
     // Set the "capital" field of the city 'DC'
     // console.log("Stations passed before calcs: " + stationsPassed);
-    calculatedMoneyReward = rewardMoney * stationsPassed;
+    const calculatedMoneyReward = rewardMoney * stationsPassed;
     // console.log(calculatedMoneyReward);
-    calculatedGemReward = rewardGems * stationsPassed;
+    const calculatedGemReward = rewardGems * stationsPassed;
     const newMoney: number = calculatedMoneyReward + money;
     const newGems: number = calculatedGemReward + gems;
     console.log("new money should be: " + newMoney);
