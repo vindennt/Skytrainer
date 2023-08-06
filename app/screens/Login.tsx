@@ -22,6 +22,7 @@ import {
   updateCurrentUser,
 } from "firebase/auth";
 import { addDoc, doc, setDoc, collection } from "firebase/firestore";
+import moment from "moment";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -71,13 +72,15 @@ const Login = () => {
   };
 
   const initiateUserDocs = async (uid: string, email: string) => {
+    const date = moment().utcOffset("-08:00").format();
     //
     await setDoc(doc(FIRESTORE_DB, "users", uid), {
       uid: uid,
       email: email,
       displayName: email,
-      money: 9999,
-      gems: 1111,
+      joined: date,
+      money: 0,
+      gems: 0,
     });
     // await addDoc(doc(FIRESTORE_DB, "todos", uid, "todos"));
   };
