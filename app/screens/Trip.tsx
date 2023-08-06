@@ -10,6 +10,7 @@ import {
   setDoc,
   getDoc,
   updateDoc,
+  increment,
 } from "firebase/firestore";
 import { View, Text, StyleSheet } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
@@ -21,27 +22,6 @@ import { getStationName } from "../../utils/SKYTRAIN_DATA";
 import { Graph, Station, newStation } from "../../utils/Graph";
 
 type TripRouteProp = RouteProp<RootStackParamList, "Trip">;
-
-// interface StringToStringDictionary {
-//   [key: string]: string;
-// }
-// TODO: implement firestore retrieval of character information
-// const CharacterTable: StringToStringDictionary = {
-//   "001": "Stanley",
-//   "002": "Eddie",
-//   "003": "Nathan",
-//   "004": "Kyle",
-//   "005": "Andy",
-//   "006": "Jasper",
-// };
-
-// function nameRetriever(id: string): string {
-//   const ref = SKYTRAIN_DATA.STATION_MAP.get(id);
-//   if (ref !== undefined) {
-//     return ref?.[0];
-//   }
-//   return "undefined";
-// }
 
 const Trip: React.FC = () => {
   const route = useRoute<TripRouteProp>();
@@ -91,8 +71,8 @@ const Trip: React.FC = () => {
     console.log("new money should be: " + newMoney);
     console.log("new gems should be: " + newGems);
     await updateDoc(userRef, {
-      money: newMoney,
-      gems: newGems,
+      money: increment(calculatedMoneyReward),
+      gems: increment(calculatedGemReward),
     });
   };
 
