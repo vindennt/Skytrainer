@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Modal,
@@ -9,20 +9,13 @@ import {
   StyleSheet,
   SafeAreaView,
 } from "react-native";
-import TripMenu, { Character, characterList } from "./TripMenu";
-import { render } from "react-dom";
-
-// ImageData type
-type ImageData = {
-  id: number;
-  imageSource: number; // Assuming imageSource is the image resource identifier (e.g., require('./images/image1.jpg'))
-};
+import { Character, characterList } from "./TripMenu";
 
 type GridSelectorProps = {
-  visible: boolean;
+  //   visible: boolean;
   characters: Character[];
   //   onSelect: (image: ImageData) => void;
-  onSelect: (chracter: Character) => void;
+  onSelect: (character: Character) => void;
 };
 
 type ItemProps = {
@@ -42,8 +35,7 @@ const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
 );
 
 const GridSelector: React.FC<GridSelectorProps> = ({
-  visible,
-  characters: images,
+  characters,
   onSelect,
 }) => {
   const [selectedCharacter, setSelectedCharacter] = useState<string>("000");

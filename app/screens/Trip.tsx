@@ -47,6 +47,7 @@ const Trip: React.FC = () => {
   const route = useRoute<TripRouteProp>();
   const { user, characterid, todo, navigation } = route.params;
   const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
+  const startingStnName: string = getStationName(characterid);
 
   // Trip details
   const stationToRetrieve = SKYTRAIN_DATA.STATION_MAP.get(characterid);
@@ -96,9 +97,7 @@ const Trip: React.FC = () => {
   };
 
   // Log occurence
-  console.log(
-    getStationName(characterid) + " arrived during task " + todo.title
-  );
+  console.log(startingStnName + " arrived during task " + todo.title);
   // console.log(viableTrips);
 
   const tripLog = () => {
@@ -135,7 +134,7 @@ const Trip: React.FC = () => {
           },
         ]}
       >
-        Character {getStationName(characterid)} arrived during task {todo.title}
+        Character {startingStnName} arrived during task {todo.title}
       </Text>
       <Text style={styles.text}>
         {firstStationName} to {lastStationName}
