@@ -129,7 +129,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
             // justifyContent: "center",
             backgroundColor: "royalblue",
             justifyContent: "space-between",
-            padding: 16,
+            padding: 10,
             borderRadius: 12,
             minHeight: "55%",
             maxHeight: "55%",
@@ -210,6 +210,9 @@ const styles = StyleSheet.create({
   container: {
     marginHorizontal: 8,
     alignItems: "center",
+    flex: 1,
+    // backgroundColor: "gray",
+    justifyContent: "space-between",
   },
   taskContainer: {
     backgroundColor: "#f0f0f0",
@@ -219,6 +222,7 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: "center",
     width: "80%",
+    maxHeight: "30%",
   },
   title: {
     fontSize: 18,

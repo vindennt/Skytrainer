@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import {
   View,
   Modal,
@@ -6,8 +6,11 @@ import {
   Image,
   TouchableOpacity,
   Text,
+  StyleSheet,
+  SafeAreaView,
 } from "react-native";
-import { Character } from "./TripMenu";
+import { Character, characterList } from "./TripMenu";
+import { render } from "react-dom";
 
 // ImageData type
 type ImageData = {
@@ -23,45 +26,85 @@ type GridSelectorProps = {
   onSelect: (chracter: Character) => void;
 };
 
+type ItemProps = {
+  item: Character;
+  onPress: () => void;
+  backgroundColor: string;
+  textColor: string;
+};
+
+const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
+  <TouchableOpacity
+    onPress={onPress}
+    style={[styles.item, { backgroundColor }]}
+  >
+    <Text style={[styles.title, { color: textColor }]}>{item.label}</Text>
+  </TouchableOpacity>
+);
+
 const GridSelector: React.FC<GridSelectorProps> = ({
   visible,
   images,
   onClose,
   onSelect,
 }) => {
+  const [selectedCharacter, setSelectedCharacter] = useState<string>("000");
+  const renderItem = ({ item }: { item: Character }) => {
+    const backgroundColor =
+      item.value === selectedCharacter ? "#6e3b6e" : "#f9c2ff";
+    const color = item.value === selectedCharacter ? "white" : "black";
+
+    return (
+      <Item
+        item={item}
+        onPress={() => {
+          setSelectedCharacter(item.value);
+          onSelect(item);
+        }}
+        backgroundColor={backgroundColor}
+        textColor={color}
+      />
+    );
+  };
+
   return (
-    // <Modal visible={visible} animationType="slide" transparent>
-    // <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-
-    <FlatList
-      data={images}
-      numColumns={2}
-      keyExtractor={(item) => item.label}
-      contentContainerStyle={{
-        alignItems: "center",
-        // flex: 1,
-        flexGrow: 1,
-        // width: "50%",
-      }}
-      renderItem={({ item }) => (
-        <TouchableOpacity onPress={() => onSelect(item)}>
-          {/* <Image
-                  source={item.imageSource}
-                  style={{ width: 150, height: 150 }}
-                /> */}
-          <View
-            style={{ flexGrow: 1, marginVertical: 8, marginHorizontal: 30 }}
-          >
-            <Text>{item.label}</Text>
-            <Text>{item.value}</Text>
-          </View>
-        </TouchableOpacity>
-      )}
-    />
-
-    // </View>
-    // {/* </Modal> */}
+    <SafeAreaView style={styles.container}>
+      <FlatList
+        data={characterList}
+        numColumns={2}
+        keyExtractor={(item) => item.label}
+        extraData={selectedCharacter}
+        contentContainerStyle={{
+          alignItems: "center",
+          // flex: 1,
+          flexGrow: 1,
+          // width: "50%",
+        }}
+        renderItem={renderItem}
+      />
+    </SafeAreaView>
   );
 };
 
+// </View>
+// {/* </Modal> */}
+
 export default GridSelector;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: 5,
+  },
+  selectedCharacter: {
+    backgroundColor: "green",
+  },
+  item: {
+    padding: 10,
+    marginVertical: 3,
+    marginHorizontal: 15,
+  },
+  title: {
+    fontSize: 16,
+  },
+});

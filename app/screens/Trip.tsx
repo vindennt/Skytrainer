@@ -30,6 +30,8 @@ const CharacterTable: StringToStringDictionary = {
   "002": "Eddie",
   "003": "Nathan",
   "004": "Kyle",
+  "005": "Andy",
+  "006": "Jasper",
 };
 
 const Trip: React.FC = () => {

@@ -354,7 +354,7 @@ const Home = ({ navigation }: RouterProps) => {
                 placeholder="New task"
                 onChangeText={(text: string) => setTodo(text)}
                 value={todo}
-                maxLength={60}
+                maxLength={35}
               />
             </View>
             <View style={styles.timerContainer}>
@@ -432,7 +432,7 @@ const Home = ({ navigation }: RouterProps) => {
             // snapPoints={snapPoints}
             bottomInset={46}
             detached={true}
-            snapPoints={["50%"]}
+            snapPoints={["60%"]}
             backdropComponent={renderBackdrop}
             backgroundStyle={{
               borderRadius: 40,
