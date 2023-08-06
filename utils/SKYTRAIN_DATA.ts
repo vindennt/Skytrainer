@@ -150,6 +150,16 @@ STATION_MAP.set("052", ["Templeton", Templeton]);
 STATION_MAP.set("051", ["Sea Island Centre", SeaIslandCentre]);
 STATION_MAP.set("053", ["YVR Airport", YVRAirport]);
 
+// takes station id and outputs name in streamlined way
+export function getStationName(id: string): string {
+  const ref = STATION_MAP.get(id);
+  if (ref !== undefined) {
+    return ref?.[0];
+  } else {
+    throw new Error("No such station ID");
+  }
+}
+
 // TODO: put a timescale? when building edges, everything is multiplied so that a long trip will not alwyas just loop around
 export const EDGE_LIST: EdgeToBuild[] = [
   // Expo line

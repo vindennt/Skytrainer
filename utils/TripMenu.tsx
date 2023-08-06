@@ -19,6 +19,7 @@ import {
 } from "firebase/firestore";
 import GridSelector from "./GridSelector";
 import * as SKYTRAIN_DATA from "../utils/SKYTRAIN_DATA";
+import { getStationName } from "../utils/SKYTRAIN_DATA";
 
 interface TripMenuProps {
   item: Todo;
@@ -87,12 +88,12 @@ const TripMenu: React.FC<TripMenuProps> = ({
     const querySnapshot = await getDocs(charQuery);
     await querySnapshot.forEach((doc) => {
       const id: string = doc.id;
-      const stationRef = SKYTRAIN_DATA.STATION_MAP.get(doc.id);
+      // const stationRef = SKYTRAIN_DATA.STATION_MAP.get(doc.id);
       characterList.push({
         // name: "jeff",
         // level: doc.data().level,
         id: id,
-        name: stationRef?.[0], // Name of station from the map
+        name: getStationName(id), // Name of station from the map
       } as Character);
     });
     console.log("GETTING CHARACTER LIST");

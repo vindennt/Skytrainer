@@ -17,22 +17,31 @@ import { RootStackParamList } from "../../Types/NavigationTypes";
 import { Button } from "react-native-paper";
 import { findViableTrips } from "../../utils/TripFinder";
 import * as SKYTRAIN_DATA from "../../utils/SKYTRAIN_DATA";
+import { getStationName } from "../../utils/SKYTRAIN_DATA";
 import { Graph, Station, newStation } from "../../utils/Graph";
 
 type TripRouteProp = RouteProp<RootStackParamList, "Trip">;
 
-interface StringToStringDictionary {
-  [key: string]: string;
-}
+// interface StringToStringDictionary {
+//   [key: string]: string;
+// }
 // TODO: implement firestore retrieval of character information
-const CharacterTable: StringToStringDictionary = {
-  "001": "Stanley",
-  "002": "Eddie",
-  "003": "Nathan",
-  "004": "Kyle",
-  "005": "Andy",
-  "006": "Jasper",
-};
+// const CharacterTable: StringToStringDictionary = {
+//   "001": "Stanley",
+//   "002": "Eddie",
+//   "003": "Nathan",
+//   "004": "Kyle",
+//   "005": "Andy",
+//   "006": "Jasper",
+// };
+
+// function nameRetriever(id: string): string {
+//   const ref = SKYTRAIN_DATA.STATION_MAP.get(id);
+//   if (ref !== undefined) {
+//     return ref?.[0];
+//   }
+//   return "undefined";
+// }
 
 const Trip: React.FC = () => {
   const route = useRoute<TripRouteProp>();
@@ -88,7 +97,7 @@ const Trip: React.FC = () => {
 
   // Log occurence
   console.log(
-    CharacterTable[characterid] + " arrived during task " + todo.title
+    getStationName(characterid) + " arrived during task " + todo.title
   );
   // console.log(viableTrips);
 
@@ -126,7 +135,7 @@ const Trip: React.FC = () => {
           },
         ]}
       >
-        Character {CharacterTable[characterid]} arrived during task {todo.title}
+        Character {getStationName(characterid)} arrived during task {todo.title}
       </Text>
       <Text style={styles.text}>
         {firstStationName} to {lastStationName}
@@ -138,7 +147,7 @@ const Trip: React.FC = () => {
       </Text>
       <Button
         icon="chevron-left"
-        mode="outlined"
+        // mode="outlined"
         textColor="royalblue"
         onPress={() => {
           navigation.goBack();
