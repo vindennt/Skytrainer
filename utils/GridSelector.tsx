@@ -9,7 +9,7 @@ import {
   StyleSheet,
   SafeAreaView,
 } from "react-native";
-import { Character, characterList } from "./TripMenu";
+import TripMenu, { Character, characterList } from "./TripMenu";
 import { render } from "react-dom";
 
 // ImageData type
@@ -21,7 +21,6 @@ type ImageData = {
 type GridSelectorProps = {
   visible: boolean;
   images: Character[];
-  onClose: () => void;
   //   onSelect: (image: ImageData) => void;
   onSelect: (chracter: Character) => void;
 };
@@ -38,27 +37,26 @@ const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
     onPress={onPress}
     style={[styles.item, { backgroundColor }]}
   >
-    <Text style={[styles.title, { color: textColor }]}>{item.label}</Text>
+    <Text style={[styles.title, { color: textColor }]}>{item.id}</Text>
   </TouchableOpacity>
 );
 
 const GridSelector: React.FC<GridSelectorProps> = ({
   visible,
   images,
-  onClose,
   onSelect,
 }) => {
   const [selectedCharacter, setSelectedCharacter] = useState<string>("000");
   const renderItem = ({ item }: { item: Character }) => {
     const backgroundColor =
-      item.value === selectedCharacter ? "lightblue" : "royalblue";
-    const color = item.value === selectedCharacter ? "black" : "white";
+      item.name === selectedCharacter ? "lightblue" : "royalblue";
+    const color = item.name === selectedCharacter ? "black" : "white";
 
     return (
       <Item
         item={item}
         onPress={() => {
-          setSelectedCharacter(item.value);
+          setSelectedCharacter(item.name);
           onSelect(item);
         }}
         backgroundColor={backgroundColor}
@@ -72,7 +70,7 @@ const GridSelector: React.FC<GridSelectorProps> = ({
       <FlatList
         data={characterList}
         numColumns={2}
-        keyExtractor={(item) => item.label}
+        keyExtractor={(item) => item.id}
         extraData={selectedCharacter}
         contentContainerStyle={{
           alignItems: "center",

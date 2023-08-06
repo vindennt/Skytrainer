@@ -21,47 +21,37 @@ interface TripMenuProps {
 
 // Dropdown menu prop only takes this form of data
 export type Character = {
-  label: string; // display name
-  value: string; // character id
+  id: string; // display name
+  name: string; // character id
 };
 
 // const controlSelectState = useSelectState();
 export const characterList: Character[] = [
   {
-    label: "Stanley",
-    value: "001",
+    id: "Stanley",
+    name: "001",
   },
   {
-    label: "Eddie",
-    value: "002",
+    id: "Eddie",
+    name: "002",
   },
   {
-    label: "Nathan",
-    value: "003",
+    id: "Nathan",
+    name: "003",
   },
   {
-    label: "Kyle",
-    value: "004",
+    id: "Kyle",
+    name: "004",
   },
   {
-    label: "Andy",
-    value: "005",
+    id: "Andy",
+    name: "005",
   },
   {
-    label: "Jasper",
-    value: "006",
+    id: "Jasper",
+    name: "006",
   },
 ];
-
-const characterNameReader = (character: Character): string => {
-  if (character !== undefined) {
-    console.log(character.label);
-    console.log(character.value);
-    return character.value;
-  }
-  console.log(character);
-  return `brute force: ${character}`;
-};
 
 const TripMenu: React.FC<TripMenuProps> = ({
   //   startTrip,
@@ -139,37 +129,12 @@ const TripMenu: React.FC<TripMenuProps> = ({
           <GridSelector
             visible={isPopupVisible}
             images={characterList}
-            onClose={() => {
-              console.log("close selector opup");
-              setPopupVisible(false);
-            }}
             onSelect={(item) => {
-              console.log("Selected character: " + item.label);
-              setCharacter(item.value);
+              console.log("Selected character: " + item.id);
+              setCharacter(item.name);
             }}
           />
         </View>
-        {/* <DropDown
-          label={"Character"}
-          mode={"outlined"}
-          visible={showDropDown}
-          showDropDown={() => setShowDropDown(true)}
-          onDismiss={() => setShowDropDown(false)}
-          value={character}
-          setValue={setCharacter}
-          list={characterList}
-          activeColor="blue"
-          dropDownContainerMaxHeight={200}
-          dropDownStyle={{ top: 400 }}
-          dropDownItemStyle={{ backgroundColor: "white" }}
-          dropDownItemSelectedStyle={{ backgroundColor: "white" }}
-          dropDownItemTextStyle={{ backgroundColor: "white" }}
-          theme={{
-            colors: {
-              background: "white", // Customize the primary color
-            },
-          }}
-        /> */}
 
         <View style={styles.taskContainer}>
           <Text style={styles.title}>{item.title}</Text>
