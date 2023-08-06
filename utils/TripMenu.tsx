@@ -8,8 +8,17 @@ import { Todo } from "../app/screens/Home";
 import DropDown from "react-native-paper-dropdown";
 import { User } from "firebase/auth";
 import { FIRESTORE_DB } from "../api/FirebaseConfig";
-import { deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
 import GridSelector from "./GridSelector";
+import * as SKYTRAIN_DATA from "../utils/SKYTRAIN_DATA";
 
 interface TripMenuProps {
   item: Todo;
@@ -17,40 +26,42 @@ interface TripMenuProps {
   user: User | undefined; // "user" prop of type "User"
   modalCloseMethod: () => void;
   navigation: any;
+  uid: string;
 }
 
 // Dropdown menu prop only takes this form of data
 export type Character = {
-  id: string; // display name
-  name: string; // character id
+  name: string; // display name
+  id: string; // character id
+  // level: number;
 };
 
 // const controlSelectState = useSelectState();
-export const characterList: Character[] = [
-  {
-    id: "Stanley",
-    name: "001",
-  },
-  {
-    id: "Eddie",
-    name: "002",
-  },
-  {
-    id: "Nathan",
-    name: "003",
-  },
-  {
-    id: "Kyle",
-    name: "004",
-  },
-  {
-    id: "Andy",
-    name: "005",
-  },
-  {
-    id: "Jasper",
-    name: "006",
-  },
+export var characterList: Character[] = [
+  // {
+  //   name: "Stanley",
+  //   id: "001",
+  // },
+  // {
+  //   name: "Eddie",
+  //   id: "002",
+  // },
+  // {
+  //   name: "Nathan",
+  //   id: "003",
+  // },
+  // {
+  //   name: "Kyle",
+  //   id: "004",
+  // },
+  // {
+  //   name: "Andy",
+  //   id: "005",
+  // },
+  // {
+  //   name: "Jasper",
+  //   id: "006",
+  // },
 ];
 
 const TripMenu: React.FC<TripMenuProps> = ({
@@ -59,13 +70,38 @@ const TripMenu: React.FC<TripMenuProps> = ({
   item,
   modalCloseMethod,
   navigation,
+  uid,
 }) => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [character, setCharacter] = useState<string>();
   const isFocused = useIsFocused();
   const [isPopupVisible, setPopupVisible] = useState(true);
+  // const [characterList, setCharacterList] = useState<Character[]>([]);
+
+  const getUserCharacterData = async () => {
+    characterList = [];
+    const charQuery = query(
+      collection(FIRESTORE_DB, `users/${uid}/characters`),
+      where("unlocked", "==", true)
+    ); // refer to todos collection in firestore
+    const querySnapshot = await getDocs(charQuery);
+    await querySnapshot.forEach((doc) => {
+      const id: string = doc.id;
+      const stationRef = SKYTRAIN_DATA.STATION_MAP.get(doc.id);
+      characterList.push({
+        name: "jeff",
+        // level: doc.data().level,
+        id: id,
+        // name: stationRef?.[0], // Name of station from the map
+      } as Character);
+    });
+    console.log("GETTING CHARACTER LIST");
+    console.log(characterList);
+    console.log("DONE GETTING CHARACTER LIST");
+  };
 
   useEffect(() => {
+    getUserCharacterData();
     // Recheck todos. Delete ones that just finished
     if (isFocused) {
       // If item is done (just came from Trip), delete it
@@ -124,14 +160,15 @@ const TripMenu: React.FC<TripMenuProps> = ({
             minHeight: "55%",
             maxHeight: "55%",
             maxWidth: "100%",
+            minWidth: "80%",
           }}
         >
           <GridSelector
             visible={isPopupVisible}
-            images={characterList}
+            characters={characterList}
             onSelect={(item) => {
-              console.log("Selected character: " + item.id);
-              setCharacter(item.name);
+              console.log("Selected character: " + item.name);
+              setCharacter(item.id);
             }}
           />
         </View>

@@ -442,6 +442,7 @@ const Home = ({ navigation }: RouterProps) => {
           >
             {/* <Text>{item.title + item.done + item.time}</Text> */}
             <TripMenu
+              uid={uid}
               item={item}
               user={user}
               // startTrip={startTrip}

@@ -20,7 +20,7 @@ type ImageData = {
 
 type GridSelectorProps = {
   visible: boolean;
-  images: Character[];
+  characters: Character[];
   //   onSelect: (image: ImageData) => void;
   onSelect: (chracter: Character) => void;
 };
@@ -37,26 +37,26 @@ const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
     onPress={onPress}
     style={[styles.item, { backgroundColor }]}
   >
-    <Text style={[styles.title, { color: textColor }]}>{item.id}</Text>
+    <Text style={[styles.title, { color: textColor }]}>{item.name}</Text>
   </TouchableOpacity>
 );
 
 const GridSelector: React.FC<GridSelectorProps> = ({
   visible,
-  images,
+  characters: images,
   onSelect,
 }) => {
   const [selectedCharacter, setSelectedCharacter] = useState<string>("000");
   const renderItem = ({ item }: { item: Character }) => {
     const backgroundColor =
-      item.name === selectedCharacter ? "lightblue" : "royalblue";
-    const color = item.name === selectedCharacter ? "black" : "white";
+      item.id === selectedCharacter ? "lightblue" : "royalblue";
+    const color = item.id === selectedCharacter ? "black" : "white";
 
     return (
       <Item
         item={item}
         onPress={() => {
-          setSelectedCharacter(item.name);
+          setSelectedCharacter(item.id);
           onSelect(item);
         }}
         backgroundColor={backgroundColor}
@@ -70,7 +70,7 @@ const GridSelector: React.FC<GridSelectorProps> = ({
       <FlatList
         data={characterList}
         numColumns={2}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.name}
         extraData={selectedCharacter}
         contentContainerStyle={{
           alignItems: "center",
