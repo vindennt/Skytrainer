@@ -75,7 +75,7 @@ const Shop = () => {
           buttonColor="lightgray"
           onPressIn={() => unlockStation(item.itemid)}
         >
-          <Text>{item.cost}</Text>
+          <Text style={styles.text}>{item.cost}</Text>
         </PaperButton>
       </View>
     );
@@ -147,17 +147,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   shopContainer: {
-    width: "80%",
+    width: "90%",
+    maxWidth: "100%",
     maxHeight: "90%",
     // flex: 1,
     backgroundColor: "pink",
   },
   item: {
-    padding: 5,
-    margin: 10,
-    borderRadius: 12,
-    width: 100,
-    height: 100,
+    padding: 10,
+    margin: 7,
+    marginHorizontal: 14,
+    borderRadius: 20,
+    width: 120,
+    height: 120,
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "green",

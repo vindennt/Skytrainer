@@ -91,6 +91,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
       // const stationRef = SKYTRAIN_DATA.STATION_MAP.get(doc.id);
       characterList.push({
         // name: "jeff",
+        // TODO: implement fragments and leveling
         // level: doc.data().level,
         id: id,
         name: getStationName(id), // Name of station from the map
@@ -165,7 +166,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
           }}
         >
           <GridSelector
-            visible={isPopupVisible}
+            // visible={isPopupVisible}
             characters={characterList}
             onSelect={(item) => {
               console.log("Selected character: " + item.name);

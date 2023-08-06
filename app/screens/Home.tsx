@@ -464,7 +464,8 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: "lightgray", // save my eyes
+    margin: 10,
+    // backgroundColor: "lightgray", // save my eyes
     alignItems: "center",
   },
   form: {

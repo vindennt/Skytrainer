@@ -23,6 +23,8 @@ import {
 } from "firebase/auth";
 import { addDoc, doc, setDoc, collection } from "firebase/firestore";
 import moment from "moment";
+import { getStationName } from "../../utils/SKYTRAIN_DATA";
+import * as SKYTRAIN_DATA from "../../utils/SKYTRAIN_DATA";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -71,6 +73,20 @@ const Login = () => {
     }
   };
 
+  // Initiate character information in user file
+  const initCharacter = async (id: string, uid: string) => {
+    return new Promise((resolve) => {
+      console.log("Unlocking " + id + " for " + uid);
+      setDoc(doc(FIRESTORE_DB, "users", uid, "characters", id), {
+        level: 1,
+        fragments: 0,
+        unlocked: false,
+        dateUnlocked: "",
+      });
+    });
+  };
+
+  // initiate all basic user information
   const initiateUserDocs = async (uid: string, email: string) => {
     const date = moment().utcOffset("-08:00").format();
     //
@@ -82,7 +98,13 @@ const Login = () => {
       money: 0,
       gems: 0,
     });
-    // await addDoc(doc(FIRESTORE_DB, "todos", uid, "todos"));
+    // Init the locked characters for new user
+    const STATION_MAP = SKYTRAIN_DATA.STATION_MAP;
+    const promises = Array.from(STATION_MAP.keys()).map((key) =>
+      initCharacter(key, uid)
+    );
+    await Promise.all(promises);
+    console.log("All characters initiated");
   };
 
   return (
