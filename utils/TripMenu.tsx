@@ -89,10 +89,10 @@ const TripMenu: React.FC<TripMenuProps> = ({
       const id: string = doc.id;
       const stationRef = SKYTRAIN_DATA.STATION_MAP.get(doc.id);
       characterList.push({
-        name: "jeff",
+        // name: "jeff",
         // level: doc.data().level,
         id: id,
-        // name: stationRef?.[0], // Name of station from the map
+        name: stationRef?.[0], // Name of station from the map
       } as Character);
     });
     console.log("GETTING CHARACTER LIST");
