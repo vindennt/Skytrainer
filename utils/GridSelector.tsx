@@ -51,8 +51,8 @@ const GridSelector: React.FC<GridSelectorProps> = ({
   const [selectedCharacter, setSelectedCharacter] = useState<string>("000");
   const renderItem = ({ item }: { item: Character }) => {
     const backgroundColor =
-      item.value === selectedCharacter ? "#6e3b6e" : "#f9c2ff";
-    const color = item.value === selectedCharacter ? "white" : "black";
+      item.value === selectedCharacter ? "lightblue" : "royalblue";
+    const color = item.value === selectedCharacter ? "black" : "white";
 
     return (
       <Item
@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 3,
     marginHorizontal: 15,
+    borderRadius: 12,
   },
   title: {
     fontSize: 16,
