@@ -107,16 +107,16 @@ const Shop = () => {
     return () => unsub();
   }, [auth, displayName, uid, money]);
 
-  // const unlockStation = async (itemid: string) => {
-  //   console.log("Unlocking " + getStationName(itemid));
-  //   const date = moment().utcOffset("-08:00").format();
-  //   await setDoc(doc(FIRESTORE_DB, "users", uid, "characters", itemid), {
-  //     level: 1,
-  //     fragments: 0,
-  //     unlocked: true,
-  //     dateUnlocked: date,
-  //   });
-  // };
+  const unlockStation = async (itemid: string) => {
+    console.log("Unlocking " + getStationName(itemid));
+    const date = moment().utcOffset("-08:00").format();
+    await setDoc(doc(FIRESTORE_DB, "users", uid, "characters", itemid), {
+      level: 1,
+      fragments: 0,
+      unlocked: true,
+      dateUnlocked: date,
+    });
+  };
   const buyStationFragment = async (itemid: string) => {
     console.log("Bought 10 fragments for " + getStationName(itemid));
     await updateDoc(doc(FIRESTORE_DB, "users", uid, "characters", itemid), {
@@ -132,10 +132,10 @@ const Shop = () => {
           compact={true}
           icon="cash-multiple"
           style={styles.button}
-          mode="contained"
+          mode="elevated"
           textColor="black"
           labelStyle={{ fontSize: 16 }}
-          buttonColor="lightgray"
+          buttonColor="whitesmoke"
           onPressIn={() => buyStationFragment(item.itemid)}
         >
           <Text style={styles.text}>{item.cost}</Text>
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     maxHeight: "90%",
     // flex: 1,
-    backgroundColor: "pink",
+    // backgroundColor: "pink",
   },
   item: {
     padding: 10,
@@ -225,6 +225,6 @@ const styles = StyleSheet.create({
     height: 120,
     alignItems: "center",
     justifyContent: "space-evenly",
-    backgroundColor: "green",
+    backgroundColor: "cornflowerblue",
   },
 });
