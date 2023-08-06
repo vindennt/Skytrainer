@@ -2,9 +2,16 @@ import { View, Text, StyleSheet, SafeAreaView, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
 import { User, onAuthStateChanged } from "firebase/auth";
-import { doc, onSnapshot, setDoc } from "firebase/firestore";
+import {
+  doc,
+  increment,
+  onSnapshot,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
 import { IconButton, Button as PaperButton } from "react-native-paper";
 import moment from "moment";
+import * as SKYTRAIN_DATA from "../../utils/SKYTRAIN_DATA";
 import { getStationName } from "../../utils/SKYTRAIN_DATA";
 
 type Buyable = {
@@ -14,8 +21,58 @@ type Buyable = {
 };
 
 const shopItems: Buyable[] = [
-  { name: "Commercial-Broadway", cost: 1, itemid: "006" },
-  { name: "Lougheed Town Centre", cost: 5, itemid: "023" },
+  { name: "Waterfront", cost: 10, itemid: "001" },
+  { name: "Burrard", cost: 10, itemid: "002" },
+  { name: "Granville", cost: 10, itemid: "003" },
+  { name: "Stadium-Chinatown", cost: 10, itemid: "004" },
+  { name: "Main Street - ScienceWorld", cost: 10, itemid: "005" },
+  { name: "Commercial-Broadway", cost: 10, itemid: "006" },
+  { name: "Nanaimo", cost: 10, itemid: "008" },
+  { name: "29th Avenue", cost: 10, itemid: "007" },
+  { name: "Joyce-Collingwood", cost: 10, itemid: "009" },
+  { name: "Patterson", cost: 10, itemid: "010" },
+  { name: "Metrotown", cost: 10, itemid: "011" },
+  { name: "Royal Oak", cost: 10, itemid: "012" },
+  { name: "Edmonds", cost: 10, itemid: "013" },
+  { name: "22nd Street", cost: 10, itemid: "014" },
+  { name: "New Westminister", cost: 10, itemid: "015" },
+  { name: "Columbia", cost: 10, itemid: "016" },
+  { name: "Scott Road", cost: 10, itemid: "017" },
+  { name: "Gateway", cost: 10, itemid: "018" },
+  { name: "Surrey Central", cost: 10, itemid: "019" },
+  { name: "King George", cost: 10, itemid: "020" },
+  { name: "Sapperton", cost: 10, itemid: "021" },
+  { name: "Braid", cost: 10, itemid: "022" },
+  { name: "Lougheed Town Centre", cost: 10, itemid: "023" },
+  { name: "Production Way University", cost: 10, itemid: "024" },
+  { name: "VCC Clark", cost: 10, itemid: "025" },
+  { name: "Renfrew", cost: 10, itemid: "026" },
+  { name: "Rupert", cost: 10, itemid: "027" },
+  { name: "Gilmore", cost: 10, itemid: "028" },
+  { name: "Brentwood Town Centre", cost: 10, itemid: "029" },
+  { name: "Holdom", cost: 10, itemid: "030" },
+  { name: "Sperling Burnaby Lake", cost: 10, itemid: "031" },
+  { name: "Lake City", cost: 10, itemid: "032" },
+  { name: "Burquitlam", cost: 10, itemid: "033" },
+  { name: "Moody Centre", cost: 10, itemid: "034" },
+  { name: "Inlet Centre", cost: 10, itemid: "035" },
+  { name: "Coquitlam Central", cost: 10, itemid: "036" },
+  { name: "Lincoln", cost: 10, itemid: "037" },
+  { name: "Lafarge Lake Douglas", cost: 10, itemid: "038" },
+  { name: "Vancouver City Centre", cost: 10, itemid: "039" },
+  { name: "Yaletown Roundhouse", cost: 10, itemid: "040" },
+  { name: "Olympic Village", cost: 10, itemid: "041" },
+  { name: "Broadway City Hall", cost: 10, itemid: "042" },
+  { name: "King Edward", cost: 10, itemid: "043" },
+  { name: "Oakridge 41stAve", cost: 10, itemid: "044" },
+  { name: "Langara 49th Ave", cost: 10, itemid: "045" },
+  { name: "Marine Drive", cost: 10, itemid: "046" },
+  { name: "Bridgeport", cost: 10, itemid: "047" },
+  { name: "Aberdeen", cost: 10, itemid: "048" },
+  { name: "Lansdowne", cost: 10, itemid: "049" },
+  { name: "Richmond Brighouse", cost: 10, itemid: "050" },
+  { name: "Templeton", cost: 10, itemid: "052" },
+  { name: "Sea Island Centre", cost: 10, itemid: "051" },
   { name: "YVR Airport", cost: 10, itemid: "053" },
 ];
 
@@ -50,15 +107,20 @@ const Shop = () => {
     return () => unsub();
   }, [auth, displayName, uid, money]);
 
-  const unlockStation = async (itemid: string) => {
-    console.log("Unlocking " + getStationName(itemid));
-    const date = moment().utcOffset("-08:00").format();
-    // setCurrentDate(date + "/" + month + "/" + year);
-    await setDoc(doc(FIRESTORE_DB, "users", uid, "characters", itemid), {
-      level: 1,
-      fragments: 0,
-      unlocked: true,
-      dateUnlocked: date,
+  // const unlockStation = async (itemid: string) => {
+  //   console.log("Unlocking " + getStationName(itemid));
+  //   const date = moment().utcOffset("-08:00").format();
+  //   await setDoc(doc(FIRESTORE_DB, "users", uid, "characters", itemid), {
+  //     level: 1,
+  //     fragments: 0,
+  //     unlocked: true,
+  //     dateUnlocked: date,
+  //   });
+  // };
+  const buyStationFragment = async (itemid: string) => {
+    console.log("Bought 10 fragments for " + getStationName(itemid));
+    await updateDoc(doc(FIRESTORE_DB, "users", uid, "characters", itemid), {
+      fragments: increment(50),
     });
   };
 
@@ -67,13 +129,14 @@ const Shop = () => {
       <View style={styles.item}>
         <Text>{item.name}</Text>
         <PaperButton
+          compact={true}
           icon="cash-multiple"
           style={styles.button}
           mode="contained"
           textColor="black"
           labelStyle={{ fontSize: 16 }}
           buttonColor="lightgray"
-          onPressIn={() => unlockStation(item.itemid)}
+          onPressIn={() => buyStationFragment(item.itemid)}
         >
           <Text style={styles.text}>{item.cost}</Text>
         </PaperButton>
@@ -161,7 +224,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     backgroundColor: "green",
   },
 });
