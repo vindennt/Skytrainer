@@ -16,7 +16,7 @@ export interface Reward {
 }
 
 export enum Tier {
-  THREE_STAR = "Three",
+  // THREE_STAR = "Three",
   FOUR_STAR = "Four",
   FIVE_STAR = "Five",
 }
@@ -25,7 +25,7 @@ export enum Tier {
 // const tierWeights: number[] = [6, 3, 1];
 
 const UNIVERSAL_FIVE_STAR_PITY: number = 89;
-const UNIVERSAL_FOUR_STAR_PITY: number = 9;
+// const UNIVERSAL_FOUR_STAR_PITY: number = 9;
 
 // helper for gacha roll
 function weightedRoll(rewardTable: RewardTableElement[]): RewardTableElement {
@@ -62,7 +62,7 @@ function weightedRoll(rewardTable: RewardTableElement[]): RewardTableElement {
 }
 
 const tierRewardTable: RewardTableElement[] = [
-  newRTE(Tier.THREE_STAR, 1),
+  // newRTE(Tier.THREE_STAR, 1),
   newRTE(Tier.FOUR_STAR, 1),
   newRTE(Tier.FIVE_STAR, 1),
 ];
@@ -74,7 +74,7 @@ const fiveStarRewardTable: RewardTableElement[] = [newRTE("053", 1)];
 // returns reward id and tier
 // pity influences reward tier
 export const gachaRoll = (
-  fourStarPity: number,
+  // fourStarPity: number,
   fiveStarPity: number
 ): Reward => {
   const tier = weightedRoll(tierRewardTable);
@@ -83,8 +83,11 @@ export const gachaRoll = (
   } else if (tier.id === Tier.FOUR_STAR) {
     return { id: weightedRoll(fourStarRewardTable).id, tier: Tier.FOUR_STAR };
   } else {
-    return { id: weightedRoll(threeStarRewardTable).id, tier: Tier.THREE_STAR };
+    throw new Error("No tier found");
   }
+  //  else {
+  //   return { id: weightedRoll(threeStarRewardTable).id, tier: Tier.THREE_STAR };
+  // }
 };
 
 // TODO: put banner reward tables to be tied to a firestore database

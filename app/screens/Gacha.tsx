@@ -19,7 +19,7 @@ type Buyable = {
   itemid: string;
 };
 
-const costPerRoll: number = 16;
+const costPerRoll: number = 1;
 
 const Gacha = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -32,6 +32,7 @@ const Gacha = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [popupText, setPopupText] = useState("No gacha rolled");
   const [colour, setColour] = useState<string>("red");
+  const [canRoll, setCanRoll] = useState<boolean>(true);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -56,11 +57,12 @@ const Gacha = () => {
   }, [auth, displayName, uid, money]);
 
   const handleButtonClick = async () => {
+    setCanRoll(false);
     try {
       await gachaPurchase(uid, gems, costPerRoll);
       // if no error is thrown, gems deducted so proceed
       console.log("gacha purchase success");
-      const reward: Reward = gachaRoll(0, 0);
+      const reward: Reward = gachaRoll(0);
 
       if (reward.tier === Tier.FOUR_STAR) {
         unlockStation(reward.id, uid);
@@ -68,10 +70,11 @@ const Gacha = () => {
       } else if (reward.tier === Tier.FIVE_STAR) {
         unlockStation(reward.id, uid);
         setColour("gold");
-      } else {
-        giveFragment(reward.id, uid);
-        setColour("white");
       }
+      //  else {
+      //   giveFragment(reward.id, uid);
+      //   setColour("white");
+      // }
       setPopupText(getStationName(reward.id));
       setShowPopup(true);
     } catch (error: unknown) {
@@ -87,6 +90,7 @@ const Gacha = () => {
   };
 
   const handleClosePopup = () => {
+    setCanRoll(true);
     setShowPopup(false);
   };
 
@@ -114,6 +118,7 @@ const Gacha = () => {
       </View>
       <View style={styles.container}>
         <PaperButton
+          disabled={!canRoll}
           icon="diamond-stone"
           style={styles.button}
           mode="contained"
