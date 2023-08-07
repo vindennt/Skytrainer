@@ -6,12 +6,13 @@ interface PopupProps {
   visible: boolean;
   text: string;
   onClose: () => void;
+  colour: string;
 }
 
-const Popup: React.FC<PopupProps> = ({ visible, text, onClose }) => {
+const Popup: React.FC<PopupProps> = ({ visible, text, onClose, colour }) => {
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>
-      <View style={styles.popupOverlay}>
+      <View style={[styles.popupOverlay, { backgroundColor: colour }]}>
         <View style={styles.popup}>
           <Text style={styles.text}>{text}</Text>
 
@@ -32,7 +33,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "white",
+    // backgroundColor: "white",
     // backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   popup: {

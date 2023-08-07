@@ -10,12 +10,12 @@ const newRTE = (id: string, weight: number): RewardTableElement => {
   };
 };
 
-interface Reward {
+export interface Reward {
   id: string;
   tier: Tier;
 }
 
-enum Tier {
+export enum Tier {
   THREE_STAR = "Three",
   FOUR_STAR = "Four",
   FIVE_STAR = "Five",

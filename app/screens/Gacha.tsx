@@ -1,27 +1,12 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  SafeAreaView,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
 import { User, onAuthStateChanged } from "firebase/auth";
-import {
-  doc,
-  increment,
-  onSnapshot,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { IconButton, Button as PaperButton } from "react-native-paper";
-import moment from "moment";
-import * as SKYTRAIN_DATA from "../../utils/SKYTRAIN_DATA";
 import { getStationName } from "../../utils/SKYTRAIN_DATA";
 import Popup from "../../utils/Popup";
-import { gachaRoll } from "../../utils/GachaHandler";
+import { Reward, gachaRoll, Tier } from "../../utils/GachaHandler";
 import { giveFragment, unlockStation } from "../../utils/UnlockHandler";
 
 type Buyable = {
@@ -40,6 +25,7 @@ const Gacha = () => {
   const [gems, setGems] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [popupText, setPopupText] = useState("No gacha rolled");
+  const [colour, setColour] = useState<string>("red");
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -64,9 +50,19 @@ const Gacha = () => {
   }, [auth, displayName, uid, money]);
 
   const handleButtonClick = () => {
-    const rewardId: string = gachaRoll(0, 0).id;
-    unlockStation(rewardId, uid);
-    setPopupText(getStationName(rewardId));
+    const reward: Reward = gachaRoll(0, 0);
+
+    if (reward.tier === Tier.FOUR_STAR) {
+      unlockStation(reward.id, uid);
+      setColour("purple");
+    } else if (reward.tier === Tier.FIVE_STAR) {
+      unlockStation(reward.id, uid);
+      setColour("gold");
+    } else {
+      giveFragment(reward.id, uid);
+      setColour("white");
+    }
+    setPopupText(getStationName(reward.id));
     setShowPopup(true);
   };
 
@@ -111,6 +107,7 @@ const Gacha = () => {
           visible={showPopup}
           text={popupText}
           onClose={handleClosePopup}
+          colour={colour}
         />
       </View>
     </View>
@@ -121,7 +118,6 @@ export default Gacha;
 
 const styles = StyleSheet.create({
   container: {
-    // marginHorizontal: 10,
     flex: 1,
     paddingHorizontal: 20,
     paddingVertical: 10,
@@ -144,8 +140,6 @@ const styles = StyleSheet.create({
     width: "90%",
     maxWidth: "100%",
     maxHeight: "90%",
-    // flex: 1,
-    // backgroundColor: "pink",
   },
   item: {
     padding: 10,
