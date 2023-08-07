@@ -56,7 +56,12 @@ test("findViableTrips; return one path, deadend start, one way", () => {
   expect(findViableTrips(largeGraph, stationFourSeven, 76)).toStrictEqual(
     expectedLongPath
   );
-  expect(findViableTrips(largeGraph, stationFourSeven, 100)).toStrictEqual([]); // no viable path
+});
+
+it("Should throw error because no possible paths exist", () => {
+  expect(() => findViableTrips(largeGraph, stationFourSeven, 100)).toThrow(
+    "No solution found for 100 min trip from 4"
+  );
 });
 
 const expectedMiddleShortPath = [[stationEightSeven, stationFourtyTwoSeven]];
@@ -78,7 +83,12 @@ test("findViableTrips; return two paths, middle start, two way", () => {
   expect(findViableTrips(largeGraph, stationEightSeven, 6)).toStrictEqual(
     expectedMiddleLongPath
   );
-  expect(findViableTrips(largeGraph, stationEightSeven, 100)).toStrictEqual([]); // no viable paths
+});
+
+it("Should throw error because no possible paths exist from 8, 7", () => {
+  expect(() => findViableTrips(largeGraph, stationEightSeven, 100)).toThrow(
+    "No solution found for 100 min trip from 8"
+  );
 });
 
 // (1, 2) -5- (2, 2) -6- (3, 2) -3- (4, 2)
@@ -266,7 +276,7 @@ export const KingGeorge: Station = newStation("020", "00", false);
 export const Sapperton: Station = newStation("021", "00", false);
 export const Braid: Station = newStation("022", "00", false);
 export const LougheedTownCentre: Station = newStation("023", "00", true);
-export const ProductionWayUniversity: Station = newStation("024", "00", false);
+export const ProductionWayUniversity: Station = newStation("024", "00", true);
 export const VCCClark: Station = newStation("025", "01", false);
 export const Renfrew: Station = newStation("026", "01", false);
 export const Rupert: Station = newStation("027", "01", false);
@@ -388,8 +398,8 @@ test("Whether imported graph gets same neigbhours", () => {
   );
 });
 
-console.log(graph.getNeighbours(Waterfront));
-console.log(comparisonGraph.getNeighbours(SKYTRAIN_DATA.Waterfront));
+// console.log(graph.getNeighbours(Waterfront));
+// console.log(comparisonGraph.getNeighbours(SKYTRAIN_DATA.Waterfront));
 
 // const thing = SKYTRAIN_DATA.STATION_MAP.get("001");
 // console.log("THING: " + thing + thing?.[1]);
@@ -413,7 +423,7 @@ test("findViableTrips; Actual skytrain graph", () => {
   expect(findViableTrips(graph, KingGeorge, 2)).toEqual([
     [KingGeorge, SurreyCentral, Gateway],
   ]);
-  console.log(findViableTrips(comparisonGraph, SKYTRAIN_DATA.KingGeorge, 2));
+  // console.log(findViableTrips(comparisonGraph, SKYTRAIN_DATA.KingGeorge, 2));
   expect(findViableTrips(comparisonGraph, SKYTRAIN_DATA.KingGeorge, 2)).toEqual(
     [
       [
@@ -430,4 +440,10 @@ test("findViableTrips; Actual skytrain graph", () => {
   );
 });
 
-console.log(findViableTrips(graph, Waterfront, 60));
+// console.log(findViableTrips(graph, Waterfront, 60));
+
+test("120 minute trip from Waterfront", () => {
+  console.log(findViableTrips(graph, Waterfront, 106)); // Breakpoint. Anything above 106 mins fails
+  // console.log(findViableTrips(graph, Waterfront, 107));
+  expect(findViableTrips(graph, Waterfront, 120).length).toBeGreaterThan(0);
+});
