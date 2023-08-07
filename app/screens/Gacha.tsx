@@ -6,14 +6,20 @@ import { doc, onSnapshot } from "firebase/firestore";
 import { IconButton, Button as PaperButton } from "react-native-paper";
 import { getStationName } from "../../utils/SKYTRAIN_DATA";
 import Popup from "../../utils/Popup";
-import { Reward, gachaRoll, Tier } from "../../utils/GachaHandler";
-import { giveFragment, unlockStation } from "../../utils/UnlockHandler";
+import { Reward, Tier, gachaRoll } from "../../utils/GachaHandler";
+import {
+  gachaPurchase,
+  giveFragment,
+  unlockStation,
+} from "../../utils/UnlockHandler";
 
 type Buyable = {
   name: string;
   cost: number;
   itemid: string;
 };
+
+const costPerRoll: number = 16;
 
 const Gacha = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -49,21 +55,34 @@ const Gacha = () => {
     return () => unsub();
   }, [auth, displayName, uid, money]);
 
-  const handleButtonClick = () => {
-    const reward: Reward = gachaRoll(0, 0);
+  const handleButtonClick = async () => {
+    try {
+      await gachaPurchase(uid, gems, costPerRoll);
+      // if no error is thrown, gems deducted so proceed
+      console.log("gacha purchase success");
+      const reward: Reward = gachaRoll(0, 0);
 
-    if (reward.tier === Tier.FOUR_STAR) {
-      unlockStation(reward.id, uid);
-      setColour("purple");
-    } else if (reward.tier === Tier.FIVE_STAR) {
-      unlockStation(reward.id, uid);
-      setColour("gold");
-    } else {
-      giveFragment(reward.id, uid);
-      setColour("white");
+      if (reward.tier === Tier.FOUR_STAR) {
+        unlockStation(reward.id, uid);
+        setColour("purple");
+      } else if (reward.tier === Tier.FIVE_STAR) {
+        unlockStation(reward.id, uid);
+        setColour("gold");
+      } else {
+        giveFragment(reward.id, uid);
+        setColour("white");
+      }
+      setPopupText(getStationName(reward.id));
+      setShowPopup(true);
+    } catch (error: unknown) {
+      console.log(error);
+      if (error instanceof Error) {
+        setPopupText(error.message);
+        setShowPopup(true);
+      } else {
+        throw new Error("Unexpected error occurred");
+      }
     }
-    setPopupText(getStationName(reward.id));
-    setShowPopup(true);
   };
 
   const handleClosePopup = () => {
@@ -73,7 +92,7 @@ const Gacha = () => {
   return (
     <View style={styles.container}>
       <View style={styles.currencyContainer}>
-        <PaperButton
+        {/* <PaperButton
           icon="cash-multiple"
           style={styles.button}
           mode="outlined"
@@ -81,7 +100,7 @@ const Gacha = () => {
           labelStyle={{ fontSize: 20 }} // icon size
         >
           <Text style={styles.text}>{money}</Text>
-        </PaperButton>
+        </PaperButton> */}
         <PaperButton
           icon="diamond-stone"
           style={styles.button}
@@ -101,7 +120,7 @@ const Gacha = () => {
           labelStyle={{ fontSize: 20 }} // icon size
           onPress={handleButtonClick}
         >
-          <Text>Roll x1</Text>
+          <Text>{costPerRoll} Roll x1</Text>
         </PaperButton>
         <Popup
           visible={showPopup}

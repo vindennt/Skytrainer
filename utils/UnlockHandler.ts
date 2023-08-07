@@ -40,3 +40,38 @@ export const coinPurchase = async (
     throw new Error("Not enough money");
   }
 };
+
+export const gemPurchase = async (
+  itemid: string,
+  uid: string,
+  userGems: number,
+  cost: number,
+  mapFn: (itemid: string, uid: string) => Promise<void>
+) => {
+  if (userGems >= cost) {
+    const updatePromise = updateDoc(doc(FIRESTORE_DB, `users/${uid}`), {
+      gems: increment(-1 * cost),
+    });
+    const fnPromise = mapFn(itemid, uid);
+    await Promise.all([updatePromise, fnPromise]);
+    return;
+  } else {
+    throw new Error("Not enough gems");
+  }
+};
+
+export const gachaPurchase = async (
+  uid: string,
+  userGems: number,
+  cost: number
+) => {
+  console.log("attempting gacha purchase");
+  if (userGems >= cost) {
+    await updateDoc(doc(FIRESTORE_DB, `users/${uid}`), {
+      gems: increment(-1 * cost),
+    });
+    return;
+  } else {
+    throw new Error("Not enough gems");
+  }
+};
