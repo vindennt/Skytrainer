@@ -21,7 +21,15 @@ import moment from "moment";
 import * as SKYTRAIN_DATA from "../../utils/SKYTRAIN_DATA";
 import { getStationName } from "../../utils/SKYTRAIN_DATA";
 import Popup from "../../utils/Popup";
-import { gachaRoll } from "../../utils/GachaHandler";
+import {
+  gachaRoll,
+  tierRewardTable,
+  threeStarRewardTable,
+  fourStarRewardTable,
+  fiveStarRewardTable,
+  RewardTableElement,
+  Tier,
+} from "../../utils/GachaHandler";
 
 type Buyable = {
   name: string;
@@ -38,6 +46,7 @@ const Gacha = () => {
   const [money, setMoney] = useState(0);
   const [gems, setGems] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
+  const [popupText, setPopupText] = useState("No gacha rolled");
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -61,45 +70,8 @@ const Gacha = () => {
     return () => unsub();
   }, [auth, displayName, uid, money]);
 
-  const unlockStation = async (itemid: string) => {
-    console.log("Unlocking " + getStationName(itemid));
-    const date = moment().utcOffset("-08:00").format();
-    await setDoc(doc(FIRESTORE_DB, "users", uid, "characters", itemid), {
-      level: 1,
-      fragments: 0,
-      unlocked: true,
-      dateUnlocked: date,
-    });
-  };
-  const buyStationFragment = async (itemid: string) => {
-    console.log("Bought 10 fragments for " + getStationName(itemid));
-    await updateDoc(doc(FIRESTORE_DB, "users", uid, "characters", itemid), {
-      fragments: increment(50),
-    });
-  };
-
-  const renderItem = ({ item }: { item: Buyable }) => {
-    return (
-      <View style={styles.item}>
-        <Text>{item.name}</Text>
-        <PaperButton
-          compact={true}
-          icon="cash-multiple"
-          style={styles.button}
-          mode="elevated"
-          textColor="black"
-          labelStyle={{ fontSize: 16 }}
-          buttonColor="whitesmoke"
-          onPressIn={() => buyStationFragment(item.itemid)}
-        >
-          <Text style={styles.text}>{item.cost}</Text>
-        </PaperButton>
-      </View>
-    );
-  };
-
   const handleButtonClick = () => {
-    const reward: string = gachaRoll(0, 0).id;
+    setPopupText(gachaRoll(0, 0).id);
     setShowPopup(true);
   };
 
@@ -142,7 +114,7 @@ const Gacha = () => {
         </PaperButton>
         <Popup
           visible={showPopup}
-          text="This is a popup!"
+          text={popupText}
           onClose={handleClosePopup}
         />
       </View>
