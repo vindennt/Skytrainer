@@ -78,6 +78,7 @@ const Gacha = () => {
       console.log(error);
       if (error instanceof Error) {
         setPopupText(error.message);
+        setColour("red");
         setShowPopup(true);
       } else {
         throw new Error("Unexpected error occurred");
