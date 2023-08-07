@@ -1,5 +1,5 @@
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../api/FirebaseConfig";
-import { doc, increment, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, increment, setDoc, updateDoc } from "firebase/firestore";
 import moment from "moment";
 import * as SKYTRAIN_DATA from "./SKYTRAIN_DATA";
 import { getStationName } from "./SKYTRAIN_DATA";
@@ -29,5 +29,14 @@ export const coinPurchase = async (
   cost: number,
   mapFn: (itemid: string, uid: string) => Promise<void>
 ) => {
-  await mapFn(itemid, uid);
+  if (userMoney >= cost) {
+    const updatePromise = updateDoc(doc(FIRESTORE_DB, `users/${uid}`), {
+      money: increment(-1 * cost),
+    });
+    const fnPromise = mapFn(itemid, uid);
+    await Promise.all([updatePromise, fnPromise]);
+    return;
+  } else {
+    throw new Error("Not enough money");
+  }
 };

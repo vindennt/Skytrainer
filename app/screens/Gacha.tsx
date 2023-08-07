@@ -107,7 +107,7 @@ const Gacha = () => {
           visible={showPopup}
           text={popupText}
           onClose={handleClosePopup}
-          colour={colour}
+          backgroundColour={colour}
         />
       </View>
     </View>

@@ -9,6 +9,7 @@ import {
   giveFragment,
   coinPurchase,
 } from "../../utils/UnlockHandler";
+import Popup from "../../utils/Popup";
 
 type Buyable = {
   name: string;
@@ -80,6 +81,8 @@ const Shop = () => {
   const [uid, setUid] = useState<string>("default");
   const [money, setMoney] = useState(0);
   const [gems, setGems] = useState(0);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupText, setPopupText] = useState("");
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -115,14 +118,39 @@ const Shop = () => {
           textColor="black"
           labelStyle={{ fontSize: 16 }}
           buttonColor="whitesmoke"
-          onPressIn={() =>
-            coinPurchase(item.itemid, uid, money, item.cost, unlockStation)
-          }
+          onPressIn={async () => {
+            try {
+              await coinPurchase(
+                item.itemid,
+                uid,
+                money,
+                item.cost,
+                unlockStation
+              );
+              handleButtonClick("Purchase success!");
+            } catch (error: unknown) {
+              console.log(error);
+              if (error instanceof Error) {
+                handleButtonClick(error.message);
+              } else {
+                throw new Error("Unexpected error occurred");
+              }
+            }
+          }}
         >
           <Text style={styles.text}>{item.cost}</Text>
         </PaperButton>
       </View>
     );
+  };
+
+  const handleButtonClick = (text: string) => {
+    setPopupText(text);
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
   };
 
   return (
@@ -162,6 +190,11 @@ const Shop = () => {
             // width: "50%",
           }}
           renderItem={renderItem}
+        />
+        <Popup
+          visible={showPopup}
+          text={popupText}
+          onClose={handleClosePopup}
         />
       </SafeAreaView>
     </View>
