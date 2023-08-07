@@ -1,4 +1,11 @@
-import { View, Text, StyleSheet, SafeAreaView, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
 import { User, onAuthStateChanged } from "firebase/auth";
@@ -13,6 +20,8 @@ import { IconButton, Button as PaperButton } from "react-native-paper";
 import moment from "moment";
 import * as SKYTRAIN_DATA from "../../utils/SKYTRAIN_DATA";
 import { getStationName } from "../../utils/SKYTRAIN_DATA";
+import Popup from "../../utils/Popup";
+import { gachaRoll } from "../../utils/GachaHandler";
 
 type Buyable = {
   name: string;
@@ -28,6 +37,7 @@ const Gacha = () => {
   const [uid, setUid] = useState<string>("default");
   const [money, setMoney] = useState(0);
   const [gems, setGems] = useState(0);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -88,6 +98,15 @@ const Gacha = () => {
     );
   };
 
+  const handleButtonClick = () => {
+    const reward: string = gachaRoll(0, 0).id;
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.currencyContainer}>
@@ -110,6 +129,23 @@ const Gacha = () => {
           <Text style={styles.text}>{gems}</Text>
         </PaperButton>
       </View>
+      <View style={styles.container}>
+        <PaperButton
+          icon="diamond-stone"
+          style={styles.button}
+          mode="contained"
+          buttonColor="royalblue"
+          labelStyle={{ fontSize: 20 }} // icon size
+          onPress={handleButtonClick}
+        >
+          <Text>Roll x1</Text>
+        </PaperButton>
+        <Popup
+          visible={showPopup}
+          text="This is a popup!"
+          onClose={handleClosePopup}
+        />
+      </View>
     </View>
   );
 };
@@ -123,6 +159,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     alignItems: "center",
+    justifyContent: "center",
   },
   button: {
     margin: 5,

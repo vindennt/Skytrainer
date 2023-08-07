@@ -99,7 +99,10 @@ const fiveStarRewardTable: RewardTableElement[] = [newRTE("053", 1)];
 
 // returns reward id and tier
 // pity influences reward tier
-const gachaRoll = (fourStarPity: number, fiveStarPity: number): Reward => {
+export const gachaRoll = (
+  fourStarPity: number,
+  fiveStarPity: number
+): Reward => {
   const tier = weightedRoll(tierRewardTable);
   if (tier.id === Tier.FIVE_STAR) {
     return { id: weightedRoll(fiveStarRewardTable).id, tier: Tier.FIVE_STAR };
