@@ -83,6 +83,7 @@ const Shop = () => {
   const [gems, setGems] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [popupText, setPopupText] = useState("");
+  const [canBuy, setCanBuy] = useState<boolean>(true);
 
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
@@ -111,6 +112,7 @@ const Shop = () => {
       <View style={styles.item}>
         <Text>{item.name}</Text>
         <PaperButton
+          disabled={!canBuy}
           compact={true}
           icon="cash-multiple"
           style={styles.button}
@@ -145,11 +147,13 @@ const Shop = () => {
   };
 
   const handleButtonClick = (text: string) => {
+    setCanBuy(false);
     setPopupText(text);
     setShowPopup(true);
   };
 
   const handleClosePopup = () => {
+    setCanBuy(true);
     setShowPopup(false);
   };
 
