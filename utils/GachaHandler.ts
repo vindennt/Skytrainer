@@ -1,4 +1,4 @@
-interface RewardTableElement {
+export interface RewardTableElement {
   id: string;
   weight: number;
 }
@@ -12,10 +12,10 @@ const newRTE = (id: string, weight: number): RewardTableElement => {
 
 interface Reward {
   id: string;
-  tier: string;
+  tier: Tier;
 }
 
-enum Tier {
+export enum Tier {
   THREE_STAR = "Three",
   FOUR_STAR = "Four",
   FIVE_STAR = "Five",
@@ -33,40 +33,33 @@ function weightedRoll(rewardTable: RewardTableElement[]): RewardTableElement {
   rewardTable.forEach((element) => {
     totalWeight += element.weight;
   });
+  console.log("total weighted roll : " + totalWeight);
 
   // roll number
   const randomNumber = Math.random() * totalWeight;
+  console.log("Rolled weight : " + randomNumber);
 
   // get reward
   let currentWeight = 0;
+  // let toReturn: RewardTableElement;
   // think of currentWeight as a stack pointer, and the weights are working up towards the randoml;y picked number
-  rewardTable.forEach((element) => {
+  for (const element of rewardTable) {
     const weight = element.weight;
     currentWeight += weight;
-    if (randomNumber <= currentWeight) {
-      return element;
+    console.log(
+      "current weight before reward check : " +
+        currentWeight +
+        ", vs random number: " +
+        randomNumber
+    );
+    if (randomNumber < currentWeight) {
+      console.log("something found!");
+      const toReturn: RewardTableElement = newRTE(element.id, element.weight);
+      console.log(toReturn);
+      return toReturn;
     }
-  });
-
+  }
   throw new Error("No reward found");
-  //   const totalWeight = objects.reduce(
-  //     (sum, obj) => sum + obj[Object.keys(obj)[0]],
-  //     0
-  //   );
-
-  // get total weight based on data input
-  //   for (const reward of tierRewardTable) {
-  //     const weight = Object.values(reward)[0];
-  //     totalWeight += weight;
-  //   }
-
-  //   for (const obj of rewardTable) {
-  //     const weight = obj[Object.keys(obj)[0]];
-  //     currentWeight += weight;
-  //     if (randomNumber <= currentWeight) {
-  //       return obj;
-  //     }
-  //   }
 }
 // const weightedRoll = (rewards: string[], weights: number[]): string => {
 //   // Get weighted total
@@ -87,15 +80,15 @@ function weightedRoll(rewardTable: RewardTableElement[]): RewardTableElement {
 //   throw new Error("Roll matches no tier");
 // };
 
-const tierRewardTable: RewardTableElement[] = [
+export const tierRewardTable: RewardTableElement[] = [
   newRTE(Tier.THREE_STAR, 1),
   newRTE(Tier.FOUR_STAR, 1),
   newRTE(Tier.FIVE_STAR, 1),
 ];
 
-const threeStarRewardTable: RewardTableElement[] = [newRTE("001", 1)];
-const fourStarRewardTable: RewardTableElement[] = [newRTE("002", 1)];
-const fiveStarRewardTable: RewardTableElement[] = [newRTE("053", 1)];
+export const threeStarRewardTable: RewardTableElement[] = [newRTE("001", 1)];
+export const fourStarRewardTable: RewardTableElement[] = [newRTE("002", 1)];
+export const fiveStarRewardTable: RewardTableElement[] = [newRTE("053", 1)];
 
 // returns reward id and tier
 // pity influences reward tier
@@ -104,6 +97,7 @@ export const gachaRoll = (
   fiveStarPity: number
 ): Reward => {
   const tier = weightedRoll(tierRewardTable);
+  console.log("XXXXXXXXXXXXXXX Reward  tier to roll in: " + tier.id);
   if (tier.id === Tier.FIVE_STAR) {
     return { id: weightedRoll(fiveStarRewardTable).id, tier: Tier.FIVE_STAR };
   } else if (tier.id === Tier.FOUR_STAR) {
