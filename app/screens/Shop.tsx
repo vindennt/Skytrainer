@@ -2,17 +2,13 @@ import { View, Text, StyleSheet, SafeAreaView, FlatList } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
 import { User, onAuthStateChanged } from "firebase/auth";
-import {
-  doc,
-  increment,
-  onSnapshot,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { IconButton, Button as PaperButton } from "react-native-paper";
-import moment from "moment";
-import * as SKYTRAIN_DATA from "../../utils/SKYTRAIN_DATA";
-import { getStationName } from "../../utils/SKYTRAIN_DATA";
+import {
+  unlockStation,
+  giveFragment,
+  coinPurchase,
+} from "../../utils/UnlockHandler";
 
 type Buyable = {
   name: string;
@@ -107,23 +103,6 @@ const Shop = () => {
     return () => unsub();
   }, [auth, displayName, uid, money]);
 
-  const unlockStation = async (itemid: string) => {
-    console.log("Unlocking " + getStationName(itemid));
-    const date = moment().utcOffset("-08:00").format();
-    await setDoc(doc(FIRESTORE_DB, "users", uid, "characters", itemid), {
-      level: 1,
-      fragments: 0,
-      unlocked: true,
-      dateUnlocked: date,
-    });
-  };
-  const buyStationFragment = async (itemid: string) => {
-    console.log("Bought 10 fragments for " + getStationName(itemid));
-    await updateDoc(doc(FIRESTORE_DB, "users", uid, "characters", itemid), {
-      fragments: increment(50),
-    });
-  };
-
   const renderItem = ({ item }: { item: Buyable }) => {
     return (
       <View style={styles.item}>
@@ -136,7 +115,9 @@ const Shop = () => {
           textColor="black"
           labelStyle={{ fontSize: 16 }}
           buttonColor="whitesmoke"
-          onPressIn={() => buyStationFragment(item.itemid)}
+          onPressIn={() =>
+            coinPurchase(item.itemid, uid, money, item.cost, unlockStation)
+          }
         >
           <Text style={styles.text}>{item.cost}</Text>
         </PaperButton>
