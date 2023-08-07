@@ -86,7 +86,7 @@ export function findViableTrips(
   // console.log(paths);
   if (paths.length === 0) {
     throw new Error(
-      "No solution found for " + desiredLength + " trip from " + start?.id
+      "No solution found for " + desiredLength + " min trip from " + start?.id
     );
   } else {
     return paths;
