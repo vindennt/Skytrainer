@@ -1,8 +1,10 @@
+// format for rewards in the drop table where id is character id, and weight is probability weight
 interface RewardTableElement {
   id: string;
   weight: number;
 }
 
+// helper function to increase readability creating a RewardTableElement
 const newRTE = (id: string, weight: number): RewardTableElement => {
   return {
     id: id,
@@ -10,24 +12,25 @@ const newRTE = (id: string, weight: number): RewardTableElement => {
   };
 };
 
+// Format for rewards
 export interface Reward {
   id: string;
   tier: Tier;
 }
 
+// Concrete tiers for rewards
 export enum Tier {
   // THREE_STAR = "Three",
   FOUR_STAR = "Four",
   FIVE_STAR = "Five",
 }
 
-// const tiers: string[] = [Tier.THREE_STAR, Tier.FOUR_STAR, Tier.FIVE_STAR];
-// const tierWeights: number[] = [6, 3, 1];
-
-const UNIVERSAL_FIVE_STAR_PITY: number = 89;
+// Gacha mechanic "Pity" limit. If a user does not roll a Five Star Tiered reward in
+// UNIVERSAL_FIVE_STAR_PITY rolls, next roll is gauranteed Five Star Tier
+const UNIVERSAL_FIVE_STAR_PITY: number = 3;
 // const UNIVERSAL_FOUR_STAR_PITY: number = 9;
 
-// helper for gacha roll
+// helper function that allows dynamic random reward generation based on weighted probability
 function weightedRoll(rewardTable: RewardTableElement[]): RewardTableElement {
   let totalWeight = 0;
   rewardTable.forEach((element) => {
@@ -63,28 +66,33 @@ function weightedRoll(rewardTable: RewardTableElement[]): RewardTableElement {
 
 const tierRewardTable: RewardTableElement[] = [
   // newRTE(Tier.THREE_STAR, 1),
-  newRTE(Tier.FOUR_STAR, 1),
+  newRTE(Tier.FOUR_STAR, 5),
   newRTE(Tier.FIVE_STAR, 1),
 ];
 
-const threeStarRewardTable: RewardTableElement[] = [newRTE("001", 1)];
+// const threeStarRewardTable: RewardTableElement[] = [newRTE("001", 1)];
 // const fourStarRewardTable: RewardTableElement[] = [newRTE("002", 1)];
 const fiveStarRewardTable: RewardTableElement[] = [newRTE("053", 1)];
 
-// returns reward id and tier
-// pity influences reward tier
+// Returns reward id and randomized tier of a randomized reward
+// userFiveStarPity is compared to UNIVERSAL_FIVE_STAR_PITY to see if next reward is gauranteed Five star tier
 export const gachaRoll = (
   // fourStarPity: number,
-  fiveStarPity: number
+  userFiveStarPity: number
 ): Reward => {
-  const tier = weightedRoll(tierRewardTable);
-  if (tier.id === Tier.FIVE_STAR) {
+  if (userFiveStarPity === UNIVERSAL_FIVE_STAR_PITY) {
     return { id: weightedRoll(fiveStarRewardTable).id, tier: Tier.FIVE_STAR };
-  } else if (tier.id === Tier.FOUR_STAR) {
-    return { id: weightedRoll(fourStarRewardTable).id, tier: Tier.FOUR_STAR };
   } else {
-    throw new Error("No tier found");
+    const tier = weightedRoll(tierRewardTable);
+    if (tier.id === Tier.FIVE_STAR) {
+      return { id: weightedRoll(fiveStarRewardTable).id, tier: Tier.FIVE_STAR };
+    } else if (tier.id === Tier.FOUR_STAR) {
+      return { id: weightedRoll(fourStarRewardTable).id, tier: Tier.FOUR_STAR };
+    } else {
+      throw new Error("No tier found");
+    }
   }
+
   //  else {
   //   return { id: weightedRoll(threeStarRewardTable).id, tier: Tier.THREE_STAR };
   // }

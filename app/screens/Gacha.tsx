@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
 import { User, onAuthStateChanged } from "firebase/auth";
-import { doc, onSnapshot } from "firebase/firestore";
+import { doc, increment, onSnapshot, updateDoc } from "firebase/firestore";
 import { IconButton, Button as PaperButton } from "react-native-paper";
 import { getStationName } from "../../utils/SKYTRAIN_DATA";
 import Popup from "../../utils/Popup";
@@ -12,6 +12,7 @@ import {
   giveFragment,
   unlockStation,
 } from "../../utils/UnlockHandler";
+import moment from "moment";
 
 type Buyable = {
   name: string;
@@ -29,6 +30,7 @@ const Gacha = () => {
   const [uid, setUid] = useState<string>("default");
   const [money, setMoney] = useState(0);
   const [gems, setGems] = useState(0);
+  const [pity, setPity] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [popupText, setPopupText] = useState("No gacha rolled");
   const [colour, setColour] = useState<string>("red");
@@ -52,9 +54,11 @@ const Gacha = () => {
       const userData = doc.data();
       setMoney(userData?.money);
       setGems(userData?.gems);
+      setPity(userData?.pity);
+      // console.log("Pity: " + pity);
     });
     return () => unsub();
-  }, [auth, displayName, uid, money]);
+  }, [auth, displayName, uid, gems, pity]);
 
   const handleButtonClick = async () => {
     setCanRoll(false);
@@ -62,14 +66,15 @@ const Gacha = () => {
       await gachaPurchase(uid, gems, costPerRoll);
       // if no error is thrown, gems deducted so proceed
       console.log("gacha purchase success");
-      const reward: Reward = gachaRoll(0);
-
+      const reward: Reward = gachaRoll(pity);
       if (reward.tier === Tier.FOUR_STAR) {
         unlockStation(reward.id, uid);
         setColour("purple");
+        updatePity(1);
       } else if (reward.tier === Tier.FIVE_STAR) {
         unlockStation(reward.id, uid);
         setColour("gold");
+        updatePity(0);
       }
       //  else {
       //   giveFragment(reward.id, uid);
@@ -92,6 +97,19 @@ const Gacha = () => {
   const handleClosePopup = () => {
     setCanRoll(true);
     setShowPopup(false);
+  };
+
+  // updates user's gacha pity data
+  const updatePity = (amt: number) => {
+    if (amt === 0) {
+      updateDoc(doc(FIRESTORE_DB, `users/${uid}`), {
+        pity: 0,
+      });
+    } else {
+      updateDoc(doc(FIRESTORE_DB, `users/${uid}`), {
+        pity: increment(amt),
+      });
+    }
   };
 
   return (
@@ -126,7 +144,9 @@ const Gacha = () => {
           labelStyle={{ fontSize: 20 }} // icon size
           onPress={handleButtonClick}
         >
-          <Text>{costPerRoll} Roll x1</Text>
+          <Text>
+            {costPerRoll} {"   "} Roll x1
+          </Text>
         </PaperButton>
         <Popup
           visible={showPopup}
