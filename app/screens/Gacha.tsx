@@ -21,15 +21,8 @@ import moment from "moment";
 import * as SKYTRAIN_DATA from "../../utils/SKYTRAIN_DATA";
 import { getStationName } from "../../utils/SKYTRAIN_DATA";
 import Popup from "../../utils/Popup";
-import {
-  gachaRoll,
-  tierRewardTable,
-  threeStarRewardTable,
-  fourStarRewardTable,
-  fiveStarRewardTable,
-  RewardTableElement,
-  Tier,
-} from "../../utils/GachaHandler";
+import { gachaRoll } from "../../utils/GachaHandler";
+import { giveFragment, unlockStation } from "../../utils/UnlockHandler";
 
 type Buyable = {
   name: string;
@@ -71,7 +64,9 @@ const Gacha = () => {
   }, [auth, displayName, uid, money]);
 
   const handleButtonClick = () => {
-    setPopupText(gachaRoll(0, 0).id);
+    const rewardId: string = gachaRoll(0, 0).id;
+    unlockStation(rewardId, uid);
+    setPopupText(getStationName(rewardId));
     setShowPopup(true);
   };
 
