@@ -84,7 +84,13 @@ export function findViableTrips(
   // console.log("____STARTING FROM " + start.id);
   dfsHelper(start, [], 0, new Set());
   // console.log(paths);
-  return paths;
+  if (paths.length === 0) {
+    throw new Error(
+      "No solution found for " + desiredLength + " trip from " + start?.id
+    );
+  } else {
+    return paths;
+  }
 }
 
 // Helper function to check if two paths are equal

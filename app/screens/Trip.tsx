@@ -32,7 +32,20 @@ const Trip: React.FC = () => {
   // Trip details
   const stationToRetrieve = SKYTRAIN_DATA.STATION_MAP.get(characterid);
   var graph: Graph = SKYTRAIN_DATA.buildGraph();
-  const viableTrips = findViableTrips(graph, stationToRetrieve?.[1], todo.time);
+  const getViableTrips = () => {
+    try {
+      return findViableTrips(graph, stationToRetrieve?.[1], todo.time);
+    } catch (error: unknown) {
+      console.log(error);
+      if (error instanceof Error) {
+        console.log(error.message);
+      } else {
+        throw new Error("Unexpected error occurred");
+      }
+    }
+  };
+  const viableTrips = getViableTrips();
+
   let firstStationName: string | undefined = "";
   let lastStationName: string | undefined = "";
 
@@ -79,21 +92,29 @@ const Trip: React.FC = () => {
   // console.log(viableTrips);
 
   const tripLog = () => {
-    const randomIndex = Math.floor(Math.random() * viableTrips.length);
-    const randomArray = viableTrips[randomIndex];
-    const firstStation = randomArray[0];
-    const lastStation = randomArray[randomArray.length - 1];
-    console.log(SKYTRAIN_DATA.STATION_MAP.get(firstStation?.id as string)?.[0]);
-    console.log(SKYTRAIN_DATA.STATION_MAP.get(lastStation?.id as string)?.[0]);
-    firstStationName = SKYTRAIN_DATA.STATION_MAP.get(
-      firstStation?.id as string
-    )?.[0];
-    lastStationName = SKYTRAIN_DATA.STATION_MAP.get(
-      lastStation?.id as string
-    )?.[0];
-    stationsPassed = randomArray.length;
-    // console.log("stations passed: " + stationsPassed);
-    updateRewards();
+    if (viableTrips !== undefined) {
+      const randomIndex = Math.floor(Math.random() * viableTrips.length);
+      const randomArray = viableTrips[randomIndex];
+      const firstStation = randomArray[0];
+      const lastStation = randomArray[randomArray.length - 1];
+      console.log(
+        SKYTRAIN_DATA.STATION_MAP.get(firstStation?.id as string)?.[0]
+      );
+      console.log(
+        SKYTRAIN_DATA.STATION_MAP.get(lastStation?.id as string)?.[0]
+      );
+      firstStationName = SKYTRAIN_DATA.STATION_MAP.get(
+        firstStation?.id as string
+      )?.[0];
+      lastStationName = SKYTRAIN_DATA.STATION_MAP.get(
+        lastStation?.id as string
+      )?.[0];
+      stationsPassed = randomArray.length;
+      // console.log("stations passed: " + stationsPassed);
+      updateRewards();
+    } else {
+      console.log("No viable trips to be logged");
+    }
   };
   console.log(tripLog());
   todo.done = true;
