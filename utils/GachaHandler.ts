@@ -10,10 +10,10 @@ const newRTE = (id: string, weight: number): RewardTableElement => {
   };
 };
 
-// type Reward = {
-//   id: string;
-//   tier: string;
-// };
+interface Reward {
+  id: string;
+  tier: string;
+}
 
 enum Tier {
   THREE_STAR = "Three",
@@ -99,17 +99,14 @@ const fiveStarRewardTable: RewardTableElement[] = [newRTE("053", 1)];
 
 // returns reward id and tier
 // pity influences reward tier
-const gachaRoll = (
-  fourStarPity: number,
-  fiveStarPity: number
-): RewardTableElement => {
+const gachaRoll = (fourStarPity: number, fiveStarPity: number): Reward => {
   const tier = weightedRoll(tierRewardTable);
   if (tier.id === Tier.FIVE_STAR) {
-    return weightedRoll(fiveStarRewardTable);
+    return { id: weightedRoll(fiveStarRewardTable).id, tier: Tier.FIVE_STAR };
   } else if (tier.id === Tier.FOUR_STAR) {
-    return weightedRoll(fourStarRewardTable);
+    return { id: weightedRoll(fourStarRewardTable).id, tier: Tier.FOUR_STAR };
   } else {
-    return weightedRoll(threeStarRewardTable);
+    return { id: weightedRoll(threeStarRewardTable).id, tier: Tier.THREE_STAR };
   }
 };
 
