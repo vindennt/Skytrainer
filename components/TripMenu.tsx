@@ -49,7 +49,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
   uid,
 }) => {
   const [showDropDown, setShowDropDown] = useState(false);
-  const [character, setCharacter] = useState<string>("001");
+  const [character, setCharacter] = useState<string>("000");
   const isFocused = useIsFocused();
   const [isPopupVisible, setPopupVisible] = useState(true);
   // const [characterList, setCharacterList] = useState<Character[]>([]);
@@ -78,6 +78,9 @@ const TripMenu: React.FC<TripMenuProps> = ({
 
   useEffect(() => {
     getUserCharacterData();
+    if (characterList.length > 0) {
+      setCharacter(characterList[0].id);
+    }
     // Recheck todos. Delete ones that just finished
     if (isFocused) {
       // If item is done (just came from Trip), delete it

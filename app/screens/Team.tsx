@@ -107,6 +107,9 @@ const Team = () => {
         setUnlockedCharList(fetchedChars); // set displayed list to fetched array
         setDisplayInfo(character);
         setDataFetched(true);
+        if (unlockedCharList.length > 0) {
+          setCharacter(unlockedCharList[0].id);
+        }
 
         // console.log("GETTING TEAM DISPLAY");
         // console.log(unlockedCharList);
