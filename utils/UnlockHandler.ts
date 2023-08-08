@@ -3,8 +3,11 @@ import { doc, getDoc, increment, setDoc, updateDoc } from "firebase/firestore";
 import moment from "moment";
 import * as SKYTRAIN_DATA from "./SkytrainData";
 import { getStationName } from "./SkytrainData";
+import { Station } from "./Graph";
 
 export const LEVELUP_FRAGMENT_COST: number = 1;
+export const MONEY_PER_STATION = 5;
+export const GEMS_PER_STATION = 3; // TODO: remove this as only dialy quests shulf give gems
 
 export const unlockStation = async (itemid: string, uid: string) => {
   console.log("Unlocking " + getStationName(itemid));
@@ -94,4 +97,21 @@ export const gachaPurchase = async (
   } else {
     throw new Error("Not enough gems");
   }
+};
+
+export const tripRewardHandler = async (
+  uid: string,
+  visited: Station[],
+  levelOfStart: number
+) => {
+  const stationsPassed: number = visited.length;
+  const moneyReward = MONEY_PER_STATION * stationsPassed;
+  const gemReward = GEMS_PER_STATION * stationsPassed;
+
+  const userRef = doc(FIRESTORE_DB, `users/${uid}`);
+  await updateDoc(userRef, {
+    money: increment(moneyReward),
+    gems: increment(gemReward),
+  });
+  return;
 };

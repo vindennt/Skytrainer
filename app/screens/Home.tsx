@@ -71,6 +71,7 @@ const Home = ({ navigation }: RouterProps) => {
   // Firebase/store
   const [user, setUser] = useState<User>();
   const auth = FIREBASE_AUTH;
+
   const [displayName, setDisplayName] = useState<string | null>("default");
   const [uid, setUid] = useState<string>("default");
   const [money, setMoney] = useState(0);
@@ -171,7 +172,7 @@ const Home = ({ navigation }: RouterProps) => {
       setGems(userData?.gems);
     });
     return () => unsub();
-  }, [auth, displayName, uid, money]);
+  }, [auth, uid, money]);
 
   const canAddToDo = () => {
     if (todo === "" || range === 0) {

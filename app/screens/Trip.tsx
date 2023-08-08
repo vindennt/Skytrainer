@@ -20,6 +20,7 @@ import { findViableTrips } from "../../utils/TripFinder";
 import * as SKYTRAIN_DATA from "../../utils/SkytrainData";
 import { getStationName } from "../../utils/SkytrainData";
 import { Graph, Station, newStation } from "../../utils/Graph";
+import { tripRewardHandler } from "../../utils/UnlockHandler";
 
 type TripRouteProp = RouteProp<RootStackParamList, "Trip">;
 
@@ -111,7 +112,8 @@ const Trip: React.FC = () => {
       )?.[0];
       stationsPassed = randomArray.length;
       // console.log("stations passed: " + stationsPassed);
-      updateRewards();
+      tripRewardHandler(user.uid, randomArray, 1);
+      // updateRewards();
     } else {
       console.log("No viable trips to be logged");
     }

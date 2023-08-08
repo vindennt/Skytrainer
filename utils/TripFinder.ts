@@ -18,6 +18,7 @@ export function findViableTrips(
   desiredLength: number
 ): Station[][] {
   // const graph = SKYTRAIN_GRAPH;
+  console.log("---------STARTING findViableTrips finished");
   const paths: Station[][] = [];
 
   // Helper to run DFS and search for paths, adding viable to paths
@@ -89,6 +90,8 @@ export function findViableTrips(
       "No solution found for " + desiredLength + " min trip from " + start?.id
     );
   } else {
+    console.log("---------findViableTrips finished");
+    console.log(paths);
     return paths;
   }
 }
