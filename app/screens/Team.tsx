@@ -132,26 +132,29 @@ const Team = () => {
           icon="cash-multiple"
           style={styles.button}
           mode="outlined"
-          textColor="royalblue"
+          textColor="gray"
           labelStyle={{ fontSize: 20 }} // icon size
         >
           <Text style={styles.text}>{money}</Text>
         </PaperButton>
-        <View style={styles.infoContainer}>
+
+        <View style={styles.nameContainer}>
           <Text style={styles.text}>{getStationName(character)}</Text>
+        </View>
+        <View style={styles.infoContainer}>
           <Text style={styles.text}>Level: {levelDisplay}</Text>
           <Text style={styles.text}>Fragments: {fragmentDisplay}</Text>
-          <PaperButton
-            icon="chevron-double-up"
-            disabled={true}
-            style={styles.button}
-            mode="contained"
-            buttonColor="orange"
-            labelStyle={{ fontSize: 20 }} // icon size
-          >
-            <Text style={styles.text}>Level up</Text>
-          </PaperButton>
         </View>
+        <PaperButton
+          icon="chevron-double-up"
+          disabled={true}
+          style={styles.button}
+          mode="contained"
+          buttonColor="orange"
+          labelStyle={{ fontSize: 20 }} // icon size
+        >
+          <Text style={styles.text}>Level Up</Text>
+        </PaperButton>
       </View>
       <Popup
         visible={showPopup}
@@ -176,8 +179,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   button: {
-    margin: 5,
-    flexWrap: "wrap",
+    margin: 15,
+    // flexWrap: "wrap",
   },
   currencyContainer: {
     width: "100%",
@@ -198,6 +201,9 @@ const styles = StyleSheet.create({
     backgroundColor: "lightgray",
     alignItems: "center",
     padding: 10,
+  },
+  nameContainer: {
+    // flex: 1,
   },
   infoContainer: {
     flex: 1,
