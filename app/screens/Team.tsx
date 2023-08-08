@@ -100,6 +100,7 @@ const Team = () => {
           // console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
           fetchedChars.push({
             id: doc.id,
+            name: getStationName(doc.id),
             ...doc.data(),
           } as Character); // necessary line to pass typecheck
         });
