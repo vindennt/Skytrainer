@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
+import { useIsFocused } from "@react-navigation/native";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
 import { User, onAuthStateChanged } from "firebase/auth";
 import {
@@ -32,18 +33,21 @@ const Team = () => {
   // const [displayName, displayName] = useState("string");
   const [displayName, setDisplayName] = useState<string | null>("default");
   const [uid, setUid] = useState<string>("default");
+  const isFocused = useIsFocused();
   const [money, setMoney] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
   const [popupText, setPopupText] = useState("");
   const [colour, setColour] = useState<string>("red");
-  var unlockedCharList: Character[] = [];
+  const [unlockedCharList, setUnlockedCharList] = useState<Character[]>([]);
+
+  // var unlockedCharList: Character[] = [];
   const [character, setCharacter] = useState<string>("001");
   const [levelDisplay, setLevelDisplay] = useState<string>("0");
   const [fragmentDisplay, setFragmentDisplay] = useState<string>("0");
   const [unlockedDateDisplay, setUnlockedDateDisplay] = useState<string>("");
 
   const getUserCharacterData = async () => {
-    unlockedCharList = [];
+    setUnlockedCharList([]);
     const charQuery = query(
       collection(FIRESTORE_DB, `users/${uid}/characters`),
       where("unlocked", "==", true)
@@ -53,9 +57,7 @@ const Team = () => {
       const id: string = doc.id;
       // const stationRef = SKYTRAIN_DATA.STATION_MAP.get(doc.id);
       unlockedCharList.push({
-        // name: "jeff",
-        // TODO: implement fragments and leveling
-        // level: doc.data().level,
+        level: doc.data().level,
         id: id,
         name: getStationName(id), // Name of station from the map
       } as Character);
@@ -71,7 +73,9 @@ const Team = () => {
   };
 
   useEffect(() => {
-    getUserCharacterData();
+    if (isFocused) {
+      getUserCharacterData();
+    }
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -92,7 +96,7 @@ const Team = () => {
       // console.log("Pity: " + pity);
     });
     return () => unsub();
-  }, [auth, displayName, uid]);
+  }, [auth, displayName, uid, isFocused]);
 
   const handleButtonClick = () => {
     setShowPopup(true);
