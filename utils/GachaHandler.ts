@@ -72,7 +72,10 @@ const tierRewardTable: RewardTableElement[] = [
 
 // const threeStarRewardTable: RewardTableElement[] = [newRTE("001", 1)];
 // const fourStarRewardTable: RewardTableElement[] = [newRTE("002", 1)];
-const fiveStarRewardTable: RewardTableElement[] = [newRTE("053", 1)];
+const fiveStarRewardTable: RewardTableElement[] = [
+  newRTE("053", 1),
+  newRTE("005", 1),
+];
 
 // Returns reward id and randomized tier of a randomized reward
 // userFiveStarPity is compared to UNIVERSAL_FIVE_STAR_PITY to see if next reward is gauranteed Five star tier
@@ -104,7 +107,7 @@ const fourStarRewardTable: RewardTableElement[] = [
   newRTE("002", 1),
   newRTE("003", 1),
   newRTE("004", 1),
-  newRTE("005", 1),
+  // newRTE("005", 1),
   newRTE("006", 1),
   newRTE("007", 1),
   newRTE("008", 1),

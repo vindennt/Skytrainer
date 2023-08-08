@@ -10,6 +10,8 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Character, characterList } from "./TripMenu";
+import { getTier } from "./SKYTRAIN_DATA";
+import { Tier } from "./GachaHandler";
 
 type GridSelectorProps = {
   //   visible: boolean;
@@ -42,8 +44,17 @@ const GridSelector: React.FC<GridSelectorProps> = ({
 }) => {
   const [selectedCharacter, setSelectedCharacter] = useState<string>("001");
   const renderItem = ({ item }: { item: Character }) => {
-    const backgroundColor =
-      item.id === selectedCharacter ? "lightblue" : "royalblue";
+    // background colour based on tier
+    const backgroundColor = () => {
+      if (item.id === selectedCharacter) {
+        return "lightblue";
+      } else if (getTier(item.id) === Tier.FIVE_STAR) {
+        return "navy";
+      } else {
+        return "royalblue";
+      }
+    };
+
     const color = item.id === selectedCharacter ? "black" : "white";
 
     return (
@@ -53,7 +64,7 @@ const GridSelector: React.FC<GridSelectorProps> = ({
           setSelectedCharacter(item.id);
           onSelect(item);
         }}
-        backgroundColor={backgroundColor}
+        backgroundColor={backgroundColor()}
         textColor={color}
       />
     );
