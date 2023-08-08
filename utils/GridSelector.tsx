@@ -16,6 +16,7 @@ type GridSelectorProps = {
   characters: Character[];
   //   onSelect: (image: ImageData) => void;
   onSelect: (character: Character) => void;
+  columns: number;
 };
 
 type ItemProps = {
@@ -37,8 +38,9 @@ const Item = ({ item, onPress, backgroundColor, textColor }: ItemProps) => (
 const GridSelector: React.FC<GridSelectorProps> = ({
   characters,
   onSelect,
+  columns,
 }) => {
-  const [selectedCharacter, setSelectedCharacter] = useState<string>("000");
+  const [selectedCharacter, setSelectedCharacter] = useState<string>("001");
   const renderItem = ({ item }: { item: Character }) => {
     const backgroundColor =
       item.id === selectedCharacter ? "lightblue" : "royalblue";
@@ -61,7 +63,7 @@ const GridSelector: React.FC<GridSelectorProps> = ({
     <SafeAreaView style={styles.container}>
       <FlatList
         data={characterList}
-        numColumns={2}
+        numColumns={columns}
         keyExtractor={(item) => item.name}
         extraData={selectedCharacter}
         contentContainerStyle={{

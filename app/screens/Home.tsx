@@ -30,13 +30,9 @@ import {
 } from "@gorhom/bottom-sheet";
 import { NavigationProp } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
-import Gacha from "./Gacha";
-import Shop from "./Shop";
-import Team from "./Team";
 import TripMenu from "../../utils/TripMenu";
 import {
   addDoc,
-  arrayUnion,
   collection,
   deleteDoc,
   doc,
@@ -44,19 +40,6 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-// import { getDatabase, ref, child, get, onValue } from "firebase/database";
-import { Entypo } from "@expo/vector-icons";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import Icon from "@mdi/react";
-import { mdiTrashCanOutline } from "@mdi/js";
-// import { EvaIconsPack } from "@ui-kitten/eva-icons";
-// import { Icon, Button } from "@ui-kitten/components";
-import Animated, {
-  Extrapolate,
-  interpolate,
-  useAnimatedStyle,
-} from "react-native-reanimated";
-import { Character } from "../../utils/TripMenu";
 import moment from "moment";
 
 const METRO_VANCOUVER_COORDINATES = {
@@ -122,9 +105,6 @@ const Home = ({ navigation }: RouterProps) => {
     );
     const weather = (await data.json()) as any;
     setWeather(weather);
-    // navigation.setOptions({
-    //   title: weather?.weather[0].main + Math.trunc(weather?.main.temp) + "°C ",
-    // });
     navigation.setOptions({ headerTitle: () => <HomeHeader /> });
   };
 
@@ -218,11 +198,6 @@ const Home = ({ navigation }: RouterProps) => {
   // fn to display todos from fetched list
   const renderTodo = ({ item }: any) => {
     const ref = doc(FIRESTORE_DB, `todos/${uid}/todos/${item.id}`); // reference to single item
-    // const ref = doc(FIRESTORE_DB, "todos", uid); // reference to single item
-
-    // const setDone = async () => {
-    //   updateDoc(ref, { done: !item.done });
-    // };
 
     const deleteItem = async () => {
       deleteDoc(ref);
@@ -255,17 +230,9 @@ const Home = ({ navigation }: RouterProps) => {
           size={20}
           iconColor="red"
         />
-
-        {/* <Icon path={"mdiTrashCanOutline"} size={1} color={"red"} /> */}
-        {/* <TouchableOpacity onPress={deleteItem}></TouchableOpacity> */}
-        {/* <Ionicons name="trash-bin-outline" size={24} color="red" /> */}
       </View>
     );
   };
-
-  // const handleSheetChanges = useCallback((index: number) => {
-  //   console.log("handleSheetChanges", index);
-  // }, []);
 
   // renders
   const renderBackdrop = useCallback(
@@ -308,7 +275,6 @@ const Home = ({ navigation }: RouterProps) => {
         // accessible={false}
       >
         <View style={[styles.container]}>
-          {/* <Button onPress={() => navigation.navigate("Team")} title="Team" /> */}
           <View style={styles.currencyContainer}>
             <PaperButton
               icon="cash-multiple"
@@ -337,16 +303,8 @@ const Home = ({ navigation }: RouterProps) => {
           />
           <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
           <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
-          {/* <Button onPress={unlockWaterfront} title="Unlock Waterfront" /> */}
-          {/* <Button style={styles.button} onPress={() => FIREBASE_AUTH.signOut()}>
-            Logout
-          </Button>
-          <Button
-            style={styles.button}
-            onPress={() => navigation.navigate("Account")}
-          >
-            Account
-          </Button> */}
+          <Button onPress={() => navigation.navigate("Team")} title="Team" />
+
           <View style={styles.setTodoContainer}>
             <View style={styles.form}>
               <TextInput

@@ -122,6 +122,7 @@ const Shop = () => {
           buttonColor="whitesmoke"
           onPressIn={async () => {
             try {
+              setCanBuy(false);
               await coinPurchase(
                 item.itemid,
                 uid,
@@ -147,7 +148,6 @@ const Shop = () => {
   };
 
   const handleButtonClick = (text: string) => {
-    setCanBuy(false);
     setPopupText(text);
     setShowPopup(true);
   };

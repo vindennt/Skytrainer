@@ -98,6 +98,7 @@ const Login = () => {
       joined: date,
       money: 0,
       gems: 0,
+      pity: 0,
     });
     // Init the locked characters for new user
     const STATION_MAP = SKYTRAIN_DATA.STATION_MAP;

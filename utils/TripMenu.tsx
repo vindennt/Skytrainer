@@ -38,32 +38,7 @@ export type Character = {
 };
 
 // const controlSelectState = useSelectState();
-export var characterList: Character[] = [
-  // {
-  //   name: "Stanley",
-  //   id: "001",
-  // },
-  // {
-  //   name: "Eddie",
-  //   id: "002",
-  // },
-  // {
-  //   name: "Nathan",
-  //   id: "003",
-  // },
-  // {
-  //   name: "Kyle",
-  //   id: "004",
-  // },
-  // {
-  //   name: "Andy",
-  //   id: "005",
-  // },
-  // {
-  //   name: "Jasper",
-  //   id: "006",
-  // },
-];
+export var characterList: Character[] = [];
 
 const TripMenu: React.FC<TripMenuProps> = ({
   //   startTrip,
@@ -74,7 +49,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
   uid,
 }) => {
   const [showDropDown, setShowDropDown] = useState(false);
-  const [character, setCharacter] = useState<string>();
+  const [character, setCharacter] = useState<string>("001");
   const isFocused = useIsFocused();
   const [isPopupVisible, setPopupVisible] = useState(true);
   // const [characterList, setCharacterList] = useState<Character[]>([]);
@@ -90,7 +65,6 @@ const TripMenu: React.FC<TripMenuProps> = ({
       const id: string = doc.id;
       // const stationRef = SKYTRAIN_DATA.STATION_MAP.get(doc.id);
       characterList.push({
-        // name: "jeff",
         // TODO: implement fragments and leveling
         // level: doc.data().level,
         id: id,
@@ -168,6 +142,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
           <GridSelector
             // visible={isPopupVisible}
             characters={characterList}
+            columns={2}
             onSelect={(item) => {
               console.log("Selected character: " + item.name);
               setCharacter(item.id);
