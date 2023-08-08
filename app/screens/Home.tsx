@@ -129,8 +129,8 @@ const Home = ({ navigation }: RouterProps) => {
   }
 
   useEffect(() => {
+    fetchWeather();
     onAuthStateChanged(auth, (user) => {
-      fetchWeather();
       if (user) {
         setUser(user);
         setUid(user.uid);
