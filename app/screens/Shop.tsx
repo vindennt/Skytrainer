@@ -9,7 +9,7 @@ import {
   giveFragment,
   coinPurchase,
 } from "../../utils/UnlockHandler";
-import Popup from "../../utils/Popup";
+import Popup from "../../components/Popup";
 
 type Buyable = {
   name: string;
