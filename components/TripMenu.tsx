@@ -147,7 +147,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
             characters={characterList}
             columns={2}
             onSelect={(item) => {
-              console.log("Selected character: " + item.name);
+              console.log("TripMenu: Selected character: " + item.name);
               setCharacter(item.id);
             }}
           />

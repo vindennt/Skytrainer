@@ -120,7 +120,7 @@ const Shop = () => {
           textColor="black"
           labelStyle={{ fontSize: 16 }}
           buttonColor="whitesmoke"
-          onPressIn={async () => {
+          onPressOut={async () => {
             try {
               setCanBuy(false);
               await coinPurchase(

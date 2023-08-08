@@ -4,6 +4,8 @@ import moment from "moment";
 import * as SKYTRAIN_DATA from "./SkytrainData";
 import { getStationName } from "./SkytrainData";
 
+export const LEVELUP_FRAGMENT_COST: number = 1;
+
 export const unlockStation = async (itemid: string, uid: string) => {
   console.log("Unlocking " + getStationName(itemid));
   const date = moment().utcOffset("-08:00").format();

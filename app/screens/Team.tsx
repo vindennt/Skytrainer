@@ -4,6 +4,7 @@ import { useIsFocused } from "@react-navigation/native";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
 import { User, onAuthStateChanged } from "firebase/auth";
 import {
+  Unsubscribe,
   collection,
   doc,
   getDoc,
@@ -26,6 +27,7 @@ import {
 import moment from "moment";
 import { Character } from "../../components/TripMenu";
 import GridSelector from "../../components/GridSelector";
+import { LEVELUP_FRAGMENT_COST } from "../../utils/UnlockHandler";
 
 const Team = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -33,6 +35,7 @@ const Team = () => {
   // const [displayName, displayName] = useState("string");
   const [displayName, setDisplayName] = useState<string | null>("default");
   const [uid, setUid] = useState<string>("default");
+  const [subscription, setSubscription] = useState<Unsubscribe>();
   const isFocused = useIsFocused();
   const [money, setMoney] = useState(0);
   const [showPopup, setShowPopup] = useState(false);
@@ -40,6 +43,7 @@ const Team = () => {
   const [colour, setColour] = useState<string>("red");
   const [unlockedCharList, setUnlockedCharList] = useState<Character[]>([]);
   const [dataFetched, setDataFetched] = useState(false);
+  const [canUpgrade, setCanUpgrade] = useState<boolean>(false);
 
   // var unlockedCharList: Character[] = [];
   const [character, setCharacter] = useState<string>("001");
@@ -48,13 +52,14 @@ const Team = () => {
   const [unlockedDateDisplay, setUnlockedDateDisplay] = useState<string>("");
 
   const setDisplayInfo = async (id: string) => {
-    console.log("Selected character: " + getStationName(id));
+    console.log("Team: Selected character: " + getStationName(id));
     setCharacter(id);
     const docRef = doc(FIRESTORE_DB, `users/${uid}/characters/${id}`);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       setLevelDisplay(docSnap.data().level);
       setFragmentDisplay(docSnap.data().fragments);
+      setCanUpgrade(true);
       // setUnlockedDateDisplay(docSnap.data().dateUnlocked);
     } else {
       throw new Error("Team menu: Doc does not exist for id " + id);
@@ -87,11 +92,15 @@ const Team = () => {
   // };
 
   const getUserCharacterData = async () => {
+    if (subscription) {
+      subscription(); // Call the subscription to unsubscribe
+    }
+
     const charQuery = query(
       collection(FIRESTORE_DB, `users/${uid}/characters`),
       where("unlocked", "==", true)
     ); // refer to todos collection in firestore
-    const subscriber = onSnapshot(charQuery, {
+    const newSubscription = onSnapshot(charQuery, {
       // observer
       next: async (snapshot) => {
         // console.log("UPDATING DISPLAYED TODOS");
@@ -107,7 +116,7 @@ const Team = () => {
         setUnlockedCharList(fetchedChars); // set displayed list to fetched array
         setDisplayInfo(character);
         setDataFetched(true);
-        if (unlockedCharList.length > 0) {
+        if (isFocused && unlockedCharList.length > 0) {
           setCharacter(unlockedCharList[0].id);
         }
 
@@ -116,7 +125,8 @@ const Team = () => {
         // console.log("DONE GETTING TEAM DISPLAY");
 
         // console.log("FINISHED UPDATING DISPLAYED TODOS");
-        return () => subscriber(); // Remove subscription to clear it
+        setSubscription(newSubscription);
+        // return () => subscriber(); // Remove subscription to clear it
       },
     });
   };
@@ -139,6 +149,10 @@ const Team = () => {
 
     if (user) {
       getUserCharacterData();
+    }
+
+    if (subscription) {
+      subscription(); // Call the subscription to unsubscribe
     }
 
     // Fetch money and gems
@@ -167,6 +181,7 @@ const Team = () => {
           characters={unlockedCharList}
           columns={1}
           onSelect={(item) => {
+            setCanUpgrade(false);
             setCharacter(item.id);
             setDisplayInfo(item.id);
           }}
@@ -190,16 +205,22 @@ const Team = () => {
           <Text style={styles.text}>Level: {levelDisplay}</Text>
           <Text style={styles.text}>Fragments: {fragmentDisplay}</Text>
         </View>
-        <PaperButton
-          icon="chevron-double-up"
-          disabled={true}
-          style={styles.button}
-          mode="contained"
-          buttonColor="orange"
-          labelStyle={{ fontSize: 20 }} // icon size
-        >
-          <Text style={styles.text}>Level Up</Text>
-        </PaperButton>
+        <View style={styles.levelContainer}>
+          {/* <IconButton icon="trash-can-outline" size={20} iconColor="red" /> */}
+          <PaperButton
+            icon="puzzle"
+            disabled={!canUpgrade}
+            loading={!canUpgrade}
+            style={styles.button}
+            mode="contained"
+            buttonColor="orange"
+            labelStyle={{ fontSize: 20 }} // icon size
+          >
+            <Text style={styles.text}>
+              x{LEVELUP_FRAGMENT_COST} {"  "} Level Up
+            </Text>
+          </PaperButton>
+        </View>
       </View>
       <Popup
         visible={showPopup}
@@ -254,5 +275,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "lavender",
     justifyContent: "center",
+  },
+  levelContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "pink",
   },
 });

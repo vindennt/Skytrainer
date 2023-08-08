@@ -137,6 +137,7 @@ const Gacha = () => {
       <View style={styles.container}>
         <PaperButton
           disabled={!canRoll}
+          loading={!canRoll}
           icon="diamond-stone"
           style={styles.button}
           mode="contained"
