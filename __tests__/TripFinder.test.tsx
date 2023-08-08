@@ -1,7 +1,7 @@
 import React from "react";
 import { Graph, Edge, Station, newStation, newEdge } from "../utils/Graph";
 import { findViableTrips } from "../utils/TripFinder";
-import * as SKYTRAIN_DATA from "../utils/SKYTRAIN_DATA";
+import * as SKYTRAIN_DATA from "../utils/SkytrainData";
 
 // Template test
 // test("TEMPLATE", () => {

@@ -1,8 +1,8 @@
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../api/FirebaseConfig";
 import { doc, getDoc, increment, setDoc, updateDoc } from "firebase/firestore";
 import moment from "moment";
-import * as SKYTRAIN_DATA from "./SKYTRAIN_DATA";
-import { getStationName } from "./SKYTRAIN_DATA";
+import * as SKYTRAIN_DATA from "./SkytrainData";
+import { getStationName } from "./SkytrainData";
 
 export const unlockStation = async (itemid: string, uid: string) => {
   console.log("Unlocking " + getStationName(itemid));

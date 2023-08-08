@@ -10,8 +10,8 @@ import {
   SafeAreaView,
 } from "react-native";
 import { Character, characterList } from "./TripMenu";
-import { getTier } from "./SKYTRAIN_DATA";
-import { Tier } from "./GachaHandler";
+import { getTier } from "../utils/SkytrainData";
+import { Tier } from "../utils/GachaHandler";
 
 type GridSelectorProps = {
   //   visible: boolean;

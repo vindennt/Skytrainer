@@ -30,7 +30,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import { NavigationProp } from "@react-navigation/native";
 import Slider from "@react-native-community/slider";
-import TripMenu from "../../utils/TripMenu";
+import TripMenu from "../../components/TripMenu";
 import {
   addDoc,
   collection,

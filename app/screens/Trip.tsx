@@ -17,8 +17,8 @@ import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../Types/NavigationTypes";
 import { Button } from "react-native-paper";
 import { findViableTrips } from "../../utils/TripFinder";
-import * as SKYTRAIN_DATA from "../../utils/SKYTRAIN_DATA";
-import { getStationName } from "../../utils/SKYTRAIN_DATA";
+import * as SKYTRAIN_DATA from "../../utils/SkytrainData";
+import { getStationName } from "../../utils/SkytrainData";
 import { Graph, Station, newStation } from "../../utils/Graph";
 
 type TripRouteProp = RouteProp<RootStackParamList, "Trip">;

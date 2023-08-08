@@ -4,8 +4,8 @@ import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
 import { User, onAuthStateChanged } from "firebase/auth";
 import { doc, increment, onSnapshot, updateDoc } from "firebase/firestore";
 import { IconButton, Button as PaperButton } from "react-native-paper";
-import { getStationName } from "../../utils/SKYTRAIN_DATA";
-import Popup from "../../utils/Popup";
+import { getStationName } from "../../utils/SkytrainData";
+import Popup from "../../components/Popup";
 import { Reward, Tier, gachaRoll } from "../../utils/GachaHandler";
 import {
   gachaPurchase,

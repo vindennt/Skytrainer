@@ -15,8 +15,8 @@ import {
   where,
 } from "firebase/firestore";
 import { IconButton, Button as PaperButton } from "react-native-paper";
-import { getStationName } from "../../utils/SKYTRAIN_DATA";
-import Popup from "../../utils/Popup";
+import { getStationName } from "../../utils/SkytrainData";
+import Popup from "../../components/Popup";
 import { Reward, Tier, gachaRoll } from "../../utils/GachaHandler";
 import {
   gachaPurchase,
@@ -24,8 +24,8 @@ import {
   unlockStation,
 } from "../../utils/UnlockHandler";
 import moment from "moment";
-import { Character } from "../../utils/TripMenu";
-import GridSelector from "../../utils/GridSelector";
+import { Character } from "../../components/TripMenu";
+import GridSelector from "../../components/GridSelector";
 
 const Team = () => {
   const [user, setUser] = useState<User | null>(null);

@@ -23,8 +23,8 @@ import {
 } from "firebase/auth";
 import { addDoc, doc, setDoc, collection } from "firebase/firestore";
 import moment from "moment";
-import { getStationName } from "../../utils/SKYTRAIN_DATA";
-import * as SKYTRAIN_DATA from "../../utils/SKYTRAIN_DATA";
+import { getStationName } from "../../utils/SkytrainData";
+import * as SKYTRAIN_DATA from "../../utils/SkytrainData";
 
 const Login = () => {
   const [email, setEmail] = useState("");

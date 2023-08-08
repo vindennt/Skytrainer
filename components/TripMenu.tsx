@@ -18,8 +18,8 @@ import {
   where,
 } from "firebase/firestore";
 import GridSelector from "./GridSelector";
-import * as SKYTRAIN_DATA from "../utils/SKYTRAIN_DATA";
-import { getStationName } from "../utils/SKYTRAIN_DATA";
+import * as SKYTRAIN_DATA from "../utils/SkytrainData";
+import { getStationName } from "../utils/SkytrainData";
 
 interface TripMenuProps {
   item: Todo;
