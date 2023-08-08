@@ -18,10 +18,28 @@ export const unlockStation = async (itemid: string, uid: string) => {
 };
 
 export const giveFragment = async (itemid: string, uid: string) => {
-  console.log("Bought 10 fragments for " + getStationName(itemid));
+  console.log("Bought 50 fragments for " + getStationName(itemid));
   await updateDoc(doc(FIRESTORE_DB, "users", uid, "characters", itemid), {
     fragments: increment(50),
   });
+};
+
+export const fragmentLevelUp = async (
+  id: string,
+  currentFragments: number,
+  uid: string
+) => {
+  if (currentFragments >= LEVELUP_FRAGMENT_COST) {
+    console.log("Level up approved for " + id);
+    await updateDoc(doc(FIRESTORE_DB, "users", uid, "characters", id), {
+      level: increment(1),
+      fragments: increment(LEVELUP_FRAGMENT_COST * -1),
+      unlocked: true,
+    });
+    return;
+  } else {
+    console.log("Level up not approved");
+  }
 };
 
 export const coinPurchase = async (

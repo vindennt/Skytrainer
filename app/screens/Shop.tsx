@@ -128,7 +128,7 @@ const Shop = () => {
                 uid,
                 money,
                 item.cost,
-                unlockStation
+                giveFragment
               );
               handleButtonClick("Purchase success!");
             } catch (error: unknown) {

@@ -20,6 +20,7 @@ import { getStationName } from "../../utils/SkytrainData";
 import Popup from "../../components/Popup";
 import { Reward, Tier, gachaRoll } from "../../utils/GachaHandler";
 import {
+  fragmentLevelUp,
   gachaPurchase,
   giveFragment,
   unlockStation,
@@ -115,7 +116,6 @@ const Team = () => {
         });
         setUnlockedCharList(fetchedChars); // set displayed list to fetched array
         setDisplayInfo(character);
-        setDataFetched(true);
         if (isFocused && unlockedCharList.length > 0) {
           setCharacter(unlockedCharList[0].id);
         }
@@ -166,6 +166,22 @@ const Team = () => {
     return () => unsub();
   }, [auth, displayName, uid]);
 
+  // Attempt level up
+  const levelUp = async () => {
+    const docRef = doc(FIRESTORE_DB, `users/${uid}/characters/${character}`);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const currentFragments: number = docSnap.data().fragments;
+      console.log("Attempting level up for " + character);
+      await fragmentLevelUp(character, currentFragments, uid);
+      setDisplayInfo(character);
+    } else {
+      throw new Error(
+        "Team menu levelup: Doc does not exist for id " + character
+      );
+    }
+  };
+
   const handleButtonClick = () => {
     setShowPopup(true);
   };
@@ -182,8 +198,8 @@ const Team = () => {
           columns={1}
           onSelect={(item) => {
             setCanUpgrade(false);
-            setCharacter(item.id);
             setDisplayInfo(item.id);
+            setCharacter(item.id);
           }}
         />
       </View>
@@ -215,6 +231,7 @@ const Team = () => {
             mode="contained"
             buttonColor="orange"
             labelStyle={{ fontSize: 20 }} // icon size
+            onPressOut={levelUp}
           >
             <Text style={styles.text}>
               x{LEVELUP_FRAGMENT_COST} {"  "} Level Up
