@@ -44,15 +44,17 @@ const Team = () => {
   const [colour, setColour] = useState<string>("red");
   const [unlockedCharList, setUnlockedCharList] = useState<Character[]>([]);
   const [dataFetched, setDataFetched] = useState(false);
+  const [loadingData, setLoadingData] = useState<boolean>(false);
   const [canUpgrade, setCanUpgrade] = useState<boolean>(false);
 
   // var unlockedCharList: Character[] = [];
   const [character, setCharacter] = useState<string>("001");
   const [levelDisplay, setLevelDisplay] = useState<string>("0");
-  const [fragmentDisplay, setFragmentDisplay] = useState<string>("0");
+  const [fragmentDisplay, setFragmentDisplay] = useState<number>(0);
   const [unlockedDateDisplay, setUnlockedDateDisplay] = useState<string>("");
 
   const setDisplayInfo = async (id: string) => {
+    setLoadingData(true);
     console.log("Team: Selected character: " + getStationName(id));
     setCharacter(id);
     const docRef = doc(FIRESTORE_DB, `users/${uid}/characters/${id}`);
@@ -60,7 +62,12 @@ const Team = () => {
     if (docSnap.exists()) {
       setLevelDisplay(docSnap.data().level);
       setFragmentDisplay(docSnap.data().fragments);
-      setCanUpgrade(true);
+      if (docSnap.data().fragments >= LEVELUP_FRAGMENT_COST) {
+        setCanUpgrade(true);
+      } else {
+        setCanUpgrade(false);
+      }
+      setLoadingData(false);
       // setUnlockedDateDisplay(docSnap.data().dateUnlocked);
     } else {
       throw new Error("Team menu: Doc does not exist for id " + id);
@@ -168,6 +175,8 @@ const Team = () => {
 
   // Attempt level up
   const levelUp = async () => {
+    setCanUpgrade(false);
+    setLoadingData(true);
     const docRef = doc(FIRESTORE_DB, `users/${uid}/characters/${character}`);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
@@ -175,7 +184,11 @@ const Team = () => {
       console.log("Attempting level up for " + character);
       await fragmentLevelUp(character, currentFragments, uid);
       setDisplayInfo(character);
+      setCanUpgrade(true);
+      setLoadingData(false);
     } else {
+      setCanUpgrade(true);
+      setLoadingData(false);
       throw new Error(
         "Team menu levelup: Doc does not exist for id " + character
       );
@@ -226,7 +239,7 @@ const Team = () => {
           <PaperButton
             icon="puzzle"
             disabled={!canUpgrade}
-            loading={!canUpgrade}
+            loading={loadingData}
             style={styles.button}
             mode="contained"
             buttonColor="orange"
