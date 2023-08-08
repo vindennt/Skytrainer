@@ -39,72 +39,13 @@ const Team = () => {
   const [popupText, setPopupText] = useState("");
   const [colour, setColour] = useState<string>("red");
   const [unlockedCharList, setUnlockedCharList] = useState<Character[]>([]);
+  const [dataFetched, setDataFetched] = useState(false);
 
   // var unlockedCharList: Character[] = [];
   const [character, setCharacter] = useState<string>("001");
   const [levelDisplay, setLevelDisplay] = useState<string>("0");
   const [fragmentDisplay, setFragmentDisplay] = useState<string>("0");
   const [unlockedDateDisplay, setUnlockedDateDisplay] = useState<string>("");
-
-  const getUserCharacterData = async () => {
-    setUnlockedCharList([]);
-    const charQuery = query(
-      collection(FIRESTORE_DB, `users/${uid}/characters`),
-      where("unlocked", "==", true)
-    ); // refer to todos collection in firestore
-    const querySnapshot = await getDocs(charQuery);
-    await querySnapshot.forEach((doc) => {
-      const id: string = doc.id;
-      // const stationRef = SKYTRAIN_DATA.STATION_MAP.get(doc.id);
-      unlockedCharList.push({
-        level: doc.data().level,
-        id: id,
-        name: getStationName(id), // Name of station from the map
-      } as Character);
-    });
-
-    // if (unlockedCharList[0].name !== undefined) {
-    //   setCharacter(unlockedCharList[0].name);
-    // }
-    // console.log("first name: " + unlockedCharList[0].name);
-    // console.log("GETTING TEAM DISPLAY");
-    // console.log(unlockedCharList);
-    // console.log("DONE GETTING TEAM DISPLAY");
-  };
-
-  useEffect(() => {
-    if (isFocused) {
-      getUserCharacterData();
-    }
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-        setUid(user.uid);
-        setDisplayName(user.displayName);
-        console.log(
-          uid + " with name " + displayName + " is currently logged in"
-        );
-      }
-    });
-    // Fetch money and gems
-    const userRef = doc(FIRESTORE_DB, `users/${uid}`);
-    const unsub = onSnapshot(userRef, (doc) => {
-      console.log("Shop screen: Money fetch: ", doc.data());
-      const userData = doc.data();
-      setMoney(userData?.money);
-      // console.log("Pity: " + pity);
-    });
-    return () => unsub();
-  }, [auth, displayName, uid, isFocused]);
-
-  const handleButtonClick = () => {
-    setShowPopup(true);
-  };
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
-  };
 
   const setDisplayInfo = async (id: string) => {
     console.log("Selected character: " + getStationName(id));
@@ -114,10 +55,105 @@ const Team = () => {
     if (docSnap.exists()) {
       setLevelDisplay(docSnap.data().level);
       setFragmentDisplay(docSnap.data().fragments);
-      setUnlockedDateDisplay(docSnap.data().dateUnlocked);
+      // setUnlockedDateDisplay(docSnap.data().dateUnlocked);
     } else {
-      throw new Error("Doc does not exist");
+      throw new Error("Team menu: Doc does not exist for id " + id);
     }
+  };
+
+  // const getUserCharacterData = async () => {
+  //   const charQuery = query(
+  //     collection(FIRESTORE_DB, `users/${uid}/characters`),
+  //     where("unlocked", "==", true)
+  //   ); // refer to todos collection in firestore
+  //   const querySnapshot = await getDocs(charQuery);
+  //   const fetchedChars: Character[] = [];
+  //   // await
+  //   querySnapshot.forEach((doc) => {
+  //     const id: string = doc.id;
+  //     // const stationRef = SKYTRAIN_DATA.STATION_MAP.get(doc.id);
+  //     fetchedChars.push({
+  //       id: id,
+  //       level: doc.data().level,
+  //       name: getStationName(id), // Name of station from the map
+  //     } as Character);
+  //   });
+  //   setUnlockedCharList(fetchedChars);
+  //   setDisplayInfo(character);
+
+  //   console.log("GETTING TEAM DISPLAY");
+  //   console.log(unlockedCharList);
+  //   console.log("DONE GETTING TEAM DISPLAY");
+  // };
+
+  const getUserCharacterData = async () => {
+    const charQuery = query(
+      collection(FIRESTORE_DB, `users/${uid}/characters`),
+      where("unlocked", "==", true)
+    ); // refer to todos collection in firestore
+    const subscriber = onSnapshot(charQuery, {
+      // observer
+      next: async (snapshot) => {
+        // console.log("UPDATING DISPLAYED TODOS");
+        const fetchedChars: Character[] = []; // Array tracking todos of any type, not the same as the const
+        await snapshot.forEach((doc) => {
+          // console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
+          fetchedChars.push({
+            id: doc.id,
+            ...doc.data(),
+          } as Character); // necessary line to pass typecheck
+        });
+        setUnlockedCharList(fetchedChars); // set displayed list to fetched array
+        setDisplayInfo(character);
+        setDataFetched(true);
+
+        // console.log("GETTING TEAM DISPLAY");
+        // console.log(unlockedCharList);
+        // console.log("DONE GETTING TEAM DISPLAY");
+
+        // console.log("FINISHED UPDATING DISPLAYED TODOS");
+        return () => subscriber(); // Remove subscription to clear it
+      },
+    });
+  };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+        setUid(user.uid);
+        setDisplayName(user.displayName);
+        console.log(
+          "Team screen: " +
+            uid +
+            " with name " +
+            displayName +
+            " is currently logged in"
+        );
+      }
+    });
+
+    if (user) {
+      getUserCharacterData();
+    }
+
+    // Fetch money and gems
+    const userRef = doc(FIRESTORE_DB, `users/${uid}`);
+    const unsub = onSnapshot(userRef, (doc) => {
+      console.log("Team screen: Money fetch: ", doc.data());
+      const userData = doc.data();
+      setMoney(userData?.money);
+      // console.log("Pity: " + pity);
+    });
+    return () => unsub();
+  }, [auth, displayName, uid]);
+
+  const handleButtonClick = () => {
+    setShowPopup(true);
+  };
+
+  const handleClosePopup = () => {
+    setShowPopup(false);
   };
 
   return (
@@ -127,6 +163,7 @@ const Team = () => {
           characters={unlockedCharList}
           columns={1}
           onSelect={(item) => {
+            setCharacter(item.id);
             setDisplayInfo(item.id);
           }}
         />

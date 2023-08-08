@@ -9,12 +9,11 @@ import {
   StyleSheet,
   SafeAreaView,
 } from "react-native";
-import { Character, characterList } from "./TripMenu";
+import { Character } from "./TripMenu";
 import { getTier } from "../utils/SkytrainData";
 import { Tier } from "../utils/GachaHandler";
 
 type GridSelectorProps = {
-  //   visible: boolean;
   characters: Character[];
   //   onSelect: (image: ImageData) => void;
   onSelect: (character: Character) => void;
@@ -55,10 +54,12 @@ const GridSelector: React.FC<GridSelectorProps> = ({
       }
     };
 
-    const color = item.id === selectedCharacter ? "black" : "white";
+    // const color = item.id === selectedCharacter ? "black" : "white";
+    const color = "white";
 
     return (
       <Item
+        key={item.id}
         item={item}
         onPress={() => {
           setSelectedCharacter(item.id);
@@ -72,8 +73,9 @@ const GridSelector: React.FC<GridSelectorProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* {characterList.length === 0 && <Text>GridSelector data is empty</Text>} */}
       <FlatList
-        data={characterList}
+        data={characters}
         numColumns={columns}
         keyExtractor={(item) => item.name}
         extraData={selectedCharacter}
