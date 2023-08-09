@@ -34,7 +34,7 @@ interface TripMenuProps {
 export type Character = {
   name: string; // display name
   id: string; // character id
-  // level: number;
+  level: number;
 };
 
 // const controlSelectState = useSelectState();
@@ -50,6 +50,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
 }) => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [character, setCharacter] = useState<string>("000");
+  const [characterLevel, setCharacterLevel] = useState<number>(-1);
   const isFocused = useIsFocused();
   const [isPopupVisible, setPopupVisible] = useState(true);
   // const [characterList, setCharacterList] = useState<Character[]>([]);
@@ -66,9 +67,9 @@ const TripMenu: React.FC<TripMenuProps> = ({
       // const stationRef = SKYTRAIN_DATA.STATION_MAP.get(doc.id);
       characterList.push({
         // TODO: implement fragments and leveling
-        // level: doc.data().level,
         id: id,
         name: getStationName(id), // Name of station from the map
+        level: doc.data().level,
       } as Character);
     });
     console.log("GETTING CHARACTER LIST");
@@ -78,6 +79,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
 
   useEffect(() => {
     getUserCharacterData();
+    // TODO: this is not properly setting the starting list
     if (characterList.length > 0) {
       setCharacter(characterList[0].id);
     }
@@ -113,6 +115,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
     navigation.navigate("Trip", {
       user: user,
       characterid: character,
+      characterLevel: characterLevel,
       todo: todo,
       navigation: navigation,
     });
@@ -149,6 +152,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
             onSelect={(item) => {
               console.log("TripMenu: Selected character: " + item.name);
               setCharacter(item.id);
+              setCharacterLevel(characterList[0].level);
             }}
           />
         </View>

@@ -7,7 +7,6 @@ import { Station } from "./Graph";
 
 export const LEVELUP_FRAGMENT_COST: number = 1;
 export const MONEY_PER_STATION = 5;
-export const GEMS_PER_STATION = 3; // TODO: remove this as only dialy quests shulf give gems
 
 export const unlockStation = async (itemid: string, uid: string) => {
   console.log("Unlocking " + getStationName(itemid));
@@ -99,19 +98,28 @@ export const gachaPurchase = async (
   }
 };
 
+export const moneyRewardCalc = (
+  visitedLength: number,
+  levelOfStart: number
+): number => {
+  const rewardMultiplier = levelOfStart / 10 + 1;
+  const moneyReward = Math.round(
+    MONEY_PER_STATION * visitedLength * rewardMultiplier
+  );
+  return moneyReward;
+};
+
 export const tripRewardHandler = async (
   uid: string,
   visited: Station[],
+  visitedLength: number,
   levelOfStart: number
 ) => {
-  const stationsPassed: number = visited.length;
-  const moneyReward = MONEY_PER_STATION * stationsPassed;
-  const gemReward = GEMS_PER_STATION * stationsPassed;
-
+  const reward = moneyRewardCalc(visitedLength, levelOfStart);
   const userRef = doc(FIRESTORE_DB, `users/${uid}`);
   await updateDoc(userRef, {
-    money: increment(moneyReward),
-    gems: increment(gemReward),
+    money: increment(reward),
+    gems: increment(reward),
   });
   return;
 };

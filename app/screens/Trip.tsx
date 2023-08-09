@@ -1,17 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
-import {
-  addDoc,
-  arrayUnion,
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  setDoc,
-  getDoc,
-  updateDoc,
-  increment,
-} from "firebase/firestore";
 import { View, Text, StyleSheet } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../Types/NavigationTypes";
@@ -19,21 +6,28 @@ import { Button } from "react-native-paper";
 import { findViableTrips } from "../../utils/TripFinder";
 import * as SKYTRAIN_DATA from "../../utils/SkytrainData";
 import { getStationName } from "../../utils/SkytrainData";
-import { Graph, Station, newStation } from "../../utils/Graph";
-import { tripRewardHandler } from "../../utils/UnlockHandler";
+import { Graph } from "../../utils/Graph";
+import {
+  MONEY_PER_STATION,
+  tripRewardHandler,
+  moneyRewardCalc,
+} from "../../utils/UnlockHandler";
 
 type TripRouteProp = RouteProp<RootStackParamList, "Trip">;
 
 const Trip: React.FC = () => {
   const route = useRoute<TripRouteProp>();
-  const { user, characterid, todo, navigation } = route.params;
-  const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
+  const { user, characterid, characterLevel, todo, navigation } = route.params;
   const startingStnName: string = getStationName(characterid);
-
+  // reward calculation
+  const [stationsPassed, setStationsPassed] = useState<number>(0);
+  const [firstStationName, setFirstStationName] = useState<string>("");
+  const [lastStationName, setLastStationName] = useState<string>("");
   // Trip details
   const stationToRetrieve = SKYTRAIN_DATA.STATION_MAP.get(characterid);
-  var graph: Graph = SKYTRAIN_DATA.buildGraph();
-  const getViableTrips = () => {
+  const graph: Graph = SKYTRAIN_DATA.buildGraph();
+
+  const getViableTrips = async () => {
     try {
       return findViableTrips(graph, stationToRetrieve?.[1], todo.time);
     } catch (error: unknown) {
@@ -45,86 +39,32 @@ const Trip: React.FC = () => {
       }
     }
   };
-  const viableTrips = getViableTrips();
 
-  let firstStationName: string | undefined = "";
-  let lastStationName: string | undefined = "";
-
-  // reward calculation
-  let stationsPassed = 0;
-  const rewardMoney = 5;
-  const rewardGems = 2;
-  var money = -1;
-  var gems = -1;
-
-  const getSnapshot = async () => {
-    const docSnap = await getDoc(userRef);
-    if (docSnap.exists()) {
-      console.log("In-trip:", docSnap.data());
-      console.log("money: " + docSnap.data().money);
-      console.log("gems: " + docSnap.data().gems);
-      money = docSnap.data().money;
-      gems = docSnap.data().gems;
-    } else {
-      // docSnap.data() will be undefined in this case
-      console.log("No such document!");
-    }
-  };
-
-  const updateRewards = async () => {
-    await getSnapshot();
-    // Set the "capital" field of the city 'DC'
-    // console.log("Stations passed before calcs: " + stationsPassed);
-    const calculatedMoneyReward = rewardMoney * stationsPassed;
-    // console.log(calculatedMoneyReward);
-    const calculatedGemReward = rewardGems * stationsPassed;
-    const newMoney: number = calculatedMoneyReward + money;
-    const newGems: number = calculatedGemReward + gems;
-    console.log("new money should be: " + newMoney);
-    console.log("new gems should be: " + newGems);
-    await updateDoc(userRef, {
-      money: increment(calculatedMoneyReward),
-      gems: increment(calculatedGemReward),
-    });
-  };
-
-  // Log occurence
-  console.log(startingStnName + " arrived during task " + todo.title);
-  // console.log(viableTrips);
-
-  const tripLog = () => {
+  const runTripAndRewards = async () => {
+    const viableTrips = await getViableTrips();
     if (viableTrips !== undefined) {
       const randomIndex = Math.floor(Math.random() * viableTrips.length);
       const randomArray = viableTrips[randomIndex];
       const firstStation = randomArray[0];
       const lastStation = randomArray[randomArray.length - 1];
-      console.log(
-        SKYTRAIN_DATA.STATION_MAP.get(firstStation?.id as string)?.[0]
-      );
-      console.log(
-        SKYTRAIN_DATA.STATION_MAP.get(lastStation?.id as string)?.[0]
-      );
-      firstStationName = SKYTRAIN_DATA.STATION_MAP.get(
-        firstStation?.id as string
-      )?.[0];
-      lastStationName = SKYTRAIN_DATA.STATION_MAP.get(
-        lastStation?.id as string
-      )?.[0];
-      stationsPassed = randomArray.length;
+      setFirstStationName(getStationName(firstStation.id));
+      setLastStationName(getStationName(lastStation.id));
+      setStationsPassed(randomArray.length);
       // console.log("stations passed: " + stationsPassed);
-      tripRewardHandler(user.uid, randomArray, 1);
-      // updateRewards();
+      tripRewardHandler(user.uid, randomArray, stationsPassed, characterLevel);
     } else {
       console.log("No viable trips to be logged");
     }
   };
-  console.log(tripLog());
-  todo.done = true;
+
+  useEffect(() => {
+    console.log(startingStnName + " arrived during task " + todo.title);
+    runTripAndRewards();
+    todo.done = true;
+  }, [stationsPassed]);
 
   return (
     <View style={styles.container}>
-      {/* <RenderTrip name={name}></RenderTrip> */}
-      {/* <Text style={styles.text}>Name is {user?.displayName}</Text> */}
       <Text
         style={[
           styles.text,
@@ -141,9 +81,10 @@ const Trip: React.FC = () => {
         {firstStationName} to {lastStationName}
       </Text>
       <Text style={styles.text}>Time elapsed: {todo.time} mins</Text>
+      <Text style={styles.text}>{characterLevel}</Text>
       <Text style={styles.text}>
-        Rewards: ${stationsPassed * rewardMoney}, {stationsPassed * rewardGems}{" "}
-        gems
+        Rewards: ${moneyRewardCalc(stationsPassed, characterLevel)},{" "}
+        {moneyRewardCalc(stationsPassed, characterLevel)} gems
       </Text>
       <Button
         icon="chevron-left"
