@@ -108,11 +108,6 @@ export function findViableTrips(
   }
 }
 
-// Helper function to check if two paths are equal
-function areEqual(a: Station, b: Station): boolean {
-  return a === b;
-}
-
 // If neighbour is an already explored transfer station that hasnt just been visited, it can be looped
 function isLoopableTransfer(
   neighbour: Station,
@@ -122,8 +117,20 @@ function isLoopableTransfer(
   return (
     visited &&
     neighbour.transfer &&
-    // !areEqual([neighbour], [path[path.length - 2]])
-    !areEqual(neighbour, path[path.length - 2])
+    !areEqual([neighbour], [path[path.length - 2]])
   );
 }
 // Use example: See tests
+
+// Helper function to check if two paths are equal
+function areEqual(path1: Station[], path2: Station[]): boolean {
+  if (path1.length !== path2.length) {
+    return false;
+  }
+  for (let i = 0; i < path1.length; i++) {
+    if (path1[i] !== path2[i]) {
+      return false;
+    }
+  }
+  return true;
+}
