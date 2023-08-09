@@ -78,19 +78,15 @@ const TripMenu: React.FC<TripMenuProps> = ({
   };
 
   useEffect(() => {
-    getUserCharacterData();
-    // TODO: this is not properly setting the starting list
-    if (characterList.length > 0) {
-      setCharacter(characterList[0].id);
-    }
-    // Recheck todos. Delete ones that just finished
-    if (isFocused) {
-      // If item is done (just came from Trip), delete it
-      if (item.done) {
-        deleteTodo(item);
+    const fetchData = async () => {
+      await getUserCharacterData();
+      if (characterList.length > 0) {
+        setCharacter(characterList[0].id);
+        setCharacterLevel(characterList[0].level);
       }
-    }
-  }, [isFocused, item]);
+    };
+    fetchData();
+  }, []);
 
   const deleteTodo = async (todo: Todo) => {
     console.log("deleting todo: " + todo.title);
