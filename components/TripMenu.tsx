@@ -1,11 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
-// import { useEffect, useState, useRef } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { Todo } from "../app/screens/Home";
-// import DropdownComponent from "../utils/Dropdown";
-import DropDown from "react-native-paper-dropdown";
 import { User } from "firebase/auth";
 import { FIRESTORE_DB } from "../api/FirebaseConfig";
 import {
@@ -13,7 +10,6 @@ import {
   deleteDoc,
   doc,
   getDocs,
-  onSnapshot,
   query,
   where,
 } from "firebase/firestore";
@@ -30,18 +26,14 @@ interface TripMenuProps {
   uid: string;
 }
 
-// Dropdown menu prop only takes this form of data
+// GridSelector menu prop only takes this form of data
 export type Character = {
   name: string; // display name
   id: string; // character id
   level: number;
 };
 
-// const controlSelectState = useSelectState();
-export var characterList: Character[] = [];
-
 const TripMenu: React.FC<TripMenuProps> = ({
-  //   startTrip,
   user,
   item,
   modalCloseMethod,
@@ -53,40 +45,46 @@ const TripMenu: React.FC<TripMenuProps> = ({
   const [characterLevel, setCharacterLevel] = useState<number>(-1);
   const isFocused = useIsFocused();
   const [isPopupVisible, setPopupVisible] = useState(true);
-  // const [characterList, setCharacterList] = useState<Character[]>([]);
+  const [characterList, setCharacterList] = useState<Character[]>([]);
 
-  const getUserCharacterData = async () => {
-    characterList = [];
+  const fetchCharacterData = async () => {
+    const characters: Character[] = [];
     const charQuery = query(
       collection(FIRESTORE_DB, `users/${uid}/characters`),
       where("unlocked", "==", true)
-    ); // refer to todos collection in firestore
+    );
     const querySnapshot = await getDocs(charQuery);
-    await querySnapshot.forEach((doc) => {
+    querySnapshot.forEach((doc) => {
       const id: string = doc.id;
-      // const stationRef = SKYTRAIN_DATA.STATION_MAP.get(doc.id);
-      characterList.push({
-        // TODO: implement fragments and leveling
+      characters.push({
         id: id,
-        name: getStationName(id), // Name of station from the map
+        name: getStationName(id),
         level: doc.data().level,
       } as Character);
     });
-    console.log("GETTING CHARACTER LIST");
-    console.log(characterList);
-    console.log("DONE GETTING CHARACTER LIST");
+    return characters;
   };
 
   useEffect(() => {
+    if (isFocused) {
+      // If item is done (just came from Trip), delete it
+      if (item.done) {
+        deleteTodo(item);
+      }
+    }
+
     const fetchData = async () => {
-      await getUserCharacterData();
-      if (characterList.length > 0) {
-        setCharacter(characterList[0].id);
-        setCharacterLevel(characterList[0].level);
+      const characters = await fetchCharacterData();
+      setCharacterList(characters);
+      console.log("ABOUT TO LOG CHARCETR LISt");
+      console.log(characterList);
+      if (characters.length > 0) {
+        setCharacter(characters[0].id);
+        setCharacterLevel(characters[0].level);
       }
     };
     fetchData();
-  }, []);
+  }, [isFocused, item]);
 
   const deleteTodo = async (todo: Todo) => {
     console.log("deleting todo: " + todo.title);
@@ -148,7 +146,7 @@ const TripMenu: React.FC<TripMenuProps> = ({
             onSelect={(item) => {
               console.log("TripMenu: Selected character: " + item.name);
               setCharacter(item.id);
-              setCharacterLevel(characterList[0].level);
+              setCharacterLevel(item.level);
             }}
           />
         </View>
