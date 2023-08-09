@@ -17,8 +17,6 @@ export function findViableTrips(
   start: Station | undefined,
   desiredLength: number
 ): Station[][] {
-  // const graph = SKYTRAIN_GRAPH;
-  console.log("---------STARTING findViableTrips finished");
   const paths: Station[][] = [];
 
   // Helper to run DFS and search for paths, adding viable to paths
@@ -48,25 +46,40 @@ export function findViableTrips(
       return;
     } else {
       const neighbours = graph.getNeighbours(current);
+      // *** Infinite loop part 1/2
+      // *** If you are at a transfer station, delete everyone already visited, except who you just visited
+      // *** This allows you to retransfer onto a station you already visited without backtracking
+      // *** The station you just visited will be deleted from visited at the next transfer station, allowing you to revisit it
+      if (current.transfer) {
+        const justVisited = path[path.length - 2];
+        visited = new Set<Station>();
+        visited.add(justVisited);
+        visited.add(current);
+      }
+
       for (const neighbour of neighbours) {
-        // Delete viable tranfser station neighbours from visited to allow looping
-        if (
-          isLoopableTransfer(
-            neighbour.station,
-            path,
-            visited.has(neighbour.station)
-          )
-        ) {
-          visited.delete(neighbour.station);
-          // Allow revisiting stations along new line that is about to be traversed
-          visited.forEach((visitedStation) => {
-            if (
-              visitedStation !== neighbour.station &&
-              current.lineid !== visitedStation.lineid
-            ) {
-              visited.delete(visitedStation);
-            }
-          });
+        // *** Infinite loop part 2/2
+        // If coming upon an already visited transfer station, you are allowed to revisit it if you did not just visit it
+        if (neighbour.station.transfer) {
+          if (
+            isLoopableTransfer(
+              neighbour.station,
+              path,
+              visited.has(neighbour.station)
+            )
+          ) {
+            visited.delete(neighbour.station);
+            // Allow revisiting stations along new line that is about to be traversed
+            // delete every station from the transferred line
+            visited.forEach((visitedStation) => {
+              if (
+                visitedStation !== neighbour.station &&
+                current.lineid !== visitedStation.lineid
+              ) {
+                visited.delete(visitedStation);
+              }
+            });
+          }
         }
 
         // Traverse unvisited stations
@@ -77,6 +90,7 @@ export function findViableTrips(
             currentLength + neighbour.time,
             new Set(visited) // create copy so that each recursive call is unique
           );
+        } else {
         }
       }
     }
@@ -90,24 +104,15 @@ export function findViableTrips(
       "No solution found for " + desiredLength + " min trip from " + start?.id
     );
   } else {
-    console.log("---------findViableTrips finished");
-    console.log(paths);
     return paths;
   }
 }
 
 // Helper function to check if two paths are equal
-function areEqual(path1: Station[], path2: Station[]): boolean {
-  if (path1.length !== path2.length) {
-    return false;
-  }
-  for (let i = 0; i < path1.length; i++) {
-    if (path1[i] !== path2[i]) {
-      return false;
-    }
-  }
-  return true;
+function areEqual(a: Station, b: Station): boolean {
+  return a === b;
 }
+
 // If neighbour is an already explored transfer station that hasnt just been visited, it can be looped
 function isLoopableTransfer(
   neighbour: Station,
@@ -117,7 +122,8 @@ function isLoopableTransfer(
   return (
     visited &&
     neighbour.transfer &&
-    !areEqual([neighbour], [path[path.length - 2]])
+    // !areEqual([neighbour], [path[path.length - 2]])
+    !areEqual(neighbour, path[path.length - 2])
   );
 }
 // Use example: See tests
