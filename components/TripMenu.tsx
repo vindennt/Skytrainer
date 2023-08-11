@@ -74,10 +74,11 @@ const TripMenu: React.FC<TripMenuProps> = ({
     }
 
     const fetchData = async () => {
+      console.log("TripMenu: Fetching character list");
       const characters = await fetchCharacterData();
       setCharacterList(characters);
-      console.log("ABOUT TO LOG CHARCETR LISt");
-      console.log(characterList);
+      // console.log("ABOUT TO LOG CHARCETR LISt");
+      // console.log(characterList);
       if (characters.length > 0) {
         setCharacter(characters[0].id);
         setCharacterLevel(characters[0].level);

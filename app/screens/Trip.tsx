@@ -10,7 +10,7 @@ import { Graph } from "../../utils/Graph";
 import {
   MONEY_PER_STATION,
   tripRewardHandler,
-  moneyRewardCalc,
+  scaledRewardsCalc,
 } from "../../utils/UnlockHandler";
 import { Reward, newReward } from "../../utils/GachaHandler";
 
@@ -30,6 +30,7 @@ const Trip: React.FC = () => {
   const graph: Graph = SKYTRAIN_DATA.buildGraph();
 
   const getViableTrips = async () => {
+    console.log("Trip: calling getViableTrips");
     try {
       return findViableTrips(graph, stationToRetrieve?.[1], todo.time);
     } catch (error: unknown) {
@@ -43,8 +44,10 @@ const Trip: React.FC = () => {
   };
 
   const runTripAndRewards = async () => {
+    console.log("Trip: running runTripAndREwards");
     const viableTrips = await getViableTrips();
     if (viableTrips !== undefined) {
+      console.log("Yes viable trips to be logged");
       const randomIndex = Math.floor(Math.random() * viableTrips.length);
       const randomArray = viableTrips[randomIndex];
       setStationsPassed(randomArray.length);
@@ -79,6 +82,7 @@ const Trip: React.FC = () => {
     </View>
   );
 
+  // TODO: I think the stationsPassed dependency is what is causing so many reruns
   useEffect(() => {
     console.log(startingStnName + " arrived during task " + todo.title);
     runTripAndRewards();
@@ -154,6 +158,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
+    marginHorizontal: 5,
   },
   rewardList: {
     backgroundColor: "white",
