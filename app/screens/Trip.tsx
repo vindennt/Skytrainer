@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import { useRoute, RouteProp } from "@react-navigation/native";
 import { RootStackParamList } from "../../Types/NavigationTypes";
-import { Button } from "react-native-paper";
+import { Button, IconButton } from "react-native-paper";
 import { findViableTrips } from "../../utils/TripFinder";
 import * as SKYTRAIN_DATA from "../../utils/SkytrainData";
 import { getStationName } from "../../utils/SkytrainData";
@@ -12,6 +12,7 @@ import {
   tripRewardHandler,
   moneyRewardCalc,
 } from "../../utils/UnlockHandler";
+import { Reward, newReward } from "../../utils/GachaHandler";
 
 type TripRouteProp = RouteProp<RootStackParamList, "Trip">;
 
@@ -23,6 +24,7 @@ const Trip: React.FC = () => {
   const [stationsPassed, setStationsPassed] = useState<number>(0);
   const [firstStationName, setFirstStationName] = useState<string>("");
   const [lastStationName, setLastStationName] = useState<string>("");
+  const [rewards, setRewards] = useState<Reward[]>([]);
   // Trip details
   const stationToRetrieve = SKYTRAIN_DATA.STATION_MAP.get(characterid);
   const graph: Graph = SKYTRAIN_DATA.buildGraph();
@@ -45,17 +47,35 @@ const Trip: React.FC = () => {
     if (viableTrips !== undefined) {
       const randomIndex = Math.floor(Math.random() * viableTrips.length);
       const randomArray = viableTrips[randomIndex];
+      setStationsPassed(randomArray.length);
+      // console.log("stations passed: " + stationsPassed);
+      // TODO: get the rewrds list of reward handler to display
+      setRewards(
+        await tripRewardHandler(
+          user.uid,
+          randomArray,
+          stationsPassed,
+          characterLevel
+        )
+      );
+      console.log(rewards);
+      // TODO: maybe make these a promise alongside setRewards so that its more efficient?
       const firstStation = randomArray[0];
       const lastStation = randomArray[randomArray.length - 1];
       setFirstStationName(getStationName(firstStation.id));
       setLastStationName(getStationName(lastStation.id));
-      setStationsPassed(randomArray.length);
-      // console.log("stations passed: " + stationsPassed);
-      tripRewardHandler(user.uid, randomArray, stationsPassed, characterLevel);
     } else {
       console.log("No viable trips to be logged");
     }
   };
+
+  const renderItem = ({ item }: { item: Reward }) => (
+    <View style={styles.item}>
+      <IconButton icon="cash-multiple" size={10} />
+      {/* <Ionicons name={item.icon} size={24} color="black" /> */}
+      <Text style={styles.text}>{item.id}</Text>
+    </View>
+  );
 
   useEffect(() => {
     console.log(startingStnName + " arrived during task " + todo.title);
@@ -86,6 +106,13 @@ const Trip: React.FC = () => {
         Rewards: ${moneyRewardCalc(stationsPassed, characterLevel)},{" "}
         {moneyRewardCalc(stationsPassed, characterLevel)} gems
       </Text>
+      <View>
+        <FlatList
+          data={rewards}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+        />
+      </View>
       <Button
         icon="chevron-left"
         // mode="outlined"
@@ -117,5 +144,13 @@ const styles = StyleSheet.create({
   },
   button: {
     margin: 5,
+  },
+  item: {
+    flexDirection: "row",
+    alignItems: "center",
+    // padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    backgroundColor: "red",
   },
 });

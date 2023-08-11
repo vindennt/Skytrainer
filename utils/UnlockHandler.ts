@@ -4,6 +4,7 @@ import moment from "moment";
 import * as SKYTRAIN_DATA from "./SkytrainData";
 import { getStationName } from "./SkytrainData";
 import { Station } from "./Graph";
+import { Reward, newReward, Tier } from "./GachaHandler";
 
 export const LEVELUP_FRAGMENT_COST: number = 1;
 export const MONEY_PER_STATION = 5;
@@ -114,12 +115,16 @@ export const tripRewardHandler = async (
   visited: Station[],
   visitedLength: number,
   levelOfStart: number
-) => {
+): Promise<Reward[]> => {
   const reward = moneyRewardCalc(visitedLength, levelOfStart);
   const userRef = doc(FIRESTORE_DB, `users/${uid}`);
   await updateDoc(userRef, {
     money: increment(reward),
     gems: increment(reward),
   });
-  return;
+  console.log("Reward money:" + reward);
+
+  const rewards: Reward[] = [];
+  rewards.push(newReward("000", Tier.THREE_STAR, reward)); // money reward
+  return rewards;
 };

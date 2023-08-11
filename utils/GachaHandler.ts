@@ -16,11 +16,20 @@ const newRTE = (id: string, weight: number): RewardTableElement => {
 export interface Reward {
   id: string;
   tier: Tier;
+  quantity: number;
 }
+
+export const newReward = (id: string, tier: Tier, quanity: number): Reward => {
+  return {
+    id: id,
+    tier: tier,
+    quantity: quanity,
+  };
+};
 
 // Concrete tiers for rewards
 export enum Tier {
-  // THREE_STAR = "Three",
+  THREE_STAR = "Three",
   FOUR_STAR = "Four",
   FIVE_STAR = "Five",
 }
@@ -84,13 +93,25 @@ export const gachaRoll = (
   userFiveStarPity: number
 ): Reward => {
   if (userFiveStarPity === UNIVERSAL_FIVE_STAR_PITY) {
-    return { id: weightedRoll(fiveStarRewardTable).id, tier: Tier.FIVE_STAR };
+    return {
+      id: weightedRoll(fiveStarRewardTable).id,
+      tier: Tier.FIVE_STAR,
+      quantity: 1,
+    };
   } else {
     const tier = weightedRoll(tierRewardTable);
     if (tier.id === Tier.FIVE_STAR) {
-      return { id: weightedRoll(fiveStarRewardTable).id, tier: Tier.FIVE_STAR };
+      return {
+        id: weightedRoll(fiveStarRewardTable).id,
+        tier: Tier.FIVE_STAR,
+        quantity: 1,
+      };
     } else if (tier.id === Tier.FOUR_STAR) {
-      return { id: weightedRoll(fourStarRewardTable).id, tier: Tier.FOUR_STAR };
+      return {
+        id: weightedRoll(fourStarRewardTable).id,
+        tier: Tier.FOUR_STAR,
+        quantity: 1,
+      };
     } else {
       throw new Error("No tier found");
     }
