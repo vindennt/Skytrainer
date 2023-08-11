@@ -71,9 +71,11 @@ const Trip: React.FC = () => {
 
   const renderItem = ({ item }: { item: Reward }) => (
     <View style={styles.item}>
-      <IconButton icon="cash-multiple" size={10} />
-      {/* <Ionicons name={item.icon} size={24} color="black" /> */}
-      <Text style={styles.text}>{item.id}</Text>
+      <View style={styles.leftContent}>
+        {item.icon && <IconButton icon={item.icon} size={16} />}
+        <Text style={styles.text}>{item.id}</Text>
+      </View>
+      <Text style={styles.text}>{item.quantity}</Text>
     </View>
   );
 
@@ -91,7 +93,6 @@ const Trip: React.FC = () => {
           {
             backgroundColor: "lightgray",
             padding: 12,
-            margin: 12,
           },
         ]}
       >
@@ -101,18 +102,17 @@ const Trip: React.FC = () => {
         {firstStationName} to {lastStationName}
       </Text>
       <Text style={styles.text}>Time elapsed: {todo.time} mins</Text>
-      <Text style={styles.text}>{characterLevel}</Text>
-      <Text style={styles.text}>
+      <Text style={styles.text}>Level: {characterLevel}</Text>
+      {/* <Text style={styles.text}>
         Rewards: ${moneyRewardCalc(stationsPassed, characterLevel)},{" "}
         {moneyRewardCalc(stationsPassed, characterLevel)} gems
-      </Text>
-      <View>
-        <FlatList
-          data={rewards}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-        />
-      </View>
+      </Text> */}
+      <FlatList
+        data={rewards}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        style={styles.rewardList}
+      />
       <Button
         icon="chevron-left"
         // mode="outlined"
@@ -137,6 +137,8 @@ const styles = StyleSheet.create({
     margin: 8,
     alignItems: "center",
     justifyContent: "center",
+    padding: 30,
+    // backgroundColor: "pink",
   },
   text: {
     fontSize: 18,
@@ -149,8 +151,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     // padding: 16,
+    justifyContent: "space-between",
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
-    backgroundColor: "red",
+  },
+  rewardList: {
+    backgroundColor: "white",
+    maxHeight: "30%",
+    width: "100%",
+    // maxWidth: "50%",
+    margin: 30,
+  },
+  leftContent: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });

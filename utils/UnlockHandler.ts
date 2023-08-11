@@ -125,6 +125,8 @@ export const tripRewardHandler = async (
   console.log("Reward money:" + reward);
 
   const rewards: Reward[] = [];
-  rewards.push(newReward("000", Tier.THREE_STAR, reward)); // money reward
+  // TODO: remove gems as a reward for trips and give out fragments received for each staton visited
+  rewards.push(newReward("Money", Tier.THREE_STAR, reward, "cash-multiple")); // money reward
+  rewards.push(newReward("Gems", Tier.THREE_STAR, reward, "diamond")); // money reward
   return rewards;
 };

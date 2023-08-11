@@ -1,9 +1,17 @@
+import { getStationName } from "./SkytrainData";
+
 // format for rewards in the drop table where id is character id, and weight is probability weight
 interface RewardTableElement {
   id: string;
   weight: number;
 }
 
+// Concrete tiers for rewards
+export enum Tier {
+  THREE_STAR = "Three",
+  FOUR_STAR = "Four",
+  FIVE_STAR = "Five",
+}
 // helper function to increase readability creating a RewardTableElement
 const newRTE = (id: string, weight: number): RewardTableElement => {
   return {
@@ -16,23 +24,23 @@ const newRTE = (id: string, weight: number): RewardTableElement => {
 export interface Reward {
   id: string;
   tier: Tier;
-  quantity: number;
+  quantity?: number;
+  icon?: string;
 }
 
-export const newReward = (id: string, tier: Tier, quanity: number): Reward => {
+export const newReward = (
+  id: string,
+  tier: Tier,
+  quanity: number,
+  icon: string
+): Reward => {
   return {
     id: id,
     tier: tier,
     quantity: quanity,
+    icon: icon,
   };
 };
-
-// Concrete tiers for rewards
-export enum Tier {
-  THREE_STAR = "Three",
-  FOUR_STAR = "Four",
-  FIVE_STAR = "Five",
-}
 
 // Gacha mechanic "Pity" limit. If a user does not roll a Five Star Tiered reward in
 // UNIVERSAL_FIVE_STAR_PITY rolls, next roll is gauranteed Five Star Tier
@@ -96,7 +104,6 @@ export const gachaRoll = (
     return {
       id: weightedRoll(fiveStarRewardTable).id,
       tier: Tier.FIVE_STAR,
-      quantity: 1,
     };
   } else {
     const tier = weightedRoll(tierRewardTable);
@@ -104,13 +111,11 @@ export const gachaRoll = (
       return {
         id: weightedRoll(fiveStarRewardTable).id,
         tier: Tier.FIVE_STAR,
-        quantity: 1,
       };
     } else if (tier.id === Tier.FOUR_STAR) {
       return {
         id: weightedRoll(fourStarRewardTable).id,
         tier: Tier.FOUR_STAR,
-        quantity: 1,
       };
     } else {
       throw new Error("No tier found");
