@@ -18,13 +18,14 @@ type TripRouteProp = RouteProp<RootStackParamList, "Trip">;
 
 const Trip: React.FC = () => {
   const route = useRoute<TripRouteProp>();
-  const { user, characterid, characterLevel, todo, navigation } = route.params;
+  const { user, characterid, levelList, todo, navigation } = route.params;
   const startingStnName: string = getStationName(characterid);
   // reward calculation
   const [stationsPassed, setStationsPassed] = useState<number>(0);
   const [firstStationName, setFirstStationName] = useState<string>("");
   const [lastStationName, setLastStationName] = useState<string>("");
   const [rewards, setRewards] = useState<Reward[]>([]);
+  const [totalReward, setTotalReward] = useState<number>(0);
   // Trip details
   const stationToRetrieve = SKYTRAIN_DATA.STATION_MAP.get(characterid);
   const graph: Graph = SKYTRAIN_DATA.buildGraph();
@@ -53,15 +54,31 @@ const Trip: React.FC = () => {
       setStationsPassed(randomArray.length);
       // console.log("stations passed: " + stationsPassed);
       // TODO: get the rewrds list of reward handler to display
-      setRewards(
-        await tripRewardHandler(
-          user.uid,
-          randomArray,
-          stationsPassed,
-          characterLevel
-        )
+      // setRewards(
+      //   await tripRewardHandler(
+      //     user.uid,
+      //     randomArray,
+      //     stationsPassed,
+      //     levelList
+      //   )
+      // );
+
+      const result: [Reward[], number] = await tripRewardHandler(
+        user.uid,
+        randomArray,
+        stationsPassed,
+        levelList
       );
+
+      setRewards(result[0]);
+      setTotalReward(result[1]);
       console.log(rewards);
+
+      // const lastReward = rewards.pop();
+      // if (lastReward !== undefined) {
+      //   setTotalReward(lastReward.quantity);
+      // }
+
       // TODO: maybe make these a promise alongside setRewards so that its more efficient?
       const firstStation = randomArray[0];
       const lastStation = randomArray[randomArray.length - 1];
@@ -75,12 +92,22 @@ const Trip: React.FC = () => {
   const renderItem = ({ item }: { item: Reward }) => (
     <View style={styles.item}>
       <View style={styles.leftContent}>
-        {item.icon && <IconButton icon={item.icon} size={16} />}
         <Text style={styles.text}>{item.id}</Text>
       </View>
-      <Text style={styles.text}>{item.quantity}</Text>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text style={styles.text}>{item.quantity}</Text>
+        {/* {item.icon && <IconButton icon={item.icon} size={16} />} */}
+      </View>
     </View>
   );
+
+  // const RewardListFooter = () => {
+  //   return (
+  //     <View style={styles.item}>
+  //       <Text>Total: {totalReward}</Text>
+  //     </View>
+  //   );
+  // };
 
   // TODO: I think the stationsPassed dependency is what is causing so many reruns
   useEffect(() => {
@@ -106,17 +133,24 @@ const Trip: React.FC = () => {
         {firstStationName} to {lastStationName}
       </Text>
       <Text style={styles.text}>Time elapsed: {todo.time} mins</Text>
-      <Text style={styles.text}>Level: {characterLevel}</Text>
-      {/* <Text style={styles.text}>
-        Rewards: ${moneyRewardCalc(stationsPassed, characterLevel)},{" "}
-        {moneyRewardCalc(stationsPassed, characterLevel)} gems
-      </Text> */}
+      {/* <Text style={styles.text}>Level: {levelList.get(characterid)}</Text> */}
+
       <FlatList
         data={rewards}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         style={styles.rewardList}
       />
+      <View style={styles.totalitem}>
+        <View style={styles.leftContent}>
+          <Text style={styles.text}>Total</Text>
+        </View>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <IconButton icon="cash-multiple" size={18} />
+          <Text style={styles.text}>{totalReward}</Text>
+        </View>
+      </View>
+
       <Button
         icon="chevron-left"
         // mode="outlined"
@@ -154,18 +188,31 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: "row",
     alignItems: "center",
+    padding: 10,
+    justifyContent: "space-between",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    // backgroundColor: "green",
+  },
+  totalitem: {
+    paddingHorizontal: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
     // padding: 16,
     justifyContent: "space-between",
     borderBottomWidth: 1,
     borderBottomColor: "#ccc",
-    marginHorizontal: 5,
+    backgroundColor: "papayawhip",
+    marginBottom: 30,
   },
   rewardList: {
     backgroundColor: "white",
-    maxHeight: "30%",
+    maxHeight: "33%",
     width: "100%",
+    marginTop: 30,
     // maxWidth: "50%",
-    margin: 30,
+    // margin: 30,
   },
   leftContent: {
     flexDirection: "row",

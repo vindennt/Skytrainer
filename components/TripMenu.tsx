@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
 import { Todo } from "../app/screens/Home";
@@ -46,6 +46,9 @@ const TripMenu: React.FC<TripMenuProps> = ({
   const isFocused = useIsFocused();
   const [isPopupVisible, setPopupVisible] = useState(true);
   const [characterList, setCharacterList] = useState<Character[]>([]);
+  const userLevelMapRef = useRef<Map<string, number>>(
+    new Map<string, number>()
+  );
 
   const fetchCharacterData = async () => {
     const characters: Character[] = [];
@@ -56,11 +59,13 @@ const TripMenu: React.FC<TripMenuProps> = ({
     const querySnapshot = await getDocs(charQuery);
     querySnapshot.forEach((doc) => {
       const id: string = doc.id;
+      const level: number = doc.data().level;
       characters.push({
         id: id,
         name: getStationName(id),
-        level: doc.data().level,
+        level: level,
       } as Character);
+      userLevelMapRef.current.set(id, level);
     });
     return characters;
   };
@@ -110,7 +115,8 @@ const TripMenu: React.FC<TripMenuProps> = ({
     navigation.navigate("Trip", {
       user: user,
       characterid: character,
-      characterLevel: characterLevel,
+      // characterLevel: characterLevel,
+      levelList: userLevelMapRef.current,
       todo: todo,
       navigation: navigation,
     });

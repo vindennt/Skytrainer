@@ -8,7 +8,8 @@ export type RootStackParamList = {
   Trip: {
     user: User;
     characterid: string;
-    characterLevel: number;
+    // characterLevel: number;
+    levelList: Map<string, number>;
     todo: Todo;
     navigation: any;
   };

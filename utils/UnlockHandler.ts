@@ -7,7 +7,7 @@ import { Station } from "./Graph";
 import { Reward, newReward, Tier } from "./GachaHandler";
 
 export const LEVELUP_FRAGMENT_COST: number = 1;
-export const BASE_FRAGMENT_REWARD: number = 5;
+// export const BASE_FRAGMENT_REWARD: number = 5;
 export const MONEY_PER_STATION: number = 5;
 
 export const unlockStation = async (itemid: string, uid: string) => {
@@ -21,16 +21,16 @@ export const unlockStation = async (itemid: string, uid: string) => {
   });
 };
 
-export const giveFragment = async (
-  itemid: string,
-  uid: string,
-  amount: number
-) => {
-  console.log("Got " + amount + " fragments for " + getStationName(itemid));
-  await updateDoc(doc(FIRESTORE_DB, "users", uid, "characters", itemid), {
-    fragments: increment(amount),
-  });
-};
+// export const giveFragment = async (
+//   itemid: string,
+//   uid: string,
+//   amount: number
+// ) => {
+//   console.log("Got " + amount + " fragments for " + getStationName(itemid));
+//   await updateDoc(doc(FIRESTORE_DB, "users", uid, "characters", itemid), {
+//     fragments: increment(amount),
+//   });
+// };
 
 export const fragmentLevelUp = async (
   id: string,
@@ -107,41 +107,54 @@ export const gachaPurchase = async (
 export const scaledRewardsCalc = (
   baseReward: number,
   multiplier: number,
-  levelOfStart: number
+  levelOfStart: number | undefined
 ): number => {
-  const rewardMultiplier = levelOfStart / 10 + 1;
-  const moneyReward = Math.round(baseReward * multiplier * rewardMultiplier);
-  return moneyReward;
+  if (levelOfStart) {
+    const rewardMultiplier = levelOfStart / 10 + 1;
+    const moneyReward = Math.round(baseReward * multiplier * rewardMultiplier);
+    return moneyReward;
+  }
+  return 0;
 };
 
 export const tripRewardHandler = async (
   uid: string,
   visited: Station[],
   visitedLength: number,
-  levelOfStart: number
-): Promise<Reward[]> => {
-  const reward = scaledRewardsCalc(
-    MONEY_PER_STATION,
-    visitedLength,
-    levelOfStart
-  );
+  // levelOfStart: number
+  levelList: Map<string, number>
+): Promise<[Reward[], number]> => {
+  // let reward = scaledRewardsCalc(
+  //   MONEY_PER_STATION,
+  //   visitedLength,
+  //   levelList.get(visited[0].id) // get level of first visited station
+  // );
+  // const userRef = doc(FIRESTORE_DB, `users/${uid}`);
+  // updateDoc(userRef, {
+  //   money: increment(reward),
+  //   gems: increment(reward),
+  // });
+
+  const rewards: Reward[] = [];
+  // rewards.push(newReward("Money", Tier.THREE_STAR, reward, "cash-multiple")); // money reward
+  // rewards.push(newReward("Gems", Tier.THREE_STAR, reward, "diamond")); // money reward
+
+  let reward: number = 0;
+  const promises = visited.map(({ id }) => {
+    const amt = scaledRewardsCalc(MONEY_PER_STATION, 1, levelList.get(id));
+    reward += amt;
+    rewards.push(
+      newReward(getStationName(id), Tier.THREE_STAR, amt, "cash-multiple")
+    );
+    // return giveFragment(id, uid, amt);
+  });
+  await Promise.all(promises);
+  // rewards.push(newReward("000", Tier.THREE_STAR, reward, "cash-multiple")); // To communicate the total reward money to Trip without redundantly recalculating it
   const userRef = doc(FIRESTORE_DB, `users/${uid}`);
-  await updateDoc(userRef, {
+  updateDoc(userRef, {
     money: increment(reward),
     gems: increment(reward),
   });
   console.log("Reward money:" + reward);
-
-  const rewards: Reward[] = [];
-  rewards.push(newReward("Money", Tier.THREE_STAR, reward, "cash-multiple")); // money reward
-  // TODO: remove gems as a reward for trips and give out fragments received for each staton visited
-  rewards.push(newReward("Gems", Tier.THREE_STAR, reward, "diamond")); // money reward
-
-  const promises = visited.map(({ id }) => {
-    const amt = scaledRewardsCalc(BASE_FRAGMENT_REWARD, 1, levelOfStart);
-    rewards.push(newReward(getStationName(id), Tier.THREE_STAR, amt, "puzzle"));
-    return giveFragment(id, uid, amt);
-  });
-  Promise.all(promises);
-  return rewards;
+  return [rewards, reward];
 };

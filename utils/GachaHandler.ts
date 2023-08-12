@@ -24,7 +24,7 @@ const newRTE = (id: string, weight: number): RewardTableElement => {
 export interface Reward {
   id: string;
   tier: Tier;
-  quantity?: number;
+  quantity: number;
   icon?: string;
 }
 
@@ -104,6 +104,7 @@ export const gachaRoll = (
     return {
       id: weightedRoll(fiveStarRewardTable).id,
       tier: Tier.FIVE_STAR,
+      quantity: 1,
     };
   } else {
     const tier = weightedRoll(tierRewardTable);
@@ -111,11 +112,13 @@ export const gachaRoll = (
       return {
         id: weightedRoll(fiveStarRewardTable).id,
         tier: Tier.FIVE_STAR,
+        quantity: 1,
       };
     } else if (tier.id === Tier.FOUR_STAR) {
       return {
         id: weightedRoll(fourStarRewardTable).id,
         tier: Tier.FOUR_STAR,
+        quantity: 1,
       };
     } else {
       throw new Error("No tier found");
