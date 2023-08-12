@@ -60,7 +60,7 @@ export const stationLevelUp = async (
     await updateDoc(doc(FIRESTORE_DB, "users", uid, "characters", id), {
       level: increment(1),
       // fragments: increment(cost * -1),
-      unlocked: true,
+      // unlocked: true,
     });
     await updateMoney(uid, cost, -1);
     return;

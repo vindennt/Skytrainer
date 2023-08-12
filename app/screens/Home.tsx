@@ -159,7 +159,6 @@ const Home = ({ navigation }: RouterProps) => {
         setTodos(fetchedtodos); // set displayed list to fetched array
 
         // console.log("FINISHED UPDATING DISPLAYED TODOS");
-        return () => subscriber(); // Remove subscription to clear it
       },
     });
 
@@ -171,8 +170,11 @@ const Home = ({ navigation }: RouterProps) => {
       setMoney(userData?.money);
       setGems(userData?.gems);
     });
-    return () => unsub();
-  }, [auth, uid, money]);
+    return () => {
+      unsub();
+      subscriber();
+    };
+  }, [auth, user, money]);
 
   const canAddToDo = () => {
     if (todo === "" || range === 0) {

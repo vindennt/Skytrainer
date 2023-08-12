@@ -1,6 +1,10 @@
 import { View, Text, StyleSheet } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useIsFocused } from "@react-navigation/native";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  useIsFocused,
+  useFocusEffect,
+  useNavigation,
+} from "@react-navigation/native";
 import { FIREBASE_AUTH, FIRESTORE_DB } from "../../api/FirebaseConfig";
 import { User, onAuthStateChanged } from "firebase/auth";
 import {
@@ -31,177 +35,103 @@ import GridSelector from "../../components/GridSelector";
 import { LEVELUP_COSTS } from "../../utils/UnlockHandler";
 
 const Team = () => {
-  const [user, setUser] = useState<User | null>(null);
   const auth = FIREBASE_AUTH;
-  // const [displayName, displayName] = useState("string");
-  const [displayName, setDisplayName] = useState<string | null>("default");
-  const [uid, setUid] = useState<string>("default");
-  const [subscription, setSubscription] = useState<Unsubscribe>();
-  const isFocused = useIsFocused();
-  const [money, setMoney] = useState(0);
-  const [showPopup, setShowPopup] = useState(false);
-  const [popupText, setPopupText] = useState("");
-  const [colour, setColour] = useState<string>("red");
+  const [user, setUser] = useState<User | null>(null);
+  // const [uid, setUid] = useState<string>("undefined");
+
   const [unlockedCharList, setUnlockedCharList] = useState<Character[]>([]);
-  const [dataFetched, setDataFetched] = useState(false);
+  const [money, setMoney] = useState(-1);
+  const [character, setCharacter] = useState<Character>();
+  const [name, setName] = useState<string>("Loading...");
+  const [displayedLevel, setDisplayedLevel] = useState(0);
+  const userLevelMapRef = useRef<Map<string, number>>(
+    new Map<string, number>()
+  );
+
+  const [render, setRender] = useState<boolean>(false);
+  const [showPopup, setShowPopup] = useState<boolean>(false);
   const [loadingData, setLoadingData] = useState<boolean>(false);
   const [canUpgrade, setCanUpgrade] = useState<boolean>(false);
-
-  // var unlockedCharList: Character[] = [];
-  const [character, setCharacter] = useState<string>("001");
-  const [levelDisplay, setLevelDisplay] = useState<number>(0);
-  // const [fragmentDisplay, setFragmentDisplay] = useState<number>(0);
-  const [unlockedDateDisplay, setUnlockedDateDisplay] = useState<string>("");
-
-  const setDisplayInfo = async (id: string) => {
-    setLoadingData(true);
-    console.log("Team: Selected character: " + getStationName(id));
-    setCharacter(id);
-    const docRef = doc(FIRESTORE_DB, `users/${uid}/characters/${id}`);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      await setLevelDisplay(docSnap.data().level);
-      // await setFragmentDisplay(docSnap.data().fragments);
-      console.log(
-        "Team: chekcing if can upgrade: $" +
-          money +
-          " VS cost: " +
-          LEVELUP_COSTS[levelDisplay - 1]
-      );
-      if (money >= LEVELUP_COSTS[levelDisplay - 1]) {
-        setCanUpgrade(true);
-      } else {
-        setCanUpgrade(false);
-      }
-      setLoadingData(false);
-      // setUnlockedDateDisplay(docSnap.data().dateUnlocked);
-    } else {
-      throw new Error("Team menu: Doc does not exist for id " + id);
-    }
-  };
-
-  // const getUserCharacterData = async () => {
-  //   const charQuery = query(
-  //     collection(FIRESTORE_DB, `users/${uid}/characters`),
-  //     where("unlocked", "==", true)
-  //   ); // refer to todos collection in firestore
-  //   const querySnapshot = await getDocs(charQuery);
-  //   const fetchedChars: Character[] = [];
-  //   // await
-  //   querySnapshot.forEach((doc) => {
-  //     const id: string = doc.id;
-  //     // const stationRef = SKYTRAIN_DATA.STATION_MAP.get(doc.id);
-  //     fetchedChars.push({
-  //       id: id,
-  //       level: doc.data().level,
-  //       name: getStationName(id), // Name of station from the map
-  //     } as Character);
-  //   });
-  //   setUnlockedCharList(fetchedChars);
-  //   setDisplayInfo(character);
-
-  //   console.log("GETTING TEAM DISPLAY");
-  //   console.log(unlockedCharList);
-  //   console.log("DONE GETTING TEAM DISPLAY");
-  // };
-
-  const getUserCharacterData = async () => {
-    if (subscription) {
-      subscription(); // Call the subscription to unsubscribe
-    }
-
-    const charQuery = query(
-      collection(FIRESTORE_DB, `users/${uid}/characters`),
-      where("unlocked", "==", true)
-    ); // refer to todos collection in firestore
-    const newSubscription = onSnapshot(charQuery, {
-      // observer
-      next: async (snapshot) => {
-        // console.log("UPDATING DISPLAYED TODOS");
-        const fetchedChars: Character[] = []; // Array tracking todos of any type, not the same as the const
-        await snapshot.forEach((doc) => {
-          // console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
-          fetchedChars.push({
-            id: doc.id,
-            name: getStationName(doc.id),
-            ...doc.data(),
-          } as Character); // necessary line to pass typecheck
-        });
-        setUnlockedCharList(fetchedChars); // set displayed list to fetched array
-        if (unlockedCharList.length > 0) {
-          setCharacter(unlockedCharList[0].id);
-          setDisplayInfo(character);
-        } else {
-          console.log("Team: emoty Unlocked char list ");
-        }
-
-        // console.log("GETTING TEAM DISPLAY");
-        // console.log(unlockedCharList);
-        // console.log("DONE GETTING TEAM DISPLAY");
-
-        // console.log("FINISHED UPDATING DISPLAYED TODOS");
-        setSubscription(newSubscription);
-        // return () => subscriber(); // Remove subscription to clear it
-      },
-    });
-  };
-
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUser(user);
-        setUid(user.uid);
-        setDisplayName(user.displayName);
-        console.log(
-          "Team screen: " +
-            uid +
-            " with name " +
-            displayName +
-            " is currently logged in"
-        );
-      }
-    });
-
-    if (user) {
-      getUserCharacterData();
-    }
-
-    if (subscription) {
-      subscription(); // Call the subscription to unsubscribe
-    }
-
-    // Fetch money and gems
-    const userRef = doc(FIRESTORE_DB, `users/${uid}`);
-    const unsub = onSnapshot(userRef, (doc) => {
-      console.log("Team screen: Money fetch: ", doc.data());
-      const userData = doc.data();
-      setMoney(userData?.money);
-      // console.log("Pity: " + pity);
-    });
-
-    return () => unsub();
-  }, [auth, displayName, uid]);
 
   // Attempt level up
   const levelUp = async () => {
     setCanUpgrade(false);
     setLoadingData(true);
-    const docRef = doc(FIRESTORE_DB, `users/${uid}/characters/${character}`);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const currentFragments: number = docSnap.data().fragments;
-      console.log("Attempting level up for " + character);
-      await stationLevelUp(character, money, levelDisplay, uid);
-      setDisplayInfo(character);
+
+    if (user && character) {
+      const currentLevel = userLevelMapRef.current.get(character.id);
+      if (currentLevel) {
+        setDisplayedLevel(currentLevel + 1);
+        userLevelMapRef.current.set(character.id, currentLevel + 1);
+        stationLevelUp(character.id, money, currentLevel, user.uid);
+      }
+
+      // const docRef = doc(
+      //   FIRESTORE_DB,
+      //   `users/${user.uid}/characters/${character}`
+      // );
+      // const docSnap = await getDoc(docRef);
+      // if (docSnap.exists()) {
+      //   const currentFragments: number = docSnap.data().fragments;
+      //   console.log("Attempting level up for " + character);
+      // await stationLevelUp(character, money, levelDisplay, uid);
+      // setDisplayInfo(character);
       setCanUpgrade(true);
-      setLoadingData(false);
     } else {
-      setCanUpgrade(true);
-      setLoadingData(false);
-      throw new Error(
-        "Team menu levelup: Doc does not exist for id " + character
-      );
+      console.log("Level up failed: user, charcter, or level undefined");
+      // throw new Error(
+      //   "Team menu levelup: Doc does not exist for id " + character
+      // );
     }
+    setLoadingData(false);
+  };
+
+  const canLevel = (level: number) => {
+    setCanUpgrade(false);
+    if (level === 50) {
+      setCanUpgrade(false);
+    }
+    if (money === -1) {
+      console.log("money hasnt even loaded");
+    }
+    if (money >= LEVELUP_COSTS[level - 1]) {
+      setCanUpgrade(true);
+    } else {
+      setCanUpgrade(false);
+    }
+  };
+
+  const setDisplayInfo = async (character: Character, user: User) => {
+    if (user) {
+      setLoadingData(true);
+      if (displayedLevel === 0) {
+        setDisplayedLevel(character.level);
+      }
+      setCharacter(character);
+      setName(character.name);
+      console.log("Team: Selected character: " + getStationName(character.id));
+
+      const level = userLevelMapRef.current.get(character.id);
+      if (level) {
+        setDisplayedLevel(level);
+        canLevel(level);
+      } else {
+        console.log("Level info doesnt exist for " + character);
+      }
+    }
+    //   const docRef = doc(
+    //     FIRESTORE_DB,
+    //     `users/${user.uid}/characters/${character.id}`
+    //   );
+    //   const docSnap = await getDoc(docRef);
+    //   if (docSnap.exists()) {
+    //     const level = docSnap.data().level;
+    //     setDisplayedLevel(level);
+    //   } else {
+    //     console.log("setDisplayInfo docsnap doesnt exist for " + character);
+    //   }
+    // }
+    setLoadingData(false);
   };
 
   const handleButtonClick = () => {
@@ -212,19 +142,91 @@ const Team = () => {
     setShowPopup(false);
   };
 
-  return (
+  const getUserCharacterData = async (user: User) => {
+    if (user) {
+      const charQuery = query(
+        collection(FIRESTORE_DB, `users/${user.uid}/characters`),
+        where("unlocked", "==", true)
+      ); // refer to todos collection in firestore
+      const newSubscription = onSnapshot(charQuery, {
+        // observer
+        next: async (snapshot) => {
+          // console.log("UPDATING DISPLAYED TODOS");
+          const fetchedChars: Character[] = []; // Array tracking todos of any type, not the same as the const
+          await snapshot.forEach((doc) => {
+            // console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
+            const id = doc.id;
+            const level = doc.data().level;
+            fetchedChars.push({
+              id: id,
+              name: getStationName(doc.id),
+              ...doc.data(),
+            } as Character); // necessary line to pass typecheck
+            userLevelMapRef.current.set(id, level);
+          });
+          setUnlockedCharList(fetchedChars); // set displayed list to fetched array
+          if (fetchedChars.length > 0) {
+            const defaultSelectionChar = fetchedChars[0];
+            setDisplayInfo(defaultSelectionChar, user);
+          } else {
+            console.log("Team: empty Unlocked char list ");
+          }
+        },
+      });
+    } else {
+      console.log("getUserCharacterData: no user");
+    }
+  };
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUser(user);
+        console.log("Team screen: " + user.uid + " is currently logged in");
+        if (!render) {
+          getUserCharacterData(user);
+          setRender(true);
+        }
+      }
+    });
+  }, [auth]);
+
+  useEffect(() => {
+    if (user !== null && render) {
+      const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
+      const unsub = onSnapshot(userRef, (doc) => {
+        console.log("Team screen: Money fetch: ", doc.data());
+        const userData = doc.data();
+        setMoney(userData?.money);
+        // console.log("Pity: " + pity);
+      });
+      return () => unsub();
+    }
+
+    // if (user !== null && character !== undefined) {
+    //   setDisplayInfo(character, user);
+    // }
+  }, [user, render, money]);
+
+  useEffect(() => {
+    canLevel(displayedLevel);
+  }, [displayedLevel, money]);
+
+  return render ? (
     <View style={styles.container}>
       <View style={styles.scrollbarContainer}>
         <GridSelector
           characters={unlockedCharList}
           columns={1}
           onSelect={(item) => {
-            setCanUpgrade(false);
-            setDisplayInfo(item.id);
-            setCharacter(item.id);
+            if (user) {
+              setCharacter(item);
+              setDisplayInfo(item, user);
+            }
           }}
         />
       </View>
+
       <View style={styles.displayContainer}>
         <PaperButton
           icon="cash-multiple"
@@ -235,19 +237,15 @@ const Team = () => {
         >
           <Text style={styles.text}>{money}</Text>
         </PaperButton>
-
-        <View style={styles.nameContainer}>
-          <Text style={styles.text}>{getStationName(character)}</Text>
-        </View>
         <View style={styles.infoContainer}>
-          <Text style={styles.text}>Level: {levelDisplay}</Text>
-          {/* <Text style={styles.text}>Fragments: {fragmentDisplay}</Text> */}
+          <Text style={styles.text}>{name}</Text>
+          <Text style={styles.text}>Level: {displayedLevel}</Text>
         </View>
+
         <View style={styles.levelContainer}>
-          {/* <IconButton icon="trash-can-outline" size={20} iconColor="red" /> */}
           <PaperButton
             icon="cash-multiple"
-            disabled={!canUpgrade}
+            disabled={!canUpgrade || loadingData}
             loading={loadingData}
             style={styles.button}
             mode="contained"
@@ -256,18 +254,21 @@ const Team = () => {
             onPressOut={levelUp}
           >
             <Text style={styles.text}>
-              {LEVELUP_COSTS[levelDisplay - 1]} {"  "} Level Up
+              {displayedLevel >= 50 ? "MAX" : LEVELUP_COSTS[displayedLevel - 1]}{" "}
+              {"  "} Level Up
             </Text>
           </PaperButton>
         </View>
       </View>
-      <Popup
+      {/* <Popup
         visible={showPopup}
         text={popupText}
         onClose={handleClosePopup}
         backgroundColour={colour}
-      />
+      /> */}
     </View>
+  ) : (
+    <Text>Loading</Text>
   );
 };
 
@@ -297,13 +298,13 @@ const styles = StyleSheet.create({
   },
   scrollbarContainer: {
     flexWrap: "wrap",
-    backgroundColor: "pink",
+    // backgroundColor: "pink",
   },
   displayContainer: {
     // flexWrap: "wrap",
     flex: 1,
     height: "100%",
-    backgroundColor: "lightgray",
+    // backgroundColor: "lightgray",
     alignItems: "center",
     padding: 10,
   },
@@ -312,12 +313,12 @@ const styles = StyleSheet.create({
   },
   infoContainer: {
     flex: 1,
-    backgroundColor: "lavender",
+    // backgroundColor: "lavender",
     justifyContent: "center",
   },
   levelContainer: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "pink",
+    // backgroundColor: "pink",
   },
 });
