@@ -95,40 +95,33 @@ const Team = () => {
     }
   };
 
+  // Is only called if user exists
   const setDisplayInfo = async (character: Character, user: User) => {
-    if (user) {
-      setLoadingData(true);
-      if (displayedLevel === 0) {
-        // if first time settinng a level
-        setDisplayedLevel(character.level);
-      }
-      setCharacter(character);
-      setName(character.name);
-      console.log("Team: Selected character: " + getStationName(character.id));
+    setLoadingData(true);
 
-      const level = userLevelMapRef.current.get(character.id);
-      console.log("set display info getting level: " + level);
-      if (level !== undefined) {
-        if (level >= 20) {
-          setCanUpgrade(false);
-        } else {
-          setCanUpgrade(true);
-        }
-        setDisplayedLevel(level);
-        canLevel(level);
-      } else {
-        console.log("Level info doesnt exist for " + character);
-      }
+    if (render === false) {
+      // if first time settinng a level
+      setDisplayedLevel(character.level);
     }
+    setCharacter(character);
+    setName(character.name);
+    console.log("Team: Selected character: " + getStationName(character.id));
+
+    const level = userLevelMapRef.current.get(character.id);
+    console.log("set display info getting level: " + level);
+    if (level !== undefined) {
+      if (level >= 20) {
+        setCanUpgrade(false);
+      } else {
+        setCanUpgrade(true);
+      }
+      setDisplayedLevel(level);
+      canLevel(level);
+    } else {
+      console.log("Level info doesnt exist for " + character);
+    }
+
     setLoadingData(false);
-  };
-
-  const handleButtonClick = () => {
-    setShowPopup(true);
-  };
-
-  const handleClosePopup = () => {
-    setShowPopup(false);
   };
 
   const getUserCharacterData = async (user: User) => {
@@ -152,10 +145,11 @@ const Team = () => {
               name: getStationName(doc.id),
               ...doc.data(),
             } as Character); // necessary line to pass typecheck
+            // Create local cache
             userLevelMapRef.current.set(id, level);
           });
-          setUnlockedCharList(fetchedChars); // set displayed list to fetched array
           if (fetchedChars.length > 0) {
+            setUnlockedCharList(fetchedChars); // set displayed list to fetched array for rendering GridSelector
             const defaultSelectionChar = fetchedChars[0];
             setDisplayInfo(defaultSelectionChar, user);
           } else {
@@ -175,7 +169,7 @@ const Team = () => {
         console.log("Team screen: " + user.uid + " is currently logged in");
         if (!render) {
           getUserCharacterData(user);
-          setRender(true);
+
           const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
           const fetchMoney = async () => {
             const docSnap = await getDoc(userRef);
@@ -183,6 +177,7 @@ const Team = () => {
               const money = docSnap.data().money;
               console.log("Fetched money: " + money);
               setMoney(money);
+              setRender(true);
             } else {
               console.log("Money fetch docsnap doesnt exist!");
             }
@@ -194,46 +189,19 @@ const Team = () => {
   }, [auth]);
 
   // useEffect(() => {
-  //   // if (subscription) {
-  //   //   subscription(); // Call the subscription to unsubscribe
-  //   // }
-
-  //   if (user !== null && render) {
-  //     const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
-  //     const fetchMoney = async () => {
-  //       const docSnap = await getDoc(userRef);
-  //       if (docSnap.exists()) {
-  //         const money = docSnap.data().money;
-  //         console.log("Fetched money: " + money);
-  //         setMoney(money);
-  //       } else {
-  //         console.log("Money fetch docsnap doesnt exist!");
-  //       }
-  //     const unsub = onSnapshot(userRef, (doc) => {
-  //       console.log("Team screen: Money fetch: ", doc.data());
-  //       const userData = doc.data();
-  //       const money = userData?.money;
-  //       setMoney(money);
-  //       // console.log("Pity: " + pity);
-  //       setSubscription(unsub);
-  //     });
-  //     return () => unsub();
-  //   } else {
-  //     console.log("can't update money");
+  //   if (character && user) {
+  //     // canLevel(displayedLevel);
+  //     setDisplayInfo(character, user); // TODO: turnign this off removes al ot of repeate calls, but also allows it to revert to waterfront
   //   }
-  //   // fetchMoney();
+  // }, [displayedLevel]);
 
-  //   // if (user !== null && character !== undefined) {
-  //   //   setDisplayInfo(character, user);
-  //   // }
-  // }, [auth, user, money]);
+  const handleButtonClick = () => {
+    setShowPopup(true);
+  };
 
-  useEffect(() => {
-    if (character && user) {
-      canLevel(displayedLevel);
-      setDisplayInfo(character, user); // TODO: turnign this off removes al ot of repeate calls, but also allows it to revert to waterfront
-    }
-  }, [displayedLevel, money]);
+  const handleClosePopup = () => {
+    setShowPopup(false);
+  };
 
   return render ? (
     <View style={styles.container}>
@@ -243,7 +211,7 @@ const Team = () => {
           columns={1}
           onSelect={(item) => {
             if (user) {
-              setCharacter(item);
+              // setCharacter(item);
               setDisplayInfo(item, user);
             }
           }}
