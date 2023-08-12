@@ -53,44 +53,38 @@ const Team = () => {
   const [loadingData, setLoadingData] = useState<boolean>(false);
   const [canUpgrade, setCanUpgrade] = useState<boolean>(false);
 
+  const [subscription, setSubscription] = useState<Unsubscribe>();
+
   // Attempt level up
-  const levelUp = async () => {
-    setCanUpgrade(false);
+  const levelUp = () => {
     setLoadingData(true);
 
     if (user && character) {
       const currentLevel = userLevelMapRef.current.get(character.id);
       if (currentLevel) {
-        setDisplayedLevel(currentLevel + 1);
-        userLevelMapRef.current.set(character.id, currentLevel + 1);
-        stationLevelUp(character.id, money, currentLevel, user.uid);
+        const cost = LEVELUP_COSTS[currentLevel - 1];
+        if (money >= cost) {
+          // Update local display values
+          setMoney(money - LEVELUP_COSTS[currentLevel - 1]);
+          userLevelMapRef.current.set(character.id, currentLevel + 1);
+          setDisplayedLevel(currentLevel + 1);
+          // update cloud data
+          stationLevelUp(character.id, money, currentLevel, user.uid);
+        }
+        // if (await stationLevelUp(character.id, money, currentLevel, user.uid)) {
+        //   setMoney(money - LEVELUP_COSTS[currentLevel - 1]);
+        //   userLevelMapRef.current.set(character.id, currentLevel + 1);
+        //   setDisplayedLevel(currentLevel + 1);
+        // }
       }
-
-      // const docRef = doc(
-      //   FIRESTORE_DB,
-      //   `users/${user.uid}/characters/${character}`
-      // );
-      // const docSnap = await getDoc(docRef);
-      // if (docSnap.exists()) {
-      //   const currentFragments: number = docSnap.data().fragments;
-      //   console.log("Attempting level up for " + character);
-      // await stationLevelUp(character, money, levelDisplay, uid);
-      // setDisplayInfo(character);
-      setCanUpgrade(true);
     } else {
       console.log("Level up failed: user, charcter, or level undefined");
-      // throw new Error(
-      //   "Team menu levelup: Doc does not exist for id " + character
-      // );
     }
     setLoadingData(false);
   };
 
   const canLevel = (level: number) => {
     setCanUpgrade(false);
-    if (level === 50) {
-      setCanUpgrade(false);
-    }
     if (money === -1) {
       console.log("money hasnt even loaded");
     }
@@ -105,6 +99,7 @@ const Team = () => {
     if (user) {
       setLoadingData(true);
       if (displayedLevel === 0) {
+        // if first time settinng a level
         setDisplayedLevel(character.level);
       }
       setCharacter(character);
@@ -112,25 +107,19 @@ const Team = () => {
       console.log("Team: Selected character: " + getStationName(character.id));
 
       const level = userLevelMapRef.current.get(character.id);
-      if (level) {
+      console.log("set display info getting level: " + level);
+      if (level !== undefined) {
+        if (level >= 20) {
+          setCanUpgrade(false);
+        } else {
+          setCanUpgrade(true);
+        }
         setDisplayedLevel(level);
         canLevel(level);
       } else {
         console.log("Level info doesnt exist for " + character);
       }
     }
-    //   const docRef = doc(
-    //     FIRESTORE_DB,
-    //     `users/${user.uid}/characters/${character.id}`
-    //   );
-    //   const docSnap = await getDoc(docRef);
-    //   if (docSnap.exists()) {
-    //     const level = docSnap.data().level;
-    //     setDisplayedLevel(level);
-    //   } else {
-    //     console.log("setDisplayInfo docsnap doesnt exist for " + character);
-    //   }
-    // }
     setLoadingData(false);
   };
 
@@ -143,6 +132,7 @@ const Team = () => {
   };
 
   const getUserCharacterData = async (user: User) => {
+    console.log("Running getUserCharacterData");
     if (user) {
       const charQuery = query(
         collection(FIRESTORE_DB, `users/${user.uid}/characters`),
@@ -186,30 +176,63 @@ const Team = () => {
         if (!render) {
           getUserCharacterData(user);
           setRender(true);
+          const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
+          const fetchMoney = async () => {
+            const docSnap = await getDoc(userRef);
+            if (docSnap.exists()) {
+              const money = docSnap.data().money;
+              console.log("Fetched money: " + money);
+              setMoney(money);
+            } else {
+              console.log("Money fetch docsnap doesnt exist!");
+            }
+          };
+          fetchMoney();
         }
       }
     });
   }, [auth]);
 
+  // useEffect(() => {
+  //   // if (subscription) {
+  //   //   subscription(); // Call the subscription to unsubscribe
+  //   // }
+
+  //   if (user !== null && render) {
+  //     const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
+  //     const fetchMoney = async () => {
+  //       const docSnap = await getDoc(userRef);
+  //       if (docSnap.exists()) {
+  //         const money = docSnap.data().money;
+  //         console.log("Fetched money: " + money);
+  //         setMoney(money);
+  //       } else {
+  //         console.log("Money fetch docsnap doesnt exist!");
+  //       }
+  //     const unsub = onSnapshot(userRef, (doc) => {
+  //       console.log("Team screen: Money fetch: ", doc.data());
+  //       const userData = doc.data();
+  //       const money = userData?.money;
+  //       setMoney(money);
+  //       // console.log("Pity: " + pity);
+  //       setSubscription(unsub);
+  //     });
+  //     return () => unsub();
+  //   } else {
+  //     console.log("can't update money");
+  //   }
+  //   // fetchMoney();
+
+  //   // if (user !== null && character !== undefined) {
+  //   //   setDisplayInfo(character, user);
+  //   // }
+  // }, [auth, user, money]);
+
   useEffect(() => {
-    if (user !== null && render) {
-      const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
-      const unsub = onSnapshot(userRef, (doc) => {
-        console.log("Team screen: Money fetch: ", doc.data());
-        const userData = doc.data();
-        setMoney(userData?.money);
-        // console.log("Pity: " + pity);
-      });
-      return () => unsub();
+    if (character && user) {
+      canLevel(displayedLevel);
+      setDisplayInfo(character, user); // TODO: turnign this off removes al ot of repeate calls, but also allows it to revert to waterfront
     }
-
-    // if (user !== null && character !== undefined) {
-    //   setDisplayInfo(character, user);
-    // }
-  }, [user, render, money]);
-
-  useEffect(() => {
-    canLevel(displayedLevel);
   }, [displayedLevel, money]);
 
   return render ? (
@@ -245,16 +268,19 @@ const Team = () => {
         <View style={styles.levelContainer}>
           <PaperButton
             icon="cash-multiple"
-            disabled={!canUpgrade || loadingData}
+            // disabled={!canUpgrade || loadingData}
+            disabled={displayedLevel >= 30 || loadingData || !canUpgrade}
             loading={loadingData}
             style={styles.button}
             mode="contained"
             buttonColor="orange"
             labelStyle={{ fontSize: 20 }} // icon size
-            onPressOut={levelUp}
+            onPressOut={() => {
+              levelUp();
+            }}
           >
             <Text style={styles.text}>
-              {displayedLevel >= 50 ? "MAX" : LEVELUP_COSTS[displayedLevel - 1]}{" "}
+              {displayedLevel >= 30 ? "MAX" : LEVELUP_COSTS[displayedLevel - 1]}{" "}
               {"  "} Level Up
             </Text>
           </PaperButton>
