@@ -107,8 +107,8 @@ STATION_MAP.set("006", [
   CommercialBroadway,
   Tier.FOUR_STAR,
 ]);
-STATION_MAP.set("008", ["Nanaimo", Nanaimo, Tier.FOUR_STAR]);
-STATION_MAP.set("007", ["29th Avenue", TwentyNinththAvenue, Tier.FOUR_STAR]);
+STATION_MAP.set("007", ["Nanaimo", Nanaimo, Tier.FOUR_STAR]);
+STATION_MAP.set("008", ["29th Avenue", TwentyNinththAvenue, Tier.FOUR_STAR]);
 STATION_MAP.set("009", ["Joyce-Collingwood", JoyceCollingwood, Tier.FOUR_STAR]);
 STATION_MAP.set("010", ["Patterson", Patterson, Tier.FOUR_STAR]);
 STATION_MAP.set("011", ["Metrotown", Metrotown, Tier.FOUR_STAR]);
