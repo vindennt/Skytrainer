@@ -6,7 +6,13 @@ import { getStationName } from "./SkytrainData";
 import { Station } from "./Graph";
 import { Reward, newReward, Tier } from "./GachaHandler";
 
-export const LEVELUP_FRAGMENT_COST: number = 1;
+// export const LEVELUP_FRAGMENT_COST: number = 1;
+export const LEVELUP_COSTS: number[] = [
+  1, 11, 21, 31, 41, 51, 61, 71, 81, 91, 101, 111, 121, 131, 141, 151, 161, 171,
+  181, 191, 201, 211, 221, 231, 241, 251, 261, 271, 281, 291, 301, 311, 321,
+  331, 341, 351, 361, 371, 381, 391, 401, 411, 421, 431, 441, 451, 461, 471,
+  481, 491, 500,
+];
 // export const BASE_FRAGMENT_REWARD: number = 5;
 export const MONEY_PER_STATION: number = 5;
 
@@ -32,18 +38,31 @@ export const unlockStation = async (itemid: string, uid: string) => {
 //   });
 // };
 
-export const fragmentLevelUp = async (
+export const updateMoney = async (
+  uid: string,
+  amount: number,
+  multiplier: number
+) => {
+  updateDoc(doc(FIRESTORE_DB, `users/${uid}`), {
+    money: increment(multiplier * amount),
+  });
+};
+
+export const stationLevelUp = async (
   id: string,
-  currentFragments: number,
+  currentMoney: number,
+  currentLevel: number,
   uid: string
 ) => {
-  if (currentFragments >= LEVELUP_FRAGMENT_COST) {
+  const cost = LEVELUP_COSTS[currentLevel - 1];
+  if (currentMoney >= cost) {
     console.log("Level up approved for " + id);
     await updateDoc(doc(FIRESTORE_DB, "users", uid, "characters", id), {
       level: increment(1),
-      fragments: increment(LEVELUP_FRAGMENT_COST * -1),
+      // fragments: increment(cost * -1),
       unlocked: true,
     });
+    await updateMoney(uid, cost, -1);
     return;
   } else {
     console.log("Level up not approved");
@@ -58,9 +77,7 @@ export const coinPurchase = async (
   mapFn: (itemid: string, uid: string) => Promise<void>
 ) => {
   if (userMoney >= cost) {
-    const updatePromise = updateDoc(doc(FIRESTORE_DB, `users/${uid}`), {
-      money: increment(-1 * cost),
-    });
+    const updatePromise = updateMoney(uid, cost, -1);
     const fnPromise = mapFn(itemid, uid);
     await Promise.all([updatePromise, fnPromise]);
     return;
