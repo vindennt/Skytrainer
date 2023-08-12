@@ -80,7 +80,7 @@ const Login = () => {
       console.log("Unlocking " + id + " for " + uid);
       setDoc(doc(FIRESTORE_DB, "users", uid, "characters", id), {
         level: 1,
-        fragments: 0,
+        // fragments: 0,
         unlocked: true,
         dateUnlocked: "",
       });
