@@ -53,7 +53,7 @@ export const stationLevelUp = async (
   currentMoney: number,
   currentLevel: number,
   uid: string
-) => {
+): Promise<boolean> => {
   const cost = LEVELUP_COSTS[currentLevel - 1];
   if (currentMoney >= cost) {
     console.log("Level up approved for " + id);
@@ -63,9 +63,10 @@ export const stationLevelUp = async (
       // unlocked: true,
     });
     await updateMoney(uid, cost, -1);
-    return;
+    return true;
   } else {
     console.log("Level up not approved");
+    return false;
   }
 };
 
