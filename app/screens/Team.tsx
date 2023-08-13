@@ -28,6 +28,7 @@ import {
   gachaPurchase,
   // giveFragment,
   unlockStation,
+  updateGems,
 } from "../../utils/UnlockHandler";
 import moment from "moment";
 import { Character } from "../../components/TripMenu";
@@ -51,14 +52,24 @@ const Team = () => {
   // const [render, setRender] = useState<boolean>(false);
   const render = useRef<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [popupText, setPopupText] = useState(
+    "Reward for leveling 5 times: 160 gems"
+  );
   const [loadingData, setLoadingData] = useState<boolean>(false);
   const [canPay, setCanPay] = useState<boolean>(false);
 
-  const [subscription, setSubscription] = useState<Unsubscribe>();
+  const isLevelupMilestone = (level: number) => {
+    if (level % 5 === 0 && user) {
+      console.log("Reward for leveling 5 times: 160 gems");
+      updateGems(user.uid, 160, 1);
+      setShowPopup(true);
+    }
+  };
 
   // Attempt level up
   const levelUp = () => {
     setLoadingData(true);
+    console.log(loadingData);
 
     if (user && character) {
       const currentLevel = userLevelMapRef.current.get(character.id);
@@ -73,17 +84,14 @@ const Team = () => {
           setDisplayedLevel(currentLevel + 1);
           // update cloud data
           stationLevelUp(character.id, money, currentLevel, user.uid);
+          isLevelupMilestone(currentLevel + 1);
         }
-        // if (await stationLevelUp(character.id, money, currentLevel, user.uid)) {
-        //   setMoney(money - LEVELUP_COSTS[currentLevel - 1]);
-        //   userLevelMapRef.current.set(character.id, currentLevel + 1);
-        //   setDisplayedLevel(currentLevel + 1);
-        // }
       }
     } else {
       console.log("Level up failed: user, charcter, or level undefined");
     }
     setLoadingData(false);
+    console.log(loadingData);
   };
 
   const canLevel = (level: number) => {
@@ -107,6 +115,7 @@ const Team = () => {
   const setDisplayInfo = async (character: Character, user: User) => {
     console.log("-------SetDisplayInfo for char " + character.name);
     setLoadingData(true);
+    console.log(loadingData);
 
     if (render.current === false) {
       // if first time settinng a level
@@ -201,9 +210,9 @@ const Team = () => {
   //   }
   // }, [displayedLevel]);
 
-  const handleButtonClick = () => {
-    setShowPopup(true);
-  };
+  // const handleButtonClick = () => {
+  //   setShowPopup(true);
+  // };
 
   const handleClosePopup = () => {
     setShowPopup(false);
@@ -260,12 +269,12 @@ const Team = () => {
           </PaperButton>
         </View>
       </View>
-      {/* <Popup
+      <Popup
         visible={showPopup}
         text={popupText}
         onClose={handleClosePopup}
-        backgroundColour={colour}
-      /> */}
+        // backgroundColour={"white"}
+      />
     </View>
   ) : (
     <Text>Loading</Text>
