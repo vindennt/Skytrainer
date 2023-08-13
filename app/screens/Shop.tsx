@@ -214,6 +214,7 @@ const Shop = () => {
         selected={selectedCategory === category}
         showSelectedOverlay={true}
         compact={true}
+        elevated={true}
       >
         {title}
       </Chip>
@@ -265,9 +266,11 @@ const Shop = () => {
         />
         <Popup
           visible={showPopup}
-          text={popupText}
+          // text={popupText}
           onClose={handleClosePopup}
-        />
+        >
+          <Text style={styles.text}>{popupText}</Text>
+        </Popup>
       </SafeAreaView>
     </View>
   ) : (

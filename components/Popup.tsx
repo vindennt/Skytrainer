@@ -4,16 +4,18 @@ import { IconButton, Button as PaperButton } from "react-native-paper";
 
 interface PopupProps {
   visible: boolean;
-  text: string;
+  // text: string;
   onClose: () => void;
   backgroundColour?: string;
+  children?: React.ReactNode;
 }
 
 const Popup: React.FC<PopupProps> = ({
   visible,
-  text,
+  // text,
   onClose,
   backgroundColour = "rgba(0, 0, 0, 0.5)", // default backgroudn colour is fade
+  children,
 }) => {
   return (
     <Modal animationType="fade" transparent={true} visible={visible}>
@@ -21,8 +23,7 @@ const Popup: React.FC<PopupProps> = ({
         style={[styles.popupOverlay, { backgroundColor: backgroundColour }]}
       >
         <View style={styles.popup}>
-          <Text style={styles.text}>{text}</Text>
-
+          {children}
           <IconButton
             icon="window-close"
             size={20}

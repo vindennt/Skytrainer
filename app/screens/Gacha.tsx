@@ -7,11 +7,7 @@ import { IconButton, Button as PaperButton } from "react-native-paper";
 import { getStationName } from "../../utils/SkytrainData";
 import Popup from "../../components/Popup";
 import { Reward, Tier, gachaRoll } from "../../utils/GachaHandler";
-import {
-  gachaPurchase,
-  giveFragment,
-  unlockStation,
-} from "../../utils/UnlockHandler";
+import { gachaPurchase, unlockStation } from "../../utils/UnlockHandler";
 import moment from "moment";
 
 type Buyable = {
@@ -151,10 +147,11 @@ const Gacha = () => {
         </PaperButton>
         <Popup
           visible={showPopup}
-          text={popupText}
           onClose={handleClosePopup}
           backgroundColour={colour}
-        />
+        >
+          <Text style={styles.text}>{popupText}</Text>
+        </Popup>
       </View>
     </View>
   );

@@ -280,10 +280,11 @@ const Team = () => {
       </View>
       <Popup
         visible={showPopup}
-        text={popupText}
         onClose={handleClosePopup}
         // backgroundColour={"white"}
-      />
+      >
+        <Text style={styles.text}>{popupText}</Text>
+      </Popup>
     </View>
   ) : (
     <View style={styles.container}>
