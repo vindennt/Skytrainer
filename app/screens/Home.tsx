@@ -174,7 +174,7 @@ const Home = ({ navigation }: RouterProps) => {
       unsub();
       subscriber();
     };
-  }, [auth, user, money]);
+  }, [auth, money]);
 
   const canAddToDo = () => {
     if (todo === "" || range === 0) {
@@ -299,7 +299,6 @@ const Home = ({ navigation }: RouterProps) => {
             </PaperButton>
           </View>
 
-          <Button onPress={() => FIREBASE_AUTH.signOut()} title="Logout" />
           <Button
             onPress={() => navigation.navigate("Account")}
             title="Account"
