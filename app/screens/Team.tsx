@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   useIsFocused,
   useFocusEffect,
@@ -66,8 +66,10 @@ const Team = () => {
         const cost = LEVELUP_COSTS[currentLevel - 1];
         if (money >= cost) {
           // Update local display values
-          setMoney(money - LEVELUP_COSTS[currentLevel - 1]);
+          const newMoney = money - LEVELUP_COSTS[currentLevel - 1];
+          setMoney(newMoney);
           userLevelMapRef.current.set(character.id, currentLevel + 1);
+          canLevel(currentLevel + 1);
           setDisplayedLevel(currentLevel + 1);
           // update cloud data
           stationLevelUp(character.id, money, currentLevel, user.uid);
@@ -85,6 +87,9 @@ const Team = () => {
   };
 
   const canLevel = (level: number) => {
+    console.log(
+      "Running canLevel for " + money + " and cost " + LEVELUP_COSTS[level - 1]
+    );
     setCanPay(false);
     if (money === -1) {
       console.log("canLevel: money hasnt loaded");
