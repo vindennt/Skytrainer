@@ -46,16 +46,16 @@ const GridSelector: React.FC<GridSelectorProps> = ({
     // background colour based on tier
     const backgroundColor = () => {
       if (item.id === selectedCharacter) {
-        return "lightblue";
+        return "dodgerblue";
       } else if (getTier(item.id) === Tier.FIVE_STAR) {
-        return "navy";
+        return "goldenrod";
       } else {
-        return "royalblue";
+        return "navy";
       }
     };
 
-    // const color = item.id === selectedCharacter ? "black" : "white";
-    const color = "white";
+    const color = item.id === selectedCharacter ? "black" : "white";
+    // const color = "white";
 
     return (
       <Item

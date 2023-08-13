@@ -16,6 +16,7 @@ import {
 import GridSelector from "./GridSelector";
 import * as SKYTRAIN_DATA from "../utils/SkytrainData";
 import { getStationName } from "../utils/SkytrainData";
+import { ActivityIndicator } from "react-native-paper";
 
 interface TripMenuProps {
   item: Todo;
@@ -142,20 +143,29 @@ const TripMenu: React.FC<TripMenuProps> = ({
             borderRadius: 12,
             minHeight: "55%",
             maxHeight: "55%",
-            maxWidth: "100%",
+            maxWidth: "80%",
             minWidth: "80%",
           }}
         >
-          <GridSelector
-            // visible={isPopupVisible}
-            characters={characterList}
-            columns={2}
-            onSelect={(item) => {
-              console.log("TripMenu: Selected character: " + item.name);
-              setCharacter(item.id);
-              setCharacterLevel(item.level);
-            }}
-          />
+          {character === "000" && (
+            <ActivityIndicator
+              animating={true}
+              color={"white"}
+              size={"large"}
+            />
+          )}
+          {characterList && (
+            <GridSelector
+              // visible={isPopupVisible}
+              characters={characterList}
+              columns={2}
+              onSelect={(item) => {
+                console.log("TripMenu: Selected character: " + item.name);
+                setCharacter(item.id);
+                setCharacterLevel(item.level);
+              }}
+            />
+          )}
         </View>
 
         <View style={styles.taskContainer}>
