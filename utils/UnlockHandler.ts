@@ -95,15 +95,23 @@ export const gemPurchase = async (
   mapFn: (itemid: string, uid: string) => Promise<void>
 ) => {
   if (userGems >= cost) {
-    const updatePromise = updateDoc(doc(FIRESTORE_DB, `users/${uid}`), {
-      gems: increment(-1 * cost),
-    });
+    const updatePromise = updateGems(uid, cost, -1);
     const fnPromise = mapFn(itemid, uid);
     await Promise.all([updatePromise, fnPromise]);
     return;
   } else {
     throw new Error("Not enough gems");
   }
+};
+
+export const updateGems = async (
+  uid: string,
+  amount: number,
+  multiplier: number
+) => {
+  updateDoc(doc(FIRESTORE_DB, `users/${uid}`), {
+    gems: increment(multiplier * amount),
+  });
 };
 
 export const gachaPurchase = async (
