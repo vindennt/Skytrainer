@@ -145,8 +145,8 @@ const Shop = () => {
   }, [auth]);
 
   const handlePurchase = async (item: Buyable) => {
+    setCanBuy(false);
     try {
-      setCanBuy(false);
       if (money >= item.cost) {
         handleButtonClick("Purchase success!");
         setMoney(money - item.cost);
@@ -179,7 +179,7 @@ const Shop = () => {
           textColor="black"
           labelStyle={{ fontSize: 16 }}
           buttonColor="whitesmoke"
-          onPressOut={() => handlePurchase(item)}
+          onPress={() => handlePurchase(item)}
         >
           <Text style={styles.text}>{item.cost}</Text>
         </PaperButton>
