@@ -48,10 +48,11 @@ const Team = () => {
     new Map<string, number>()
   );
 
-  const [render, setRender] = useState<boolean>(false);
+  // const [render, setRender] = useState<boolean>(false);
+  const render = useRef<boolean>(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [loadingData, setLoadingData] = useState<boolean>(false);
-  const [canUpgrade, setCanUpgrade] = useState<boolean>(false);
+  const [canPay, setCanPay] = useState<boolean>(false);
 
   const [subscription, setSubscription] = useState<Unsubscribe>();
 
@@ -84,37 +85,38 @@ const Team = () => {
   };
 
   const canLevel = (level: number) => {
-    setCanUpgrade(false);
+    setCanPay(false);
     if (money === -1) {
-      console.log("money hasnt even loaded");
+      console.log("canLevel: money hasnt loaded");
     }
     if (money >= LEVELUP_COSTS[level - 1]) {
-      setCanUpgrade(true);
+      console.log("canLevel: Yes");
+      setCanPay(true);
     } else {
-      setCanUpgrade(false);
+      console.log("canLevel: No");
+      setCanPay(false);
     }
   };
 
   // Is only called if user exists
   const setDisplayInfo = async (character: Character, user: User) => {
+    console.log("-------SetDisplayInfo for char " + character.name);
     setLoadingData(true);
 
-    if (render === false) {
+    if (render.current === false) {
       // if first time settinng a level
+      console.log("Render is false, so first time setting display info");
       setDisplayedLevel(character.level);
     }
     setCharacter(character);
     setName(character.name);
-    console.log("Team: Selected character: " + getStationName(character.id));
+    console.log(
+      "setDisplayInfo: Selected character: " + getStationName(character.id)
+    );
 
     const level = userLevelMapRef.current.get(character.id);
-    console.log("set display info getting level: " + level);
     if (level !== undefined) {
-      if (level >= 20) {
-        setCanUpgrade(false);
-      } else {
-        setCanUpgrade(true);
-      }
+      console.log("setDisplayInfo: displayed level: " + level);
       setDisplayedLevel(level);
       canLevel(level);
     } else {
@@ -130,33 +132,31 @@ const Team = () => {
       const charQuery = query(
         collection(FIRESTORE_DB, `users/${user.uid}/characters`),
         where("unlocked", "==", true)
-      ); // refer to todos collection in firestore
-      const newSubscription = onSnapshot(charQuery, {
-        // observer
-        next: async (snapshot) => {
-          // console.log("UPDATING DISPLAYED TODOS");
-          const fetchedChars: Character[] = []; // Array tracking todos of any type, not the same as the const
-          await snapshot.forEach((doc) => {
-            // console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
-            const id = doc.id;
-            const level = doc.data().level;
-            fetchedChars.push({
-              id: id,
-              name: getStationName(doc.id),
-              ...doc.data(),
-            } as Character); // necessary line to pass typecheck
-            // Create local cache
-            userLevelMapRef.current.set(id, level);
-          });
-          if (fetchedChars.length > 0) {
-            setUnlockedCharList(fetchedChars); // set displayed list to fetched array for rendering GridSelector
-            const defaultSelectionChar = fetchedChars[0];
-            setDisplayInfo(defaultSelectionChar, user);
-          } else {
-            console.log("Team: empty Unlocked char list ");
-          }
-        },
+      );
+      const querySnapshot = await getDocs(charQuery);
+      const fetchedChars: Character[] = []; // Array tracking todos of any type, not the same as the const
+      await querySnapshot.forEach((doc) => {
+        // console.log(doc.data()); // keep doc.data() instead of just doc to log relevant data
+        const id = doc.id;
+        const level = doc.data().level;
+        fetchedChars.push({
+          id: id,
+          name: getStationName(doc.id),
+          ...doc.data(),
+        } as Character); // necessary line to pass typecheck
+        // Create local cache for faster rendering
+        userLevelMapRef.current.set(id, level);
       });
+      // Set Default char
+      if (fetchedChars.length > 0) {
+        console.log("getUserCharacterData calling setUnlockedCharList");
+        setUnlockedCharList(fetchedChars); // set displayed list to fetched array for rendering GridSelector
+        const defaultSelectionChar = fetchedChars[0];
+        console.log("getUserCharacterData calling setDisplayInfo");
+        setDisplayInfo(defaultSelectionChar, user);
+      } else {
+        console.log("Team: empty Unlocked char list ");
+      }
     } else {
       console.log("getUserCharacterData: no user");
     }
@@ -167,8 +167,9 @@ const Team = () => {
       if (user) {
         setUser(user);
         console.log("Team screen: " + user.uid + " is currently logged in");
-        if (!render) {
+        if (!render.current) {
           getUserCharacterData(user);
+          render.current = true;
 
           const userRef = doc(FIRESTORE_DB, `users/${user.uid}`);
           const fetchMoney = async () => {
@@ -177,7 +178,7 @@ const Team = () => {
               const money = docSnap.data().money;
               console.log("Fetched money: " + money);
               setMoney(money);
-              setRender(true);
+              // setRender(true);
             } else {
               console.log("Money fetch docsnap doesnt exist!");
             }
@@ -237,7 +238,7 @@ const Team = () => {
           <PaperButton
             icon="cash-multiple"
             // disabled={!canUpgrade || loadingData}
-            disabled={displayedLevel >= 30 || loadingData || !canUpgrade}
+            disabled={displayedLevel >= 40 || loadingData || !canPay}
             loading={loadingData}
             style={styles.button}
             mode="contained"
@@ -248,7 +249,7 @@ const Team = () => {
             }}
           >
             <Text style={styles.text}>
-              {displayedLevel >= 30 ? "MAX" : LEVELUP_COSTS[displayedLevel - 1]}{" "}
+              {displayedLevel >= 40 ? "MAX" : LEVELUP_COSTS[displayedLevel - 1]}{" "}
               {"  "} Level Up
             </Text>
           </PaperButton>
