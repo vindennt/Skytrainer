@@ -1,5 +1,12 @@
 import React from "react";
-import { Modal, Text, View, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  Modal,
+  Text,
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { IconButton, Button as PaperButton } from "react-native-paper";
 
 interface PopupProps {
@@ -8,30 +15,47 @@ interface PopupProps {
   onClose: () => void;
   backgroundColour?: string;
   children?: React.ReactNode;
+  closeOnTapAnywhere?: boolean;
+  closeButtonVisible?: boolean;
 }
 
 const Popup: React.FC<PopupProps> = ({
   visible,
   // text,
   onClose,
-  backgroundColour = "rgba(0, 0, 0, 0.5)", // default backgroudn colour is fade
+  backgroundColour = "rgba(0, 0, 0, 0.7)", // default backgroudn colour is fade
   children,
+  closeOnTapAnywhere = true,
+  closeButtonVisible = false,
 }) => {
-  return (
-    <Modal animationType="fade" transparent={true} visible={visible}>
-      <View
-        style={[styles.popupOverlay, { backgroundColor: backgroundColour }]}
-      >
-        <View style={styles.popup}>
-          {children}
+  const popupContent = (
+    <View style={[styles.popupOverlay, { backgroundColor: backgroundColour }]}>
+      <View style={styles.popup}>
+        {children}
+        {closeButtonVisible && (
           <IconButton
             icon="window-close"
             size={20}
             onPress={onClose}
             style={styles.closeButton}
           />
-        </View>
+        )}
       </View>
+      <Text style={[styles.text, { color: "white", margin: 30 }]}>
+        Tap anywhere to close
+      </Text>
+    </View>
+  );
+
+  return closeOnTapAnywhere ? (
+    <Modal animationType="fade" transparent={true} visible={visible}>
+      <TouchableWithoutFeedback onPress={onClose}>
+        {popupContent}
+      </TouchableWithoutFeedback>
+    </Modal>
+  ) : (
+    <Modal animationType="fade" transparent={true} visible={visible}>
+      {popupContent}
     </Modal>
   );
 };
