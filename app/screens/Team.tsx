@@ -19,7 +19,11 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { IconButton, Button as PaperButton } from "react-native-paper";
+import {
+  IconButton,
+  Button as PaperButton,
+  ActivityIndicator,
+} from "react-native-paper";
 import { getStationName } from "../../utils/SkytrainData";
 import Popup from "../../components/Popup";
 import { Reward, Tier, gachaRoll } from "../../utils/GachaHandler";
@@ -218,7 +222,7 @@ const Team = () => {
     setShowPopup(false);
   };
 
-  return render ? (
+  return render && character ? (
     <View style={styles.container}>
       <View style={styles.scrollbarContainer}>
         <GridSelector
@@ -277,7 +281,9 @@ const Team = () => {
       />
     </View>
   ) : (
-    <Text>Loading</Text>
+    <View style={styles.container}>
+      <ActivityIndicator animating={true} color={"gray"} size={"large"} />
+    </View>
   );
 };
 
