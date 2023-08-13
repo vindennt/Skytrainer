@@ -84,6 +84,7 @@ const Team = () => {
           const newMoney = money - LEVELUP_COSTS[currentLevel - 1];
           setMoney(newMoney);
           userLevelMapRef.current.set(character.id, currentLevel + 1);
+          console.log("levelUp calling can level");
           canLevel(currentLevel + 1);
           setDisplayedLevel(currentLevel + 1);
           // update cloud data
@@ -99,13 +100,14 @@ const Team = () => {
   };
 
   const canLevel = (level: number) => {
-    console.log(
-      "Running canLevel for " + money + " and cost " + LEVELUP_COSTS[level - 1]
-    );
     setCanPay(false);
     if (money === -1) {
       console.log("canLevel: money hasnt loaded");
+      return;
     }
+    console.log(
+      "Running canLevel for " + money + " and cost " + LEVELUP_COSTS[level - 1]
+    );
     if (money >= LEVELUP_COSTS[level - 1]) {
       console.log("canLevel: Yes");
       setCanPay(true);
@@ -135,8 +137,9 @@ const Team = () => {
     const level = userLevelMapRef.current.get(character.id);
     if (level !== undefined) {
       console.log("setDisplayInfo: displayed level: " + level);
-      setDisplayedLevel(level);
+      console.log("setDisplay info");
       canLevel(level);
+      setDisplayedLevel(level);
     } else {
       console.log("Level info doesnt exist for " + character);
     }
