@@ -71,8 +71,9 @@ const Team = () => {
   };
 
   // Attempt level up
-  const levelUp = () => {
+  const levelUp = async () => {
     setLoadingData(true);
+    setCanPay(false);
     console.log(loadingData);
 
     if (user && character) {
@@ -101,8 +102,10 @@ const Team = () => {
 
   const canLevel = (level: number) => {
     setCanPay(false);
+    setLoadingData(true);
     if (money === -1) {
       console.log("canLevel: money hasnt loaded");
+      setLoadingData(false);
       return;
     }
     console.log(
@@ -115,6 +118,7 @@ const Team = () => {
       console.log("canLevel: No");
       setCanPay(false);
     }
+    setLoadingData(false);
   };
 
   // Is only called if user exists
@@ -265,9 +269,7 @@ const Team = () => {
             mode="contained"
             buttonColor="orange"
             labelStyle={{ fontSize: 20 }} // icon size
-            onPressOut={() => {
-              levelUp();
-            }}
+            onPress={levelUp}
           >
             <Text style={styles.text}>
               {displayedLevel >= 40 ? "MAX" : LEVELUP_COSTS[displayedLevel - 1]}{" "}
