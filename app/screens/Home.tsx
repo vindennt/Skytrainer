@@ -16,7 +16,7 @@ import {
   Keyboard,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
-import { IconButton, Button as PaperButton } from "react-native-paper";
+import { IconButton, Button as PaperButton, Badge } from "react-native-paper";
 import Moment from "react-moment";
 import "moment-timezone";
 import { useCallback } from "react";
@@ -41,6 +41,8 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import moment from "moment";
+import Popup from "../../components/Popup";
+import { MISSIONS, MissionInfo } from "../../utils/MissionHandler";
 
 const METRO_VANCOUVER_COORDINATES = {
   latitude: 49.232937,
@@ -83,6 +85,8 @@ const Home = ({ navigation }: RouterProps) => {
   const [range, setRange] = useState(25);
   const [sliding, setSliding] = useState("Inactive");
   const [isOpen, setIsOpen] = useState(false); // Modal open state
+  const [missionBadge, setMissionBadge] = useState(true); // Mission badge visible? False if all missions are done
+  const [popupVisible, setPopupVisible] = useState(false); // Mission badge visible? False if all missions are done
   const slider = {
     min: 0,
     max: 300,
@@ -129,6 +133,44 @@ const Home = ({ navigation }: RouterProps) => {
     );
   }
 
+  const MissionPopup = () => {
+    const renderItem = ({ item }: { item: MissionInfo }) => (
+      <View
+        style={[
+          styles.container,
+          {
+            flexDirection: "row",
+            justifyContent: "space-between",
+          },
+        ]}
+      >
+        <Text style={[styles.text, { marginRight: 30 }]}>
+          {item.description}{" "}
+        </Text>
+        <View>
+          {item.condition !== -1 && (
+            <Text style={styles.text}>
+              {item.progress}/{item.condition}
+            </Text>
+          )}
+          {item.condition === -1 && (
+            <Text style={styles.text}>{item.progress}</Text>
+          )}
+        </View>
+      </View>
+    );
+
+    return (
+      <View style={{ maxHeight: 300, width: "100%" }}>
+        <FlatList
+          data={[...MISSIONS.values()]} // Convert map values to an array
+          renderItem={renderItem}
+          keyExtractor={(item) => item.description} // You can use a unique identifier here
+        />
+      </View>
+    );
+  };
+
   useEffect(() => {
     fetchWeather();
     onAuthStateChanged(auth, (user) => {
@@ -137,7 +179,11 @@ const Home = ({ navigation }: RouterProps) => {
         setUid(user.uid);
         setDisplayName(user.displayName);
         console.log(
-          uid + " with name " + displayName + " is currently logged in"
+          "Home: " +
+            uid +
+            " with name " +
+            displayName +
+            " is currently logged in"
         );
       }
     });
@@ -165,7 +211,7 @@ const Home = ({ navigation }: RouterProps) => {
     // Fetch money and gems
     const userRef = doc(FIRESTORE_DB, `users/${uid}`);
     const unsub = onSnapshot(userRef, (doc) => {
-      console.log("Money fetch user: ", doc.data());
+      console.log("Home: Money fetch user: ", doc.data());
       const userData = doc.data();
       setMoney(userData?.money);
       setGems(userData?.gems);
@@ -303,9 +349,13 @@ const Home = ({ navigation }: RouterProps) => {
             onPress={() => navigation.navigate("Account")}
             title="Account"
           />
+          <Button onPress={() => navigation.navigate("Team")} title="Team" />
           <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
           <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
-          <Button onPress={() => navigation.navigate("Team")} title="Team" />
+          <View>
+            <Button onPress={() => setPopupVisible(true)} title="Missions" />
+            <Badge visible={missionBadge} size={10} style={styles.badge} />
+          </View>
 
           <View style={styles.setTodoContainer}>
             <View style={styles.form}>
@@ -384,6 +434,14 @@ const Home = ({ navigation }: RouterProps) => {
                 />
               </View>
             )}
+            <Popup
+              visible={popupVisible}
+              onClose={() => setPopupVisible(false)}
+              closeOnTapAnywhere={false}
+              closeButtonVisible={true}
+            >
+              <MissionPopup />
+            </Popup>
           </View>
 
           <BottomSheetModal
@@ -547,5 +605,11 @@ const styles = StyleSheet.create({
     width: "100%",
     flexDirection: "row",
     justifyContent: "space-evenly",
+  },
+  badge: {
+    position: "absolute",
+    top: 5,
+    right: 0,
+    backgroundColor: "red",
   },
 });

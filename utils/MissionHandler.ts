@@ -5,6 +5,7 @@ import { FIRESTORE_DB } from "../api/FirebaseConfig";
 // Denotes how often a mission should be reset
 // TODO: implement checking mission conditions to reset their finish state
 export enum ResetCondition {
+  NEVER,
   DAILY,
   WEEKLY,
   MONDAY,
@@ -24,7 +25,9 @@ export enum MissionEvent {
   CHARACTER_LEVELED,
   PURCHASE_MADE,
   GACHA_ROLL,
-  CUSTOM, // If a custom daily trip is set, then it can be checked to see if the trup just run was connected to it
+  CUSTOM_1, // If a custom daily trip is set, then it can be checked to see if the trup just run was connected to it
+  CUSTOM_2,
+  CUSTOM_3,
 }
 
 export interface MissionInfo {
@@ -71,6 +74,18 @@ export const MISSIONS: Map<string, MissionInfo> = new Map([
       "",
       false,
       ResetCondition.DAILY,
+      MissionEvent.TRIP_FINISHED
+    ),
+  ],
+  [
+    "M002",
+    newMissionInfo(
+      "Number of trips finished",
+      0,
+      -1,
+      "",
+      false,
+      ResetCondition.NEVER,
       MissionEvent.TRIP_FINISHED
     ),
   ],

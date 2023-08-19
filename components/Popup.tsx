@@ -23,7 +23,7 @@ const Popup: React.FC<PopupProps> = ({
   visible,
   // text,
   onClose,
-  backgroundColour = "rgba(0, 0, 0, 0.7)", // default backgroudn colour is fade
+  backgroundColour = "rgba(0, 0, 0, 0.8)", // default backgroudn colour is fade
   children,
   closeOnTapAnywhere = true,
   closeButtonVisible = false,
@@ -41,9 +41,11 @@ const Popup: React.FC<PopupProps> = ({
           />
         )}
       </View>
-      <Text style={[styles.text, { color: "white", margin: 30 }]}>
-        Tap anywhere to close
-      </Text>
+      {closeOnTapAnywhere && (
+        <Text style={[styles.text, { color: "white", margin: 30 }]}>
+          Tap anywhere to close
+        </Text>
+      )}
     </View>
   );
 

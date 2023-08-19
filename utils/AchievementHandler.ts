@@ -3,6 +3,7 @@ import { doc, getDoc, increment, setDoc, updateDoc } from "firebase/firestore";
 import { FIRESTORE_DB } from "../api/FirebaseConfig";
 
 // Infrastructure for long term achievements
+// probably integrate this with missions since uses very similar logic
 const ACHIEVEMENTS: Map<string, string> = new Map([
   ["A001", "Complete 1 trip"],
   ["A002", "level up 1 character"],
