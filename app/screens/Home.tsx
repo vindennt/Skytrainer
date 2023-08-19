@@ -16,7 +16,12 @@ import {
   Keyboard,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
-import { IconButton, Button as PaperButton, Badge } from "react-native-paper";
+import {
+  IconButton,
+  Button as PaperButton,
+  Badge,
+  BottomNavigation,
+} from "react-native-paper";
 import Moment from "react-moment";
 import "moment-timezone";
 import { useCallback } from "react";
