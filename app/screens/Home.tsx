@@ -42,7 +42,11 @@ import {
 } from "firebase/firestore";
 import moment from "moment";
 import Popup from "../../components/Popup";
-import { MISSIONS, MissionInfo } from "../../utils/MissionHandler";
+import {
+  MISSIONS,
+  MissionInfo,
+  resetMissions,
+} from "../../utils/MissionHandler";
 
 const METRO_VANCOUVER_COORDINATES = {
   latitude: 49.232937,
@@ -95,6 +99,7 @@ const Home = ({ navigation }: RouterProps) => {
     step: 5,
   };
   const sliderInitial: number = (25 / slider.proportion) * slider.max;
+  const missions: Map<string, MissionInfo> = MISSIONS;
 
   const [item, setItem] = useState<Todo>({
     title: "default",
@@ -161,12 +166,16 @@ const Home = ({ navigation }: RouterProps) => {
     );
 
     return (
-      <View style={{ maxHeight: 300, width: "100%" }}>
+      <View style={{ maxHeight: 300, width: "100%", alignItems: "center" }}>
         <FlatList
-          data={[...MISSIONS.values()]} // Convert map values to an array
+          data={[...missions.values()]} // Convert map values to an array
           renderItem={renderItem}
           keyExtractor={(item) => item.description} // You can use a unique identifier here
         />
+        {/* TODO: delete this button since its just for testing purposes */}
+        <PaperButton onPress={resetMissions} mode="contained">
+          Reset All
+        </PaperButton>
       </View>
     );
   };

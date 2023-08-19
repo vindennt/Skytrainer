@@ -13,6 +13,12 @@ import {
   scaledRewardsCalc,
 } from "../../utils/UnlockHandler";
 import { Reward, newReward } from "../../utils/GachaHandler";
+import {
+  MISSIONS,
+  MissionEvent,
+  MissionInfo,
+  updateMissions,
+} from "../../utils/MissionHandler";
 
 type TripRouteProp = RouteProp<RootStackParamList, "Trip">;
 

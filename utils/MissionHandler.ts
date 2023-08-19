@@ -64,7 +64,7 @@ export const newMissionInfo = (
 // TODO: Have certain misisons reset on certain days/daily
 // TODO: allow custom user-made missions
 // TODO: push this info to the cloud for each individual
-export const MISSIONS: Map<string, MissionInfo> = new Map([
+export var MISSIONS: Map<string, MissionInfo> = new Map([
   [
     "M001",
     newMissionInfo(
@@ -91,21 +91,30 @@ export const MISSIONS: Map<string, MissionInfo> = new Map([
   ],
 ]);
 
-// TODO: implement
+// TODO: implement with redux so that global state can be updated
 // For event, updates missions that react to that event
-export const updateMissions = (event: MissionEvent, user: User) => {
+export const updateMissions = (event: MissionEvent) => {
+  console.log("UPDATING MISSIONS FOR EVENT : " + event);
   // update all missions that react to event
-  if (user) {
-  }
+  MISSIONS.forEach((missionInfo, key) => {
+    if (missionInfo.condition === event) {
+      missionInfo.progress++;
+    }
+  });
 };
 
 // TODO: implement
 // set the mission data, such as updating progress or changing reset condition
-const updateMission = async (id: string, user: User) => {
-  setDoc(doc(FIRESTORE_DB, `users/${user.uid}`), {
-    // update doc here
-    // e.g. set doc of id D001 to be true, so that when missions are viewed
-    // it will render as true. New missions can be added with updates
-    // without breaking old mission lists
-  });
+const updateMission = async (id: string) => {
+  // update doc here
+  // e.g. set doc of id D001 to be true, so that when missions are viewed
+  // it will render as true. New missions can be added with updates
+  // without breaking old mission lists
+};
+
+export const resetMissions = () => {
+  for (const [key, missionInfo] of MISSIONS) {
+    // Update the progress property to 0
+    missionInfo.progress = 0;
+  }
 };
