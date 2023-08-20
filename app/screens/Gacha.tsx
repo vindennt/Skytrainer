@@ -16,9 +16,9 @@ type Buyable = {
   itemid: string;
 };
 
-const costPerRoll: number = 1;
-
 const Gacha = () => {
+  const costPerRoll: number = 1;
+
   const [user, setUser] = useState<User | null>(null);
   const auth = FIREBASE_AUTH;
   // const [displayName, displayName] = useState("string");

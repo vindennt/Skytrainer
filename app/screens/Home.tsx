@@ -16,12 +16,7 @@ import {
   Keyboard,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
-import {
-  IconButton,
-  Button as PaperButton,
-  Badge,
-  BottomNavigation,
-} from "react-native-paper";
+import { IconButton, Button as PaperButton, Badge } from "react-native-paper";
 import Moment from "react-moment";
 import "moment-timezone";
 import { useCallback } from "react";
@@ -52,6 +47,8 @@ import {
   MissionInfo,
   resetMissions,
 } from "../../utils/MissionHandler";
+import Navbar from "../../components/Navbar";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 const METRO_VANCOUVER_COORDINATES = {
   latitude: 49.232937,
@@ -105,6 +102,7 @@ const Home = ({ navigation }: RouterProps) => {
   };
   const sliderInitial: number = (25 / slider.proportion) * slider.max;
   const missions: Map<string, MissionInfo> = MISSIONS;
+  const Tab = createBottomTabNavigator();
 
   const [item, setItem] = useState<Todo>({
     title: "default",
@@ -484,6 +482,7 @@ const Home = ({ navigation }: RouterProps) => {
           </BottomSheetModal>
         </View>
       </TouchableWithoutFeedback>
+      <Navbar></Navbar>
     </BottomSheetModalProvider>
   );
 };
