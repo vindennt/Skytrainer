@@ -1,6 +1,7 @@
 import { User } from "firebase/auth";
 import { Character } from "../components/TripMenu";
 import { Todo } from "../app/screens/Home";
+import { NavigationProp } from "@react-navigation/native";
 
 // NavigationTypes.ts
 export type RootStackParamList = {
@@ -11,6 +12,6 @@ export type RootStackParamList = {
     // characterLevel: number;
     levelList: Map<string, number>;
     todo: Todo;
-    navigation: any;
+    navigation: NavigationProp<any, any>;
   };
 };

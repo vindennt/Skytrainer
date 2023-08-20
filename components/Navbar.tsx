@@ -3,23 +3,23 @@ import { BottomNavigation, Text } from "react-native-paper";
 import Shop from "../app/screens/Shop";
 import Gacha from "../app/screens/Gacha";
 import Account from "../app/screens/Account";
+import Home from "../app/screens/Home";
+import { NavigationProp } from "@react-navigation/native";
 
-const MusicRoute = () => <Text>Hey</Text>;
-
-const ShopRoute = () => <Shop></Shop>;
-
-const GachaRoute = () => <Gacha></Gacha>;
+export interface RouterProps {
+  navigation: NavigationProp<any, any>;
+}
 
 const AccountRouter = () => <Account></Account>;
 
-const MyComponent = () => {
+const Navbar = ({ navigation }: RouterProps) => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {
-      key: "music",
-      title: "Favorites",
-      focusedIcon: "heart",
-      unfocusedIcon: "heart-outline",
+      key: "home",
+      title: "Home",
+      focusedIcon: "home",
+      unfocusedIcon: "home-outline",
     },
     { key: "shop", title: "Shop", focusedIcon: "store" },
     { key: "gacha", title: "Gacha", focusedIcon: "credit-card" },
@@ -31,8 +31,13 @@ const MyComponent = () => {
     },
   ]);
 
+  //   const HomeRoute = () => <Home navigation={navigation}></Home>;
+  const HomeRoute = () => <Home navigation={navigation}></Home>;
+  const ShopRoute = () => <Shop></Shop>;
+  const GachaRoute = () => <Gacha></Gacha>;
+
   const renderScene = BottomNavigation.SceneMap({
-    music: MusicRoute,
+    home: HomeRoute,
     shop: ShopRoute,
     gacha: GachaRoute,
     account: AccountRouter,
@@ -47,4 +52,4 @@ const MyComponent = () => {
   );
 };
 
-export default MyComponent;
+export default Navbar;

@@ -17,6 +17,7 @@ import "react-native-gesture-handler";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 
 import { default as theme } from "./theme.json";
+import Index from "./app/screens/Index";
 
 export type RootStackParamList = {
   Home: undefined;
@@ -31,8 +32,8 @@ function InsideLayout() {
   return (
     <InsideStack.Navigator>
       <InsideStack.Screen
-        name="Home"
-        component={Home}
+        name="Index"
+        component={Index}
         options={{
           headerStyle: {
             backgroundColor: "#085cac",

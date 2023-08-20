@@ -47,13 +47,8 @@ import {
   MissionInfo,
   resetMissions,
 } from "../../utils/MissionHandler";
-import Navbar from "../../components/Navbar";
+import Navbar, { RouterProps } from "../../components/Navbar";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-
-const METRO_VANCOUVER_COORDINATES = {
-  latitude: 49.232937,
-  longtidute: -123.0299,
-};
 
 // Interface for Todo data structure
 export interface Todo {
@@ -63,10 +58,6 @@ export interface Todo {
   time: number;
 }
 
-interface RouterProps {
-  navigation: NavigationProp<any, any>;
-}
-
 // const startTrip = (todo: Todo, character: Character | undefined): void => {
 //   console.log(
 //     "Trip for todo " + todo.title + " started with character " + character
@@ -74,6 +65,11 @@ interface RouterProps {
 // };
 
 const Home = ({ navigation }: RouterProps) => {
+  const METRO_VANCOUVER_COORDINATES = {
+    latitude: 49.232937,
+    longtidute: -123.0299,
+  };
+
   const [todos, setTodos] = useState<Todo[]>([]); // Displayed list of todos
   const [todo, setTodo] = useState(""); // wSet todo from user input
   // Firebase/store
@@ -310,19 +306,6 @@ const Home = ({ navigation }: RouterProps) => {
     []
   );
 
-  // TODO: This is just sample unlocking method
-  const unlockWaterfront = async () => {
-    console.log("unlokcing waterfront");
-    const date = moment().utcOffset("-08:00").format();
-    // setCurrentDate(date + "/" + month + "/" + year);
-    await setDoc(doc(FIRESTORE_DB, "users", uid, "characters", "001"), {
-      level: 1,
-      fragments: 0,
-      unlocked: true,
-      dateUnlocked: date,
-    });
-  };
-
   const closeModal = () => {
     bottomSheetModalRef?.current?.close();
   };
@@ -468,6 +451,7 @@ const Home = ({ navigation }: RouterProps) => {
               borderRadius: 40,
               marginHorizontal: 20,
             }}
+            d
             onDismiss={() => setIsOpen(false)}
           >
             {/* <Text>{item.title + item.done + item.time}</Text> */}
@@ -482,7 +466,6 @@ const Home = ({ navigation }: RouterProps) => {
           </BottomSheetModal>
         </View>
       </TouchableWithoutFeedback>
-      <Navbar></Navbar>
     </BottomSheetModalProvider>
   );
 };
