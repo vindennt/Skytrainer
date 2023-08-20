@@ -16,7 +16,12 @@ import {
   Keyboard,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
-import { IconButton, Button as PaperButton, Badge } from "react-native-paper";
+import {
+  IconButton,
+  Button as PaperButton,
+  Badge,
+  FAB,
+} from "react-native-paper";
 import Moment from "react-moment";
 import "moment-timezone";
 import { useCallback } from "react";
@@ -70,7 +75,17 @@ export interface Todo {
 // };
 
 const Index = ({ navigation }: RouterProps) => {
-  return <Navbar navigation={navigation}></Navbar>;
+  return (
+    // <View>
+    //   <Navbar navigation={navigation} />
+    //   <FAB
+    //     icon="plus"
+    //     style={styles.fab}
+    //     onPress={() => console.log("Pressed")}
+    //   />
+    // </View>
+    <Navbar navigation={navigation} />
+  );
 };
 
 export default Index;
@@ -210,5 +225,11 @@ const styles = StyleSheet.create({
     top: 5,
     right: 0,
     backgroundColor: "red",
+  },
+  fab: {
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
 });

@@ -120,15 +120,6 @@ const Gacha = () => {
         >
           <Text style={styles.text}>{money}</Text>
         </PaperButton> */}
-        <PaperButton
-          icon="diamond-stone"
-          style={styles.button}
-          mode="outlined"
-          textColor="royalblue"
-          labelStyle={{ fontSize: 20 }} // icon size
-        >
-          <Text style={styles.text}>{gems}</Text>
-        </PaperButton>
       </View>
       <View style={styles.container}>
         <PaperButton
@@ -166,6 +157,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     alignItems: "center",
     justifyContent: "center",
+    // maxHeight: "30%",
   },
   button: {
     margin: 5,

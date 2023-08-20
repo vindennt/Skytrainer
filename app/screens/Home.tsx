@@ -16,7 +16,12 @@ import {
   Keyboard,
 } from "react-native";
 import { useIsFocused } from "@react-navigation/native";
-import { IconButton, Button as PaperButton, Badge } from "react-native-paper";
+import {
+  IconButton,
+  Button as PaperButton,
+  Badge,
+  FAB,
+} from "react-native-paper";
 import Moment from "react-moment";
 import "moment-timezone";
 import { useCallback } from "react";
@@ -339,14 +344,14 @@ const Home = ({ navigation }: RouterProps) => {
               <Text style={styles.text}>{gems}</Text>
             </PaperButton>
           </View>
-
+          {/* 
           <Button
             onPress={() => navigation.navigate("Account")}
             title="Account"
-          />
-          <Button onPress={() => navigation.navigate("Team")} title="Team" />
+          /> */}
+          {/* <Button onPress={() => navigation.navigate("Team")} title="Team" />
           <Button onPress={() => navigation.navigate("Shop")} title="Shop" />
-          <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" />
+          <Button onPress={() => navigation.navigate("Gacha")} title="Gacha" /> */}
           <View>
             <Button onPress={() => setPopupVisible(true)} title="Missions" />
             <Badge visible={missionBadge} size={10} style={styles.badge} />
@@ -451,7 +456,6 @@ const Home = ({ navigation }: RouterProps) => {
               borderRadius: 40,
               marginHorizontal: 20,
             }}
-            d
             onDismiss={() => setIsOpen(false)}
           >
             {/* <Text>{item.title + item.done + item.time}</Text> */}

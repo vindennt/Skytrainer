@@ -18,6 +18,7 @@ import {
 } from "react-native-paper";
 import { unlockStation, coinPurchase } from "../../utils/UnlockHandler";
 import Popup from "../../components/Popup";
+import Gacha from "./Gacha";
 
 type Buyable = {
   name: string;
@@ -243,12 +244,14 @@ const Shop = () => {
           <Text style={styles.text}>{gems}</Text>
         </PaperButton>
       </View>
+
       <SafeAreaView style={styles.container}>
         <ScrollView
           horizontal
           style={{
             flexDirection: "row",
             margin: 5,
+            height: 60,
           }}
         >
           <ShopTab title="All" icon="train" category="All" />
@@ -264,6 +267,9 @@ const Shop = () => {
           contentContainerStyle={styles.listContainer}
           renderItem={renderItem}
         />
+        <View style={{ maxHeight: "20%" }}>
+          <Gacha />
+        </View>
         <Popup
           visible={showPopup}
           // text={popupText}
