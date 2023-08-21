@@ -16,6 +16,11 @@ const AccountRouter = () => <Account></Account>;
 const AddRoute = () => <Text>Add</Text>;
 
 const Navbar = ({ navigation }: RouterProps) => {
+  const HomeRoute = () => <Home navigation={navigation}></Home>;
+  const ShopRoute = () => <Shop></Shop>;
+  const GachaRoute = () => <Gacha></Gacha>;
+  const TeamRoute = () => <Team></Team>;
+
   const [index, setIndex] = React.useState(0);
   let homebadge = true;
   const [routes] = React.useState([
@@ -54,10 +59,6 @@ const Navbar = ({ navigation }: RouterProps) => {
   ]);
 
   //   const HomeRoute = () => <Home navigation={navigation}></Home>;
-  const HomeRoute = () => <Home navigation={navigation}></Home>;
-  const ShopRoute = () => <Shop></Shop>;
-  const GachaRoute = () => <Gacha></Gacha>;
-  const TeamRoute = () => <Team></Team>;
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
