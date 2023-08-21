@@ -14,10 +14,21 @@ import { User, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { FIREBASE_AUTH } from "./api/FirebaseConfig";
 import "react-native-gesture-handler";
-import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
+import {
+  MD3LightTheme as DefaultTheme,
+  Provider as PaperProvider,
+} from "react-native-paper";
 
-import { default as theme } from "./theme.json";
+// import { default as theme } from "./theme.json";
 import Index from "./app/screens/Index";
+
+const theme = {
+  ...DefaultTheme,
+  roundness: 12,
+  colors: {
+    background: "silver",
+  },
+};
 
 export type RootStackParamList = {
   Home: undefined;
@@ -125,7 +136,7 @@ export default function App() {
   }, []);
 
   return (
-    <PaperProvider>
+    <PaperProvider theme={theme}>
       <NavigationContainer>
         {/* Enable these lines to skip login screen */}
         {/* <Stack.Navigator initialRouteName="List">

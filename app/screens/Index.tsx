@@ -54,6 +54,7 @@ import {
 } from "../../utils/MissionHandler";
 import Navbar, { RouterProps } from "../../components/Navbar";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import TabNavigator from "../../navigation";
 
 const METRO_VANCOUVER_COORDINATES = {
   latitude: 49.232937,
@@ -85,6 +86,7 @@ const Index = ({ navigation }: RouterProps) => {
     //   />
     // </View>
     <Navbar navigation={navigation} />
+    // <TabNavigator />
   );
 };
 

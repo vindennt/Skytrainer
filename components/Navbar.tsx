@@ -3,10 +3,10 @@ import { BottomNavigation, Text } from "react-native-paper";
 import Shop from "../app/screens/Shop";
 import Gacha from "../app/screens/Gacha";
 import Account from "../app/screens/Account";
+import Team from "../app/screens/Team";
 import Home from "../app/screens/Home";
 import { NavigationProp } from "@react-navigation/native";
 import { View } from "react-native";
-import Team from "../app/screens/Team";
 
 export interface RouterProps {
   navigation: NavigationProp<any, any>;
@@ -74,6 +74,14 @@ const Navbar = ({ navigation }: RouterProps) => {
       navigationState={{ index, routes }}
       onIndexChange={setIndex}
       renderScene={renderScene}
+      theme={{
+        colors: {
+          secondaryContainer: "gold",
+          elevation: {
+            level2: "#085cac", // palette.primary80, alpha 0.08
+          },
+        },
+      }}
     />
   );
 };

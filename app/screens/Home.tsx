@@ -450,7 +450,7 @@ const Home = ({ navigation }: RouterProps) => {
             // snapPoints={snapPoints}
             bottomInset={46}
             detached={true}
-            snapPoints={["60%"]}
+            snapPoints={["70%"]}
             backdropComponent={renderBackdrop}
             backgroundStyle={{
               borderRadius: 40,
