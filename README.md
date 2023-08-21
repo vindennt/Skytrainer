@@ -1,3 +1,6 @@
+### 21/08/2023 Update
+I am currently in the process of refactoring the project to use Redux and Supabase instead of Firebase.
+
 # GachaSim
 
 Productivity helper app where users set timers to stay away from their phones while the app goes on a Skytrain trip to gather in-app rewards.
