@@ -22,6 +22,7 @@ import {
   updateCurrentUser,
 } from "firebase/auth";
 import { addDoc, doc, setDoc, collection } from "firebase/firestore";
+import { supabase } from "../../api/supabase";
 import moment from "moment";
 import { getStationName } from "../../utils/SkytrainData";
 import * as SKYTRAIN_DATA from "../../utils/SkytrainData";
