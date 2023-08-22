@@ -1,12 +1,15 @@
 import React, { useEffect } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { supabase } from "@api/supabase";
-import Login from "@src/screens/Login";
-import Home from "@src/screens/Home";
-import Trip from "@src/screens/Trip";
-import Shop from "@src/screens/Shop";
-import Gacha from "@src/screens/Gacha";
-import Stations from "@src/screens/Stations";
+import {
+  Login,
+  Home,
+  Stations,
+  Shop,
+  Account,
+  Gacha,
+  Trip,
+} from "@screens/index";
 import BottomNavBar from "@navigation/BottomNavBar";
 import { useSelector, useDispatch } from "react-redux";
 import { AuthState } from "@src/features/auth/authSlice";
@@ -28,6 +31,7 @@ function InsideLayout() {
       <Stack.Screen name="Shop" component={Shop} />
       <Stack.Screen name="Gacha" component={Gacha} />
       <Stack.Screen name="Stations" component={Stations} />
+      <Stack.Screen name="Account" component={Account} />
     </Stack.Navigator>
   );
 }

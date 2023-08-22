@@ -1,11 +1,9 @@
 import * as React from "react";
 import { BottomNavigation, Text } from "react-native-paper";
-import Shop from "@src/screens/Shop";
-import Stations from "@src/screens/Stations";
-import Account from "@screens/Account";
+import { Home, Stations, Shop, Account } from "@screens/index";
 
 const BottomNavBar = () => {
-  const HomeRoute = () => <Text>Welcome Home</Text>;
+  const HomeRoute = () => <Home />;
   const StationsRoute = () => <Stations />;
   const ShopRoute = () => <Shop />;
   const AccountRoute = () => <Account />;
