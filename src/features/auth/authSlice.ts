@@ -11,6 +11,7 @@ const initialState: AuthState = {
   user: null,
 };
 
+// Supabase authentication manager
 const authSlice = createSlice({
   name: "auth",
   initialState,

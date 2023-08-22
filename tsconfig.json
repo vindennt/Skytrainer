@@ -7,7 +7,8 @@
       "@api/*": ["./src/api/*"],
       "@screens/*": ["./src/screens/*"],
       "@features/*": ["./src/features/*"],
-      "@store/*": ["./src/store/*"]
+      "@store/*": ["./src/store/*"],
+      "@navigation/*": ["./src/navigation/*"]
     }
   }
 }

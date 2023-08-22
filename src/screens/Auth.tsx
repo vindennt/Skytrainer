@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
+import { useTheme } from "react-native-paper";
 import { supabase } from "@api/supabase";
 import { Button, TextInput } from "react-native-paper";
 
@@ -7,6 +8,7 @@ export default function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const theme = useTheme();
 
   async function signInWithEmail() {
     setLoading(true);
@@ -31,8 +33,10 @@ export default function Auth() {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
+      <View>
         <TextInput
           label="Email"
           onChangeText={(text) => setEmail(text)}
@@ -41,7 +45,7 @@ export default function Auth() {
           autoCapitalize={"none"}
         />
       </View>
-      <View style={styles.verticallySpaced}>
+      <View>
         <TextInput
           label="Password"
           onChangeText={(text) => setPassword(text)}
@@ -51,12 +55,12 @@ export default function Auth() {
           autoCapitalize={"none"}
         />
       </View>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
+      <View>
         <Button disabled={loading} onPress={() => signInWithEmail()}>
           Sign in
         </Button>
       </View>
-      <View style={styles.verticallySpaced}>
+      <View>
         <Button disabled={loading} onPress={() => signUpWithEmail()}>
           Sign out
         </Button>
@@ -67,15 +71,8 @@ export default function Auth() {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
     padding: 12,
-  },
-  verticallySpaced: {
-    paddingTop: 4,
-    paddingBottom: 4,
-    alignSelf: "stretch",
-  },
-  mt20: {
-    marginTop: 20,
+    flex: 1,
+    justifyContent: "center",
   },
 });
