@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@api/supabase";
 import { StyleSheet, View, Alert } from "react-native";
-import { Button, TextInput } from "react-native-paper";
+import { Button, TextInput, Text } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
+import { Formik } from "formik";
+import { changeDisplayNameSchema } from "@features/auth/changeDisplayNameForm";
 import { AuthState } from "@src/features/auth/authSlice";
 
 const Account = () => {
@@ -71,21 +73,64 @@ const Account = () => {
   return (
     <View style={styles.container}>
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <TextInput label="Email" value={session?.user?.email} disabled />
-      </View>
-      <View style={styles.verticallySpaced}>
         <TextInput
-          label="Enter a new username"
-          value={username || ""}
-          onChangeText={(text) => setUsername(text)}
+          label="Email"
+          mode="outlined"
+          value={session?.user?.email}
+          disabled
+        />
+        {/* TODO: add user's actual actual displaynmame */}
+        <TextInput
+          label="Display name"
+          mode="outlined"
+          value={"vindennt"}
+          disabled
         />
       </View>
 
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button onPress={() => updateProfile({ username })} disabled={loading}>
-          {loading ? "Loading ..." : "Update"}
-        </Button>
-      </View>
+      {/* TODO: actually change the username */}
+      <Formik
+        initialValues={{ displayName: "" }}
+        validationSchema={changeDisplayNameSchema}
+        validateOnMount={true}
+        onSubmit={(values) => {
+          console.log(values.displayName);
+          updateProfile({ username });
+          values.displayName = "";
+        }}
+      >
+        {({
+          values,
+          errors,
+          touched,
+          handleChange,
+          setFieldTouched,
+          handleSubmit,
+          isValid,
+        }) => (
+          <View style={styles.verticallySpaced}>
+            <TextInput
+              label="Enter a new display name"
+              value={values.displayName}
+              onChangeText={handleChange("displayName")}
+              onBlur={() => setFieldTouched("displayName")}
+              autoCapitalize={"none"}
+            />
+            {touched.displayName && errors.displayName && (
+              <Text>{errors.displayName}</Text>
+            )}
+            <View style={[styles.verticallySpaced, styles.mt20]}>
+              <Button
+                onPress={() => handleSubmit()}
+                loading={loading}
+                disabled={!isValid || loading}
+              >
+                Update display name
+              </Button>
+            </View>
+          </View>
+        )}
+      </Formik>
 
       <View style={styles.verticallySpaced}>
         <Button onPress={() => supabase.auth.signOut()}>Sign Out</Button>
@@ -98,8 +143,9 @@ export default Account;
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 40,
-    padding: 12,
+    padding: 30,
+    flex: 1,
+    justifyContent: "center",
   },
   verticallySpaced: {
     paddingTop: 4,

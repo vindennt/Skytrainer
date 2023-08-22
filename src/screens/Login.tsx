@@ -103,7 +103,7 @@ export default Login;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 12,
+    padding: 30,
     flex: 1,
     justifyContent: "center",
   },

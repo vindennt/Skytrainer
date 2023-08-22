@@ -23,7 +23,7 @@ const Signup = () => {
       Alert.alert(error.message);
     } else {
       Alert.alert(
-        "Registration succeeded. You've been sent a confirmation email."
+        "Registration succeeded! You've been sent a confirmation email."
       );
       navigation.goBack();
     }
@@ -56,7 +56,7 @@ const Signup = () => {
         >
           <View>
             <TextInput
-              label="Display name"
+              label="Display name*"
               //   placeholder="Display name"
               value={values.displayName}
               onChangeText={handleChange("displayName")}
@@ -68,7 +68,7 @@ const Signup = () => {
           )}
           <View>
             <TextInput
-              label="Email"
+              label="Email*"
               //   placeholder="email@address.com"
               value={values.email}
               onChangeText={handleChange("email")}
@@ -79,7 +79,7 @@ const Signup = () => {
           {touched.email && errors.email && <Text>{errors.email}</Text>}
           <View>
             <TextInput
-              label="Password"
+              label="Password*"
               //   placeholder="Password"
               value={values.password}
               onChangeText={handleChange("password")}
@@ -93,7 +93,7 @@ const Signup = () => {
           )}
           <View>
             <TextInput
-              label="Confirm Password"
+              label="Confirm Password*"
               //   placeholder="Confirm Password"
               value={values.confirmPassword}
               onChangeText={handleChange("confirmPassword")}
