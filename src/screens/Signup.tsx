@@ -4,9 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 import { Text, useTheme, TextInput, Button } from "react-native-paper";
 import { View, StyleSheet, Alert } from "react-native";
 import { Formik } from "formik";
-import * as Yup from "yup";
 import { initialValues, signupSchema } from "@features/auth/signupForm";
-import { signInWithEmail } from "@screens/Login";
 
 const Signup = () => {
   const theme = useTheme();
@@ -59,7 +57,7 @@ const Signup = () => {
           <View>
             <TextInput
               label="Display name"
-              placeholder="Display name"
+              //   placeholder="Display name"
               value={values.displayName}
               onChangeText={handleChange("displayName")}
               onBlur={() => setFieldTouched("displayName")}
@@ -71,7 +69,7 @@ const Signup = () => {
           <View>
             <TextInput
               label="Email"
-              placeholder="Email"
+              //   placeholder="email@address.com"
               value={values.email}
               onChangeText={handleChange("email")}
               onBlur={() => setFieldTouched("email")}
@@ -82,7 +80,7 @@ const Signup = () => {
           <View>
             <TextInput
               label="Password"
-              placeholder="Password"
+              //   placeholder="Password"
               value={values.password}
               onChangeText={handleChange("password")}
               onBlur={() => setFieldTouched("password")}
@@ -96,7 +94,7 @@ const Signup = () => {
           <View>
             <TextInput
               label="Confirm Password"
-              placeholder="Confirm Password"
+              //   placeholder="Confirm Password"
               value={values.confirmPassword}
               onChangeText={handleChange("confirmPassword")}
               onBlur={() => setFieldTouched("confirmPassword")}

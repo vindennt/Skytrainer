@@ -1,11 +1,11 @@
+import * as Yup from "yup";
+
 export interface SignupDetails {
   displayName: string;
   email: string;
   password: string;
   confirmPassword: string;
 }
-
-import * as Yup from "yup";
 
 export const initialValues: SignupDetails = {
   displayName: "",
