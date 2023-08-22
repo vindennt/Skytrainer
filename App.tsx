@@ -5,6 +5,8 @@ import Auth from "@screens/Auth";
 import Account from "@screens/Account";
 import { View } from "react-native";
 import { Session } from "@supabase/supabase-js";
+import store from "@src/store/index";
+import { Provider } from "react-redux";
 
 export default function App() {
   const [session, setSession] = useState<Session | null>(null);
@@ -20,12 +22,14 @@ export default function App() {
   }, []);
 
   return (
-    <View>
-      {session && session.user ? (
-        <Account key={session.user.id} session={session} />
-      ) : (
-        <Auth />
-      )}
-    </View>
+    <Provider store={store}>
+      <View>
+        {session && session.user ? (
+          <Account key={session.user.id} session={session} />
+        ) : (
+          <Auth />
+        )}
+      </View>
+    </Provider>
   );
 }

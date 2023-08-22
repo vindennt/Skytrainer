@@ -6,8 +6,8 @@
       "@src/*": ["./src/*"],
       "@api/*": ["./src/api/*"],
       "@screens/*": ["./src/screens/*"],
-      "@components/*": ["./src/components/*"],
-      "@redux/*": ["./src/redux/*"]
+      "@features/*": ["./src/features/*"],
+      "@store/*": ["./src/store/*"]
     }
   }
 }
