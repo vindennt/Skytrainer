@@ -7,7 +7,7 @@ const Gacha = () => {
   const navigation = useNavigation();
 
   const goBack = () => {
-    navigation.navigate("Bottom Nav" as never);
+    navigation.goBack();
   };
 
   return (

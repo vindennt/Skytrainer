@@ -8,8 +8,6 @@ import { AuthState } from "@src/features/auth/authSlice";
 const Account = () => {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
-  const [website, setWebsite] = useState("");
-  const [avatarUrl, setAvatarUrl] = useState("");
 
   const session = useSelector(
     (state: { auth: AuthState }) => state.auth.session
@@ -26,7 +24,7 @@ const Account = () => {
 
       let { data, error, status } = await supabase
         .from("profiles")
-        .select(`username, website, avatar_url`)
+        .select(`username`)
         .eq("id", session?.user.id)
         .single();
       if (error && status !== 406) {
@@ -35,8 +33,6 @@ const Account = () => {
 
       if (data) {
         setUsername(data.username);
-        setWebsite(data.website);
-        setAvatarUrl(data.avatar_url);
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -47,15 +43,7 @@ const Account = () => {
     }
   }
 
-  async function updateProfile({
-    username,
-    website,
-    avatar_url,
-  }: {
-    username: string;
-    website: string;
-    avatar_url: string;
-  }) {
+  async function updateProfile({ username }: { username: string }) {
     try {
       setLoading(true);
       if (!session?.user) throw new Error("No user on the session!");
@@ -63,8 +51,6 @@ const Account = () => {
       const updates = {
         id: session?.user.id,
         username,
-        website,
-        avatar_url,
         updated_at: new Date(),
       };
 
@@ -89,26 +75,14 @@ const Account = () => {
       </View>
       <View style={styles.verticallySpaced}>
         <TextInput
-          label="Username"
+          label="Enter a new username"
           value={username || ""}
           onChangeText={(text) => setUsername(text)}
         />
       </View>
-      <View style={styles.verticallySpaced}>
-        <TextInput
-          label="Website"
-          value={website || ""}
-          onChangeText={(text) => setWebsite(text)}
-        />
-      </View>
 
       <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Button
-          onPress={() =>
-            updateProfile({ username, website, avatar_url: avatarUrl })
-          }
-          disabled={loading}
-        >
+        <Button onPress={() => updateProfile({ username })} disabled={loading}>
           {loading ? "Loading ..." : "Update"}
         </Button>
       </View>

@@ -1,34 +1,32 @@
 import React, { useState } from "react";
-import { Alert, StyleSheet, View } from "react-native";
-import { useTheme } from "react-native-paper";
 import { supabase } from "@api/supabase";
-import { Button, TextInput } from "react-native-paper";
+import { Alert, StyleSheet, View } from "react-native";
+import { Button, TextInput, useTheme } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+
+export async function signInWithEmail(email: string, password: string) {
+  const { error } = await supabase.auth.signInWithPassword({
+    email: email,
+    password: password,
+  });
+  if (error) Alert.alert(error.message);
+}
 
 const Login = () => {
+  const theme = useTheme();
+  const navigation = useNavigation();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const theme = useTheme();
 
-  async function signInWithEmail() {
+  const goToSignup = () => {
+    navigation.navigate("Register" as never);
+  };
+
+  async function signIn() {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
-
-    if (error) Alert.alert(error.message);
-    setLoading(false);
-  }
-
-  async function signUpWithEmail() {
-    setLoading(true);
-    const { error } = await supabase.auth.signUp({
-      email: email,
-      password: password,
-    });
-
-    if (error) Alert.alert(error.message);
+    await signInWithEmail(email, password);
     setLoading(false);
   }
 
@@ -37,32 +35,34 @@ const Login = () => {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <View>
-        <TextInput
-          label="Email"
-          onChangeText={(text) => setEmail(text)}
-          value={email}
-          placeholder="email@address.com"
-          autoCapitalize={"none"}
-        />
+        <View>
+          <TextInput
+            label="Email"
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+            placeholder="email@address.com"
+            autoCapitalize={"none"}
+          />
+        </View>
+        <View>
+          <TextInput
+            label="Password"
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+            secureTextEntry={true}
+            placeholder="Password"
+            autoCapitalize={"none"}
+          />
+        </View>
+        <View>
+          <Button disabled={loading} loading={loading} onPress={() => signIn()}>
+            Sign In
+          </Button>
+        </View>
       </View>
       <View>
-        <TextInput
-          label="Password"
-          onChangeText={(text) => setPassword(text)}
-          value={password}
-          secureTextEntry={true}
-          placeholder="Password"
-          autoCapitalize={"none"}
-        />
-      </View>
-      <View>
-        <Button disabled={loading} onPress={() => signInWithEmail()}>
-          Sign in
-        </Button>
-      </View>
-      <View>
-        <Button disabled={loading} onPress={() => signUpWithEmail()}>
-          Sign out
+        <Button disabled={loading} onPress={() => goToSignup()}>
+          Register
         </Button>
       </View>
     </View>

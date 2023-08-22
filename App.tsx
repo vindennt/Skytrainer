@@ -8,12 +8,14 @@ import {
 } from "react-native-paper";
 import { Provider as ReduxProvider } from "react-redux";
 import AppNavigator from "@src/navigation/AppNavigator";
+import { StatusBar } from "react-native";
 
 export default function App() {
   return (
     <ReduxProvider store={store}>
       <PaperProvider theme={theme}>
         <NavigationContainer>
+          <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
           <AppNavigator />
         </NavigationContainer>
       </PaperProvider>
