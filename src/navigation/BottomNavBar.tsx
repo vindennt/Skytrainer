@@ -1,18 +1,14 @@
 import * as React from "react";
 import { BottomNavigation, Text } from "react-native-paper";
+import Shop from "@src/screens/Shop";
+import Stations from "@src/screens/Stations";
 import Account from "@screens/Account";
-import store from "@src/store";
-import { useSelector, useDispatch } from "react-redux";
-import { AuthState } from "@src/features/auth/authSlice";
-
-const HomeRoute = () => <Text>Welcome Home</Text>;
 
 const BottomNavBar = () => {
-  const session = useSelector(
-    (state: { auth: AuthState }) => state.auth.session
-  );
-  const ShopRoute = () =>
-    session ? <Account session={session}></Account> : <Text>No session!</Text>;
+  const HomeRoute = () => <Text>Welcome Home</Text>;
+  const StationsRoute = () => <Stations />;
+  const ShopRoute = () => <Shop />;
+  const AccountRoute = () => <Account />;
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -23,16 +19,29 @@ const BottomNavBar = () => {
       unfocusedIcon: "home-outline",
     },
     {
+      key: "stations",
+      title: "Stations",
+      focusedIcon: "transit-connection-variant",
+    },
+    {
       key: "shop",
       title: "Shop",
-      focusedIcon: "store",
-      unfocusedIcon: "store-outline",
+      focusedIcon: "shopping",
+      unfocusedIcon: "shopping-outline",
+    },
+    {
+      key: "account",
+      title: "Account",
+      focusedIcon: "account",
+      unfocusedIcon: "account-outline",
     },
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
+    stations: StationsRoute,
     shop: ShopRoute,
+    account: AccountRoute,
   });
 
   return (
@@ -40,6 +49,7 @@ const BottomNavBar = () => {
       navigationState={{ index, routes }}
       onIndexChange={setIndex}
       renderScene={renderScene}
+      shifting={true}
     />
   );
 };

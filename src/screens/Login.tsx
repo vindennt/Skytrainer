@@ -4,7 +4,7 @@ import { useTheme } from "react-native-paper";
 import { supabase } from "@api/supabase";
 import { Button, TextInput } from "react-native-paper";
 
-export default function Auth() {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -67,7 +67,9 @@ export default function Auth() {
       </View>
     </View>
   );
-}
+};
+
+export default Login;
 
 const styles = StyleSheet.create({
   container: {

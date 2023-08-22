@@ -3,12 +3,19 @@ import { supabase } from "@api/supabase";
 import { StyleSheet, View, Alert } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { Session } from "@supabase/supabase-js";
+import { useSelector, useDispatch } from "react-redux";
+import { AuthState } from "@src/features/auth/authSlice";
 
-export default function Account({ session }: { session: Session }) {
+const Account = () => {
+  // export default function Account({ session }: { session: Session }) {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState("");
   const [website, setWebsite] = useState("");
   const [avatarUrl, setAvatarUrl] = useState("");
+
+  const session = useSelector(
+    (state: { auth: AuthState }) => state.auth.session
+  );
 
   useEffect(() => {
     if (session) getProfile();
@@ -113,7 +120,9 @@ export default function Account({ session }: { session: Session }) {
       </View>
     </View>
   );
-}
+};
+
+export default Account;
 
 const styles = StyleSheet.create({
   container: {
