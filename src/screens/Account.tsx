@@ -4,7 +4,7 @@ import { StyleSheet, View, Alert } from "react-native";
 import { Button, TextInput, Text } from "react-native-paper";
 import { useSelector } from "react-redux";
 import { Formik } from "formik";
-import { changeDisplayNameSchema } from "@features/auth/changeDisplayNameForm";
+import { changeDisplayNameSchema } from "@src/features/user/changeDisplayNameForm";
 import { AuthState } from "@src/features/auth/authSlice";
 
 const Account = () => {
@@ -17,7 +17,7 @@ const Account = () => {
 
   useEffect(() => {
     session ? getProfile() : console.log("No session");
-  }, [session, displayName]);
+  }, [session]);
 
   async function getProfile() {
     console.log("Getting profile");
@@ -91,7 +91,6 @@ const Account = () => {
       {!editingDisplayName ? (
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={{ flex: 1 }}>
-            {/* TODO: add user's actual actual displaynmame */}
             <TextInput
               label="Display name"
               mode="outlined"
@@ -126,17 +125,10 @@ const Account = () => {
             isValid,
           }) => (
             <View style={styles.verticallySpaced}>
-              <View>
-                <TextInput
-                  label="Display name"
-                  mode="outlined"
-                  value={displayName}
-                  disabled
-                />
-              </View>
               <TextInput
                 label="Change display name"
                 value={values.displayName}
+                placeholder={displayName}
                 onChangeText={handleChange("displayName")}
                 onBlur={() => setFieldTouched("displayName")}
                 autoCapitalize={"none"}
