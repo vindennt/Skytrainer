@@ -2,70 +2,77 @@ import { useState, useEffect } from "react";
 import { supabase } from "@api/supabase";
 import { StyleSheet, View, Alert } from "react-native";
 import { Button, TextInput, Text } from "react-native-paper";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Formik } from "formik";
 import { changeDisplayNameSchema } from "@features/auth/changeDisplayNameForm";
 import { AuthState } from "@src/features/auth/authSlice";
 
 const Account = () => {
   const [loading, setLoading] = useState(true);
-  const [editDisplayMode, setEditDisplayMode] = useState(false);
-  const [username, setUsername] = useState("");
+  const [editingDisplayName, setEditingDisplayName] = useState(false);
+  const [displayName, setDisplayName] = useState("");
   const session = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
 
   useEffect(() => {
-    if (session) getProfile();
-  }, [session]);
+    session ? getProfile() : console.log("No session");
+  }, [session, displayName]);
 
   async function getProfile() {
+    console.log("Getting profile");
     try {
       setLoading(true);
       if (!session?.user) throw new Error("No user on the session!");
 
       let { data, error, status } = await supabase
-        .from("profiles")
-        .select(`username`)
-        .eq("id", session?.user.id)
+        .from("users")
+        .select(`display_name`)
+        .eq("user_id", session?.user.id)
         .single();
       if (error && status !== 406) {
         throw error;
       }
 
       if (data) {
-        setUsername(data.username);
+        setDisplayName(data.display_name);
+        console.log("Set display name to :" + data.display_name);
       }
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert(error.message);
       }
     } finally {
+      console.log("Finished getting profile");
       setLoading(false);
     }
   }
 
-  async function updateProfile({ username }: { username: string }) {
+  async function updateProfile({ displayName }: { displayName: string }) {
     try {
+      console.log("Updating profile");
       setLoading(true);
       if (!session?.user) throw new Error("No user on the session!");
 
       const updates = {
-        id: session?.user.id,
-        username,
-        updated_at: new Date(),
+        user_id: session?.user.id,
+        display_name: displayName,
+        last_login: new Date(),
       };
 
-      let { error } = await supabase.from("profiles").upsert(updates);
+      let { error } = await supabase.from("users").upsert(updates);
 
       if (error) {
         throw error;
+      } else {
+        setDisplayName(displayName);
       }
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert(error.message);
       }
     } finally {
+      console.log("Done updating profile");
       setLoading(false);
     }
   }
@@ -81,33 +88,32 @@ const Account = () => {
         />
       </View>
 
-      {!editDisplayMode && (
+      {!editingDisplayName ? (
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <View style={{ flex: 1 }}>
             {/* TODO: add user's actual actual displaynmame */}
             <TextInput
               label="Display name"
               mode="outlined"
-              value={"vindennt"}
+              value={displayName}
               disabled
             />
           </View>
           <View>
-            <Button onPress={() => setEditDisplayMode(true)}>Change</Button>
+            <Button onPress={() => setEditingDisplayName(true)}>Change</Button>
           </View>
         </View>
-      )}
-
-      {/* TODO: actually change the username */}
-      {editDisplayMode && (
+      ) : (
         <Formik
           initialValues={{ displayName: "" }}
           validationSchema={changeDisplayNameSchema}
           validateOnMount={true}
           onSubmit={(values) => {
             console.log(values.displayName);
-            updateProfile({ username });
-            values.displayName = "";
+            updateProfile({
+              displayName: values.displayName,
+            });
+            setEditingDisplayName(false);
           }}
         >
           {({
@@ -124,7 +130,7 @@ const Account = () => {
                 <TextInput
                   label="Display name"
                   mode="outlined"
-                  value={"vindennt"}
+                  value={displayName}
                   disabled
                 />
               </View>
