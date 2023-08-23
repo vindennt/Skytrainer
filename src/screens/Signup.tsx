@@ -12,11 +12,20 @@ const Signup = () => {
 
   const [loading, setLoading] = useState(false);
 
-  async function signUpWithEmail(email: string, password: string) {
+  async function signUpWithEmail(
+    email: string,
+    password: string,
+    displayName: string
+  ) {
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
+      options: {
+        data: {
+          initial_display_name: displayName,
+        },
+      },
     });
 
     if (error) {
@@ -36,7 +45,7 @@ const Signup = () => {
       validationSchema={signupSchema}
       validateOnMount={true}
       onSubmit={(values) => {
-        signUpWithEmail(values.email, values.password);
+        signUpWithEmail(values.email, values.password, values.displayName);
       }}
     >
       {({
