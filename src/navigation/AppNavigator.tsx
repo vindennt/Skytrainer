@@ -16,7 +16,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { AuthState } from "@src/features/auth/authSlice";
 import { setSession, setUser } from "@features/auth/authSlice";
 import { useTheme } from "react-native-paper";
-import { StatusBar } from "react-native";
 
 const AppNavigator = () => {
   const session = useSelector(
@@ -47,7 +46,7 @@ const AppNavigator = () => {
           headerShown: false,
           //   headerTintColor: theme.colors.inverseSurface,
           //   headerStyle: {
-          //     backgroundColor: theme.colors.secondaryContainer, // Change this to your desired color
+          //     backgroundColor: theme.colors.secondaryContainer,
           //   },
         }}
       >
@@ -70,7 +69,7 @@ const AppNavigator = () => {
           //   headerShown: false,
           headerTintColor: theme.colors.inverseSurface,
           headerStyle: {
-            backgroundColor: theme.colors.secondaryContainer, // Change this to your desired color
+            backgroundColor: theme.colors.secondaryContainer,
           },
         }}
       >

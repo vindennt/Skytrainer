@@ -9,8 +9,8 @@ import { AuthState } from "@src/features/auth/authSlice";
 
 const Account = () => {
   const [loading, setLoading] = useState(true);
+  const [editDisplayMode, setEditDisplayMode] = useState(false);
   const [username, setUsername] = useState("");
-
   const session = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
@@ -79,61 +79,81 @@ const Account = () => {
           value={session?.user?.email}
           disabled
         />
-        {/* TODO: add user's actual actual displaynmame */}
-        <TextInput
-          label="Display name"
-          mode="outlined"
-          value={"vindennt"}
-          disabled
-        />
       </View>
 
-      {/* TODO: actually change the username */}
-      <Formik
-        initialValues={{ displayName: "" }}
-        validationSchema={changeDisplayNameSchema}
-        validateOnMount={true}
-        onSubmit={(values) => {
-          console.log(values.displayName);
-          updateProfile({ username });
-          values.displayName = "";
-        }}
-      >
-        {({
-          values,
-          errors,
-          touched,
-          handleChange,
-          setFieldTouched,
-          handleSubmit,
-          isValid,
-        }) => (
-          <View style={styles.verticallySpaced}>
+      {!editDisplayMode && (
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <View style={{ flex: 1 }}>
+            {/* TODO: add user's actual actual displaynmame */}
             <TextInput
-              label="Enter a new display name"
-              value={values.displayName}
-              onChangeText={handleChange("displayName")}
-              onBlur={() => setFieldTouched("displayName")}
-              autoCapitalize={"none"}
+              label="Display name"
+              mode="outlined"
+              value={"vindennt"}
+              disabled
             />
-            {touched.displayName && errors.displayName && (
-              <Text>{errors.displayName}</Text>
-            )}
-            <View style={[styles.verticallySpaced, styles.mt20]}>
-              <Button
-                onPress={() => handleSubmit()}
-                loading={loading}
-                disabled={!isValid || loading}
-              >
-                Update display name
-              </Button>
-            </View>
           </View>
-        )}
-      </Formik>
+          <View>
+            <Button onPress={() => setEditDisplayMode(true)}>Change</Button>
+          </View>
+        </View>
+      )}
+
+      {/* TODO: actually change the username */}
+      {editDisplayMode && (
+        <Formik
+          initialValues={{ displayName: "" }}
+          validationSchema={changeDisplayNameSchema}
+          validateOnMount={true}
+          onSubmit={(values) => {
+            console.log(values.displayName);
+            updateProfile({ username });
+            values.displayName = "";
+          }}
+        >
+          {({
+            values,
+            errors,
+            touched,
+            handleChange,
+            setFieldTouched,
+            handleSubmit,
+            isValid,
+          }) => (
+            <View style={styles.verticallySpaced}>
+              <View>
+                <TextInput
+                  label="Display name"
+                  mode="outlined"
+                  value={"vindennt"}
+                  disabled
+                />
+              </View>
+              <TextInput
+                label="Change display name"
+                value={values.displayName}
+                onChangeText={handleChange("displayName")}
+                onBlur={() => setFieldTouched("displayName")}
+                autoCapitalize={"none"}
+              />
+              {errors.displayName && <Text>{errors.displayName}</Text>}
+              <View style={[styles.verticallySpaced, styles.mt20]}>
+                <Button
+                  onPress={() => handleSubmit()}
+                  loading={loading}
+                  disabled={!isValid || loading}
+                >
+                  Update display name
+                </Button>
+              </View>
+            </View>
+          )}
+        </Formik>
+      )}
 
       <View style={styles.verticallySpaced}>
-        <Button onPress={() => supabase.auth.signOut()}>Sign Out</Button>
+        <Button onPress={() => supabase.auth.signOut()} mode="outlined">
+          Sign Out
+        </Button>
       </View>
     </View>
   );

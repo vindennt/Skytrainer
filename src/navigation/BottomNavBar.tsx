@@ -1,6 +1,7 @@
 import * as React from "react";
-import { BottomNavigation, Text } from "react-native-paper";
+import { BottomNavigation, FAB } from "react-native-paper";
 import { Home, Stations, Shop, Account } from "@screens/index";
+import { View } from "react-native";
 
 const BottomNavBar = () => {
   const HomeRoute = () => <Home />;
