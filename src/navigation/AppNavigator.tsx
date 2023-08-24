@@ -15,9 +15,10 @@ import BottomNavBar from "@navigation/BottomNavBar";
 import { useSelector, useDispatch } from "react-redux";
 import { AuthState } from "@src/features/auth/authSlice";
 import { setSession, setUser } from "@features/auth/authSlice";
-import { useTheme } from "react-native-paper";
+import { useTheme, Text } from "react-native-paper";
 import { Session } from "@supabase/supabase-js";
 import { fetchAllUserData } from "@features/user/userSlice";
+import { View } from "react-native";
 
 const AppNavigator = () => {
   const session = useSelector(
@@ -28,23 +29,27 @@ const AppNavigator = () => {
   // TODO: implement loading indicator
   const [loading, setLoading] = useState<boolean>(false);
 
-  const setAuthAndUser = (session: Session | null) => {
+  const setAuthSession = (session: Session | null) => {
     setLoading(true);
     dispatch(setSession(session));
-    if (session !== null) {
-      dispatch(setUser(session.user));
-      dispatch(fetchAllUserData(session));
-    }
     setLoading(false);
   };
 
-  // TODO
+  const setSessionUser = (session: Session) => {
+    setLoading(true);
+    dispatch(setUser(session.user));
+    dispatch(fetchAllUserData(session));
+    setLoading(false);
+  };
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setAuthAndUser(session);
+      setAuthSession(session);
     });
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setAuthAndUser(session);
+
+    supabase.auth.onAuthStateChange((_event, newSession) => {
+      setAuthSession(newSession);
+      if (newSession !== null) setSessionUser(newSession);
     });
   }, []);
 
@@ -100,7 +105,7 @@ const AppNavigator = () => {
       {session && session.user ? (
         <Stack.Screen name="Inside" component={InsideStack} />
       ) : (
-        <Stack.Screen name="Welcome" component={OutsideStack} />
+        <Stack.Screen name="Outside" component={OutsideStack} />
       )}
     </Stack.Navigator>
   );
