@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { supabase } from "@api/supabase";
+import { Session } from "@supabase/supabase-js";
 import { StyleSheet, View, Alert } from "react-native";
 import { Button, TextInput, Text } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,35 +12,48 @@ import { updateDisplayName } from "@features/user/userSlice";
 
 const Account = () => {
   const dispatch = useDispatch<any>();
-  const displayName = useSelector(
-    (state: { user: UserState }) => state.user.display_name
-  );
-  const session = useSelector(
+  const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
+  const displayName: string = useSelector(
+    (state: { user: UserState }) => state.user.display_name
+  );
+  const joinedDate: string = useSelector(
+    (state: { user: UserState }) => state.user.created_at
+  );
+  const totalTripTime: number = useSelector(
+    (state: { user: UserState }) => state.user.total_trip_time
+  );
+  const totalTripsFinished: number = useSelector(
+    (state: { user: UserState }) => state.user.total_trips_finished
+  );
+
   const [editingDisplayName, setEditingDisplayName] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  return (
-    <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <TextInput
-          label="Email"
-          mode="outlined"
-          value={session?.user?.email}
-          disabled
-        />
+  const StackedText: React.FC<{
+    topText: string;
+    bottomText: string | undefined;
+  }> = ({ topText, bottomText }) => {
+    return (
+      <View style={styles.textBox}>
+        <Text variant="labelMedium">{topText}</Text>
+        <Text variant="titleMedium">{bottomText}</Text>
       </View>
+    );
+  };
 
+  return session && session.user ? (
+    <View style={styles.container}>
       {!editingDisplayName ? (
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View style={{ flex: 1 }}>
-            <TextInput
-              label="Display name"
-              mode="outlined"
-              value={displayName}
-              disabled
-            />
-          </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
+          <StackedText topText="Display name" bottomText={displayName} />
           <View>
             <Button onPress={() => setEditingDisplayName(true)}>Change</Button>
           </View>
@@ -51,6 +65,7 @@ const Account = () => {
           validateOnMount={true}
           onSubmit={(values) => {
             console.log(values.displayName);
+            setLoading(true);
             dispatch(
               updateDisplayName({
                 session: session,
@@ -58,6 +73,7 @@ const Account = () => {
               })
             );
             setEditingDisplayName(false);
+            setLoading(false);
           }}
         >
           {({
@@ -79,8 +95,12 @@ const Account = () => {
                 autoCapitalize={"none"}
               />
               {errors.displayName && <Text>{errors.displayName}</Text>}
-              <View style={[styles.verticallySpaced, styles.mt20]}>
-                <Button onPress={() => handleSubmit()} disabled={!isValid}>
+              <View style={styles.verticallySpaced}>
+                <Button
+                  onPress={() => handleSubmit()}
+                  disabled={!isValid || loading}
+                  loading={loading}
+                >
                   Update display name
                 </Button>
               </View>
@@ -88,6 +108,18 @@ const Account = () => {
           )}
         </Formik>
       )}
+      <View style={styles.verticallySpaced}>
+        <StackedText topText="Email" bottomText={session.user.email} />
+        <StackedText topText="Joined" bottomText={joinedDate} />
+        <StackedText
+          topText="Total Time Skytraining"
+          bottomText={totalTripTime.toString()}
+        />
+        <StackedText
+          topText="Total Trips Finished"
+          bottomText={totalTripsFinished.toString()}
+        />
+      </View>
 
       <View style={styles.verticallySpaced}>
         <Button onPress={() => supabase.auth.signOut()} mode="outlined">
@@ -95,6 +127,8 @@ const Account = () => {
         </Button>
       </View>
     </View>
+  ) : (
+    <View>No user!</View>
   );
 };
 
@@ -111,7 +145,10 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
     alignSelf: "stretch",
   },
-  mt20: {
-    marginTop: 20,
+
+  textBox: {
+    alignItems: "flex-start",
+    flexDirection: "column",
+    margin: 10,
   },
 });
