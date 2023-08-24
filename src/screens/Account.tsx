@@ -9,6 +9,7 @@ import { changeDisplayNameSchema } from "@src/features/user/changeDisplayNameFor
 import { AuthState } from "@src/features/auth/authSlice";
 import { UserState, setDisplayName } from "@src/features/user/userSlice";
 import { updateDisplayName } from "@features/user/userSlice";
+import { getDate } from "@src/api/dates";
 
 const Account = () => {
   const dispatch = useDispatch<any>();
@@ -21,6 +22,7 @@ const Account = () => {
   const joinedDate: string = useSelector(
     (state: { user: UserState }) => state.user.created_at
   );
+
   const totalTripTime: number = useSelector(
     (state: { user: UserState }) => state.user.total_trip_time
   );
@@ -110,13 +112,13 @@ const Account = () => {
       )}
       <View style={styles.verticallySpaced}>
         <StackedText topText="Email" bottomText={session.user.email} />
-        <StackedText topText="Joined" bottomText={joinedDate} />
+        <StackedText topText="Joined" bottomText={getDate(joinedDate)} />
         <StackedText
           topText="Total Time Skytraining"
           bottomText={totalTripTime.toString()}
         />
         <StackedText
-          topText="Total Trips Finished"
+          topText="Trips Finished"
           bottomText={totalTripsFinished.toString()}
         />
       </View>
