@@ -37,10 +37,12 @@ const Account = () => {
     topText: string;
     bottomText: string | undefined;
   }> = ({ topText, bottomText }) => {
+    const botText = bottomText === undefined ? "" : bottomText;
+
     return (
       <View style={styles.textBox}>
         <Text variant="labelMedium">{topText}</Text>
-        <Text variant="titleMedium">{bottomText}</Text>
+        <Text variant="titleMedium">{botText}</Text>
       </View>
     );
   };
