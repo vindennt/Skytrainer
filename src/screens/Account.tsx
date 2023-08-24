@@ -1,62 +1,31 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { supabase } from "@api/supabase";
 import { StyleSheet, View, Alert } from "react-native";
 import { Button, TextInput, Text } from "react-native-paper";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Formik } from "formik";
 import { changeDisplayNameSchema } from "@src/features/user/changeDisplayNameForm";
 import { AuthState } from "@src/features/auth/authSlice";
+import { UserState, setDisplayName } from "@src/features/user/userSlice";
 
 const Account = () => {
-  const [loading, setLoading] = useState(true);
-  const [editingDisplayName, setEditingDisplayName] = useState(false);
-  const [displayName, setDisplayName] = useState("");
+  const dispatch = useDispatch<any>();
+  const displayName = useSelector(
+    (state: { user: UserState }) => state.user.display_name
+  );
   const session = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
+  const [editingDisplayName, setEditingDisplayName] = useState(false);
 
-  useEffect(() => {
-    session ? getProfile() : console.log("No session");
-  }, [session]);
-
-  async function getProfile() {
-    console.log("Getting profile");
-    try {
-      setLoading(true);
-      if (!session?.user) throw new Error("No user on the session!");
-
-      let { data, error, status } = await supabase
-        .from("users")
-        .select(`display_name`)
-        .eq("user_id", session?.user.id)
-        .single();
-      if (error && status !== 406) {
-        throw error;
-      }
-
-      if (data) {
-        setDisplayName(data.display_name);
-        console.log("Set display name to :" + data.display_name);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message);
-      }
-    } finally {
-      console.log("Finished getting profile");
-      setLoading(false);
-    }
-  }
-
-  async function updateProfile({ displayName }: { displayName: string }) {
+  async function updateProfile({ newDisplayname }: { newDisplayname: string }) {
     try {
       console.log("Updating profile");
-      setLoading(true);
       if (!session?.user) throw new Error("No user on the session!");
 
       const updates = {
         user_id: session?.user.id,
-        display_name: displayName,
+        display_name: newDisplayname,
         last_login: new Date(),
       };
 
@@ -65,7 +34,7 @@ const Account = () => {
       if (error) {
         throw error;
       } else {
-        setDisplayName(displayName);
+        dispatch(setDisplayName(newDisplayname));
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -73,7 +42,6 @@ const Account = () => {
       }
     } finally {
       console.log("Done updating profile");
-      setLoading(false);
     }
   }
 
@@ -110,7 +78,7 @@ const Account = () => {
           onSubmit={(values) => {
             console.log(values.displayName);
             updateProfile({
-              displayName: values.displayName,
+              newDisplayname: values.displayName,
             });
             setEditingDisplayName(false);
           }}
@@ -135,11 +103,7 @@ const Account = () => {
               />
               {errors.displayName && <Text>{errors.displayName}</Text>}
               <View style={[styles.verticallySpaced, styles.mt20]}>
-                <Button
-                  onPress={() => handleSubmit()}
-                  loading={loading}
-                  disabled={!isValid || loading}
-                >
+                <Button onPress={() => handleSubmit()} disabled={!isValid}>
                   Update display name
                 </Button>
               </View>
