@@ -3,10 +3,10 @@ import { supabase } from "@src/api/supabase";
 import { Session } from "@supabase/supabase-js";
 import { Alert } from "react-native";
 
-export const fetchDisplayNameBySession = createAsyncThunk(
-  "user/fetchDisplayNameBySession",
+export const fetchAllUserData = createAsyncThunk(
+  "user/fetchAllUserData",
   async (session: Session) => {
-    console.log("Getting displayname");
+    console.log("Thunk start: fetchAllUserData");
     try {
       if (!session?.user) throw new Error("No user on the session!");
 
@@ -20,15 +20,14 @@ export const fetchDisplayNameBySession = createAsyncThunk(
       }
 
       if (data) {
-        //   console.log("Set display name to :" + data.display_name);
-        return data.display_name;
+        return data;
       }
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert(error.message);
       }
     } finally {
-      console.log("Finished getting displayname");
+      console.log("Thunk end: fetchAllUserData");
     }
   }
 );

@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { supabase } from "@src/api/supabase";
-import { Session } from "@supabase/supabase-js";
-import { Alert } from "react-native";
-import { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
+// import { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
+import { fetchAllUserData } from "@src/features/user/userSliceHelpers";
 
 export interface UserState {
   user_id: string;
@@ -46,6 +44,7 @@ const userSlice = createSlice({
     },
     setBalance: (state, action) => {
       state.balance = action.payload;
+      console.log("Setting balance: " + action.payload);
     },
     setTickets: (state, action) => {
       state.tickets = action.payload;
@@ -61,14 +60,23 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchDisplayNameBySession.fulfilled, (state, action) => {
-      state.display_name = action.payload;
-      console.log("Displayname state: " + state.display_name);
-    });
-    // builder.addCase(fetchAllUserData.fulfilled, (state, action) => {
+    // builder.addCase(fetchDisplayNameBySession.fulfilled, (state, action) => {
     //   state.display_name = action.payload;
     //   console.log("Displayname state: " + state.display_name);
     // });
+    builder.addCase(fetchAllUserData.fulfilled, (state, action) => {
+      console.log(
+        "fetchAllUserData fulfilled: " + JSON.stringify(action.payload, null, 2)
+      );
+      state.display_name = action.payload.display_name;
+      state.created_at = action.payload.created_at;
+      state.last_login = action.payload.last_login;
+      state.balance = action.payload.balance;
+      state.tickets = action.payload.tickets;
+      state.pity = action.payload.pity;
+      state.total_trip_time = action.payload.total_trip_time;
+      state.total_trips_finished = action.payload.total_trips_finished;
+    });
   },
 });
 
@@ -83,5 +91,6 @@ export const {
   setTotalTripTime,
   setTotalTripsFinished,
 } = userSlice.actions;
-export { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
+// export { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
+export { fetchAllUserData } from "@src/features/user/userSliceHelpers";
 export default userSlice.reducer;

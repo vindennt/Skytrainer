@@ -11,25 +11,13 @@ import {
   Trip,
   Signup,
 } from "@screens/index";
-import {
-  setUserId,
-  setDisplayName,
-  setCreationDate,
-  setLastLogin,
-  setBalance,
-  setTickets,
-  setPity,
-  setTotalTripTime,
-  setTotalTripsFinished,
-  UserState,
-} from "@features/user/userSlice";
 import BottomNavBar from "@navigation/BottomNavBar";
 import { useSelector, useDispatch } from "react-redux";
 import { AuthState } from "@src/features/auth/authSlice";
 import { setSession, setUser } from "@features/auth/authSlice";
 import { useTheme } from "react-native-paper";
 import { Session } from "@supabase/supabase-js";
-import { fetchDisplayNameBySession } from "@features/user/userSlice";
+import { fetchAllUserData } from "@features/user/userSlice";
 
 const AppNavigator = () => {
   const session = useSelector(
@@ -45,11 +33,12 @@ const AppNavigator = () => {
     dispatch(setSession(session));
     if (session !== null) {
       dispatch(setUser(session.user));
-      dispatch(fetchDisplayNameBySession(session));
+      dispatch(fetchAllUserData(session));
     }
     setLoading(false);
   };
 
+  // TODO
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setAuthAndUser(session);
