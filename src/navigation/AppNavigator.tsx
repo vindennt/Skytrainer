@@ -25,7 +25,7 @@ const AppNavigator = () => {
   );
   const dispatch = useDispatch<any>();
   const theme = useTheme();
-  // TODO: implement the loading indicator
+  // TODO: implement loading indicator
   const [loading, setLoading] = useState<boolean>(false);
 
   const setAuthAndUser = (session: Session | null) => {
@@ -38,20 +38,14 @@ const AppNavigator = () => {
     setLoading(false);
   };
 
+  // TODO
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log("NORMAL CALL");
       setAuthAndUser(session);
     });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      console.log("SUBSCRIPTION CALL");
-      setSession(session);
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setAuthAndUser(session);
     });
-
-    return () => subscription.unsubscribe();
   }, []);
 
   const Stack = createStackNavigator();
