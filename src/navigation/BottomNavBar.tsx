@@ -1,9 +1,10 @@
 import * as React from "react";
-import { BottomNavigation, FAB } from "react-native-paper";
+import { BottomNavigation, useTheme, Text } from "react-native-paper";
 import { Home, Stations, Shop, Account } from "@screens/index";
-import { View } from "react-native";
 
 const BottomNavBar = () => {
+  const theme = useTheme();
+
   const HomeRoute = () => <Home />;
   const StationsRoute = () => <Stations />;
   const ShopRoute = () => <Shop />;
@@ -15,24 +16,22 @@ const BottomNavBar = () => {
       key: "home",
       title: "Home",
       focusedIcon: "home",
-      unfocusedIcon: "home-outline",
     },
     {
       key: "stations",
       title: "Stations",
-      focusedIcon: "transit-connection-variant",
+      focusedIcon: "subway",
     },
     {
       key: "shop",
       title: "Shop",
-      focusedIcon: "shopping",
-      unfocusedIcon: "shopping-outline",
+      focusedIcon: "pricetags",
     },
     {
       key: "account",
-      title: "Account",
-      focusedIcon: "account",
-      unfocusedIcon: "account-outline",
+      title: "Menu",
+      focusedIcon: "menu",
+      // focusedIcon: "cog",
     },
   ]);
 
@@ -48,7 +47,25 @@ const BottomNavBar = () => {
       navigationState={{ index, routes }}
       onIndexChange={setIndex}
       renderScene={renderScene}
-      shifting={true}
+      // labeled={false}
+      theme={{
+        colors: {
+          secondaryContainer: "transparent", // select wrapper colour
+          onSecondaryContainer: "white", // active icon colour
+          onSurfaceVariant: theme.colors.outline, // inactive icon colour
+        },
+        fonts: {
+          labelMedium: {
+            fontSize: 10,
+            letterSpacing: 0.1,
+            lineHeight: 10,
+          },
+        },
+      }}
+      compact={true}
+      // TODO: Cause bar to move downards, and content to render beneath it. Might be useful for blue
+      // barStyle={{ bottom: -30, position: "absolute" }}
+      safeAreaInsets={{ bottom: 10 }}
     />
   );
 };

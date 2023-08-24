@@ -18,7 +18,6 @@ import { setSession, setUser } from "@features/auth/authSlice";
 import { useTheme, Text } from "react-native-paper";
 import { Session } from "@supabase/supabase-js";
 import { fetchAllUserData } from "@features/user/userSlice";
-import { View } from "react-native";
 
 const AppNavigator = () => {
   const session = useSelector(
@@ -67,7 +66,7 @@ const AppNavigator = () => {
           //   },
         }}
       >
-        <Stack.Screen name=" " component={BottomNavBar} />
+        <Stack.Screen name="Bottom Nav" component={BottomNavBar} />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Trip" component={Trip} />
         <Stack.Screen name="Shop" component={Shop} />
