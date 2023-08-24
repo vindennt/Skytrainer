@@ -7,6 +7,7 @@ import { Formik } from "formik";
 import { changeDisplayNameSchema } from "@src/features/user/changeDisplayNameForm";
 import { AuthState } from "@src/features/auth/authSlice";
 import { UserState, setDisplayName } from "@src/features/user/userSlice";
+import { updateDisplayName } from "@features/user/userSlice";
 
 const Account = () => {
   const dispatch = useDispatch<any>();
@@ -17,33 +18,6 @@ const Account = () => {
     (state: { auth: AuthState }) => state.auth.session
   );
   const [editingDisplayName, setEditingDisplayName] = useState(false);
-
-  async function updateProfile({ newDisplayname }: { newDisplayname: string }) {
-    try {
-      console.log("Updating profile");
-      if (!session?.user) throw new Error("No user on the session!");
-
-      const updates = {
-        user_id: session?.user.id,
-        display_name: newDisplayname,
-        last_login: new Date(),
-      };
-
-      let { error } = await supabase.from("users").upsert(updates);
-
-      if (error) {
-        throw error;
-      } else {
-        dispatch(setDisplayName(newDisplayname));
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message);
-      }
-    } finally {
-      console.log("Done updating profile");
-    }
-  }
 
   return (
     <View style={styles.container}>
@@ -77,9 +51,12 @@ const Account = () => {
           validateOnMount={true}
           onSubmit={(values) => {
             console.log(values.displayName);
-            updateProfile({
-              newDisplayname: values.displayName,
-            });
+            dispatch(
+              updateDisplayName({
+                session: session,
+                newDisplayName: values.displayName,
+              })
+            );
             setEditingDisplayName(false);
           }}
         >

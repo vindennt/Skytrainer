@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 // import { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
-import { fetchAllUserData } from "@src/features/user/userSliceHelpers";
+import {
+  fetchAllUserData,
+  updateDisplayName,
+} from "@src/features/user/userSliceHelpers";
 
 export interface UserState {
   user_id: string;
@@ -60,10 +63,6 @@ const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    // builder.addCase(fetchDisplayNameBySession.fulfilled, (state, action) => {
-    //   state.display_name = action.payload;
-    //   console.log("Displayname state: " + state.display_name);
-    // });
     builder.addCase(fetchAllUserData.fulfilled, (state, action) => {
       console.log(
         "fetchAllUserData fulfilled: " + JSON.stringify(action.payload, null, 2)
@@ -76,6 +75,10 @@ const userSlice = createSlice({
       state.pity = action.payload.pity;
       state.total_trip_time = action.payload.total_trip_time;
       state.total_trips_finished = action.payload.total_trips_finished;
+    });
+    builder.addCase(updateDisplayName.fulfilled, (state, action) => {
+      if (action.payload) state.display_name = action.payload;
+      console.log("updateDisplayName fulfulled: " + state.display_name);
     });
   },
 });
@@ -92,5 +95,8 @@ export const {
   setTotalTripsFinished,
 } = userSlice.actions;
 // export { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
-export { fetchAllUserData } from "@src/features/user/userSliceHelpers";
+export {
+  fetchAllUserData,
+  updateDisplayName,
+} from "@src/features/user/userSliceHelpers";
 export default userSlice.reducer;

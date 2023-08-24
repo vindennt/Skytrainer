@@ -13,13 +13,11 @@ export const fetchAllUserData = createAsyncThunk(
       let { data, error, status } = await supabase
         .from("users")
         .select(`*`)
-        .eq("user_id", session?.user.id)
+        .eq("user_id", session.user.id)
         .single();
       if (error && status !== 406) {
         throw error;
-      }
-
-      if (data) {
+      } else if (data) {
         return data;
       }
     } catch (error) {
@@ -34,29 +32,35 @@ export const fetchAllUserData = createAsyncThunk(
 
 export const updateDisplayName = createAsyncThunk(
   "user/updateDisplayName",
-  async (session: Session) => {
+  async ({
+    session,
+    newDisplayName,
+  }: {
+    session: Session | null;
+    newDisplayName: string;
+  }) => {
     console.log("Thunk start: updateDisplayName");
     try {
       if (!session?.user) throw new Error("No user on the session!");
 
-      let { data, error, status } = await supabase
-        .from("users")
-        .select(`*`)
-        .eq("user_id", session?.user.id)
-        .single();
-      if (error && status !== 406) {
-        throw error;
-      }
+      const update = {
+        display_name: newDisplayName,
+      };
 
-      if (data) {
-        return data;
-      }
+      const { error } = await supabase
+        .from("users")
+        .update(update)
+        .eq("user_id", session.user.id);
+
+      if (error) {
+        throw error;
+      } else if (newDisplayName) return newDisplayName;
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert(error.message);
       }
     } finally {
-      console.log("Thunk end: updateDisplayName");
+      console.log("Done updating profile");
     }
   }
 );

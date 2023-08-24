@@ -1,7 +1,7 @@
 import "react-native-url-polyfill/auto";
 import { NavigationContainer } from "@react-navigation/native";
 import React from "react";
-import store from "@src/store/index";
+import store from "@src/features/store";
 import {
   MD3DarkTheme as theme,
   Provider as PaperProvider,
