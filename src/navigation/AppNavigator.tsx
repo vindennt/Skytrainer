@@ -26,19 +26,9 @@ const AppNavigator = () => {
   const session = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
-  const balance: number = useSelector(
-    (state: { user: UserState }) => state.user.balance
-  );
-  const tickets: number = useSelector(
-    (state: { user: UserState }) => state.user.tickets
-  );
 
   // TODO: implement loading indicator
   const [loading, setLoading] = useState<boolean>(false);
-
-  const setAuthSession = (session: Session | null) => {
-    dispatch(setSession(session));
-  };
 
   const setSessionUser = (session: Session) => {
     dispatch(setUser(session.user));
@@ -47,20 +37,27 @@ const AppNavigator = () => {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setAuthSession(session);
+      dispatch(setSession(session));
     });
 
     supabase.auth.onAuthStateChange((_event, newSession) => {
       setLoading(true);
-      setAuthSession(newSession);
+      dispatch(setSession(newSession));
       if (newSession !== null) setSessionUser(newSession);
+      setLoading(false);
     });
-    setLoading(false);
   }, []);
 
   const Stack = createStackNavigator();
 
   const InsideStack = () => {
+    const balance: number = useSelector(
+      (state: { user: UserState }) => state.user.balance
+    );
+    const tickets: number = useSelector(
+      (state: { user: UserState }) => state.user.tickets
+    );
+
     return (
       <Stack.Navigator
         initialRouteName="Bottom Nav"
@@ -71,8 +68,6 @@ const AppNavigator = () => {
             backgroundColor: theme.colors.background,
           },
           headerShadowVisible: false,
-          // TODO: Make header show money and tickets, and find a way to make them rerender when changes are made
-          headerTitle: "",
           headerBackTitleVisible: false,
           // TODO: can make header translucent for glassmorphism?
           // headerTransparent: true,
