@@ -126,7 +126,11 @@ const Account = () => {
       </View>
 
       <View style={styles.verticallySpaced}>
-        <Button onPress={() => supabase.auth.signOut()} mode="outlined">
+        <Button
+          onPress={() => supabase.auth.signOut()}
+          icon="exit-outline"
+          mode="outlined"
+        >
           Sign Out
         </Button>
       </View>

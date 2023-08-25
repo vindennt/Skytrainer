@@ -1,6 +1,7 @@
 import * as React from "react";
 import { BottomNavigation, useTheme, Text } from "react-native-paper";
 import { Home, Stations, Shop, Account } from "@screens/index";
+import Icon from "react-native-vector-icons/Ionicons";
 
 const BottomNavBar = () => {
   const theme = useTheme();
@@ -14,23 +15,25 @@ const BottomNavBar = () => {
   const [routes] = React.useState([
     {
       key: "home",
-      title: "Home",
-      focusedIcon: "home",
+      title: "Skytrain",
+      focusedIcon: "subway",
     },
     {
       key: "stations",
       title: "Stations",
-      focusedIcon: "subway",
+      focusedIcon: "map",
     },
     {
       key: "shop",
       title: "Shop",
       focusedIcon: "pricetags",
+      // focusedIcon: "pricetags",
     },
     {
       key: "account",
-      title: "Menu",
-      focusedIcon: "menu",
+      title: "Account",
+      focusedIcon: "person-circle-sharp",
+      // focusedIcon: "person",
       // focusedIcon: "cog",
     },
   ]);

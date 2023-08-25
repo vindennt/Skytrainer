@@ -15,30 +15,34 @@ import BottomNavBar from "@navigation/BottomNavBar";
 import { useSelector, useDispatch } from "react-redux";
 import { AuthState } from "@src/features/auth/authSlice";
 import { setSession, setUser } from "@features/auth/authSlice";
-import { useTheme, Text } from "react-native-paper";
+import { useTheme, Text, Button } from "react-native-paper";
 import { Session } from "@supabase/supabase-js";
-import { fetchAllUserData } from "@features/user/userSlice";
+import { UserState, fetchAllUserData } from "@features/user/userSlice";
+import { CurrencyDisplay } from "@components/CurrencyDisplay";
 
 const AppNavigator = () => {
+  const dispatch = useDispatch<any>();
+  const theme = useTheme();
   const session = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
-  const dispatch = useDispatch<any>();
-  const theme = useTheme();
+  const balance: number = useSelector(
+    (state: { user: UserState }) => state.user.balance
+  );
+  const tickets: number = useSelector(
+    (state: { user: UserState }) => state.user.tickets
+  );
+
   // TODO: implement loading indicator
   const [loading, setLoading] = useState<boolean>(false);
 
   const setAuthSession = (session: Session | null) => {
-    setLoading(true);
     dispatch(setSession(session));
-    setLoading(false);
   };
 
   const setSessionUser = (session: Session) => {
-    setLoading(true);
     dispatch(setUser(session.user));
     dispatch(fetchAllUserData(session));
-    setLoading(false);
   };
 
   useEffect(() => {
@@ -47,9 +51,11 @@ const AppNavigator = () => {
     });
 
     supabase.auth.onAuthStateChange((_event, newSession) => {
+      setLoading(true);
       setAuthSession(newSession);
       if (newSession !== null) setSessionUser(newSession);
     });
+    setLoading(false);
   }, []);
 
   const Stack = createStackNavigator();
@@ -59,14 +65,28 @@ const AppNavigator = () => {
       <Stack.Navigator
         initialRouteName="Bottom Nav"
         screenOptions={{
-          headerShown: false,
-          //   headerTintColor: theme.colors.inverseSurface,
-          //   headerStyle: {
-          //     backgroundColor: theme.colors.secondaryContainer,
-          //   },
+          // headerShown: false,
+          headerTintColor: theme.colors.inverseSurface,
+          headerStyle: {
+            backgroundColor: theme.colors.background,
+          },
+          headerShadowVisible: false,
+          // TODO: Make header show money and tickets, and find a way to make them rerender when changes are made
+          headerTitle: "",
+          headerBackTitleVisible: false,
+          // TODO: can make header translucent for glassmorphism?
+          // headerTransparent: true,
         }}
       >
-        <Stack.Screen name="Bottom Nav" component={BottomNavBar} />
+        <Stack.Screen
+          name="Bottom Nav"
+          component={BottomNavBar}
+          options={{
+            headerTitle: (props) => (
+              <CurrencyDisplay balance={balance} tickets={tickets} />
+            ),
+          }}
+        />
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Trip" component={Trip} />
         <Stack.Screen name="Shop" component={Shop} />
@@ -82,11 +102,14 @@ const AppNavigator = () => {
       <Stack.Navigator
         initialRouteName="Login"
         screenOptions={{
-          //   headerShown: false,
+          // headerShown: false,
           headerTintColor: theme.colors.inverseSurface,
           headerStyle: {
             backgroundColor: theme.colors.secondaryContainer,
           },
+          headerTransparent: true,
+          headerShadowVisible: false,
+          headerBackTitleVisible: false,
         }}
       >
         <Stack.Screen name="Login" component={Login} />
