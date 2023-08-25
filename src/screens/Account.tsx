@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "@api/supabase";
 import { Session } from "@supabase/supabase-js";
 import { StyleSheet, View, Alert } from "react-native";
-import { Button, TextInput, Text } from "react-native-paper";
+import { Button, TextInput, Text, HelperText } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik } from "formik";
 import { changeDisplayNameSchema } from "@features/user/changeDisplayNameForm";
@@ -98,7 +98,12 @@ const Account = () => {
                 onBlur={() => setFieldTouched("displayName")}
                 autoCapitalize={"none"}
               />
-              {errors.displayName && <Text>{errors.displayName}</Text>}
+              <HelperText
+                type="info"
+                visible={errors.displayName !== undefined}
+              >
+                {errors.displayName}
+              </HelperText>
               <View style={styles.verticallySpaced}>
                 <Button
                   onPress={() => handleSubmit()}

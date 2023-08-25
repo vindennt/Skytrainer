@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import { supabase } from "@api/supabase";
 import { useNavigation } from "@react-navigation/native";
-import { Text, useTheme, TextInput, Button } from "react-native-paper";
+import {
+  Text,
+  useTheme,
+  TextInput,
+  Button,
+  HelperText,
+} from "react-native-paper";
 import { View, StyleSheet, Alert } from "react-native";
 import { Formik } from "formik";
 import { initialValues, signupSchema } from "@features/auth/signupForm";
@@ -72,9 +78,15 @@ const Signup = () => {
               onBlur={() => setFieldTouched("displayName")}
             />
           </View>
-          {touched.displayName && errors.displayName && (
-            <Text>{errors.displayName}</Text>
-          )}
+          <HelperText
+            type="error"
+            visible={
+              touched.displayName !== undefined &&
+              errors.displayName !== undefined
+            }
+          >
+            {errors.displayName}
+          </HelperText>
           <View>
             <TextInput
               label="Email*"
@@ -85,7 +97,12 @@ const Signup = () => {
               autoCapitalize="none"
             />
           </View>
-          {touched.email && errors.email && <Text>{errors.email}</Text>}
+          <HelperText
+            type="error"
+            visible={touched.email !== undefined && errors.email !== undefined}
+          >
+            {errors.email}
+          </HelperText>
           <View>
             <TextInput
               label="Password*"
@@ -97,9 +114,14 @@ const Signup = () => {
               secureTextEntry={true}
             />
           </View>
-          {touched.password && errors.password && (
-            <Text>{errors.password}</Text>
-          )}
+          <HelperText
+            type="error"
+            visible={
+              touched.password !== undefined && errors.password !== undefined
+            }
+          >
+            {errors.password}
+          </HelperText>
           <View>
             <TextInput
               label="Confirm Password*"
@@ -111,9 +133,15 @@ const Signup = () => {
               secureTextEntry={true}
             />
           </View>
-          {touched.confirmPassword && errors.confirmPassword && (
-            <Text>{errors.confirmPassword}</Text>
-          )}
+          <HelperText
+            type="error"
+            visible={
+              touched.confirmPassword !== undefined &&
+              errors.confirmPassword !== undefined
+            }
+          >
+            {errors.confirmPassword}
+          </HelperText>
           <Button
             disabled={!isValid || loading}
             loading={loading}
