@@ -17,7 +17,6 @@ export async function signInWithEmail(email: string, password: string) {
 const Login = () => {
   const theme = useTheme();
   const navigation = useNavigation();
-
   const [loading, setLoading] = useState(false);
 
   const goToSignup = () => {

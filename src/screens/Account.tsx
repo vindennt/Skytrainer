@@ -5,11 +5,11 @@ import { StyleSheet, View, Alert } from "react-native";
 import { Button, TextInput, Text } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik } from "formik";
-import { changeDisplayNameSchema } from "@src/features/user/changeDisplayNameForm";
-import { AuthState } from "@src/features/auth/authSlice";
-import { UserState, setDisplayName } from "@src/features/user/userSlice";
+import { changeDisplayNameSchema } from "@features/user/changeDisplayNameForm";
+import { AuthState } from "@features/auth/authSlice";
+import { UserState, setDisplayName } from "@features/user/userSlice";
 import { updateDisplayName } from "@features/user/userSlice";
-import { getDate } from "@src/api/dates";
+import { getDate } from "@features/date/dates";
 
 const Account = () => {
   const dispatch = useDispatch<any>();

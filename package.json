@@ -9,7 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "^1.19.2",
+    "@react-native-async-storage/async-storage": "^1.19.3",
     "@react-native-community/blur": "^4.3.2",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-masked-view/masked-view": "github:react-native-masked-view/masked-view",
@@ -32,6 +32,7 @@
     "react-native-url-polyfill": "^2.0.0",
     "react-native-vector-icons": "^10.0.0",
     "react-redux": "^8.1.2",
+    "redux-persist": "^6.0.0",
     "yup": "^1.2.0"
   },
   "devDependencies": {
