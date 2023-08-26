@@ -9,7 +9,8 @@
       "@features/*": ["./src/features/*"],
       "@store/*": ["./src/store/*"],
       "@navigation/*": ["./src/navigation/*"],
-      "@components/*": ["./src/components/*"]
+      "@components/*": ["./src/components/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   }
 }

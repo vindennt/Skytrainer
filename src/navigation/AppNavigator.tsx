@@ -15,7 +15,7 @@ import BottomNavBar from "@navigation/BottomNavBar";
 import { useSelector, useDispatch } from "react-redux";
 import { AuthState } from "@src/features/auth/authSlice";
 import { setSession, setUser } from "@features/auth/authSlice";
-import { useTheme, Text, Button } from "react-native-paper";
+import { useTheme } from "react-native-paper";
 import { Session } from "@supabase/supabase-js";
 import { UserState, fetchAllUserData } from "@features/user/userSlice";
 import { CurrencyDisplay } from "@components/CurrencyDisplay";

@@ -3,6 +3,11 @@ import { supabase } from "@src/api/supabase";
 import { Session } from "@supabase/supabase-js";
 import { Alert } from "react-native";
 
+export interface UpdateDisplayNameRequest {
+  session: Session | null;
+  newDisplayName: string;
+}
+
 export const fetchAllUserData = createAsyncThunk(
   "user/fetchAllUserData",
   async (session: Session) => {
@@ -32,13 +37,7 @@ export const fetchAllUserData = createAsyncThunk(
 
 export const updateDisplayName = createAsyncThunk(
   "user/updateDisplayName",
-  async ({
-    session,
-    newDisplayName,
-  }: {
-    session: Session | null;
-    newDisplayName: string;
-  }) => {
+  async ({ session, newDisplayName }: UpdateDisplayNameRequest) => {
     console.log("Thunk start: updateDisplayName");
     try {
       if (!session?.user) throw new Error("No user on the session!");

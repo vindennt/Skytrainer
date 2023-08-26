@@ -4,6 +4,7 @@ import { persistReducer, persistStore } from "redux-persist";
 import thunk from "redux-thunk";
 import authReducer from "@features/auth/authSlice";
 import userReducer from "@features/user/userSlice";
+import stationsReducer from "@features/stations/stationsSlice";
 
 const persistConfig = {
   key: "root",
@@ -13,6 +14,7 @@ const persistConfig = {
 const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
+  stations: stationsReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
