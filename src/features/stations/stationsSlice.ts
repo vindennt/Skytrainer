@@ -7,12 +7,16 @@ import {
 
 // Represents the station id and level of user's unlocked stations
 // string: station id, number: station level
+// selectedStation: stationId of selected station in stations menu
+// TODO: Handle actual station selection
 export interface StationsState {
   stations: Map<string, number>;
+  selectedStation: string;
 }
 
 const initialState: StationsState = {
   stations: new Map<string, number>(),
+  selectedStation: "000",
 };
 
 const stationsSlice = createSlice({
@@ -28,6 +32,9 @@ const stationsSlice = createSlice({
     builder.addCase(fetchAllStations.fulfilled, (state, action) => {
       if (action.payload) {
         state.stations = action.payload;
+        // Grab first entry as the default selected station
+        const firstKey = action.payload.keys().next().value;
+        state.selectedStation = firstKey;
         console.log("fetchAllStations fulfilled");
         console.log(action.payload);
       }
