@@ -31,6 +31,16 @@ export function findViableTrips(
     if (!current) {
       return;
     }
+
+    // Helper to reset visited, except for station just visited, which allows re-traversal onto transfer stations
+    // This allows inifnite traversal for any trip length
+    function resetVisited(current: Station) {
+      const justVisited = path[path.length - 2];
+      visited = new Set<Station>();
+      visited.add(justVisited);
+      visited.add(current);
+    }
+
     visited.add(current);
     path.push(current);
 
@@ -49,36 +59,14 @@ export function findViableTrips(
       // *** This allows traversal to retransfer onto a station already visited without backtracking
       // *** The station just visited is kept in visited so that traversal does not immediately backtrack onto it
       if (current.transfer) {
-        const justVisited = path[path.length - 2];
-        visited = new Set<Station>();
-        visited.add(justVisited);
-        visited.add(current);
+        resetVisited(current);
       }
 
       for (const neighbour of neighbours) {
         // *** Infinite loop part 2/2
         // *** If coming upon an already visited transfer station, you are allowed to revisit it if you did not just visit it
         if (neighbour.station.transfer) {
-          if (
-            isLoopableTransfer(
-              neighbour.station,
-              path,
-              visited.has(neighbour.station)
-            )
-          ) {
-            visited.delete(neighbour.station);
-            // Allow revisiting stations along new line that is about to be traversed
-            // delete every station from the transferred line
-            // TODO: try the infinte loop 1/2's deletion of everyone except just visited, which is more efficient than checking forEach
-            visited.forEach((visitedStation) => {
-              if (
-                visitedStation !== neighbour.station &&
-                current.lineid !== visitedStation.lineid
-              ) {
-                visited.delete(visitedStation);
-              }
-            });
-          }
+          resetVisited(current);
         }
 
         // Recursively traverse unvisited stations
@@ -105,20 +93,6 @@ export function findViableTrips(
     return viablePaths;
   }
 }
-
-// If neighbour is an already explored transfer station that hasnt just been visited, it can be looped
-function isLoopableTransfer(
-  neighbour: Station,
-  path: Station[],
-  visited: boolean
-) {
-  return (
-    visited &&
-    neighbour.transfer &&
-    !areEqual([neighbour], [path[path.length - 2]])
-  );
-}
-// Use example: See tests
 
 // Helper function to check if two paths are equal
 function areEqual(path1: Station[], path2: Station[]): boolean {
