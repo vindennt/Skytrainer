@@ -36,7 +36,7 @@ export const fetchAllStations = createAsyncThunk(
       if (error && status !== 406) {
         throw error;
       } else if (data) {
-        console.log(JSON.stringify(data, null, 2));
+        // console.log(JSON.stringify(data, null, 2));
         data.forEach((row: LevelInfo) => {
           fetchedStations.set(row.station_id, row.level);
         });
@@ -65,10 +65,14 @@ export const unlockStation = createAsyncThunk(
         user_id: session.user.id,
       };
 
-      const { error } = await supabase.from("collections").insert(newData);
+      const { data, error } = await supabase
+        .from("collections")
+        .insert(newData);
 
       if (error) {
         throw error;
+      } else if (data) {
+        return stationId;
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -105,6 +109,8 @@ export const levelUpStation = createAsyncThunk(
 
       if (error) {
         throw error;
+      } else {
+        return { stationId, newLevel };
       }
     } catch (error) {
       if (error instanceof Error) {
