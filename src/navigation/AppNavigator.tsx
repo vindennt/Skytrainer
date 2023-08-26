@@ -18,6 +18,10 @@ import { setSession, setUser } from "@features/auth/authSlice";
 import { useTheme } from "react-native-paper";
 import { Session } from "@supabase/supabase-js";
 import { UserState, fetchAllUserData } from "@features/user/userSlice";
+import {
+  StationsState,
+  fetchAllStations,
+} from "@features/stations/stationsSlice";
 import { CurrencyDisplay } from "@components/CurrencyDisplay";
 
 const AppNavigator = () => {
@@ -30,9 +34,10 @@ const AppNavigator = () => {
   // TODO: implement loading indicator
   const [loading, setLoading] = useState<boolean>(false);
 
-  const setSessionUser = (session: Session) => {
+  const initUserData = (session: Session) => {
     dispatch(setUser(session.user));
     dispatch(fetchAllUserData(session));
+    dispatch(fetchAllStations(session));
   };
 
   useEffect(() => {
@@ -43,7 +48,7 @@ const AppNavigator = () => {
     supabase.auth.onAuthStateChange((_event, newSession) => {
       setLoading(true);
       dispatch(setSession(newSession));
-      if (newSession !== null) setSessionUser(newSession);
+      if (newSession !== null) initUserData(newSession);
       setLoading(false);
     });
   }, []);
