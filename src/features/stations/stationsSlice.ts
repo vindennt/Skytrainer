@@ -5,6 +5,7 @@ import {
   levelUpStation,
 } from "./stationsSliceHelpers";
 
+// Represents the station id and level of user's unlocked stations
 // string: station id, number: station level
 export interface StationsState {
   stations: Map<string, number>;
@@ -15,7 +16,7 @@ const initialState: StationsState = {
 };
 
 const stationsSlice = createSlice({
-  name: "auth",
+  name: "stations",
   initialState,
   reducers: {
     setStation: (state, action) => {
