@@ -1,11 +1,14 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { persistReducer, persistStore } from "redux-persist";
+import { enableMapSet } from "immer";
 import thunk from "redux-thunk";
 import authReducer from "@features/auth/authSlice";
 import userReducer from "@features/user/userSlice";
 import stationsReducer from "@features/stations/stationsSlice";
 import skytrainTripReducer from "@features/skytrainTrip/skytrainTripSlice";
+
+enableMapSet();
 
 const persistConfig = {
   key: "root",

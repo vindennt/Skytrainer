@@ -13,14 +13,14 @@ import {
 } from "@features/reward/LevelHandler";
 import { UserState } from "@src/features/user/userSlice";
 import {
-  TransactionType,
-  makeTransaction,
-} from "@src/features/transaction/TransactionHandler";
-import {
   UpdateNumericalBalanceRequest,
   updateBalance,
 } from "@src/features/user/userSliceHelpers";
 import { AuthState } from "@src/features/auth/authSlice";
+import {
+  StationLevelUpdateRequest,
+  levelUpStation,
+} from "@features/stations/stationsSliceHelpers";
 
 interface LevelUpBoxProps {
   selectedStation: string;
@@ -48,6 +48,24 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
   const canBuy: boolean =
     balance >= cost && level !== undefined && level <= MAX_LEVEL;
 
+  const handleLevelUp = () => {
+    if (level) {
+      console.log("LEVEL PRESSED");
+      // dispatch(makeTransaction(TransactionType.BALANCE, cost, balance));
+      const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
+        session: session,
+        newBalance: balance - cost,
+      };
+      const levelUpdateRequest: StationLevelUpdateRequest = {
+        session: session,
+        stationId: selectedStation,
+        newLevel: level + 1,
+      };
+      dispatch(updateBalance(balanceUpdateRequest));
+      dispatch(levelUpStation(levelUpdateRequest));
+    }
+  };
+
   return (
     <View>
       <View style={styles.titleContainer}>
@@ -70,15 +88,7 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
           <Text style={styles.costText}>{cost}</Text>
           <Button
             style={styles.button}
-            onPress={() => {
-              console.log("LEVEL PRESSED");
-              // dispatch(makeTransaction(TransactionType.BALANCE, cost, balance));
-              const request: UpdateNumericalBalanceRequest = {
-                session: session,
-                newBalance: balance - cost,
-              };
-              dispatch(updateBalance(request));
-            }}
+            onPress={() => handleLevelUp()}
             mode="contained"
             disabled={!canBuy}
           >
