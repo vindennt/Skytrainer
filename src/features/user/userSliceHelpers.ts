@@ -8,6 +8,11 @@ export interface UpdateDisplayNameRequest {
   newDisplayName: string;
 }
 
+export interface UpdateNumericalBalanceRequest {
+  session: Session | null;
+  newBalance: number;
+}
+
 export const fetchAllUserData = createAsyncThunk(
   "user/fetchAllUserData",
   async (session: Session) => {
@@ -60,6 +65,35 @@ export const updateDisplayName = createAsyncThunk(
       }
     } finally {
       console.log("Done updating profile");
+    }
+  }
+);
+
+export const updateBalance = createAsyncThunk(
+  "user/updateBalance",
+  async ({ session, newBalance }: UpdateNumericalBalanceRequest) => {
+    console.log("Thunk start: updateBalance to " + newBalance);
+    try {
+      if (!session?.user) throw new Error("No user on the session!");
+
+      const update = {
+        balance: newBalance,
+      };
+
+      const { error } = await supabase
+        .from("users")
+        .update(update)
+        .eq("user_id", session.user.id);
+
+      if (error) {
+        throw error;
+      } else if (newBalance) return newBalance;
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+    } finally {
+      console.log("Done updating balance to " + newBalance);
     }
   }
 );

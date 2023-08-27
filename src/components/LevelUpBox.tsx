@@ -4,11 +4,23 @@ import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Text, Button, Title } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { UIActivityIndicator } from "react-native-indicators";
-
+import { useDispatch, useSelector } from "react-redux";
+import { MAX_LEVEL } from "@features/reward/LevelHandler";
+import { Session } from "@supabase/supabase-js";
 import {
   LEVELUP_COSTS,
   REWARD_MULTIPLIERS,
 } from "@features/reward/LevelHandler";
+import { UserState } from "@src/features/user/userSlice";
+import {
+  TransactionType,
+  makeTransaction,
+} from "@src/features/transaction/TransactionHandler";
+import {
+  UpdateNumericalBalanceRequest,
+  updateBalance,
+} from "@src/features/user/userSliceHelpers";
+import { AuthState } from "@src/features/auth/authSlice";
 
 interface LevelUpBoxProps {
   selectedStation: string;
@@ -22,10 +34,19 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
   selectedStation,
   levelData,
 }) => {
+  const dispatch = useDispatch<any>();
   const level: number | undefined = levelData.get(selectedStation);
   const cost: number = level ? LEVELUP_COSTS[level] : -1;
   const currentMultiplier: number = level ? REWARD_MULTIPLIERS[level] : -1;
   const nextMultiplier: number = level ? REWARD_MULTIPLIERS[level + 1] : -1;
+  const balance: number = useSelector(
+    (state: { user: UserState }) => state.user.balance
+  );
+  const session: Session | null = useSelector(
+    (state: { auth: AuthState }) => state.auth.session
+  );
+  const canBuy: boolean =
+    balance >= cost && level !== undefined && level <= MAX_LEVEL;
 
   return (
     <View>
@@ -38,9 +59,9 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
       <View style={styles.container}>
         <View style={styles.subtextContainer}>
           <Text style={styles.subtextText}>
-            {"Next level: Rewards x" +
+            {"Next level: Rewards \u00D7" +
               currentMultiplier +
-              " → x" +
+              " → \u00D7" +
               nextMultiplier}
           </Text>
         </View>
@@ -51,8 +72,15 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
             style={styles.button}
             onPress={() => {
               console.log("LEVEL PRESSED");
+              // dispatch(makeTransaction(TransactionType.BALANCE, cost, balance));
+              const request: UpdateNumericalBalanceRequest = {
+                session: session,
+                newBalance: balance - cost,
+              };
+              dispatch(updateBalance(request));
             }}
             mode="contained"
+            disabled={!canBuy}
           >
             Level Up
           </Button>

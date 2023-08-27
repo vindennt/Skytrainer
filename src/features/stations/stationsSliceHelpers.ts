@@ -2,6 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "@src/api/supabase";
 import { Session } from "@supabase/supabase-js";
 import { Alert } from "react-native";
+import { MAX_LEVEL } from "@features/reward/LevelHandler";
 
 interface LevelInfo {
   //   user_id: string;
@@ -95,6 +96,8 @@ export const levelUpStation = createAsyncThunk(
     );
     try {
       if (!session?.user) throw new Error("No user on the session!");
+      if (newLevel > MAX_LEVEL)
+        throw new Error("Cannot level past " + MAX_LEVEL);
 
       const newData = {
         station_id: stationId,

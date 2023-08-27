@@ -3,6 +3,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import {
   fetchAllUserData,
   updateDisplayName,
+  updateBalance,
 } from "@src/features/user/userSliceHelpers";
 
 export interface UserState {
@@ -80,6 +81,10 @@ const userSlice = createSlice({
       if (action.payload) state.display_name = action.payload;
       console.log("updateDisplayName fulfulled: " + state.display_name);
     });
+    builder.addCase(updateBalance.fulfilled, (state, action) => {
+      if (action.payload) state.balance = action.payload;
+      console.log("updateBalance fulfulled: " + state.balance);
+    });
   },
 });
 
@@ -98,5 +103,6 @@ export const {
 export {
   fetchAllUserData,
   updateDisplayName,
+  updateBalance,
 } from "@src/features/user/userSliceHelpers";
 export default userSlice.reducer;
