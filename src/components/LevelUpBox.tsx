@@ -3,6 +3,12 @@ import React from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Text, Button, Title } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { UIActivityIndicator } from "react-native-indicators";
+
+import {
+  LEVELUP_COSTS,
+  REWARD_MULTIPLIERS,
+} from "@features/reward/LevelHandler";
 
 interface LevelUpBoxProps {
   selectedStation: string;
@@ -16,6 +22,11 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
   selectedStation,
   levelData,
 }) => {
+  const level: number | undefined = levelData.get(selectedStation);
+  const cost: number = level ? LEVELUP_COSTS[level] : -1;
+  const currentMultiplier: number = level ? REWARD_MULTIPLIERS[level] : -1;
+  const nextMultiplier: number = level ? REWARD_MULTIPLIERS[level + 1] : -1;
+
   return (
     <View>
       <View style={styles.titleContainer}>
@@ -27,12 +38,15 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
       <View style={styles.container}>
         <View style={styles.subtextContainer}>
           <Text style={styles.subtextText}>
-            {"Next level: Rewards x1.5 -> x1.6"}
+            {"Next level: Rewards x" +
+              currentMultiplier +
+              " → x" +
+              nextMultiplier}
           </Text>
         </View>
         <View style={styles.levelUpTextContainer}>
           <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
-          <Text style={styles.costText}> 200</Text>
+          <Text style={styles.costText}>{cost}</Text>
           <Button
             style={styles.button}
             onPress={() => {
@@ -71,6 +85,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 18,
     marginRight: 16,
+    marginLeft: 6,
   },
   levelUpTextContainer: {
     flexDirection: "row",
