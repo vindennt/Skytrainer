@@ -11,10 +11,7 @@ import { Session } from "@supabase/supabase-js";
 import { AuthState } from "@src/features/auth/authSlice";
 import { StationUnlockRequest } from "@features/stations/stationsSliceHelpers";
 import { UIActivityIndicator } from "react-native-indicators";
-import {
-  StationSelectBox,
-  StationSelector,
-} from "@src/components/StationSelectBox";
+import { StationSelector } from "@src/components/StationSelectBox";
 import { LevelUpBox } from "@src/components/LevelUpBox";
 import { getStationName } from "@src/features/skytrainTrip/SkytrainData";
 {
@@ -35,22 +32,16 @@ const Stations = () => {
 
   return (
     <View style={styles.container}>
-      <Button
+      {/* <Button
         onPress={() => {
           console.log(stations);
         }}
       >
         Fetch stations
-      </Button>
-      <StationSelector data={stations} />
+      </Button> */}
+      <StationSelector data={stations} selectedStation={selectedStation} />
 
-      <LevelUpBox
-        selectedStation={selectedStation}
-        levelData={stations}
-        onPressButton={() => {
-          console.log("LEVEL PRESSED");
-        }}
-      />
+      <LevelUpBox selectedStation={selectedStation} levelData={stations} />
     </View>
   );
 };
@@ -58,6 +49,8 @@ export default Stations;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 30,
+    paddingHorizontal: 30,
+    paddingTop: 10,
+    flex: 1,
   },
 });

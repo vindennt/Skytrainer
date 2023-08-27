@@ -26,6 +26,10 @@ const stationsSlice = createSlice({
     setStation: (state, action) => {
       state.stations.set(action.payload.id, action.payload.level);
     },
+
+    setSelectedStation: (state, action) => {
+      state.selectedStation = action.payload;
+    },
   },
 
   extraReducers: (builder) => {
@@ -61,7 +65,7 @@ const stationsSlice = createSlice({
   },
 });
 
-export const { setStation } = stationsSlice.actions;
+export const { setStation, setSelectedStation } = stationsSlice.actions;
 export {
   fetchAllStations,
   unlockStation,

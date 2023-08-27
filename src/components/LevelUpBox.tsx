@@ -7,7 +7,6 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 interface LevelUpBoxProps {
   selectedStation: string;
   levelData: Map<string, number>;
-  onPressButton: () => void;
 }
 
 // TODO: fetch reward multipler for next level
@@ -16,7 +15,6 @@ interface LevelUpBoxProps {
 export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
   selectedStation,
   levelData,
-  onPressButton,
 }) => {
   return (
     <View>
@@ -27,21 +25,23 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
         <Title>Lv. {levelData.get(selectedStation)}</Title>
       </View>
       <View style={styles.container}>
+        <View style={styles.subtextContainer}>
+          <Text style={styles.subtextText}>
+            {"Next level: Rewards x1.5 -> x1.6"}
+          </Text>
+        </View>
         <View style={styles.levelUpTextContainer}>
           <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
           <Text style={styles.costText}> 200</Text>
           <Button
             style={styles.button}
-            onPress={onPressButton}
+            onPress={() => {
+              console.log("LEVEL PRESSED");
+            }}
             mode="contained"
           >
             Level Up
           </Button>
-        </View>
-        <View style={styles.subtextContainer}>
-          <Text style={styles.subtextText}>
-            {"Next level: Rewards x1.5 -> x1.6"}
-          </Text>
         </View>
       </View>
     </View>
@@ -50,9 +50,9 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "darkslategrey",
+    backgroundColor: "#454045",
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 12,
     marginBottom: 16,
   },
   titleContainer: {
@@ -77,18 +77,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: "bold",
     // justifyContent: "flex-end",
-    marginBottom: 16,
+    // marginBottom: 16,
   },
   subtextText: {
     // flex: 1,
     fontSize: 16,
     marginRight: 16,
+    marginBottom: 16,
   },
   button: {
     borderRadius: 12,
     flex: 1,
-  },
-  background: {
-    ...StyleSheet.absoluteFillObject,
   },
 });
