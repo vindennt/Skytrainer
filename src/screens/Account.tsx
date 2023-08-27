@@ -104,7 +104,12 @@ const Account = () => {
               >
                 {errors.displayName}
               </HelperText>
-              <View style={styles.verticallySpaced}>
+              <View
+                style={[
+                  styles.verticallySpaced,
+                  { width: "100%", alignItems: "center" },
+                ]}
+              >
                 <Button
                   onPress={() => handleSubmit()}
                   disabled={!isValid || loading}
@@ -130,11 +135,16 @@ const Account = () => {
         />
       </View>
 
-      <View style={styles.verticallySpaced}>
+      <View
+        style={[
+          styles.verticallySpaced,
+          { width: "100%", alignItems: "center" },
+        ]}
+      >
         <Button
           onPress={() => supabase.auth.signOut()}
           icon="exit-outline"
-          mode="outlined"
+          // mode="outlined"
         >
           Sign Out
         </Button>
@@ -156,7 +166,6 @@ const styles = StyleSheet.create({
   verticallySpaced: {
     paddingTop: 4,
     paddingBottom: 4,
-    alignSelf: "stretch",
   },
 
   textBox: {

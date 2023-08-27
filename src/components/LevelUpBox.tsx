@@ -27,9 +27,6 @@ interface LevelUpBoxProps {
   levelData: Map<string, number>;
 }
 
-// TODO: fetch reward multipler for next level
-// TODO: fetch the level up cost
-// TODO: Implement leveling up
 export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
   selectedStation,
   levelData,
@@ -50,8 +47,6 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
 
   const handleLevelUp = () => {
     if (level) {
-      console.log("LEVEL PRESSED");
-      // dispatch(makeTransaction(TransactionType.BALANCE, cost, balance));
       const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
         session: session,
         newBalance: balance - cost,
@@ -84,7 +79,7 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
           </Text>
         </View>
         <View style={styles.levelUpTextContainer}>
-          <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
+          <Icon name="credit-card-chip" size={18} color={"#1691d9"} />
           <Text style={styles.costText}>{cost}</Text>
           <Button
             style={styles.button}

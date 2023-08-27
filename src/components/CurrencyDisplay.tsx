@@ -54,10 +54,10 @@ export const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
             <GradientIcon
               name="credit-card-chip"
               size={20}
-              colors={["white", "gold", "hotpink", "cyan", "dodgerblue"]}
+              colors={["white", "#faa93e", "hotpink", "cyan", "blue"]}
               start={{ x: 0.5, y: 0.15 }}
-              end={{ x: 1, y: 1 }}
-              locations={[0, 0.2, 0.4, 0.7, 1]}
+              end={{ x: 0.9, y: 1 }}
+              locations={[0, 0.15, 0.35, 0.7, 1]}
             />
           )}
           mode="outlined"

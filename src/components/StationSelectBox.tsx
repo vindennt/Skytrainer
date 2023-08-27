@@ -86,18 +86,20 @@ const styles = StyleSheet.create({
   selectionBox: {
     marginLeft: 16,
     borderRadius: 12,
-    backgroundColor: "#454045",
-    padding: 10,
+    // backgroundColor: "#454045",
+    // padding: 10,
   },
   item: {
     flex: 1,
     // alignItems: "flex-start",
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderBottomColor: "gray",
     // backgroundColor: "green",
   },
   stationText: {
     marginVertical: 10,
+    fontSize: 16,
+    paddingHorizontal: 10,
   },
   clickSelectorBoxSelected: {
     backgroundColor: "royalblue",
