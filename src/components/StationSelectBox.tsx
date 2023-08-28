@@ -6,6 +6,7 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  ImageSourcePropType,
 } from "react-native";
 import { Text, Button } from "react-native-paper";
 import {
@@ -59,9 +60,14 @@ export const StationSelector: React.FC<StationSelectorProps> = ({
     <StationSelectBox stationId={item[0]} level={item[1]} />
   );
 
+  // Cast to ImageSourcePropType or else compiler complains that the type cannot be inferred
+  const imageSource: ImageSourcePropType = imageBustMap[
+    selectedStation
+  ] as ImageSourcePropType;
+
   return (
     <View style={styles.container}>
-      <Image style={styles.image} source={imageBustMap[selectedStation]} />
+      <Image style={styles.image} source={imageSource} />
       <View style={styles.emptyImageOverlay}></View>
       {/* <View style={styles.image}>
         <StationImage stationId={selectedStation} type={ImageType.BUST} />
