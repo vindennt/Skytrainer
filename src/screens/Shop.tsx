@@ -11,10 +11,6 @@ import { useSelector } from "react-redux";
 import { StationsState } from "@src/features/stations/stationsSlice";
 
 const Shop = () => {
-  // const navigation = useNavigation();
-  // const goToGacha = () => {
-  //   navigation.navigate("Gacha" as never);
-  // };
   const defaultBuyable: Buyable = {
     name: "Waterfront",
     cost: 10,
@@ -36,33 +32,21 @@ const Shop = () => {
   const handleItemPress = (item: Buyable) => {
     console.log("Item ID:", item);
     setSelectedItem(item);
-    // TODO: why doesnt the item change
     setShowPopup(true);
   };
 
   const renderShopItem = ({ item }: { item: Buyable }) => {
-    const isOwned = stations.has(item.itemid);
-
-    return (
-      <TouchableOpacity
-        style={styles.item}
-        onPress={!isOwned ? () => handleItemPress(item) : undefined}
-        disabled={isOwned}
-      >
-        <ProductBox
-          productName={item.name}
-          price={item.cost.toString()}
-          id={item.itemid}
-          owned={isOwned}
-        />
-      </TouchableOpacity>
-    );
+    return <ProductBox item={item} onPress={() => handleItemPress(item)} />;
   };
 
   return (
     <View style={styles.container}>
+      <Text style={styles.header}>Featured</Text>
+      <View style={styles.bannerContainer}>
+        <Text>Gacha baby</Text>
+      </View>
+      <Text style={styles.header}>Stations</Text>
       <FlatList
-        // data={shopData}
         data={sortedShopData}
         renderItem={renderShopItem}
         keyExtractor={(item) => item.itemid}
@@ -75,7 +59,6 @@ const Shop = () => {
         closeOnTapAnywhere={false}
         closeButtonVisible={true}
       >
-        {/* <Text>boo</Text> */}
         <ShopCard item={selectedItem} onPurchase={handleClosePopup}></ShopCard>
       </Popup>
     </View>
@@ -88,27 +71,23 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
-    // justifyContent: "center",
+  },
+  bannerContainer: {
+    marginLeft: 10,
+    backgroundColor: "gray",
   },
   flatListContent: {
     width: "100%",
-    // backgroundColor: "gray",
-  },
-  item: {
-    flex: 1,
-    margin: 10,
-    maxWidth: "45%",
-    // height: "30%",
-    // backgroundColor: "pink",
   },
   popupContainer: {
     flex: 1,
     paddingHorizontal: 10,
     justifyContent: "center",
   },
-  overlay: {
-    // ...StyleSheet.absoluteFillObject, // Position the overlay absolutely to cover the entire container
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // Overlay color with some opacity
-    // Other overlay styles
+  header: {
+    marginLeft: 10,
+    marginVertical: 15,
+    fontSize: 30,
+    fontWeight: "700",
   },
 });
