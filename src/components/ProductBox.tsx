@@ -1,4 +1,5 @@
-import { View, Image, StyleSheet } from "react-native";
+import { imageIconMap } from "@src/utils/imageMappings";
+import { View, Image, StyleSheet, ImageSourcePropType } from "react-native";
 import { useTheme, Text, Title, Button } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -15,6 +16,10 @@ export const ProductBox: React.FC<ProductBoxProps> = ({
 }) => {
   const theme = useTheme();
 
+  const imageSource: ImageSourcePropType = imageIconMap[
+    id
+  ] as ImageSourcePropType;
+
   return (
     <View
       style={[
@@ -22,11 +27,7 @@ export const ProductBox: React.FC<ProductBoxProps> = ({
         { backgroundColor: theme.colors.inverseOnSurface },
       ]}
     >
-      <Image
-        source={require("@src/public/images/icon_001.png")}
-        style={styles.image}
-        resizeMode="contain"
-      />
+      <Image source={imageSource} style={styles.image} resizeMode="contain" />
       <Text style={styles.productName}>{productName}</Text>
       <View style={styles.price}>
         <Icon name="credit-card-chip" size={18} color={"#1691d9"} />
