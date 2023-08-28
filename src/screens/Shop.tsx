@@ -5,8 +5,10 @@ import { useNavigation } from "@react-navigation/native";
 import { ShopCard } from "@components/ShopCard";
 import { ProductBox } from "@components/ProductBox";
 import { Popup } from "@components/Popup";
-import { shopData, Buyable } from "@src/utils/shop";
+import { shopData, Buyable, sortByMapPresence } from "@src/utils/shop";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { StationsState } from "@src/features/stations/stationsSlice";
 
 const Shop = () => {
   // const navigation = useNavigation();
@@ -22,6 +24,11 @@ const Shop = () => {
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<Buyable>(defaultBuyable);
 
+  const stations: Map<string, number> = useSelector(
+    (state: { stations: StationsState }) => state.stations.stations
+  );
+  const sortedShopData = sortByMapPresence(shopData, stations);
+
   const handleClosePopup = () => {
     setShowPopup(false);
   };
@@ -33,20 +40,30 @@ const Shop = () => {
     setShowPopup(true);
   };
 
-  const renderShopItem = ({ item }: { item: Buyable }) => (
-    <TouchableOpacity style={styles.item} onPress={() => handleItemPress(item)}>
-      <ProductBox
-        productName={item.name}
-        price={item.cost.toString()}
-        id={item.itemid}
-      />
-    </TouchableOpacity>
-  );
+  const renderShopItem = ({ item }: { item: Buyable }) => {
+    const isOwned = stations.has(item.itemid);
+
+    return (
+      <TouchableOpacity
+        style={styles.item}
+        onPress={!isOwned ? () => handleItemPress(item) : undefined}
+        disabled={isOwned}
+      >
+        <ProductBox
+          productName={item.name}
+          price={item.cost.toString()}
+          id={item.itemid}
+          owned={isOwned}
+        />
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={shopData}
+        // data={shopData}
+        data={sortedShopData}
         renderItem={renderShopItem}
         keyExtractor={(item) => item.itemid}
         numColumns={2}
@@ -88,5 +105,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 10,
     justifyContent: "center",
+  },
+  overlay: {
+    // ...StyleSheet.absoluteFillObject, // Position the overlay absolutely to cover the entire container
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Overlay color with some opacity
+    // Other overlay styles
   },
 });

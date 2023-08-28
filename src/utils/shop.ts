@@ -3,6 +3,7 @@ export interface Buyable {
   cost: number;
   itemid: string;
   category: string;
+  // TODO: add  flavour text
 }
 
 export const shopData: Buyable[] = [
@@ -17,8 +18,8 @@ export const shopData: Buyable[] = [
     category: "00",
   },
   { name: "Commercial-Broadway", cost: 10, itemid: "006", category: "00" },
-  { name: "Nanaimo", cost: 10, itemid: "008", category: "00" },
-  { name: "29th Avenue", cost: 10, itemid: "007", category: "00" },
+  { name: "Nanaimo", cost: 10, itemid: "007", category: "00" },
+  { name: "29th Avenue", cost: 10, itemid: "008", category: "00" },
   { name: "Joyce-Collingwood", cost: 10, itemid: "009", category: "00" },
   { name: "Patterson", cost: 10, itemid: "010", category: "00" },
   { name: "Metrotown", cost: 10, itemid: "011", category: "00" },
@@ -70,3 +71,23 @@ export const shopData: Buyable[] = [
   { name: "Sea Island Centre", cost: 10, itemid: "051", category: "02" },
   { name: "YVR Airport", cost: 10, itemid: "053", category: "02" },
 ];
+
+// Used to sort shop data and push owned stations to the back of the final array
+export function sortByMapPresence(
+  data: Buyable[],
+  stationsOwned: Map<string, number>
+): Buyable[] {
+  const unowned: Buyable[] = [];
+  const owned: Buyable[] = [];
+
+  for (const buyable of data) {
+    if (stationsOwned.has(buyable.itemid)) {
+      owned.push(buyable);
+    } else {
+      unowned.push(buyable);
+    }
+  }
+
+  // unowned items should come first
+  return unowned.concat(owned);
+}

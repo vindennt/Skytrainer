@@ -21,6 +21,7 @@ import {
   StationUnlockRequest,
   unlockStation,
 } from "@src/features/stations/stationsSliceHelpers";
+import { StationsState } from "@src/features/stations/stationsSlice";
 
 interface ShopCardProps {
   item: Buyable;
@@ -36,7 +37,10 @@ export const ShopCard: React.FC<ShopCardProps> = ({ item, onPurchase }) => {
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
-  const canBuy: boolean = balance >= item.cost;
+  const stations: Map<string, number> = useSelector(
+    (state: { stations: StationsState }) => state.stations.stations
+  );
+  const canBuy: boolean = balance >= item.cost && !stations.has(item.itemid);
 
   const handlePurchase = () => {
     const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
