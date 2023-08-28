@@ -40,7 +40,6 @@ export const ShopCard: React.FC<ShopCardProps> = ({ item, onPurchase }) => {
   const stations: Map<string, number> = useSelector(
     (state: { stations: StationsState }) => state.stations.stations
   );
-  const canBuy: boolean = balance >= item.cost && !stations.has(item.itemid);
 
   const handlePurchase = () => {
     const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
@@ -67,7 +66,7 @@ export const ShopCard: React.FC<ShopCardProps> = ({ item, onPurchase }) => {
       <Text style={styles.productName}>{item.name}</Text>
       <View style={styles.bottomText}>
         <View style={styles.price}>
-          <Icon name="credit-card-chip" size={18} color={"#1691d9"} />
+          <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
           <Text style={styles.priceText}>{item.cost}</Text>
         </View>
         <Button
@@ -76,7 +75,6 @@ export const ShopCard: React.FC<ShopCardProps> = ({ item, onPurchase }) => {
             console.log("Pressed Buy");
             handlePurchase();
           }}
-          disabled={!canBuy}
         >
           BUY
         </Button>

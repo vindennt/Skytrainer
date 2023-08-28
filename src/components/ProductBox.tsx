@@ -43,7 +43,7 @@ export const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
         <Text style={styles.productName}>{item.name}</Text>
         {!isOwned ? (
           <View style={styles.price}>
-            <Icon name="credit-card-chip" size={18} color={"#1691d9"} />
+            <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
             <Text style={styles.priceText}>{item.cost}</Text>
           </View>
         ) : (
@@ -63,6 +63,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 26,
     paddingBottom: 24,
     flex: 1,
+    // width: "50%",
   },
   image: {
     flex: 1,
@@ -91,6 +92,6 @@ const styles = StyleSheet.create({
   item: {
     flex: 1,
     margin: 10,
-    maxWidth: "50%",
+    maxWidth: "45%",
   },
 });

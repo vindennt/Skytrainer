@@ -1,6 +1,6 @@
 import * as React from "react";
 import { BottomNavigation, useTheme, Text } from "react-native-paper";
-import { Home, Stations, Shop, Account } from "@screens/index";
+import { Home, Stations, Shop, Gacha } from "@screens/index";
 
 const BottomNavBar = () => {
   const theme = useTheme();
@@ -8,7 +8,8 @@ const BottomNavBar = () => {
   const HomeRoute = () => <Home />;
   const StationsRoute = () => <Stations />;
   const ShopRoute = () => <Shop />;
-  const AccountRoute = () => <Account />;
+  const GachaRoute = () => <Gacha />;
+  // const AccountRoute = () => <Account />;
 
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
@@ -28,9 +29,10 @@ const BottomNavBar = () => {
       focusedIcon: "pricetags",
     },
     {
-      key: "account",
-      title: "Account",
-      focusedIcon: "person-circle-sharp",
+      key: "gacha",
+      title: "Banners",
+      focusedIcon: "gift-sharp",
+      // focusedIcon: "person-circle-sharp",
       // focusedIcon: "person",
     },
   ]);
@@ -39,7 +41,7 @@ const BottomNavBar = () => {
     home: HomeRoute,
     stations: StationsRoute,
     shop: ShopRoute,
-    account: AccountRoute,
+    gacha: GachaRoute,
   });
 
   return (

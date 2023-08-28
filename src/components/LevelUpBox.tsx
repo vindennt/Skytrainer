@@ -79,8 +79,10 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
           </Text>
         </View>
         <View style={styles.levelUpTextContainer}>
-          <Icon name="credit-card-chip" size={18} color={"#1691d9"} />
-          <Text style={styles.costText}>{cost}</Text>
+          <View style={styles.costContainer}>
+            <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
+            <Text style={styles.costText}>{cost}</Text>
+          </View>
           <Button
             style={styles.button}
             onPress={() => handleLevelUp()}
@@ -98,9 +100,9 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#454045",
-    padding: 16,
+    padding: 20,
     borderRadius: 12,
-    marginBottom: 16,
+    marginBottom: 30,
   },
   titleContainer: {
     flexDirection: "row",
@@ -115,14 +117,14 @@ const styles = StyleSheet.create({
   },
   costText: {
     flex: 1,
-    fontWeight: "bold",
-    fontSize: 18,
+    // fontWeight: "bold",
+    fontSize: 16,
     marginRight: 16,
     marginLeft: 6,
   },
   levelUpTextContainer: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-end",
     fontWeight: "bold",
     // justifyContent: "flex-end",
     // marginBottom: 16,
@@ -136,5 +138,11 @@ const styles = StyleSheet.create({
   button: {
     borderRadius: 12,
     flex: 1,
+  },
+  costContainer: {
+    flexDirection: "row",
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

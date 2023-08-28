@@ -1,5 +1,11 @@
 import * as React from "react";
-import { View, StyleSheet, TouchableOpacity, FlatList } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  FlatList,
+  ScrollView,
+} from "react-native";
 import { Text, Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { ShopCard } from "@components/ShopCard";
@@ -41,11 +47,7 @@ const Shop = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Featured</Text>
-      <View style={styles.bannerContainer}>
-        <Text>Gacha baby</Text>
-      </View>
-      <Text style={styles.header}>Stations</Text>
+      <Text style={styles.header}>Shop</Text>
       <FlatList
         data={sortedShopData}
         renderItem={renderShopItem}
@@ -74,6 +76,7 @@ const styles = StyleSheet.create({
   },
   bannerContainer: {
     marginLeft: 10,
+    // flex: 1,
     backgroundColor: "gray",
   },
   flatListContent: {

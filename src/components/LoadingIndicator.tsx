@@ -1,6 +1,9 @@
-import { ActivityIndicator } from "react-native-paper";
+import { useTheme } from "react-native-paper";
+import { UIActivityIndicator } from "react-native-indicators";
 import { View } from "react-native";
 
 export const LoadingIndicator: React.FC = () => {
-  return <ActivityIndicator size="large" />;
+  const theme = useTheme();
+
+  return <UIActivityIndicator color={theme.colors.onPrimary} />;
 };
