@@ -62,7 +62,7 @@ export const unlockStation = createAsyncThunk(
 
       const newData = {
         station_id: stationId,
-        level: 0,
+        level: 1,
         user_id: session.user.id,
       };
 
@@ -72,7 +72,7 @@ export const unlockStation = createAsyncThunk(
 
       if (error) {
         throw error;
-      } else if (data) {
+      } else {
         return stationId;
       }
     } catch (error) {

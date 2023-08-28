@@ -8,7 +8,6 @@ import {
 // Represents the station id and level of user's unlocked stations
 // string: station id, number: station level
 // selectedStation: stationId of selected station in stations menu
-// TODO: Handle actual station selection
 export interface StationsState {
   stations: Map<string, number>;
   selectedStation: string;
@@ -45,7 +44,7 @@ const stationsSlice = createSlice({
     });
     builder.addCase(unlockStation.fulfilled, (state, action) => {
       if (action.payload) {
-        state.stations.set(action.payload, 0);
+        state.stations.set(action.payload, 1);
         console.log("unlockStation fulfilled: Unlocked " + action.payload);
       }
     });

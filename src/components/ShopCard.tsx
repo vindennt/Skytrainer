@@ -1,15 +1,57 @@
 import { imageBustMap } from "@src/utils/imageMappings";
-import { View, Image, StyleSheet, ImageSourcePropType } from "react-native";
+import {
+  View,
+  Image,
+  StyleSheet,
+  ImageSourcePropType,
+  Alert,
+} from "react-native";
 import { useTheme, Text, Title, Button } from "react-native-paper";
 import { shopData, Buyable } from "@src/utils/shop";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { useDispatch, useSelector } from "react-redux";
+import { UserState } from "@src/features/user/userSlice";
+import { Session } from "@supabase/supabase-js";
+import { AuthState } from "@src/features/auth/authSlice";
+import {
+  UpdateNumericalBalanceRequest,
+  updateBalance,
+} from "@src/features/user/userSliceHelpers";
+import {
+  StationUnlockRequest,
+  unlockStation,
+} from "@src/features/stations/stationsSliceHelpers";
 
 interface ShopCardProps {
   item: Buyable;
+  onPurchase: () => void;
 }
 
-export const ShopCard: React.FC<ShopCardProps> = ({ item }) => {
+export const ShopCard: React.FC<ShopCardProps> = ({ item, onPurchase }) => {
   const theme = useTheme();
+  const dispatch = useDispatch<any>();
+  const balance: number = useSelector(
+    (state: { user: UserState }) => state.user.balance
+  );
+  const session: Session | null = useSelector(
+    (state: { auth: AuthState }) => state.auth.session
+  );
+  const canBuy: boolean = balance >= item.cost;
+
+  const handlePurchase = () => {
+    const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
+      session: session,
+      newBalance: balance - item.cost,
+    };
+    const unlockRequest: StationUnlockRequest = {
+      session: session,
+      stationId: item.itemid,
+    };
+    dispatch(updateBalance(balanceUpdateRequest));
+    dispatch(unlockStation(unlockRequest));
+    Alert.alert("Purchase success!");
+    onPurchase();
+  };
 
   const imageSource: ImageSourcePropType = imageBustMap[
     item.itemid
@@ -27,8 +69,10 @@ export const ShopCard: React.FC<ShopCardProps> = ({ item }) => {
         <Button
           mode="contained"
           onPress={() => {
-            console.log("Pressed");
+            console.log("Pressed Buy");
+            handlePurchase();
           }}
+          disabled={!canBuy}
         >
           BUY
         </Button>
