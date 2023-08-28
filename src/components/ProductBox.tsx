@@ -1,0 +1,75 @@
+import { View, Image, StyleSheet } from "react-native";
+import { useTheme, Text, Title, Button } from "react-native-paper";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+
+interface ProductBoxProps {
+  productName: string;
+  id: string;
+  price: string;
+}
+
+export const ProductBox: React.FC<ProductBoxProps> = ({
+  productName,
+  id,
+  price,
+}) => {
+  const theme = useTheme();
+
+  return (
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme.colors.inverseOnSurface },
+      ]}
+    >
+      <Image
+        source={require("@src/public/images/icon_001.png")}
+        style={styles.image}
+        resizeMode="contain"
+      />
+      <Text style={styles.productName}>{productName}</Text>
+      <View style={styles.price}>
+        <Icon name="credit-card-chip" size={18} color={"#1691d9"} />
+        <Text style={styles.priceText}>{price}</Text>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    borderRadius: 18,
+    paddingTop: 16,
+    paddingHorizontal: 26,
+    paddingBottom: 26,
+    // paddingVertical: 20,
+    flex: 1,
+    // width: "50%",
+    // width: 150,
+  },
+  image: {
+    flex: 1,
+    width: "100%",
+    height: 137,
+    // backgroundColor: "red",
+  },
+  productName: {
+    // marginTop: 22,
+    fontSize: 16,
+    fontWeight: "600",
+    position: "absolute",
+
+    top: 167,
+    left: 26,
+  },
+  price: {
+    marginTop: 78,
+    // marginTop: 20,
+    flexDirection: "row",
+    // fontWeight: "bold",
+  },
+  priceText: {
+    marginLeft: 6,
+    fontSize: 16,
+  },
+});
