@@ -15,6 +15,7 @@ import {
   unlockStation,
 } from "@features/stations/stationsSlice";
 import { useDispatch, useSelector } from "react-redux";
+import { imageBustMap, imageIconMap } from "@src/utils/imageMappings";
 
 interface StationSelectBoxProps {
   stationId: string;
@@ -57,12 +58,14 @@ export const StationSelector: React.FC<StationSelectorProps> = ({
   const renderSelectItem = ({ item }: { item: [string, number] }) => (
     <StationSelectBox stationId={item[0]} level={item[1]} />
   );
+
   return (
     <View style={styles.container}>
-      <Image
-        style={styles.image}
-        source={require("../public/images/Yvr.png")} // Change to your image's path
-      />
+      <Image style={styles.image} source={imageBustMap[selectedStation]} />
+      <View style={styles.emptyImageOverlay}></View>
+      {/* <View style={styles.image}>
+        <StationImage stationId={selectedStation} type={ImageType.BUST} />
+      </View> */}
       <FlatList
         style={styles.selectionBox}
         data={[...data]}
@@ -79,13 +82,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   image: {
-    width: "60%",
+    width: "100%",
+    right: 30,
     height: "100%",
-    borderRadius: 12,
+    position: "absolute",
+    // borderRadius: 12,
   },
   selectionBox: {
     marginLeft: 16,
     borderRadius: 12,
+    width: 30,
     // backgroundColor: "#454045",
     // padding: 10,
   },
@@ -106,4 +112,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   clickSelectorBoxUnSelected: {},
+  emptyImageOverlay: {
+    width: "60%",
+  },
 });
