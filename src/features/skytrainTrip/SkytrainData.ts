@@ -1,11 +1,5 @@
 import { Graph, Station, newStation } from "./Graph";
-
-// Gacha "Rarity" Tier of a Station
-export enum Tier {
-  THREE_STAR = "Three",
-  FOUR_STAR = "Four",
-  FIVE_STAR = "Five",
-}
+import { Tier } from "@src/utils/gacha";
 
 // Edge that should be built
 export type EdgeToBuild = {
