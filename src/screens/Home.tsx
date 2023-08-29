@@ -1,18 +1,17 @@
 import * as React from "react";
 import { View, StyleSheet } from "react-native";
 import { Text, IconButton } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { TimeSlider } from "@src/components/TimeSlider";
+import { useState } from "react";
 
 const Home = () => {
-  const slider = {
-    min: 0,
-    max: 300,
-    proportion: 120,
-    visualStep: 1,
-    step: 5,
-  };
+  const [sliderValue, setSliderValue] = useState<number>(25);
 
-  return <View style={styles.container}></View>;
+  return (
+    <View style={styles.container}>
+      <TimeSlider onValueChange={(value) => setSliderValue(value)} />
+    </View>
+  );
 };
 
 export default Home;
@@ -33,5 +32,10 @@ const styles = StyleSheet.create({
   accountButton: {
     position: "absolute",
     right: 20,
+  },
+  slider: {
+    width: "90%",
+    height: 40,
+    paddingHorizontal: 10,
   },
 });
