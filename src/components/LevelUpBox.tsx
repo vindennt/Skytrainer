@@ -5,12 +5,9 @@ import { Text, Button, Title } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { UIActivityIndicator } from "react-native-indicators";
 import { useDispatch, useSelector } from "react-redux";
-import { MAX_LEVEL } from "@features/reward/LevelHandler";
+import { MAX_LEVEL } from "@src/utils/levels";
 import { Session } from "@supabase/supabase-js";
-import {
-  LEVELUP_COSTS,
-  REWARD_MULTIPLIERS,
-} from "@features/reward/LevelHandler";
+import { LEVELUP_COSTS, REWARD_MULTIPLIERS } from "@src/utils/levels";
 import { UserState } from "@src/features/user/userSlice";
 import {
   UpdateNumericalBalanceRequest,
@@ -45,6 +42,12 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
   const canBuy: boolean =
     balance >= cost && level !== undefined && level <= MAX_LEVEL;
 
+  const maxLevel: boolean = level === MAX_LEVEL;
+  const buttonText: string = maxLevel ? "Max Level" : "Level up";
+  const subText: string = maxLevel
+    ? `Current level: Rewards \u00D7${currentMultiplier}`
+    : `Next level: Rewards \u00D7${currentMultiplier} → \u00D7${nextMultiplier}`;
+
   const handleLevelUp = () => {
     if (level) {
       const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
@@ -71,25 +74,23 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
       </View>
       <View style={styles.container}>
         <View style={styles.subtextContainer}>
-          <Text style={styles.subtextText}>
-            {"Next level: Rewards \u00D7" +
-              currentMultiplier +
-              " → \u00D7" +
-              nextMultiplier}
-          </Text>
+          <Text style={styles.subtextText}>{subText}</Text>
         </View>
+
         <View style={styles.levelUpTextContainer}>
-          <View style={styles.costContainer}>
-            <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
-            <Text style={styles.costText}>{cost}</Text>
-          </View>
+          {!maxLevel && (
+            <View style={styles.costContainer}>
+              <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
+              <Text style={styles.costText}>{cost}</Text>
+            </View>
+          )}
           <Button
             style={styles.button}
             onPress={() => handleLevelUp()}
             mode="contained"
             disabled={!canBuy}
           >
-            Level Up
+            {buttonText}
           </Button>
         </View>
       </View>
