@@ -41,6 +41,8 @@ export const ShopCard: React.FC<ShopCardProps> = ({ item, onPurchase }) => {
     (state: { stations: StationsState }) => state.stations.stations
   );
 
+  const canBuy: boolean = balance - item.cost >= 0;
+
   const handlePurchase = () => {
     const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
       session: session,
@@ -75,6 +77,7 @@ export const ShopCard: React.FC<ShopCardProps> = ({ item, onPurchase }) => {
             console.log("Pressed Buy");
             handlePurchase();
           }}
+          disabled={!canBuy}
         >
           BUY
         </Button>
