@@ -111,7 +111,7 @@ export const BannerCard: React.FC<BannerCardProps> = ({
         newLevel: newLevel > MAX_LEVEL ? MAX_LEVEL : newLevel,
       };
       dispatch(levelUpStation(levelUpdateRequest));
-      if (excessLevels > 0) {
+      if (excessLevels === 0) {
         Alert.alert(
           getStationName(rewardId) +
             " grew to level " +
