@@ -1,9 +1,20 @@
-export const PERMANENT_PRICE: number = 0;
-export const LIMITED_PRICE: number = 0;
+export const PERMANENT_PRICE: number = 10;
+export const LIMITED_PRICE: number = 1;
 export const UNIVERSAL_FIVE_STAR_PITY: number = 3;
 export const DUPLICATE_LEVEL_RATE: number = 10;
 export const PERMANENT_CASHBACK_RATE: number = 50;
 export const LIMITED_CASHBACK_RATE: number = 10;
+
+export const FIVE_STAR_GRADIENT: string[] = [
+  "gold",
+  "rgba(77, 65, 5, 0.5)",
+  "rgba(0, 0, 0, 0.5)",
+];
+export const FOUR_STAR_GRADIENT: string[] = [
+  "rgba(151, 9, 222, 1)",
+  "rgba(47, 3, 69, 0.5)",
+  "rgba(0, 0, 0, 0.5)",
+];
 
 // TODO: remove this becuasej ust for testing purpseos
 const currentDate = new Date();

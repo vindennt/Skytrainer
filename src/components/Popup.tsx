@@ -1,3 +1,4 @@
+import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
 import {
   Modal,
@@ -17,7 +18,7 @@ interface PopupProps {
   visible: boolean;
   // text: string;
   onClose: () => void;
-  backgroundColour?: string;
+  backgroundColours?: string[];
   children?: React.ReactNode;
   closeOnTapAnywhere?: boolean;
   closeButtonVisible?: boolean;
@@ -27,7 +28,7 @@ export const Popup: React.FC<PopupProps> = ({
   visible,
   // text,
   onClose,
-  backgroundColour = "rgba(0, 0, 0, 0.8)", // default backgroudn colour is fade
+  backgroundColours = ["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.8)"], // default backgroudn colour is fade
   children,
   closeOnTapAnywhere = true,
   closeButtonVisible = false,
@@ -35,7 +36,8 @@ export const Popup: React.FC<PopupProps> = ({
   const theme = useTheme();
 
   const popupContent = (
-    <View style={[styles.popupOverlay, { backgroundColor: backgroundColour }]}>
+    // <View style={[styles.popupOverlay, { backgroundColor: backgroundColour }]}>
+    <LinearGradient style={styles.popupOverlay} colors={backgroundColours}>
       <View style={styles.popup}>
         {children}
         {closeButtonVisible && (
@@ -55,7 +57,8 @@ export const Popup: React.FC<PopupProps> = ({
           Tap anywhere to close
         </Text>
       )}
-    </View>
+    </LinearGradient>
+    // </View>
   );
 
   return closeOnTapAnywhere ? (

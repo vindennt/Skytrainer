@@ -6,18 +6,22 @@ import {
   BannerInfo,
   PermanentBannerInfo,
   LimitedBannerInfo,
+  FIVE_STAR_GRADIENT,
+  FOUR_STAR_GRADIENT,
+  Tier,
 } from "@utils/gacha";
 import { Popup } from "@src/components/Popup";
 import { useState } from "react";
 import { GachaRewardDisplay } from "@src/components/GachaRewardDisplay";
+import { getTier } from "@src/features/skytrainTrip/SkytrainData";
 
 const Gacha = () => {
   const [popupVisible, setPopupVisible] = useState<boolean>(false);
-  const [text, setText] = useState<string>("false");
+  const [rewardId, setRewardId] = useState<string>("001");
 
   const showRewardPopup = (rewardId: string) => {
     setPopupVisible(true);
-    setText(rewardId);
+    setRewardId(rewardId);
   };
 
   return (
@@ -41,8 +45,13 @@ const Gacha = () => {
         onClose={() => {
           setPopupVisible(false);
         }}
+        backgroundColours={
+          getTier(rewardId) === Tier.FIVE_STAR
+            ? FIVE_STAR_GRADIENT
+            : FOUR_STAR_GRADIENT
+        }
       >
-        <GachaRewardDisplay stationId={text} />
+        <GachaRewardDisplay stationId={rewardId} />
       </Popup>
     </View>
   );
