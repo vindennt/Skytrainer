@@ -58,7 +58,8 @@ export const BannerCard: React.FC<BannerCardProps> = ({
 }) => {
   const theme = useTheme();
   const dispatch = useDispatch<any>();
-  const stations: Map<string, number> = useSelector(
+  let stations: Map<string, number> = new Map<string, number>();
+  stations = useSelector(
     (state: { stations: StationsState }) => state.stations.stations
   );
   const session: Session | null = useSelector(

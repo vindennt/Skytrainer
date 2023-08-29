@@ -8,10 +8,11 @@ import {
 } from "react-native";
 import { Text, Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
-import { ShopCard } from "@components/ShopCard";
+import { ProductCard } from "@src/components/ProductCard";
 import { ProductBox } from "@components/ProductBox";
 import { Popup } from "@components/Popup";
-import { shopData, Buyable, sortByMapPresence } from "@src/utils/shop";
+import { shopData, Buyable } from "@src/utils/shop";
+import { sortByMapPresence } from "@features/shop/Shop";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { StationsState } from "@src/features/stations/stationsSlice";
@@ -26,7 +27,8 @@ const Shop = () => {
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<Buyable>(defaultBuyable);
 
-  const stations: Map<string, number> = useSelector(
+  let stations: Map<string, number> = new Map<string, number>();
+  stations = useSelector(
     (state: { stations: StationsState }) => state.stations.stations
   );
   const sortedShopData = sortByMapPresence(shopData, stations);
@@ -61,7 +63,10 @@ const Shop = () => {
         closeOnTapAnywhere={false}
         closeButtonVisible={true}
       >
-        <ShopCard item={selectedItem} onPurchase={handleClosePopup}></ShopCard>
+        <ProductCard
+          item={selectedItem}
+          onPurchase={handleClosePopup}
+        ></ProductCard>
       </Popup>
     </View>
   );
@@ -73,11 +78,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
-  },
-  bannerContainer: {
-    marginLeft: 10,
-    // flex: 1,
-    backgroundColor: "gray",
   },
   flatListContent: {
     width: "100%",
