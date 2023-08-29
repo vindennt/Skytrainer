@@ -13,10 +13,7 @@ import {
   Tier,
 } from "@utils/gacha";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  UserState,
-  incrementUserDataProcesses,
-} from "@src/features/user/userSlice";
+import { UserState } from "@src/features/user/userSlice";
 import { gachaRoll } from "@src/features/reward/GachaHandler";
 import { useState } from "react";
 import { StationsState } from "@src/features/stations/stationsSlice";
@@ -36,11 +33,7 @@ import {
   unlockStation,
 } from "@src/features/stations/stationsSliceHelpers";
 import { MAX_LEVEL } from "@src/utils/levels";
-import { getStationName, getTier } from "@src/utils/skytrain";
-import {
-  GlobalState,
-  setUpdatingUserData,
-} from "@src/features/global/globalSlice";
+import { getStationName, getTier } from "@utils/skytrain";
 
 interface BannerCardProps {
   banner: BannerInfo;
@@ -62,14 +55,6 @@ export const BannerCard: React.FC<BannerCardProps> = ({
 }) => {
   const theme = useTheme();
   const dispatch = useDispatch<any>();
-  // const loading: boolean = useSelector(
-  //   (state: { global: GlobalState }) => state.global.updatingUserData
-  // );
-  const dataProcesses: number = useSelector(
-    (state: { user: UserState }) => state.user.user_data_processes
-  );
-  let isLoading: boolean = dataProcesses > 0;
-
   let stations: Map<string, number> = new Map<string, number>();
   stations = useSelector(
     (state: { stations: StationsState }) => state.stations.stations
@@ -103,7 +88,6 @@ export const BannerCard: React.FC<BannerCardProps> = ({
       newPity: newPity,
       isPermanent: permanent,
     };
-    dispatch(incrementUserDataProcesses(1));
     dispatch(updatePity(pityUpdateRequest));
   };
 
@@ -128,7 +112,6 @@ export const BannerCard: React.FC<BannerCardProps> = ({
           stationId: rewardId,
           newLevel: newLevel > MAX_LEVEL ? MAX_LEVEL : newLevel,
         };
-        dispatch(incrementUserDataProcesses(1));
         dispatch(levelUpStation(levelUpdateRequest));
         Alert.alert(
           getStationName(rewardId) +
@@ -146,19 +129,17 @@ export const BannerCard: React.FC<BannerCardProps> = ({
         session: session,
         stationId: rewardId,
       };
-      dispatch(incrementUserDataProcesses(1));
       dispatch(unlockStation(unlockRequest));
     }
     return excessLevels;
   };
 
   const handlePressBuy = () => {
-    // if (isRolling) {
-    //   Alert.alert("Please wait until the current roll is finished");
-    //   return;
-    // }
-    // setIsRolling(true);
-
+    if (isRolling) {
+      Alert.alert("Please wait until the current roll is finished");
+      return;
+    }
+    setIsRolling(true);
     console.log("Starting Gacha roll");
     const rewardId: string = gachaRoll(pity);
 
@@ -174,10 +155,8 @@ export const BannerCard: React.FC<BannerCardProps> = ({
       newBalance: balance - price + balanceAdjusment,
     };
     if (permanent) {
-      dispatch(incrementUserDataProcesses(1));
       dispatch(updateBalance(balanceUpdateRequest));
     } else {
-      dispatch(incrementUserDataProcesses(1));
       dispatch(updateTickets(balanceUpdateRequest));
     }
     if (balanceAdjusment > 0)
@@ -187,7 +166,7 @@ export const BannerCard: React.FC<BannerCardProps> = ({
 
     popupCallback(rewardId);
     console.log(rewardId);
-    // setIsRolling(false);
+    setIsRolling(false);
   };
 
   return (
@@ -232,12 +211,10 @@ export const BannerCard: React.FC<BannerCardProps> = ({
             style={styles.button}
             mode="contained"
             onPress={handlePressBuy}
-            disabled={!canBuy || isLoading}
-            // disabled={!canBuy}
-            // loading={loading}
-            loading={isLoading}
+            disabled={!canBuy || isRolling}
+            loading={isRolling}
           >
-            ROLL
+            Roll
           </Button>
         </View>
       </View>

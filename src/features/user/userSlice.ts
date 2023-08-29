@@ -20,7 +20,6 @@ export interface UserState {
   limited_pity: number;
   total_trip_time: number;
   total_trips_finished: number;
-  user_data_processes: number;
 }
 
 const initialState: UserState = {
@@ -34,7 +33,6 @@ const initialState: UserState = {
   limited_pity: 0,
   total_trip_time: 0,
   total_trips_finished: 0,
-  user_data_processes: 0,
 };
 
 const userSlice = createSlice({
@@ -72,14 +70,6 @@ const userSlice = createSlice({
     setTotalTripsFinished: (state, action) => {
       state.total_trips_finished = action.payload;
     },
-    incrementUserDataProcesses: (state, action) => {
-      state.user_data_processes += action.payload;
-      console.log("Processes: " + state.user_data_processes);
-    },
-    setUserDataProcesses: (state, action) => {
-      state.user_data_processes = action.payload;
-      console.log("Processes: " + state.user_data_processes);
-    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllUserData.fulfilled, (state, action) => {
@@ -95,24 +85,20 @@ const userSlice = createSlice({
       state.limited_pity = action.payload.limited_pity;
       state.total_trip_time = action.payload.total_trip_time;
       state.total_trips_finished = action.payload.total_trips_finished;
-      state.user_data_processes = state.user_data_processes - 1;
     });
     builder.addCase(updateDisplayName.fulfilled, (state, action) => {
       if (action.payload) state.display_name = action.payload;
       console.log("updateDisplayName fulfilled: " + state.display_name);
-      state.user_data_processes = state.user_data_processes - 1;
     });
     builder.addCase(updateBalance.fulfilled, (state, action) => {
       // console.log(action.payload);
       if (action.payload !== undefined) state.balance = action.payload;
       console.log("updateBalance fulfilled: " + state.balance);
-      state.user_data_processes = state.user_data_processes - 1;
     });
     builder.addCase(updateTickets.fulfilled, (state, action) => {
       // console.log(action.payload);
       if (action.payload !== undefined) state.tickets = action.payload;
       console.log("updateTickets fulfilled: " + state.tickets);
-      state.user_data_processes = state.user_data_processes - 1;
     });
     builder.addCase(updatePity.fulfilled, (state, action) => {
       if (action.payload?.permanent_pity !== undefined) {
@@ -126,8 +112,6 @@ const userSlice = createSlice({
           " limited: " +
           state.limited_pity
       );
-      state.user_data_processes = state.user_data_processes - 1;
-      console.log("Processes: " + state.user_data_processes);
     });
   },
 });
@@ -143,8 +127,6 @@ export const {
   setLimitedPity,
   setTotalTripTime,
   setTotalTripsFinished,
-  incrementUserDataProcesses,
-  setUserDataProcesses,
 } = userSlice.actions;
 // export { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
 export {

@@ -27,12 +27,10 @@ import { CurrencyDisplay } from "@components/CurrencyDisplay";
 const AppNavigator = () => {
   const dispatch = useDispatch<any>();
   const theme = useTheme();
+
   const session = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
-
-  // TODO: implement loading indicator
-  const [loading, setLoading] = useState<boolean>(false);
 
   const initUserData = (session: Session) => {
     dispatch(setUser(session.user));
@@ -46,10 +44,8 @@ const AppNavigator = () => {
     });
 
     supabase.auth.onAuthStateChange((_event, newSession) => {
-      setLoading(true);
       dispatch(setSession(newSession));
       if (newSession !== null) initUserData(newSession);
-      setLoading(false);
     });
   }, []);
 
