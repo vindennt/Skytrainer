@@ -166,7 +166,10 @@ export const BannerCard: React.FC<BannerCardProps> = ({
 
     popupCallback(rewardId);
     console.log(rewardId);
-    setIsRolling(false);
+    // setIsRolling(false);
+    setTimeout(() => {
+      setIsRolling(false);
+    }, 1000);
   };
 
   return (

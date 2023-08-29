@@ -63,7 +63,9 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
       };
       dispatch(updateBalance(balanceUpdateRequest));
       dispatch(levelUpStation(levelUpdateRequest));
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 300);
     } else {
       throw new Error("Already max level");
     }
@@ -93,7 +95,7 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
             style={styles.button}
             onPress={() => handleLevelUp()}
             mode="contained"
-            disabled={!canBuy}
+            disabled={!canBuy || loading}
             loading={loading}
           >
             {buttonText}

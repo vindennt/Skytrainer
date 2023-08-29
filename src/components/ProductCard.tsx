@@ -22,6 +22,7 @@ import {
   unlockStation,
 } from "@src/features/stations/stationsSliceHelpers";
 import { StationsState } from "@src/features/stations/stationsSlice";
+import { useState } from "react";
 
 interface ProductCard {
   item: Buyable;
@@ -40,10 +41,12 @@ export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
   const stations: Map<string, number> = useSelector(
     (state: { stations: StationsState }) => state.stations.stations
   );
+  const [loading, setLoading] = useState<boolean>(false);
 
   const canBuy: boolean = balance - item.cost >= 0;
 
   const handlePurchase = () => {
+    setLoading(true);
     const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
       session: session,
       newBalance: balance - item.cost,
@@ -56,6 +59,9 @@ export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
     dispatch(unlockStation(unlockRequest));
     Alert.alert("Purchase success!");
     onPurchase();
+    setTimeout(() => {
+      setLoading(false);
+    }, 100);
   };
 
   const imageSource: ImageSourcePropType = imageBustMap[
@@ -77,7 +83,8 @@ export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
             console.log("Pressed Buy");
             handlePurchase();
           }}
-          disabled={!canBuy}
+          disabled={!canBuy || loading}
+          loading={loading}
         >
           BUY
         </Button>
@@ -103,7 +110,7 @@ const styles = StyleSheet.create({
     width: 300,
     // height: 400,
     height: "80%",
-    backgroundColor: "gray",
+    // backgroundColor: "gray",
   },
   productName: {
     marginTop: 22,
