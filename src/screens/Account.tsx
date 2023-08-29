@@ -151,7 +151,9 @@ const Account = () => {
       </View>
     </View>
   ) : (
-    <View>No user!</View>
+    <View>
+      <Text>No User!</Text>
+    </View>
   );
 };
 
