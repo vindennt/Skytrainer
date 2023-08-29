@@ -75,6 +75,7 @@ export const updateBalance = createAsyncThunk(
     console.log("Thunk start: updateBalance to " + newBalance);
     try {
       if (!session?.user) throw new Error("No user on the session!");
+      if (newBalance < 0) throw new Error("newBalance cannot be < 0");
 
       const update = {
         balance: newBalance,
