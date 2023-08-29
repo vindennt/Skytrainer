@@ -7,13 +7,13 @@ export const LIMITED_CASHBACK_RATE: number = 10;
 
 export const FIVE_STAR_GRADIENT: string[] = [
   "gold",
-  "rgba(77, 65, 5, 0.5)",
-  "rgba(0, 0, 0, 0.5)",
+  "rgba(77, 65, 5, 0.8)",
+  "rgba(0, 0, 0, 0.8)",
 ];
 export const FOUR_STAR_GRADIENT: string[] = [
   "rgba(151, 9, 222, 1)",
-  "rgba(47, 3, 69, 0.5)",
-  "rgba(0, 0, 0, 0.5)",
+  "rgba(47, 3, 69, 0.8)",
+  "rgba(0, 0, 0, 0.8)",
 ];
 
 // TODO: remove this becuasej ust for testing purpseos

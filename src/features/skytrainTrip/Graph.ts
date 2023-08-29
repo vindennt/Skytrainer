@@ -1,9 +1,5 @@
-import { EDGE_LIST } from "@src/utils/skytrain";
-
 // Regex: station or line id can contain only be strings in the form of a number
 type CustomID = string & { __custom_id__: never };
-const isValidID = (id: string): id is CustomID =>
-  /^[0-9]+$/.test(id) && id.length > 0;
 
 // Skytrain Station, which represent graph vertices. id = station id, lineid = skytrain line, such as Expo Line.
 // transfer = whether the station links to another line
@@ -79,6 +75,9 @@ export function newStation(
   lineid: string,
   transfer?: boolean
 ): Station {
+  const isValidID = (id: string): id is CustomID =>
+    /^[0-9]+$/.test(id) && id.length > 0;
+
   if (!isValidID(id) || !isValidID(lineid)) {
     throw new Error("Invalid station id or lineid");
   }
@@ -104,17 +103,4 @@ export function newEdge(station: Station, time: number): Edge {
     station: station,
     time: time,
   };
-}
-
-// Builds and returns the graph from data above
-// timeMultiplier represents scaling to apply to edge weights. Default is 1.
-// The edge times used are idealized from Translink's table, but may need to be multiplied by ~1.2 to be more accurate
-export function buildGraph(timeMultiplier?: number): Graph {
-  const multiplier = timeMultiplier ? timeMultiplier : 1;
-
-  const graph: Graph = new Graph();
-  EDGE_LIST.forEach((edge) => {
-    graph.addEdge(edge.start, edge.destination, edge.time * multiplier);
-  });
-  return graph;
 }
