@@ -23,12 +23,12 @@ import {
 } from "@src/features/stations/stationsSliceHelpers";
 import { StationsState } from "@src/features/stations/stationsSlice";
 
-interface ShopCardProps {
+interface ProductCard {
   item: Buyable;
   onPurchase: () => void;
 }
 
-export const ShopCard: React.FC<ShopCardProps> = ({ item, onPurchase }) => {
+export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
   const theme = useTheme();
   const dispatch = useDispatch<any>();
   const balance: number = useSelector(

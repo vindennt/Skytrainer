@@ -60,7 +60,7 @@ export const shopData: Buyable[] = [
   { name: "Olympic Village", cost: 10, itemid: "041", category: "02" },
   { name: "Broadway City Hall", cost: 10, itemid: "042", category: "02" },
   { name: "King Edward", cost: 10, itemid: "043", category: "02" },
-  { name: "Oakridge 41stAve", cost: 10, itemid: "044", category: "02" },
+  { name: "Oakridge 41st Ave", cost: 10, itemid: "044", category: "02" },
   { name: "Langara 49th Ave", cost: 10, itemid: "045", category: "02" },
   { name: "Marine Drive", cost: 10, itemid: "046", category: "02" },
   { name: "Bridgeport", cost: 10, itemid: "047", category: "02" },
@@ -71,23 +71,3 @@ export const shopData: Buyable[] = [
   { name: "Sea Island Centre", cost: 10, itemid: "051", category: "02" },
   { name: "YVR Airport", cost: 10, itemid: "053", category: "02" },
 ];
-
-// Used to sort shop data and push owned stations to the back of the final array
-export function sortByMapPresence(
-  data: Buyable[],
-  stationsOwned: Map<string, number>
-): Buyable[] {
-  const unowned: Buyable[] = [];
-  const owned: Buyable[] = [];
-
-  for (const buyable of data) {
-    if (stationsOwned.has(buyable.itemid)) {
-      owned.push(buyable);
-    } else {
-      unowned.push(buyable);
-    }
-  }
-
-  // unowned items should come first
-  return unowned.concat(owned);
-}
