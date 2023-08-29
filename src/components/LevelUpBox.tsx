@@ -40,7 +40,7 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
     (state: { auth: AuthState }) => state.auth.session
   );
   const canBuy: boolean =
-    balance >= cost && level !== undefined && level <= MAX_LEVEL;
+    balance >= cost && level !== undefined && level < MAX_LEVEL;
   const [loading, setLoading] = useState<boolean>(false);
 
   const maxLevel: boolean = level === MAX_LEVEL;
