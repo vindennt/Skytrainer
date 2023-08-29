@@ -101,25 +101,31 @@ export const BannerCard: React.FC<BannerCardProps> = ({
       console.log("OWNED");
       // If pre owned, increment that station's level by DUPLICATE_LEVEL_RATE. For every excess level over MAX, give user cashback
       const newLevel = currentLevel + DUPLICATE_LEVEL_RATE;
-
       // Calcualte a curency cashback for the user
       if (newLevel > MAX_LEVEL) {
         excessLevels = newLevel - MAX_LEVEL;
       }
-      const levelUpdateRequest: StationLevelUpdateRequest = {
-        session: session,
-        stationId: rewardId,
-        newLevel: newLevel > MAX_LEVEL ? MAX_LEVEL : newLevel,
-      };
-      dispatch(levelUpStation(levelUpdateRequest));
-      if (excessLevels === 0) {
+
+      if (currentLevel === MAX_LEVEL) {
+        // If already at max level, return
+        return excessLevels;
+      } else {
+        const levelUpdateRequest: StationLevelUpdateRequest = {
+          session: session,
+          stationId: rewardId,
+          newLevel: newLevel > MAX_LEVEL ? MAX_LEVEL : newLevel,
+        };
+        dispatch(levelUpStation(levelUpdateRequest));
         Alert.alert(
           getStationName(rewardId) +
-            " grew to level " +
+            " grew from level " +
+            stations.get(rewardId) +
+            " to level " +
             levelUpdateRequest.newLevel +
             "."
         );
       }
+
       // If not owned yet, unlock the station
     } else {
       const unlockRequest: StationUnlockRequest = {
