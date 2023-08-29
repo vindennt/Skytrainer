@@ -13,7 +13,7 @@ import { StationUnlockRequest } from "@features/stations/stationsSliceHelpers";
 import { UIActivityIndicator } from "react-native-indicators";
 import { StationSelector } from "@src/components/StationSelectBox";
 import { LevelUpBox } from "@src/components/LevelUpBox";
-import { getStationName } from "@src/features/skytrainTrip/SkytrainData";
+import { getStationName } from "@src/utils/skytrain";
 {
   /* <UIActivityIndicator color="white" /> */
 }

@@ -1,5 +1,5 @@
-import { getStationName } from "@src/features/skytrainTrip/SkytrainData";
-import React from "react";
+import { getStationName } from "@src/utils/skytrain";
+import React, { useState } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Text, Button, Title } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -41,6 +41,7 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
   );
   const canBuy: boolean =
     balance >= cost && level !== undefined && level <= MAX_LEVEL;
+  const [loading, setLoading] = useState<boolean>(false);
 
   const maxLevel: boolean = level === MAX_LEVEL;
   const buttonText: string = maxLevel ? "Max Level" : "Level up";
@@ -49,7 +50,8 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
     : `Next level: Rewards \u00D7${currentMultiplier} → \u00D7${nextMultiplier}`;
 
   const handleLevelUp = () => {
-    if (level) {
+    if (level !== undefined && level < 50) {
+      setLoading(true);
       const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
         session: session,
         newBalance: balance - cost,
@@ -61,6 +63,9 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
       };
       dispatch(updateBalance(balanceUpdateRequest));
       dispatch(levelUpStation(levelUpdateRequest));
+      setLoading(false);
+    } else {
+      throw new Error("Already max level");
     }
   };
 
@@ -89,6 +94,7 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
             onPress={() => handleLevelUp()}
             mode="contained"
             disabled={!canBuy}
+            loading={loading}
           >
             {buttonText}
           </Button>

@@ -33,10 +33,7 @@ import {
   unlockStation,
 } from "@src/features/stations/stationsSliceHelpers";
 import { MAX_LEVEL } from "@src/utils/levels";
-import {
-  getStationName,
-  getTier,
-} from "@src/features/skytrainTrip/SkytrainData";
+import { getStationName, getTier } from "@src/utils/skytrain";
 
 interface BannerCardProps {
   banner: BannerInfo;
@@ -217,7 +214,7 @@ export const BannerCard: React.FC<BannerCardProps> = ({
             disabled={!canBuy || isRolling}
             loading={isRolling}
           >
-            Roll
+            ROLL
           </Button>
         </View>
       </View>

@@ -1,4 +1,4 @@
-import { Graph, Station, newStation } from "./Graph";
+import { Graph, Station, newStation } from "../features/skytrainTrip/Graph";
 import { Tier } from "@src/utils/gacha";
 
 // Edge that should be built
@@ -271,16 +271,3 @@ export const EDGE_LIST: EdgeToBuild[] = [
   edgeToBuild(Templeton, SeaIslandCentre, 2),
   edgeToBuild(SeaIslandCentre, YVRAirport, 2),
 ];
-
-// Builds and returns the graph from data above
-// timeMultiplier represents scaling to apply to edge weights. Default is 1.
-// The edge times used are idealized from Translink's table, but may need to be multiplied by ~1.2 to be more accurate
-export function buildGraph(timeMultiplier?: number): Graph {
-  const multiplier = timeMultiplier ? timeMultiplier : 1;
-
-  const graph: Graph = new Graph();
-  EDGE_LIST.forEach((edge) => {
-    graph.addEdge(edge.start, edge.destination, edge.time * multiplier);
-  });
-  return graph;
-}

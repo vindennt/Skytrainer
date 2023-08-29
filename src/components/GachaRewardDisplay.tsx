@@ -1,7 +1,4 @@
-import {
-  getStationName,
-  getTier,
-} from "@src/features/skytrainTrip/SkytrainData";
+import { getStationName, getTier } from "@src/utils/skytrain";
 import { Tier } from "@src/utils/gacha";
 import { imageBustMap } from "@src/utils/imageMappings";
 import {
@@ -40,8 +37,11 @@ export const GachaRewardDisplay: React.FC<GachaRewardDisplayProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    // padding: 30,
+    // padding: 100,
     height: "80%",
+    // backgroundColor: "gray",
+    // flex: 1,
+    // width: 300,
   },
   image: {
     // flex: 1,
@@ -52,11 +52,14 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     // backgroundColor: "gray",
-    alignItems: "center",
+    // alignItems: "center",
+    // justifyContent: "center",
   },
   title: {
+    textAlign: "center",
     margin: 30,
     fontSize: 30,
     fontWeight: "500",
+    alignItems: "center",
   },
 });

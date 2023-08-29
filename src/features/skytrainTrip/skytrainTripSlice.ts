@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Graph, Station } from "@features/skytrainTrip/Graph";
-import { buildGraph } from "./SkytrainData";
+import { buildGraph } from "@features/skytrainTrip/Graph";
 
 // skytrainGraph: Graph of the skytrain stations
 // DEPRECATED: selectedStartStation: starting station for a trip NOTE: for now, try and use the stations selector to avoid redundancy. Stations UI should auto-scroll to the selected station
