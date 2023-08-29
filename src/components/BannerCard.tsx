@@ -1,23 +1,36 @@
 import { useTheme, Card, Text, Button } from "react-native-paper";
-import {
-  View,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  FlatList,
-  ScrollView,
-} from "react-native";
+import { View, StyleSheet, Image } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { GradientIcon } from "@components/IconGradient";
+import { BannerInfo, LIMITED_PRICE, PERMANENT_PRICE } from "@utils/gacha";
+import { useSelector } from "react-redux";
+import { UserState } from "@src/features/user/userSlice";
 
 interface BannerCardProps {
-  // TODO:  make this accept a banner data type, which it can breakdown into thinsl ike title bn shit
-  title: string;
-  description: string;
+  banner: BannerInfo;
 }
 
-export const BannerCard: React.FC = (title, description) => {
+const calculateTimeDiff = (startDate: Date, endDate: Date): string => {
+  const timeDifference = endDate.getTime() - startDate.getTime();
+  const remainingDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+  const remainingHours = Math.floor(
+    (timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+  );
+  return `Time remaining: ${remainingDays} days and ${remainingHours} hours`;
+};
+
+export const BannerCard: React.FC<BannerCardProps> = ({ banner }) => {
   const theme = useTheme();
+  const permanent: boolean = banner.type === "permanent";
+  const price: number = permanent ? PERMANENT_PRICE : LIMITED_PRICE;
+  const balance: number = permanent
+    ? useSelector((state: { user: UserState }) => state.user.balance)
+    : useSelector((state: { user: UserState }) => state.user.tickets);
+  const canBuy: boolean = balance >= price;
+  const dateInfo =
+    !permanent && banner.startDate !== undefined && banner.endDate !== undefined
+      ? calculateTimeDiff(banner.startDate, banner.endDate)
+      : "Permanent";
 
   return (
     <View
@@ -30,36 +43,41 @@ export const BannerCard: React.FC = (title, description) => {
         <Image
           source={require("@src/public/images/banner_001.png")}
           style={styles.image}
-          //   resizeMode="contain"
           resizeMode="cover"
         />
       </View>
       <View style={styles.contentContainer}>
         <Text variant="titleLarge" style={styles.titleText}>
-          Card title
+          {banner.title}
         </Text>
-        <Text
-          variant="bodyMedium"
-          style={[styles.dateText, { color: theme.colors.outline }]}
-        >
-          8/20/2023 - 9/20/2023
+        <Text style={[styles.dateText, { color: theme.colors.outline }]}>
+          {dateInfo}
         </Text>
-        <Text variant="bodyMedium" style={styles.subText}>
-          Card content
-        </Text>
+        <Text style={styles.subText}>{banner.description}</Text>
         <View style={styles.actionContainer}>
           <View style={styles.price}>
-            <GradientIcon
-              name="credit-card-chip"
-              size={20}
-              colors={["white", "#faa93e", "hotpink", "cyan", "blue"]}
-              start={{ x: 0.5, y: 0.15 }}
-              end={{ x: 0.9, y: 1 }}
-              locations={[0, 0.15, 0.35, 0.7, 1]}
-            />
-            <Text style={styles.priceText}>160</Text>
+            {permanent ? (
+              <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
+            ) : (
+              <GradientIcon
+                name="credit-card-chip"
+                size={20}
+                colors={["white", "#faa93e", "hotpink", "cyan", "blue"]}
+                start={{ x: 0.5, y: 0.15 }}
+                end={{ x: 0.9, y: 1 }}
+                locations={[0, 0.15, 0.35, 0.7, 1]}
+              />
+            )}
+            <Text style={styles.priceText}>{price.toString()}</Text>
           </View>
-          <Button style={styles.button} mode="contained">
+          <Button
+            style={styles.button}
+            mode="contained"
+            onPress={() => {
+              console.log("Roll pressed");
+            }}
+            disabled={!canBuy}
+          >
             Roll
           </Button>
         </View>
@@ -90,18 +108,18 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     // flex: 1,
-    height: "40%",
+    // height: "40%",
   },
   titleText: {
-    fontWeight: "500",
+    fontWeight: "600",
   },
   subText: {
-    marginTop: 25,
-    fontSize: 16,
+    marginTop: 20,
+    fontSize: 17,
   },
   dateText: {
-    marginTop: 10,
-    fontSize: 14,
+    marginTop: 5,
+    fontSize: 15,
   },
   actionContainer: {
     marginTop: 30,
