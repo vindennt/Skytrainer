@@ -14,11 +14,10 @@ const getRandomReward = (rewardTable: RewardTableElement[]): string => {
   rewardTable.forEach((element) => {
     totalWeight += element.weight;
   });
-  console.log("total weighted roll : " + totalWeight);
 
   // Roll random number based on totalWeight
   const randomNumber = Math.random() * totalWeight;
-  console.log("Rolled weight : " + randomNumber);
+  //   console.log("Rolled weight : " + randomNumber);
 
   // Get reward corresponding to roll
   // Treat currentWeight as a fixed stack pointer, and the weights are accumulating up towards the randomly picked number
@@ -26,12 +25,6 @@ const getRandomReward = (rewardTable: RewardTableElement[]): string => {
   for (const element of rewardTable) {
     const weight = element.weight;
     currentWeight += weight;
-    console.log(
-      "current weight before reward check : " +
-        currentWeight +
-        ", vs random number: " +
-        randomNumber
-    );
     if (randomNumber < currentWeight) {
       return element.id;
     }
@@ -42,6 +35,7 @@ const getRandomReward = (rewardTable: RewardTableElement[]): string => {
 // Returns stationId of randomized reward
 export const gachaRoll = (userFiveStarPity: number): string => {
   // If user is "at pity", immediately give them a random FIVE_STAR Tier reward
+  console.log("Rolling with pity: " + userFiveStarPity);
   if (userFiveStarPity === UNIVERSAL_FIVE_STAR_PITY) {
     return getRandomReward(fiveStarRewardTable);
   } else {

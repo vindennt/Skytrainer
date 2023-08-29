@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 26,
     paddingBottom: 24,
     flex: 1,
-    // width: "50%",
   },
   image: {
     flex: 1,

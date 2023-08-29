@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "@src/api/supabase";
 import { Session } from "@supabase/supabase-js";
 import { Alert } from "react-native";
-import { MAX_LEVEL } from "@features/reward/LevelHandler";
+import { MAX_LEVEL } from "@src/utils/levels";
 
 interface LevelInfo {
   //   user_id: string;
@@ -86,7 +86,7 @@ export const unlockStation = createAsyncThunk(
 );
 
 export const levelUpStation = createAsyncThunk(
-  "stations/unlockWaterfront",
+  "stations/levelUpStation",
   async ({ session, stationId, newLevel }: StationLevelUpdateRequest) => {
     console.log(
       "Thunk start: levelUpStation for station: " +

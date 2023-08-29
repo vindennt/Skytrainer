@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Graph, Station } from "@features/skytrainTrip/Graph";
-import { Reward } from "@features/reward/TripRewardHandler";
 import { buildGraph } from "./SkytrainData";
 
 // skytrainGraph: Graph of the skytrain stations
@@ -11,7 +10,7 @@ export interface SkytrainTripState {
   skytrainGraph: Graph;
   viableTrips: Station[][];
   chosenViableTrip: Station[];
-  tripRewards: Reward[];
+  // tripRewards: Reward[];
   //   selectedStartStation: Station | null;
 }
 
@@ -19,7 +18,7 @@ const initialState: SkytrainTripState = {
   skytrainGraph: buildGraph(1),
   viableTrips: [],
   chosenViableTrip: [],
-  tripRewards: [],
+  // tripRewards: [],
   //   selectedStartStation: null,
 };
 
@@ -33,12 +32,12 @@ const skytrainTripSlice = createSlice({
     setChosenViableTrip: (state, action) => {
       state.chosenViableTrip = action.payload;
     },
-    setTripRewards: (state, action) => {
-      state.tripRewards = action.payload;
-    },
+    // setTripRewards: (state, action) => {
+    //   state.tripRewards = action.payload;
+    // },
   },
 });
 
-export const { setViableTrips, setChosenViableTrip, setTripRewards } =
+export const { setViableTrips, setChosenViableTrip } =
   skytrainTripSlice.actions;
 export default skytrainTripSlice.reducer;
