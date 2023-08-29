@@ -96,7 +96,9 @@ export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 18,
-    padding: 30,
+    paddingHorizontal: 30,
+    // margin: 20,
+    // padding: 30,
     // height: 300,
     height: "80%",
     // width: "90%",

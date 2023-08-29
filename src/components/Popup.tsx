@@ -84,7 +84,8 @@ const styles = StyleSheet.create({
   },
   popup: {
     // backgroundColor: "#fff",
-    padding: 20,
+    padding: 30,
+    // margin: 20,
     borderRadius: 8,
     elevation: 5,
     alignItems: "center",
