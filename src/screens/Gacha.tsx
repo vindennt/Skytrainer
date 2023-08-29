@@ -2,16 +2,48 @@ import * as React from "react";
 import { View, ScrollView, StyleSheet } from "react-native";
 import { Text, Button } from "react-native-paper";
 import { BannerCard } from "@src/components/BannerCard";
+import {
+  BannerInfo,
+  PermanentBannerInfo,
+  LimitedBannerInfo,
+} from "@utils/gacha";
+import { Popup } from "@src/components/Popup";
+import { useState } from "react";
+import { GachaRewardDisplay } from "@src/components/GachaRewardDisplay";
 
 const Gacha = () => {
+  const [popupVisible, setPopupVisible] = useState<boolean>(false);
+  const [text, setText] = useState<string>("false");
+
+  const showRewardPopup = (rewardId: string) => {
+    setPopupVisible(true);
+    setText(rewardId);
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView>
         <Text style={styles.header}>Featured</Text>
-        <BannerCard></BannerCard>
+        <BannerCard
+          banner={LimitedBannerInfo}
+          popupCallback={showRewardPopup}
+        />
+        {/* TODO: implement limited banner  */}
+        {/* <BannerCard></BannerCard> */}
         <Text style={styles.header}>Permanent</Text>
-        <BannerCard></BannerCard>
+        <BannerCard
+          banner={PermanentBannerInfo}
+          popupCallback={showRewardPopup}
+        />
       </ScrollView>
+      <Popup
+        visible={popupVisible}
+        onClose={() => {
+          setPopupVisible(false);
+        }}
+      >
+        <GachaRewardDisplay stationId={text} />
+      </Popup>
     </View>
   );
 };
@@ -23,6 +55,7 @@ const styles = StyleSheet.create({
     flex: 1,
     // marginTop: 15,
     paddingHorizontal: 20,
+    paddingTop: 5,
     // justifyContent: "center",
   },
   header: {
