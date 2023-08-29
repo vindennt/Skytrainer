@@ -1,6 +1,7 @@
 import { View } from "react-native";
-import { Button } from "react-native-paper";
+import { Button, IconButton } from "react-native-paper";
 import { GradientIcon } from "@components/IconGradient";
+import { useNavigation } from "@react-navigation/native";
 
 interface CurrencyDisplayProps {
   balance: number;
@@ -15,6 +16,11 @@ export const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
   showBalance,
   showTickets,
 }) => {
+  const navigation = useNavigation();
+  const goToAccount = () => {
+    navigation.navigate("Account" as never);
+  };
+
   if (showBalance === undefined) {
     showBalance = true;
   }
@@ -28,10 +34,18 @@ export const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
         flex: 1,
         width: "100%",
         flexDirection: "row",
-        justifyContent: "space-evenly",
-        marginTop: 5,
+        justifyContent: "space-between",
+        alignItems: "center",
+        // paddingRight: 5,
+        // marginTop: 5,
       }}
     >
+      <IconButton
+        icon="person-circle-outline"
+        size={30}
+        onPress={goToAccount}
+        style={{ right: 15 }}
+      />
       {showBalance && (
         <Button
           icon={({ size, color }) => (
