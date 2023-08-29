@@ -20,6 +20,7 @@ export interface UserState {
   limited_pity: number;
   total_trip_time: number;
   total_trips_finished: number;
+  slider: number;
 }
 
 const initialState: UserState = {
@@ -33,6 +34,7 @@ const initialState: UserState = {
   limited_pity: 0,
   total_trip_time: 0,
   total_trips_finished: 0,
+  slider: 25,
 };
 
 const userSlice = createSlice({
@@ -70,6 +72,9 @@ const userSlice = createSlice({
     setTotalTripsFinished: (state, action) => {
       state.total_trips_finished = action.payload;
     },
+    setSlider: (state, action) => {
+      state.slider = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllUserData.fulfilled, (state, action) => {
@@ -85,6 +90,7 @@ const userSlice = createSlice({
       state.limited_pity = action.payload.limited_pity;
       state.total_trip_time = action.payload.total_trip_time;
       state.total_trips_finished = action.payload.total_trips_finished;
+      state.slider = action.payload.slider;
     });
     builder.addCase(updateDisplayName.fulfilled, (state, action) => {
       if (action.payload) state.display_name = action.payload;
@@ -127,6 +133,7 @@ export const {
   setLimitedPity,
   setTotalTripTime,
   setTotalTripsFinished,
+  setSlider,
 } = userSlice.actions;
 // export { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
 export {
