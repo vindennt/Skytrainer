@@ -5,6 +5,7 @@ import {
   updateDisplayName,
   updateBalance,
   updateTickets,
+  updatePity,
 } from "@src/features/user/userSliceHelpers";
 
 export interface UserState {
@@ -14,7 +15,8 @@ export interface UserState {
   last_login: string;
   balance: number;
   tickets: number;
-  pity: number;
+  permanent_pity: number;
+  limited_pity: number;
   total_trip_time: number;
   total_trips_finished: number;
 }
@@ -26,7 +28,8 @@ const initialState: UserState = {
   last_login: "",
   balance: 0,
   tickets: 0,
-  pity: 0,
+  permanent_pity: 0,
+  limited_pity: 0,
   total_trip_time: 0,
   total_trips_finished: 0,
 };
@@ -54,8 +57,11 @@ const userSlice = createSlice({
     setTickets: (state, action) => {
       state.tickets = action.payload;
     },
-    setPity: (state, action) => {
-      state.pity = action.payload;
+    setPermanentPity: (state, action) => {
+      state.permanent_pity = action.payload;
+    },
+    setLimitedPity: (state, action) => {
+      state.limited_pity = action.payload;
     },
     setTotalTripTime: (state, action) => {
       state.total_trip_time = action.payload;
@@ -74,23 +80,37 @@ const userSlice = createSlice({
       state.last_login = action.payload.last_login;
       state.balance = action.payload.balance;
       state.tickets = action.payload.tickets;
-      state.pity = action.payload.pity;
+      state.permanent_pity = action.payload.permanent_pity;
+      state.limited_pity = action.payload.limited_pity;
       state.total_trip_time = action.payload.total_trip_time;
       state.total_trips_finished = action.payload.total_trips_finished;
     });
     builder.addCase(updateDisplayName.fulfilled, (state, action) => {
       if (action.payload) state.display_name = action.payload;
-      console.log("updateDisplayName fulfulled: " + state.display_name);
+      console.log("updateDisplayName fulfilled: " + state.display_name);
     });
     builder.addCase(updateBalance.fulfilled, (state, action) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       if (action.payload !== undefined) state.balance = action.payload;
-      console.log("updateBalance fulfulled: " + state.balance);
+      console.log("updateBalance fulfilled: " + state.balance);
     });
     builder.addCase(updateTickets.fulfilled, (state, action) => {
-      console.log(action.payload);
+      // console.log(action.payload);
       if (action.payload !== undefined) state.tickets = action.payload;
-      console.log("updateTickets fulfulled: " + state.tickets);
+      console.log("updateTickets fulfilled: " + state.tickets);
+    });
+    builder.addCase(updatePity.fulfilled, (state, action) => {
+      if (action.payload?.permanent_pity !== undefined) {
+        state.permanent_pity = action.payload.permanent_pity;
+      } else if (action.payload?.limited_pity !== undefined) {
+        state.limited_pity = action.payload.limited_pity;
+      }
+      console.log(
+        "updatePity fulfilled, permanent : " +
+          state.permanent_pity +
+          " limited: " +
+          state.limited_pity
+      );
     });
   },
 });
@@ -102,7 +122,8 @@ export const {
   setLastLogin,
   setBalance,
   setTickets,
-  setPity,
+  setPermanentPity,
+  setLimitedPity,
   setTotalTripTime,
   setTotalTripsFinished,
 } = userSlice.actions;
@@ -112,5 +133,6 @@ export {
   updateDisplayName,
   updateBalance,
   updateTickets,
+  updatePity,
 } from "@src/features/user/userSliceHelpers";
 export default userSlice.reducer;

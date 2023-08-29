@@ -10,6 +10,7 @@ import {
   LIMITED_PRICE,
   PERMANENT_CASHBACK_RATE,
   PERMANENT_PRICE,
+  Tier,
 } from "@utils/gacha";
 import { useDispatch, useSelector } from "react-redux";
 import { UserState } from "@src/features/user/userSlice";
@@ -18,7 +19,9 @@ import { useState } from "react";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import {
   UpdateNumericalBalanceRequest,
+  UpdatePityRequest,
   updateBalance,
+  updatePity,
   updateTickets,
 } from "@src/features/user/userSliceHelpers";
 import { Session } from "@supabase/supabase-js";
@@ -30,7 +33,10 @@ import {
   unlockStation,
 } from "@src/features/stations/stationsSliceHelpers";
 import { MAX_LEVEL } from "@src/utils/levels";
-import { getStationName } from "@src/features/skytrainTrip/SkytrainData";
+import {
+  getStationName,
+  getTier,
+} from "@src/features/skytrainTrip/SkytrainData";
 
 interface BannerCardProps {
   banner: BannerInfo;
@@ -59,9 +65,13 @@ export const BannerCard: React.FC<BannerCardProps> = ({
     (state: { auth: AuthState }) => state.auth.session
   );
   const permanent: boolean = banner.type === "permanent";
-  const balance: number = !permanent
-    ? useSelector((state: { user: UserState }) => state.user.tickets)
-    : useSelector((state: { user: UserState }) => state.user.balance);
+  const pity: number = permanent
+    ? useSelector((state: { user: UserState }) => state.user.permanent_pity)
+    : useSelector((state: { user: UserState }) => state.user.limited_pity);
+
+  const balance: number = permanent
+    ? useSelector((state: { user: UserState }) => state.user.balance)
+    : useSelector((state: { user: UserState }) => state.user.tickets);
   const price: number = permanent ? PERMANENT_PRICE : LIMITED_PRICE;
   const canBuy: boolean = balance >= price;
   const dateInfo =
@@ -69,6 +79,19 @@ export const BannerCard: React.FC<BannerCardProps> = ({
       ? getTimeRemaining(banner.startDate, banner.endDate)
       : " ";
   const [isRolling, setIsRolling] = useState<boolean>(false);
+
+  const handlePity = (rewardId: string) => {
+    const rewardTier: string = getTier(rewardId);
+    // Pity reset if reward is 5* tier, else incremented
+    const newPity: number = rewardTier === Tier.FIVE_STAR ? 0 : pity + 1;
+
+    const pityUpdateRequest: UpdatePityRequest = {
+      session: session,
+      newPity: newPity,
+      isPermanent: permanent,
+    };
+    dispatch(updatePity(pityUpdateRequest));
+  };
 
   const handleUnlocks = (rewardId: string): number => {
     let excessLevels = 0;
@@ -88,12 +111,14 @@ export const BannerCard: React.FC<BannerCardProps> = ({
         newLevel: newLevel > MAX_LEVEL ? MAX_LEVEL : newLevel,
       };
       dispatch(levelUpStation(levelUpdateRequest));
-      Alert.alert(
-        getStationName(rewardId) +
-          " grew to level " +
-          levelUpdateRequest.newLevel +
-          "."
-      );
+      if (excessLevels > 0) {
+        Alert.alert(
+          getStationName(rewardId) +
+            " grew to level " +
+            levelUpdateRequest.newLevel +
+            "."
+        );
+      }
       // If not owned yet, unlock the station
     } else {
       const unlockRequest: StationUnlockRequest = {
@@ -112,8 +137,9 @@ export const BannerCard: React.FC<BannerCardProps> = ({
     }
     setIsRolling(true);
     console.log("Starting Gacha roll");
-    const rewardId: string = gachaRoll(1);
+    const rewardId: string = gachaRoll(pity);
 
+    handlePity(rewardId);
     // For every excess level, return some cashback to corresponding currency
     const excessLevels: number = handleUnlocks(rewardId);
     const balanceAdjusment: number = permanent

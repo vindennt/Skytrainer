@@ -13,6 +13,12 @@ export interface UpdateNumericalBalanceRequest {
   newBalance: number;
 }
 
+export interface UpdatePityRequest {
+  session: Session | null;
+  newPity: number;
+  isPermanent: boolean;
+}
+
 export const fetchAllUserData = createAsyncThunk(
   "user/fetchAllUserData",
   async (session: Session) => {
@@ -125,6 +131,40 @@ export const updateTickets = createAsyncThunk(
       }
     } finally {
       console.log("Done updating tickets to " + newBalance);
+    }
+  }
+);
+
+export const updatePity = createAsyncThunk(
+  "user/updatePity",
+  async ({ session, newPity, isPermanent }: UpdatePityRequest) => {
+    console.log("Thunk start: updatePity to " + newPity);
+    try {
+      if (!session?.user) throw new Error("No user on the session!");
+      if (newPity < 0) throw new Error("newPity cannot be < 0");
+
+      const update = isPermanent
+        ? {
+            permanent_pity: newPity,
+          }
+        : {
+            limited_pity: newPity,
+          };
+
+      const { error } = await supabase
+        .from("users")
+        .update(update)
+        .eq("user_id", session.user.id);
+
+      if (error) {
+        throw error;
+      } else return update;
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+    } finally {
+      console.log("Done updating pity");
     }
   }
 );
