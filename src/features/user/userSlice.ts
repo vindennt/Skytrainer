@@ -4,6 +4,7 @@ import {
   fetchAllUserData,
   updateDisplayName,
   updateBalance,
+  updateTickets,
 } from "@src/features/user/userSliceHelpers";
 
 export interface UserState {
@@ -82,8 +83,14 @@ const userSlice = createSlice({
       console.log("updateDisplayName fulfulled: " + state.display_name);
     });
     builder.addCase(updateBalance.fulfilled, (state, action) => {
-      if (action.payload) state.balance = action.payload;
+      console.log(action.payload);
+      if (action.payload !== undefined) state.balance = action.payload;
       console.log("updateBalance fulfulled: " + state.balance);
+    });
+    builder.addCase(updateTickets.fulfilled, (state, action) => {
+      console.log(action.payload);
+      if (action.payload !== undefined) state.tickets = action.payload;
+      console.log("updateTickets fulfulled: " + state.tickets);
     });
   },
 });
@@ -104,5 +111,6 @@ export {
   fetchAllUserData,
   updateDisplayName,
   updateBalance,
+  updateTickets,
 } from "@src/features/user/userSliceHelpers";
 export default userSlice.reducer;

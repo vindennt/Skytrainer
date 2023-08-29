@@ -88,13 +88,43 @@ export const updateBalance = createAsyncThunk(
 
       if (error) {
         throw error;
-      } else if (newBalance) return newBalance;
+      } else return newBalance;
     } catch (error) {
       if (error instanceof Error) {
         Alert.alert(error.message);
       }
     } finally {
       console.log("Done updating balance to " + newBalance);
+    }
+  }
+);
+
+export const updateTickets = createAsyncThunk(
+  "user/updateTickets",
+  async ({ session, newBalance }: UpdateNumericalBalanceRequest) => {
+    console.log("Thunk start: updateTickets to " + newBalance);
+    try {
+      if (!session?.user) throw new Error("No user on the session!");
+      if (newBalance < 0) throw new Error("newBalance cannot be < 0");
+
+      const update = {
+        tickets: newBalance,
+      };
+
+      const { error } = await supabase
+        .from("users")
+        .update(update)
+        .eq("user_id", session.user.id);
+
+      if (error) {
+        throw error;
+      } else return newBalance;
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+    } finally {
+      console.log("Done updating tickets to " + newBalance);
     }
   }
 );

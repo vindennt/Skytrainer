@@ -1,16 +1,31 @@
 import { useTheme, Card, Text, Button } from "react-native-paper";
-import { View, StyleSheet, Image } from "react-native";
+import { View, StyleSheet, Image, Alert } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { GradientIcon } from "@components/IconGradient";
 import { BannerInfo, LIMITED_PRICE, PERMANENT_PRICE } from "@utils/gacha";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { UserState } from "@src/features/user/userSlice";
+import { gachaRoll } from "@src/features/reward/GachaHandler";
+import { useState } from "react";
+import { StationsState } from "@src/features/stations/stationsSlice";
+import {
+  UpdateNumericalBalanceRequest,
+  updateBalance,
+  updateTickets,
+} from "@src/features/user/userSliceHelpers";
+import { Session } from "@supabase/supabase-js";
+import { AuthState } from "@src/features/auth/authSlice";
+import {
+  StationUnlockRequest,
+  unlockStation,
+} from "@src/features/stations/stationsSliceHelpers";
 
 interface BannerCardProps {
   banner: BannerInfo;
+  popupCallback: (rewardId: string) => void;
 }
 
-const calculateTimeDiff = (startDate: Date, endDate: Date): string => {
+const getTimeRemaining = (startDate: Date, endDate: Date): string => {
   const timeDifference = endDate.getTime() - startDate.getTime();
   const remainingDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
   const remainingHours = Math.floor(
@@ -19,18 +34,66 @@ const calculateTimeDiff = (startDate: Date, endDate: Date): string => {
   return `Time remaining: ${remainingDays} days and ${remainingHours} hours`;
 };
 
-export const BannerCard: React.FC<BannerCardProps> = ({ banner }) => {
+export const BannerCard: React.FC<BannerCardProps> = ({
+  banner,
+  popupCallback,
+}) => {
   const theme = useTheme();
+  const dispatch = useDispatch<any>();
+  const stations: Map<string, number> = useSelector(
+    (state: { stations: StationsState }) => state.stations.stations
+  );
+  const session: Session | null = useSelector(
+    (state: { auth: AuthState }) => state.auth.session
+  );
   const permanent: boolean = banner.type === "permanent";
+  const balance: number = !permanent
+    ? useSelector((state: { user: UserState }) => state.user.tickets)
+    : useSelector((state: { user: UserState }) => state.user.balance);
   const price: number = permanent ? PERMANENT_PRICE : LIMITED_PRICE;
-  const balance: number = permanent
-    ? useSelector((state: { user: UserState }) => state.user.balance)
-    : useSelector((state: { user: UserState }) => state.user.tickets);
   const canBuy: boolean = balance >= price;
   const dateInfo =
     !permanent && banner.startDate !== undefined && banner.endDate !== undefined
-      ? calculateTimeDiff(banner.startDate, banner.endDate)
-      : "Permanent";
+      ? getTimeRemaining(banner.startDate, banner.endDate)
+      : " ";
+  const [isRolling, setIsRolling] = useState<boolean>(false);
+
+  const handlePressBuy = () => {
+    if (isRolling) {
+      Alert.alert("Please wait until the current roll is finished");
+      return;
+    }
+    setIsRolling(true);
+    console.log("Starting Gacha roll");
+    const rewardId: string = gachaRoll(1);
+
+    // Deduct right balance
+    const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
+      session: session,
+      newBalance: balance - price,
+    };
+    if (permanent) {
+      dispatch(updateBalance(balanceUpdateRequest));
+    } else {
+      dispatch(updateTickets(balanceUpdateRequest));
+    }
+
+    // Handle dupes and unlocking
+    if (stations.get(rewardId) !== undefined) {
+      // handle
+    } else {
+      // handle
+      //   const unlockRequest: StationUnlockRequest = {
+      //     session: session,
+      //     stationId: rewardId,
+      //   };
+      //   dispatch(unlockStation(unlockRequest));
+    }
+
+    popupCallback(rewardId);
+    console.log(rewardId);
+    setIsRolling(false);
+  };
 
   return (
     <View
@@ -73,10 +136,9 @@ export const BannerCard: React.FC<BannerCardProps> = ({ banner }) => {
           <Button
             style={styles.button}
             mode="contained"
-            onPress={() => {
-              console.log("Roll pressed");
-            }}
-            disabled={!canBuy}
+            onPress={handlePressBuy}
+            disabled={!canBuy || isRolling}
+            loading={isRolling}
           >
             Roll
           </Button>
