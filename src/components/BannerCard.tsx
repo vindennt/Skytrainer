@@ -1,8 +1,16 @@
+import React from "react";
 import { useTheme, Card, Text, Button } from "react-native-paper";
 import { View, StyleSheet, Image, Alert } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { GradientIcon } from "@components/IconGradient";
-import { BannerInfo, LIMITED_PRICE, PERMANENT_PRICE } from "@utils/gacha";
+import {
+  BannerInfo,
+  DUPLICATE_LEVEL_RATE,
+  LIMITED_CASHBACK_RATE,
+  LIMITED_PRICE,
+  PERMANENT_CASHBACK_RATE,
+  PERMANENT_PRICE,
+} from "@utils/gacha";
 import { useDispatch, useSelector } from "react-redux";
 import { UserState } from "@src/features/user/userSlice";
 import { gachaRoll } from "@src/features/reward/GachaHandler";
@@ -16,9 +24,13 @@ import {
 import { Session } from "@supabase/supabase-js";
 import { AuthState } from "@src/features/auth/authSlice";
 import {
+  StationLevelUpdateRequest,
   StationUnlockRequest,
+  levelUpStation,
   unlockStation,
 } from "@src/features/stations/stationsSliceHelpers";
+import { MAX_LEVEL } from "@src/utils/levels";
+import { getStationName } from "@src/features/skytrainTrip/SkytrainData";
 
 interface BannerCardProps {
   banner: BannerInfo;
@@ -58,6 +70,41 @@ export const BannerCard: React.FC<BannerCardProps> = ({
       : " ";
   const [isRolling, setIsRolling] = useState<boolean>(false);
 
+  const handleUnlocks = (rewardId: string): number => {
+    let excessLevels = 0;
+    const currentLevel = stations.get(rewardId);
+    if (currentLevel !== undefined) {
+      console.log("OWNED");
+      // If pre owned, increment that station's level by DUPLICATE_LEVEL_RATE. For every excess level over MAX, give user cashback
+      const newLevel = currentLevel + DUPLICATE_LEVEL_RATE;
+
+      // Calcualte a curency cashback for the user
+      if (newLevel > MAX_LEVEL) {
+        excessLevels = newLevel - MAX_LEVEL;
+      }
+      const levelUpdateRequest: StationLevelUpdateRequest = {
+        session: session,
+        stationId: rewardId,
+        newLevel: newLevel > MAX_LEVEL ? MAX_LEVEL : newLevel,
+      };
+      dispatch(levelUpStation(levelUpdateRequest));
+      Alert.alert(
+        getStationName(rewardId) +
+          " grew to level " +
+          levelUpdateRequest.newLevel +
+          "."
+      );
+      // If not owned yet, unlock the station
+    } else {
+      const unlockRequest: StationUnlockRequest = {
+        session: session,
+        stationId: rewardId,
+      };
+      dispatch(unlockStation(unlockRequest));
+    }
+    return excessLevels;
+  };
+
   const handlePressBuy = () => {
     if (isRolling) {
       Alert.alert("Please wait until the current roll is finished");
@@ -67,28 +114,25 @@ export const BannerCard: React.FC<BannerCardProps> = ({
     console.log("Starting Gacha roll");
     const rewardId: string = gachaRoll(1);
 
-    // Deduct right balance
+    // For every excess level, return some cashback to corresponding currency
+    const excessLevels: number = handleUnlocks(rewardId);
+    const balanceAdjusment: number = permanent
+      ? excessLevels * PERMANENT_CASHBACK_RATE
+      : excessLevels * LIMITED_CASHBACK_RATE;
+    // Adjust corresponding balance
     const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
       session: session,
-      newBalance: balance - price,
+      newBalance: balance - price + balanceAdjusment,
     };
     if (permanent) {
       dispatch(updateBalance(balanceUpdateRequest));
     } else {
       dispatch(updateTickets(balanceUpdateRequest));
     }
-
-    // Handle dupes and unlocking
-    if (stations.get(rewardId) !== undefined) {
-      // handle
-    } else {
-      // handle
-      //   const unlockRequest: StationUnlockRequest = {
-      //     session: session,
-      //     stationId: rewardId,
-      //   };
-      //   dispatch(unlockStation(unlockRequest));
-    }
+    if (balanceAdjusment > 0)
+      Alert.alert(
+        "Returned " + balanceAdjusment + " currency points as cashback"
+      );
 
     popupCallback(rewardId);
     console.log(rewardId);

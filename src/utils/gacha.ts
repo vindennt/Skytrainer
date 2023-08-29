@@ -1,6 +1,9 @@
-export const PERMANENT_PRICE: number = 10;
-export const LIMITED_PRICE: number = 160;
+export const PERMANENT_PRICE: number = 0;
+export const LIMITED_PRICE: number = 0;
 export const UNIVERSAL_FIVE_STAR_PITY: number = 3;
+export const DUPLICATE_LEVEL_RATE: number = 10;
+export const PERMANENT_CASHBACK_RATE: number = 50;
+export const LIMITED_CASHBACK_RATE: number = 10;
 
 // TODO: remove this becuasej ust for testing purpseos
 const currentDate = new Date();
@@ -31,6 +34,18 @@ export const PermanentBannerInfo: BannerInfo = {
   endDate: tenDaysLater,
   description: "Here to stay",
   type: "permanent",
+};
+
+export const LimitedBannerInfo: BannerInfo = {
+  title: "Wanderlust Invocation",
+  limitedStationId: "001",
+  rateUpIdOne: "000",
+  rateUpIdTwo: "000",
+  rateUpIdThree: "000",
+  startDate: currentDate,
+  endDate: tenDaysLater,
+  description: "Increased drop rate of YVR Airport",
+  type: "limited",
 };
 
 export enum Tier {
