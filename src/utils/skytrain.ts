@@ -201,6 +201,16 @@ export function getStationName(id: string): string {
     throw new Error("No such station ID");
   }
 }
+
+// Gives station Name of input id, index 0 being the name in the array of data
+export function getStation(id: string): Station {
+  const ref = STATION_MAP.get(id);
+  if (ref !== undefined) {
+    return ref[1];
+  } else {
+    throw new Error("No such station ID");
+  }
+}
 // Gives rarity Tier of input id, index 2 being the Tier
 export function getTier(id: string): string {
   const ref = STATION_MAP.get(id);

@@ -19,7 +19,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
   stations: stationsReducer,
-  skytrain: skytrainReducer,
+  skytrainTrip: skytrainReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

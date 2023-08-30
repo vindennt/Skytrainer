@@ -7,7 +7,7 @@ import { UserState } from "@src/features/user/userSlice";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import { getStationName } from "@src/utils/skytrain";
 import { SkytrainState } from "@src/features/skytrainTrip/skytrainSlice";
-import { findRandomViableTrips } from "@src/features/skytrainTrip/TripFinder";
+import { findRandomViableTripIds } from "@features/skytrainTrip/TripFinder";
 import { Station } from "@src/features/skytrainTrip/Graph";
 
 export const TripBox: React.FC = () => {
@@ -20,7 +20,7 @@ export const TripBox: React.FC = () => {
     (state: { stations: StationsState }) => state.stations.selectedStation
   );
   const skytrainGraph = useSelector(
-    (state: { skytrain: SkytrainState }) => state.skytrain.skytrainGraph
+    (state: { skytrainTrip: SkytrainState }) => state.skytrainTrip.skytrainGraph
   );
 
   const handleTripStart = () => {
@@ -30,7 +30,7 @@ export const TripBox: React.FC = () => {
         " starting focus trip for " +
         sliderValue
     );
-    const tripPath: Station[] = findRandomViableTrips(
+    const tripPath: string[] = findRandomViableTripIds(
       skytrainGraph,
       selectedStation,
       sliderValue
