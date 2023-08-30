@@ -12,14 +12,7 @@ import {
   setTrip,
 } from "@src/features/skytrain/skytrainSlice";
 import { findRandomViableTripIds } from "@src/features/skytrain/TripFinder";
-import { Station } from "@src/features/skytrain/Graph";
 import { TripReward, getRewards } from "@src/features/reward/TripRewardHandler";
-import { Session } from "@supabase/supabase-js";
-import { AuthState } from "@src/features/auth/authSlice";
-import {
-  UpdateUserRequest,
-  updateUserData,
-} from "@src/features/user/userSliceHelpers";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 
@@ -27,14 +20,9 @@ export const TripBox: React.FC = () => {
   const theme = useTheme();
   const dispatch = useDispatch<any>();
   const navigation = useNavigation();
-  const session: Session | null = useSelector(
-    (state: { auth: AuthState }) => state.auth.session
-  );
+
   const sliderValue = useSelector(
     (state: { user: UserState }) => state.user.slider
-  );
-  const balance = useSelector(
-    (state: { user: UserState }) => state.user.balance
   );
   const selectedStation: string = useSelector(
     (state: { stations: StationsState }) => state.stations.selectedStation
@@ -50,32 +38,21 @@ export const TripBox: React.FC = () => {
   const handleTripStart = () => {
     // TODO: implement timer function, such that the rewards are only given if timer ends without cancel
     setIsLoading(true);
-    const frozenSliderValue: number = sliderValue;
-    const frozenSelectedStationId: string = selectedStation;
     console.log(
       getStationName(selectedStation) +
         " starting focus trip for " +
-        frozenSliderValue
+        sliderValue
     );
     const tripPath: string[] = findRandomViableTripIds(
       skytrainGraph,
       selectedStation,
-      frozenSliderValue
+      sliderValue
     );
     dispatch(setTrip(tripPath));
     const rewards: TripReward = getRewards(tripPath, stations);
     dispatch(setRewards(rewards));
 
-    // TODO: Rewards should only be given if the trip was actually finished
-    const updateRequest: UpdateUserRequest = {
-      session: session,
-      update: {
-        balance: balance + rewards.total,
-        slider: frozenSliderValue,
-        last_used_station: frozenSelectedStationId,
-      },
-    };
-    dispatch(updateUserData(updateRequest));
+    // TODO: Navigate to the dummy screen
 
     navigation.navigate("Trip" as never);
     setTimeout(() => {
