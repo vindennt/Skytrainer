@@ -1,5 +1,5 @@
-import { getStation } from "@src/utils/skytrain";
-import { Station, Graph } from "./Graph";
+import { EDGE_LIST, getStation } from "@src/utils/skytrain";
+import { Station, Graph } from "@src/features/skytrain/Graph";
 
 // Given start station and desired length, find a trip of time equal or greater than desired length
 // RETURNS array of stations that, if visited in order, will result in a trip equal to or greater than desired trip length.
@@ -11,7 +11,7 @@ import { Station, Graph } from "./Graph";
 
 // Note about Transfer stations: Adjacent transfer stations will not loop traversal between each other
 
-function findViableTrips(
+export function findViableTrips(
   graph: Graph,
   start: Station | undefined,
   desiredLength: number
@@ -137,4 +137,17 @@ export function findRandomViableTripIds(
   );
   const idsOfViableTrips: string[] = viableTrip.map((station) => station.id);
   return idsOfViableTrips;
+}
+
+// Builds and returns the graph from edgelist
+// timeMultiplier represents scaling to apply to edge weights. Default is 1.
+// The edge times used are idealized from Translink's table, but may need to be multiplied by ~1.2 to be more accurate
+export function buildGraph(timeMultiplier?: number): Graph {
+  const multiplier = timeMultiplier ? timeMultiplier : 1;
+
+  const graph: Graph = new Graph();
+  EDGE_LIST.forEach((edge) => {
+    graph.addEdge(edge.start, edge.destination, edge.time * multiplier);
+  });
+  return graph;
 }

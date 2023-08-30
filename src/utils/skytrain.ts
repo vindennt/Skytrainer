@@ -1,4 +1,4 @@
-import { Graph, Station, newStation } from "../features/skytrainTrip/Graph";
+import { Graph, Station, newStation } from "../features/skytrain/Graph";
 import { Tier } from "@src/utils/gacha";
 
 // Edge that should be built
@@ -170,7 +170,7 @@ STATION_MAP.set("042", [
 ]);
 STATION_MAP.set("043", ["King Edward", KingEdward, Tier.FOUR_STAR]);
 STATION_MAP.set("044", [
-  "Oakridge 41stAve",
+  "Oakridge 41st Ave",
   OakridgeFourtyFirstAve,
   Tier.FOUR_STAR,
 ]);
@@ -201,6 +201,17 @@ export function getStationName(id: string): string {
     throw new Error("No such station ID");
   }
 }
+
+// Gives station  of input id, index 1 being the station object
+export function getStation(id: string): Station {
+  const ref = STATION_MAP.get(id);
+  if (ref !== undefined) {
+    return ref[1];
+  } else {
+    throw new Error("No such station ID");
+  }
+}
+
 // Gives rarity Tier of input id, index 2 being the Tier
 export function getTier(id: string): string {
   const ref = STATION_MAP.get(id);
