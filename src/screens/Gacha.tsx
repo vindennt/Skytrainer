@@ -31,6 +31,7 @@ const Gacha = () => {
         <BannerCard
           banner={LimitedBannerInfo}
           popupCallback={showRewardPopup}
+          popupVisible={popupVisible}
         />
         {/* TODO: implement limited banner  */}
         {/* <BannerCard></BannerCard> */}
@@ -38,6 +39,7 @@ const Gacha = () => {
         <BannerCard
           banner={PermanentBannerInfo}
           popupCallback={showRewardPopup}
+          popupVisible={popupVisible}
         />
       </ScrollView>
       <Popup

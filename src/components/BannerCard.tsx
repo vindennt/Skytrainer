@@ -40,6 +40,7 @@ import { getStationName, getTier } from "@utils/skytrain";
 interface BannerCardProps {
   banner: BannerInfo;
   popupCallback: (rewardId: string) => void;
+  popupVisible: boolean;
 }
 
 const getTimeRemaining = (startDate: Date, endDate: Date): string => {
@@ -54,6 +55,7 @@ const getTimeRemaining = (startDate: Date, endDate: Date): string => {
 export const BannerCard: React.FC<BannerCardProps> = ({
   banner,
   popupCallback,
+  popupVisible,
 }) => {
   const theme = useTheme();
   const dispatch = useDispatch<any>();
@@ -170,7 +172,7 @@ export const BannerCard: React.FC<BannerCardProps> = ({
     console.log(rewardId);
     setTimeout(() => {
       setIsRolling(false);
-    }, 1000);
+    }, 500);
   };
 
   return (
@@ -215,7 +217,7 @@ export const BannerCard: React.FC<BannerCardProps> = ({
             style={styles.button}
             mode="contained"
             onPress={handlePressBuy}
-            disabled={!canBuy || isRolling}
+            disabled={!canBuy || isRolling || popupVisible}
             loading={isRolling}
           >
             Roll
