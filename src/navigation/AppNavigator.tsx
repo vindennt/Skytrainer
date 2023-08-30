@@ -24,6 +24,7 @@ import {
 } from "@features/stations/stationsSlice";
 import { CurrencyDisplay } from "@components/CurrencyDisplay";
 import StationSelect from "@src/screens/StationSelect";
+import { Animated } from "react-native";
 
 const AppNavigator = () => {
   const dispatch = useDispatch<any>();
@@ -40,6 +41,13 @@ const AppNavigator = () => {
   };
 
   useEffect(() => {
+    // To prevent warning that onAnimatedValueUpdate is set without listeners
+    // Maybe remove if affects performance
+    const av = new Animated.Value(0);
+    av.addListener(() => {
+      return;
+    });
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       dispatch(setSession(session));
     });
@@ -91,7 +99,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Stations" component={Stations} />
         <Stack.Group screenOptions={{ presentation: "modal" }}>
           <Stack.Screen name="Account" component={Account} />
-          <Stack.Screen name="StationSelect" component={StationSelect} />
+          <Stack.Screen name="Select Station" component={StationSelect} />
         </Stack.Group>
       </Stack.Navigator>
     );
