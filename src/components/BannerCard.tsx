@@ -18,12 +18,7 @@ import { gachaRoll } from "@src/features/reward/GachaHandler";
 import { useState } from "react";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import {
-  UpdateNumericalBalanceRequest,
-  UpdatePityRequest,
   UpdateUserRequest,
-  updateBalance,
-  updatePity,
-  updateTickets,
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
 import { Session } from "@supabase/supabase-js";
@@ -220,7 +215,7 @@ export const BannerCard: React.FC<BannerCardProps> = ({
             disabled={!canBuy || isRolling || popupVisible}
             loading={isRolling}
           >
-            Roll
+            ROLL
           </Button>
         </View>
       </View>

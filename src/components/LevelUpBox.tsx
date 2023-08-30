@@ -10,9 +10,7 @@ import { Session } from "@supabase/supabase-js";
 import { LEVELUP_COSTS, REWARD_MULTIPLIERS } from "@src/utils/levels";
 import { UserState } from "@src/features/user/userSlice";
 import {
-  UpdateNumericalBalanceRequest,
   UpdateUserRequest,
-  updateBalance,
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
 import { AuthState } from "@src/features/auth/authSlice";
@@ -46,7 +44,7 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
   const [loading, setLoading] = useState<boolean>(false);
 
   const maxLevel: boolean = level === MAX_LEVEL;
-  const buttonText: string = maxLevel ? "Max Level" : "Level up";
+  const buttonText: string = maxLevel ? "MAX LEVEL" : "LEVEL UP";
   const subText: string = maxLevel
     ? `Current level: Rewards \u00D7${currentMultiplier}`
     : `Next level: Rewards \u00D7${currentMultiplier} → \u00D7${nextMultiplier}`;
@@ -77,7 +75,7 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
       dispatch(levelUpStation(levelUpdateRequest));
       setTimeout(() => {
         setLoading(false);
-      }, 300);
+      }, 600);
     } else {
       throw new Error("Already max level");
     }
@@ -157,7 +155,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   button: {
-    borderRadius: 12,
+    // borderRadius: 12,
     flex: 1,
   },
   costContainer: {
