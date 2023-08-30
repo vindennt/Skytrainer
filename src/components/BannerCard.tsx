@@ -80,32 +80,11 @@ export const BannerCard: React.FC<BannerCardProps> = ({
       : " ";
   const [isRolling, setIsRolling] = useState<boolean>(false);
 
-  const handlePity = (rewardId: string) => {
-    const rewardTier: string = getTier(rewardId);
-    // Pity reset if reward is 5* tier, else incremented
-    const newPity: number = rewardTier === Tier.FIVE_STAR ? 0 : pity + 1;
-
-    // const pityUpdateRequest: UpdatePityRequest = {
-    //   session: session,
-    //   newPity: newPity,
-    //   isPermanent: permanent,
-    // };
-    // dispatch(updatePity(pityUpdateRequest));
-
-    const pityUpdateRequest: UpdateUserRequest = {
-      session: session,
-      update: permanent
-        ? { permanent_pity: newPity }
-        : { limited_pity: newPity },
-    };
-    dispatch(updateUserData(pityUpdateRequest));
-  };
-
   const handleUnlocks = (rewardId: string): number => {
     let excessLevels = 0;
     const currentLevel = stations.get(rewardId);
     if (currentLevel !== undefined) {
-      console.log("OWNED");
+      console.log("Station already owned");
       // If pre owned, increment that station's level by DUPLICATE_LEVEL_RATE. For every excess level over MAX, give user cashback
       const newLevel = currentLevel + DUPLICATE_LEVEL_RATE;
       // Calcualte a curency cashback for the user
@@ -158,18 +137,28 @@ export const BannerCard: React.FC<BannerCardProps> = ({
     }
     const rewardId: string = gachaRoll(pity);
 
-    handlePity(rewardId);
+    // (1/4) Handle unlocks
     // For every excess level, return some cashback to corresponding currency
     const excessLevels: number = handleUnlocks(rewardId);
+    // (2/4) Handle  money updates
     const balanceAdjusment: number = permanent
       ? excessLevels * PERMANENT_CASHBACK_RATE
       : excessLevels * LIMITED_CASHBACK_RATE;
-
     const newBalance = balance - price + balanceAdjusment;
-    const balanceUpdateRequest: UpdateUserRequest = {
+    let balanceUpdateRequest: UpdateUserRequest = {
       session: session,
       update: permanent ? { balance: newBalance } : { tickets: newBalance },
     };
+    // (3/4) Handle pity updates
+    const rewardTier: string = getTier(rewardId);
+    const newPity: number = rewardTier === Tier.FIVE_STAR ? 0 : pity + 1;
+    balanceUpdateRequest = {
+      ...balanceUpdateRequest,
+      update: permanent
+        ? { permanent_pity: newPity, ...balanceUpdateRequest.update }
+        : { limited_pity: newPity, ...balanceUpdateRequest.update },
+    };
+    // (4/4) dispatch changes to redux and server
     dispatch(updateUserData(balanceUpdateRequest));
 
     if (balanceAdjusment > 0)
