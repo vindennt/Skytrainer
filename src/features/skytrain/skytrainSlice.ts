@@ -2,25 +2,22 @@ import { createSlice } from "@reduxjs/toolkit";
 import { Graph, Station } from "@src/features/skytrain/Graph";
 import { EDGE_LIST } from "@src/utils/skytrain";
 import { buildGraph } from "@features/skytrain/TripFinder";
+import { TripReward } from "../reward/TripRewardHandler";
 
 // skytrainGraph: Graph of the skytrain stations
 // DEPRECATED: selectedStartStation: starting station for a trip NOTE: for now, try and use the stations selector to avoid redundancy. Stations UI should auto-scroll to the selected station
-// viableTrip: the randomly selected viable trip from among all the trips return from TripFinder
-// tripRewards: All rewards from the trip
+// currentTrip: array of station ids being visited during the current trip
+// currentRewards: Reward that will be given when the trip is finished
 export interface SkytrainState {
   skytrainGraph: Graph;
-  viableTrips: Station[][];
-  chosenViableTrip: Station[];
-  // tripRewards: Reward[];
-  //   selectedStartStation: Station | null;
+  trip: string[];
+  rewards: TripReward | null;
 }
 
 const initialState: SkytrainState = {
   skytrainGraph: buildGraph(1),
-  viableTrips: [],
-  chosenViableTrip: [],
-  // tripRewards: [],
-  //   selectedStartStation: null,
+  trip: [],
+  rewards: null,
 };
 
 const skytrainSlice = createSlice({
@@ -31,18 +28,16 @@ const skytrainSlice = createSlice({
       state.skytrainGraph = buildGraph(1);
       // console.log(state.skytrainGraph);
     },
-    setViableTrips: (state, action) => {
-      state.viableTrips = action.payload;
+    setTrip: (state, action) => {
+      state.trip = action.payload;
+      console.log(state.trip);
     },
-    setChosenViableTrip: (state, action) => {
-      state.chosenViableTrip = action.payload;
+    setRewards: (state, action) => {
+      state.rewards = action.payload;
+      console.log(state.rewards);
     },
-    // setTripRewards: (state, action) => {
-    //   state.tripRewards = action.payload;
-    // },
   },
 });
 
-export const { setViableTrips, setChosenViableTrip, setGraph } =
-  skytrainSlice.actions;
+export const { setTrip, setRewards, setGraph } = skytrainSlice.actions;
 export default skytrainSlice.reducer;

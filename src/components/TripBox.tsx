@@ -6,7 +6,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { UserState } from "@src/features/user/userSlice";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import { getStationName } from "@src/utils/skytrain";
-import { SkytrainState } from "@src/features/skytrain/skytrainSlice";
+import {
+  SkytrainState,
+  setRewards,
+  setTrip,
+} from "@src/features/skytrain/skytrainSlice";
 import { findRandomViableTripIds } from "@src/features/skytrain/TripFinder";
 import { Station } from "@src/features/skytrain/Graph";
 import { TripReward, getRewards } from "@src/features/reward/TripRewardHandler";
@@ -17,10 +21,12 @@ import {
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 export const TripBox: React.FC = () => {
   const theme = useTheme();
   const dispatch = useDispatch<any>();
+  const navigation = useNavigation();
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
@@ -56,11 +62,10 @@ export const TripBox: React.FC = () => {
       selectedStation,
       frozenSliderValue
     );
-    console.log(tripPath);
-
+    dispatch(setTrip(tripPath));
     const rewards: TripReward = getRewards(tripPath, stations);
-    console.log(rewards.contributors);
-    console.log(rewards.total);
+    dispatch(setRewards(rewards));
+
     // TODO: Rewards should only be given if the trip was actually finished
     const updateRequest: UpdateUserRequest = {
       session: session,
@@ -72,8 +77,10 @@ export const TripBox: React.FC = () => {
     };
     dispatch(updateUserData(updateRequest));
 
+    navigation.navigate("Trip" as never);
     setTimeout(() => {
       setIsLoading(false);
+      // NOTE: Trip is the finish screen. The timer screen will be another one
     }, 500);
   };
 
