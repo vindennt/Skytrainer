@@ -9,6 +9,7 @@ import { getStationName } from "@src/utils/skytrain";
 import { SkytrainState } from "@src/features/skytrain/skytrainSlice";
 import { findRandomViableTripIds } from "@src/features/skytrain/TripFinder";
 import { Station } from "@src/features/skytrain/Graph";
+import { TripReward, getRewards } from "@src/features/reward/TripRewardHandler";
 
 export const TripBox: React.FC = () => {
   const theme = useTheme();
@@ -18,6 +19,9 @@ export const TripBox: React.FC = () => {
   );
   const selectedStation: string = useSelector(
     (state: { stations: StationsState }) => state.stations.selectedStation
+  );
+  const stations: Map<string, number> = useSelector(
+    (state: { stations: StationsState }) => state.stations.stations
   );
   const skytrainGraph = useSelector(
     (state: { skytrain: SkytrainState }) => state.skytrain.skytrainGraph
@@ -36,6 +40,10 @@ export const TripBox: React.FC = () => {
       sliderValue
     );
     console.log(tripPath);
+
+    const rewards: TripReward = getRewards(tripPath, stations);
+
+    console.log(rewards.contributors);
   };
 
   return (

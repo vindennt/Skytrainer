@@ -1,6 +1,8 @@
 import { Graph, Station, newStation } from "../features/skytrain/Graph";
 import { Tier } from "@src/utils/gacha";
 
+export const BASE_TRIP_REWARD: number = 10;
+
 // Edge that should be built
 export type EdgeToBuild = {
   start: Station;
