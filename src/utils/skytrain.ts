@@ -170,7 +170,7 @@ STATION_MAP.set("042", [
 ]);
 STATION_MAP.set("043", ["King Edward", KingEdward, Tier.FOUR_STAR]);
 STATION_MAP.set("044", [
-  "Oakridge 41stAve",
+  "Oakridge 41st Ave",
   OakridgeFourtyFirstAve,
   Tier.FOUR_STAR,
 ]);
@@ -202,7 +202,7 @@ export function getStationName(id: string): string {
   }
 }
 
-// Gives station  of input id, index 1 being the Station in the array of data
+// Gives station Name of input id, index 0 being the name in the array of data
 export function getStation(id: string): Station {
   const ref = STATION_MAP.get(id);
   if (ref !== undefined) {

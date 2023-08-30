@@ -20,7 +20,7 @@ export const TripBox: React.FC = () => {
     (state: { stations: StationsState }) => state.stations.selectedStation
   );
   const skytrainGraph = useSelector(
-    (state: { skytrain: SkytrainState }) => state.skytrain.skytrainGraph
+    (state: { skytrainTrip: SkytrainState }) => state.skytrainTrip.skytrainGraph
   );
 
   const handleTripStart = () => {
