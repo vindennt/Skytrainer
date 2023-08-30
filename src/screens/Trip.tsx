@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { StackActions, useNavigation } from "@react-navigation/native";
 import { AuthState } from "@src/features/auth/authSlice";
 import {
   RewardContributor,
@@ -116,7 +116,7 @@ const Trip = () => {
         // mode="outlined"
         // textColor="royalblue"
         onPress={() => {
-          navigation.goBack();
+          navigation.dispatch(StackActions.popToTop);
         }}
         style={styles.button}
         labelStyle={{ fontSize: 16 }} // icon size

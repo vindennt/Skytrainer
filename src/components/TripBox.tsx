@@ -48,16 +48,13 @@ export const TripBox: React.FC = () => {
       selectedStation,
       sliderValue
     );
-    dispatch(setTrip(tripPath));
     const rewards: TripReward = getRewards(tripPath, stations);
+    dispatch(setTrip(tripPath));
     dispatch(setRewards(rewards));
 
-    // TODO: Navigate to the dummy screen
-
-    navigation.navigate("Trip" as never);
+    navigation.navigate("Timer" as never);
     setTimeout(() => {
       setIsLoading(false);
-      // NOTE: Trip is the finish screen. The timer screen will be another one
     }, 500);
   };
 

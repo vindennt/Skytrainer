@@ -10,6 +10,7 @@ import {
   Gacha,
   Trip,
   Signup,
+  Timer,
 } from "@screens/index";
 import BottomNavBar from "@navigation/BottomNavBar";
 import { useSelector, useDispatch } from "react-redux";
@@ -106,7 +107,14 @@ const AppNavigator = () => {
           }}
         />
         <Stack.Screen name="Home" component={Home} />
-        <Stack.Screen name="Trip" component={Trip} />
+        <Stack.Group
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="Trip" component={Trip} />
+          <Stack.Screen name="Timer" component={Timer} />
+        </Stack.Group>
         <Stack.Screen name="Shop" component={Shop} />
         <Stack.Screen name="Gacha" component={Gacha} />
         <Stack.Screen name="Stations" component={Stations} />

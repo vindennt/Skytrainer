@@ -11,13 +11,13 @@ import { TripReward } from "../reward/TripRewardHandler";
 export interface SkytrainState {
   skytrainGraph: Graph;
   trip: string[];
-  rewards: TripReward | null;
+  rewards: TripReward;
 }
 
 const initialState: SkytrainState = {
   skytrainGraph: buildGraph(1),
   trip: [],
-  rewards: null,
+  rewards: { total: 0, contributors: [] },
 };
 
 const skytrainSlice = createSlice({
