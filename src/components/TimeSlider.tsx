@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     // flex: 1,
     // justifyContent: "center",
     // marginRight: 10,
-    marginTop: 8,
+    // marginTop: 8,
   },
   slider: {
     height: 40,

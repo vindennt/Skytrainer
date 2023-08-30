@@ -13,6 +13,7 @@ import { TripBox } from "@src/components/TripBox";
 import { imageBustMap } from "@src/utils/imageMappings";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import { useNavigation } from "@react-navigation/native";
+import { getStationName } from "@src/utils/skytrain";
 
 const Home = () => {
   const theme = useTheme();
@@ -24,15 +25,16 @@ const Home = () => {
     (state: { stations: StationsState }) => state.stations.selectedStation
   );
   const goToStationSelect = () => {
-    navigation.navigate("StationSelect" as never);
+    navigation.navigate("Select Station" as never);
   };
-
+  const title = getStationName(selectedStation) + " Station";
   const imageSource: ImageSourcePropType = imageBustMap[
     selectedStation
   ] as ImageSourcePropType;
 
   return (
     <View style={styles.container}>
+      <Text style={styles.stationTitleText}>{title}</Text>
       <TouchableOpacity
         style={styles.imageContainer}
         onPress={goToStationSelect}
@@ -60,7 +62,9 @@ export default Home;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingTop: 10,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
   timeText: {
     fontSize: 40,
@@ -84,5 +88,9 @@ const styles = StyleSheet.create({
     // position: "absolute",
     // width: 300,
     // maxHeight: "60%",
+  },
+  stationTitleText: {
+    fontSize: 16,
+    textAlign: "center",
   },
 });

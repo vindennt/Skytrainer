@@ -1,5 +1,5 @@
 import { View } from "react-native";
-import { Button, IconButton } from "react-native-paper";
+import { useTheme, Button, IconButton } from "react-native-paper";
 import { GradientIcon } from "@components/IconGradient";
 import { useNavigation } from "@react-navigation/native";
 
@@ -16,6 +16,7 @@ export const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
   showBalance,
   showTickets,
 }) => {
+  const theme = useTheme();
   const navigation = useNavigation();
   const goToAccount = () => {
     navigation.navigate("Account" as never);
@@ -56,7 +57,7 @@ export const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
             />
           )}
           mode="outlined"
-          labelStyle={{ marginVertical: 5 }}
+          labelStyle={{ marginVertical: 5, color: theme.colors.onBackground }}
           // onPress={() => console.log("Pressed")}
         >
           {balance.toString()}
@@ -75,7 +76,7 @@ export const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
             />
           )}
           mode="outlined"
-          labelStyle={{ marginVertical: 5 }}
+          labelStyle={{ marginVertical: 5, color: theme.colors.onBackground }}
           // onPress={() => console.log("Pressed")}
         >
           {tickets.toString()}

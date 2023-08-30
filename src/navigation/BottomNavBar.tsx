@@ -72,6 +72,9 @@ const BottomNavBar = () => {
       //   // bottom: -10,
       //   position: "absolute",
       // }}
+      barStyle={{
+        backgroundColor: theme.colors.elevation.level2,
+      }}
       safeAreaInsets={{ bottom: 10 }}
     />
   );

@@ -2,9 +2,14 @@ import * as React from "react";
 import { View, StyleSheet } from "react-native";
 import { useTheme, Text, Button } from "react-native-paper";
 import { TimeSlider } from "@src/components/TimeSlider";
+import { useSelector } from "react-redux";
+import { UserState } from "@src/features/user/userSlice";
 
 export const TripBox: React.FC = () => {
   const theme = useTheme();
+  const sliderValue = useSelector(
+    (state: { user: UserState }) => state.user.slider
+  );
 
   return (
     <View>
@@ -16,7 +21,14 @@ export const TripBox: React.FC = () => {
       >
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Focus Trip</Text>
-          <Button labelStyle={{ marginVertical: 5 }} mode="contained">
+          <Button
+            labelStyle={{ marginVertical: 5 }}
+            mode="contained"
+            disabled={sliderValue === 0}
+            onPress={() => {
+              console.log("pressed");
+            }}
+          >
             START
           </Button>
         </View>
@@ -28,7 +40,7 @@ export const TripBox: React.FC = () => {
 
 const styles = StyleSheet.create({
   tripContainer: {
-    padding: 16,
+    padding: 18,
     borderRadius: 10,
     // flex: 1,
   },
@@ -41,7 +53,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "pink",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 4,
+    marginBottom: 18,
   },
   headerText: { fontWeight: "bold" },
 });
