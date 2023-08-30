@@ -16,6 +16,18 @@ import { sortByMapPresence } from "@features/shop/Shop";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { StationsState } from "@src/features/stations/stationsSlice";
+import { BannerCard } from "@src/components/BannerCard";
+
+import {
+  BannerInfo,
+  PermanentBannerInfo,
+  LimitedBannerInfo,
+  FIVE_STAR_GRADIENT,
+  FOUR_STAR_GRADIENT,
+  Tier,
+} from "@utils/gacha";
+import { getTier } from "@src/utils/skytrain";
+import { GachaRewardDisplay } from "@src/components/GachaRewardDisplay";
 
 const Shop = () => {
   const defaultBuyable: Buyable = {
@@ -26,6 +38,9 @@ const Shop = () => {
   };
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<Buyable>(defaultBuyable);
+  const [gachaPopup, setGachaPopup] = useState<boolean>(false);
+
+  const [rewardId, setRewardId] = useState<string>("001");
 
   let stations: Map<string, number> = new Map<string, number>();
   stations = useSelector(
@@ -40,6 +55,7 @@ const Shop = () => {
   const handleItemPress = (item: Buyable) => {
     console.log("Item ID:", item);
     setSelectedItem(item);
+    setGachaPopup(false);
     setShowPopup(true);
   };
 
@@ -47,10 +63,34 @@ const Shop = () => {
     return <ProductBox item={item} onPress={() => handleItemPress(item)} />;
   };
 
+  const showRewardPopup = (rewardId: string) => {
+    setShowPopup(true);
+    setGachaPopup(true);
+    setRewardId(rewardId);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Shop</Text>
+
       <FlatList
+        ListHeaderComponent={
+          <View style={styles.container}>
+            <Text style={styles.subheader}>Limited Time</Text>
+            <BannerCard
+              banner={LimitedBannerInfo}
+              popupCallback={showRewardPopup}
+              popupVisible={showPopup}
+            />
+            <Text style={styles.subheader}>Permanent</Text>
+            <BannerCard
+              banner={PermanentBannerInfo}
+              popupCallback={showRewardPopup}
+              popupVisible={showPopup}
+            />
+            <Text style={styles.subheader}>Stations</Text>
+          </View>
+        }
         data={sortedShopData}
         renderItem={renderShopItem}
         keyExtractor={(item) => item.itemid}
@@ -60,13 +100,22 @@ const Shop = () => {
       <Popup
         visible={showPopup}
         onClose={handleClosePopup}
-        closeOnTapAnywhere={false}
-        closeButtonVisible={true}
+        {...(gachaPopup
+          ? {
+              closeOnTapAnywhere: true,
+              closeButtonVisible: false,
+              backgroundColours:
+                getTier(rewardId) === Tier.FIVE_STAR
+                  ? FIVE_STAR_GRADIENT
+                  : FOUR_STAR_GRADIENT,
+            }
+          : { closeOnTapAnywhere: false, closeButtonVisible: true })}
       >
-        <ProductCard
-          item={selectedItem}
-          onPurchase={handleClosePopup}
-        ></ProductCard>
+        {gachaPopup ? (
+          <GachaRewardDisplay stationId={rewardId} />
+        ) : (
+          <ProductCard item={selectedItem} onPurchase={handleClosePopup} />
+        )}
       </Popup>
     </View>
   );
@@ -92,5 +141,11 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     fontSize: 30,
     fontWeight: "700",
+  },
+  subheader: {
+    // marginLeft: 10,
+    // marginVertical: 15,
+    fontSize: 24,
+    fontWeight: "400",
   },
 });
