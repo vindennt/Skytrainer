@@ -7,29 +7,34 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Text, useTheme, Button } from "react-native-paper";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { UserState } from "@src/features/user/userSlice";
 import { TripBox } from "@src/components/TripBox";
 import { imageBustMap } from "@src/utils/imageMappings";
-import { StationsState } from "@src/features/stations/stationsSlice";
+import {
+  StationsState,
+  setSelectedStation,
+} from "@src/features/stations/stationsSlice";
 import { useNavigation } from "@react-navigation/native";
 import { getStationName } from "@src/utils/skytrain";
 
 const Home = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const navigation = useNavigation();
   const sliderValue = useSelector(
     (state: { user: UserState }) => state.user.slider
   );
-  const selectedStation = useSelector(
-    (state: { stations: StationsState }) => state.stations.selectedStation
+  const lastSetStation = useSelector(
+    (state: { user: UserState }) => state.user.last_used_station
   );
   const goToStationSelect = () => {
+    dispatch(setSelectedStation(lastSetStation));
     navigation.navigate("Select Station" as never);
   };
-  const title = getStationName(selectedStation) + " Station";
+  const title = getStationName(lastSetStation) + " Station";
   const imageSource: ImageSourcePropType = imageBustMap[
-    selectedStation
+    lastSetStation
   ] as ImageSourcePropType;
 
   return (

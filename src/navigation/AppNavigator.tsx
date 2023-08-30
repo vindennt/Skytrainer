@@ -44,13 +44,12 @@ const AppNavigator = () => {
     (state: { user: UserState }) => state.user.last_used_station
   );
 
-  const initUserData = (session: Session) => {
+  const initUserData = async (session: Session) => {
     dispatch(setUser(session.user));
     dispatch(fetchAllUserData(session));
     dispatch(fetchAllStations(session));
-    if (lastUsedStation !== "000") {
-      dispatch(setSelectedStation(lastUsedStation));
-    }
+    while (lastUsedStation === "000") {}
+    dispatch(setSelectedStation(lastUsedStation));
   };
 
   useEffect(() => {

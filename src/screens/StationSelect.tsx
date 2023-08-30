@@ -1,22 +1,40 @@
 import * as React from "react";
 import { View, FlatList, StyleSheet } from "react-native";
 import { useTheme, Text, Button, Title } from "react-native-paper";
-import { StationsState } from "@features/stations/stationsSlice";
+import {
+  StationsState,
+  setSelectedStation,
+} from "@features/stations/stationsSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { StationSelector } from "@src/components/StationSelectBox";
 import { getStationName } from "@src/utils/skytrain";
+import { useNavigation } from "@react-navigation/native";
+import { UserState, setLastUsedStation } from "@src/features/user/userSlice";
+import { useState } from "react";
 
 const Stations = () => {
   const dispatch = useDispatch<any>();
+  const navigation = useNavigation();
   const theme = useTheme();
 
   const stations: Map<string, number> = useSelector(
     (state: { stations: StationsState }) => state.stations.stations
   );
+
   const selectedStation: string = useSelector(
     (state: { stations: StationsState }) => state.stations.selectedStation
   );
+
   const title = getStationName(selectedStation) + " Station";
+
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
+
+  const handleSelect = () => {
+    dispatch(setLastUsedStation(selectedStation));
+    navigation.goBack();
+  };
 
   return (
     <View
@@ -32,6 +50,14 @@ const Stations = () => {
         ]}
       >
         <Text style={styles.title}>{title}</Text>
+        <View style={styles.buttonContainer}>
+          <Button mode="outlined" onPress={handleGoBack}>
+            Cancel
+          </Button>
+          <Button mode="contained" onPress={handleSelect}>
+            Select
+          </Button>
+        </View>
       </View>
     </View>
   );
@@ -51,9 +77,13 @@ const styles = StyleSheet.create({
     // backgroundColor: "blue",
   },
   title: {
-    paddingTop: 14,
-    paddingBottom: 50,
+    padding: 20,
     fontSize: 20,
     textAlign: "center",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    paddingBottom: 40,
   },
 });
