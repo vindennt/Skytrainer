@@ -2,14 +2,41 @@ import * as React from "react";
 import { View, StyleSheet } from "react-native";
 import { useTheme, Text, Button } from "react-native-paper";
 import { TimeSlider } from "@src/components/TimeSlider";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { UserState } from "@src/features/user/userSlice";
+import { StationsState } from "@src/features/stations/stationsSlice";
+import { getStationName } from "@src/utils/skytrain";
+import { SkytrainState } from "@src/features/skytrainTrip/skytrainSlice";
+import { findRandomViableTrips } from "@src/features/skytrainTrip/TripFinder";
+import { Station } from "@src/features/skytrainTrip/Graph";
 
 export const TripBox: React.FC = () => {
   const theme = useTheme();
+  const dispatch = useDispatch();
   const sliderValue = useSelector(
     (state: { user: UserState }) => state.user.slider
   );
+  const selectedStation: string = useSelector(
+    (state: { stations: StationsState }) => state.stations.selectedStation
+  );
+  const skytrainGraph = useSelector(
+    (state: { skytrain: SkytrainState }) => state.skytrain.skytrainGraph
+  );
+
+  const handleTripStart = () => {
+    // TODO: implement timer function, such that the rewards are only given if timer ends without cancel
+    console.log(
+      getStationName(selectedStation) +
+        " starting focus trip for " +
+        sliderValue
+    );
+    const tripPath: Station[] = findRandomViableTrips(
+      skytrainGraph,
+      selectedStation,
+      sliderValue
+    );
+    console.log(tripPath);
+  };
 
   return (
     <View>
@@ -25,9 +52,7 @@ export const TripBox: React.FC = () => {
             labelStyle={{ marginVertical: 5 }}
             mode="contained"
             disabled={sliderValue === 0}
-            onPress={() => {
-              console.log("pressed");
-            }}
+            onPress={handleTripStart}
           >
             START
           </Button>

@@ -109,7 +109,7 @@ function areEqual(path1: Station[], path2: Station[]): boolean {
 }
 
 // Returns one random trip from among all possible trips that could be taken
-export function findRandomViableTrips(
+function findRandomViableTrip(
   graph: Graph,
   startId: string,
   desiredLength: number
@@ -122,4 +122,19 @@ export function findRandomViableTrips(
   );
   const randomIndex: number = Math.floor(Math.random() * viableTrips.length);
   return viableTrips[randomIndex];
+}
+
+// Returns string ids of random trip from among all possible trips that could be taken
+export function findRandomViableTripIds(
+  graph: Graph,
+  startId: string,
+  desiredLength: number
+): string[] {
+  const viableTrip: Station[] = findRandomViableTrip(
+    graph,
+    startId,
+    desiredLength
+  );
+  const idsOfViableTrips: string[] = viableTrip.map((station) => station.id);
+  return idsOfViableTrips;
 }
