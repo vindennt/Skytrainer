@@ -31,9 +31,11 @@ const Stations = () => {
     navigation.goBack();
   };
 
-  const handleSelect = () => {
-    dispatch(setLastUsedStation(selectedStation));
+  const handleSelect = async () => {
     navigation.goBack();
+    setTimeout(() => {
+      dispatch(setLastUsedStation(selectedStation));
+    }, 180);
   };
 
   return (
@@ -62,6 +64,7 @@ const Stations = () => {
     </View>
   );
 };
+
 export default Stations;
 
 const styles = StyleSheet.create({
