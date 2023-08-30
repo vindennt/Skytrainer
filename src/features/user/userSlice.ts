@@ -1,13 +1,8 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-// import { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
+import { createSlice } from "@reduxjs/toolkit";
 
 import {
   updateUserData,
   fetchAllUserData,
-  updateDisplayName,
-  updateBalance,
-  updateTickets,
-  updatePity,
   UserUpdate,
 } from "@src/features/user/userSliceHelpers";
 
@@ -115,34 +110,6 @@ const userSlice = createSlice({
         if (data.slider !== undefined) state.slider = data.slider;
       }
     });
-
-    builder.addCase(updateDisplayName.fulfilled, (state, action) => {
-      if (action.payload) state.display_name = action.payload;
-      console.log("updateDisplayName fulfilled: " + state.display_name);
-    });
-    builder.addCase(updateBalance.fulfilled, (state, action) => {
-      // console.log(action.payload);
-      if (action.payload !== undefined) state.balance = action.payload;
-      console.log("updateBalance fulfilled: " + state.balance);
-    });
-    builder.addCase(updateTickets.fulfilled, (state, action) => {
-      // console.log(action.payload);
-      if (action.payload !== undefined) state.tickets = action.payload;
-      console.log("updateTickets fulfilled: " + state.tickets);
-    });
-    builder.addCase(updatePity.fulfilled, (state, action) => {
-      if (action.payload?.permanent_pity !== undefined) {
-        state.permanent_pity = action.payload.permanent_pity;
-      } else if (action.payload?.limited_pity !== undefined) {
-        state.limited_pity = action.payload.limited_pity;
-      }
-      console.log(
-        "updatePity fulfilled, permanent : " +
-          state.permanent_pity +
-          " limited: " +
-          state.limited_pity
-      );
-    });
   },
 });
 
@@ -162,9 +129,6 @@ export const {
 // export { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
 export {
   fetchAllUserData,
-  updateDisplayName,
-  updateBalance,
-  updateTickets,
-  updatePity,
+  updateUserData,
 } from "@src/features/user/userSliceHelpers";
 export default userSlice.reducer;
