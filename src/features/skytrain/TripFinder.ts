@@ -54,6 +54,7 @@ export function findViableTrips(
       return;
     } else {
       // If current path is not yet viable, check neighbours to find path forward
+      // const neighbours = graph.getNeighbours(current);
       const neighbours = graph.getNeighbours(current);
       // *** Infinite loop part 1/2
       // *** If traversal is at a transfer station, delete everyone already visited, except station just visited
@@ -109,11 +110,11 @@ function areEqual(path1: Station[], path2: Station[]): boolean {
 }
 
 // Returns one random trip from among all possible trips that could be taken
-function findRandomViableTrip(
+export const findRandomViableTrip = (
   graph: Graph,
   startId: string,
   desiredLength: number
-): Station[] {
+): Station[] => {
   const startStation: Station = getStation(startId);
   const viableTrips: Station[][] = findViableTrips(
     graph,
@@ -122,7 +123,7 @@ function findRandomViableTrip(
   );
   const randomIndex: number = Math.floor(Math.random() * viableTrips.length);
   return viableTrips[randomIndex];
-}
+};
 
 // Returns string ids of random trip from among all possible trips that could be taken
 export function findRandomViableTripIds(

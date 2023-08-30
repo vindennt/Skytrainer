@@ -6,9 +6,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { UserState } from "@src/features/user/userSlice";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import { getStationName } from "@src/utils/skytrain";
-import { SkytrainState } from "@src/features/skytrainTrip/skytrainSlice";
-import { findRandomViableTrips } from "@src/features/skytrainTrip/TripFinder";
-import { Station } from "@src/features/skytrainTrip/Graph";
+import { SkytrainState } from "@src/features/skytrain/skytrainSlice";
+import {
+  findRandomViableTrip,
+  findRandomViableTripIds,
+} from "@src/features/skytrain/TripFinder";
+import { Graph, Station } from "@src/features/skytrain/Graph";
 
 export const TripBox: React.FC = () => {
   const theme = useTheme();
@@ -19,7 +22,7 @@ export const TripBox: React.FC = () => {
   const selectedStation: string = useSelector(
     (state: { stations: StationsState }) => state.stations.selectedStation
   );
-  const skytrainGraph = useSelector(
+  const skytrainGraph: Graph = useSelector(
     (state: { skytrain: SkytrainState }) => state.skytrain.skytrainGraph
   );
 
@@ -30,7 +33,7 @@ export const TripBox: React.FC = () => {
         " starting focus trip for " +
         sliderValue
     );
-    const tripPath: Station[] = findRandomViableTrips(
+    const tripPath: Station[] = findRandomViableTrip(
       skytrainGraph,
       selectedStation,
       sliderValue
