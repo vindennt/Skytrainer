@@ -6,9 +6,9 @@ import thunk from "redux-thunk";
 import authReducer from "@features/auth/authSlice";
 import userReducer from "@features/user/userSlice";
 import stationsReducer from "@features/stations/stationsSlice";
-import skytrainTripReducer from "@features/skytrainTrip/skytrainTripSlice";
+import skytrainReducer from "@src/features/skytrainTrip/skytrainSlice";
 
-enableMapSet();
+enableMapSet(); // Initiate map functions
 
 const persistConfig = {
   key: "root",
@@ -19,7 +19,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   user: userReducer,
   stations: stationsReducer,
-  skytrainTrip: skytrainTripReducer,
+  skytrainTrip: skytrainReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

@@ -1,4 +1,4 @@
-import { getStationName } from "@src/features/skytrainTrip/SkytrainData";
+import { getStationName } from "@src/utils/skytrain";
 import React from "react";
 import {
   FlatList,

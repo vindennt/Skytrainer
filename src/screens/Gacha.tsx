@@ -13,7 +13,7 @@ import {
 import { Popup } from "@src/components/Popup";
 import { useState } from "react";
 import { GachaRewardDisplay } from "@src/components/GachaRewardDisplay";
-import { getTier } from "@src/features/skytrainTrip/SkytrainData";
+import { getTier } from "@src/utils/skytrain";
 
 const Gacha = () => {
   const [popupVisible, setPopupVisible] = useState<boolean>(false);

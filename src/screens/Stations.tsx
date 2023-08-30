@@ -49,7 +49,7 @@ export default Stations;
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 30,
+    paddingHorizontal: 20,
     paddingTop: 10,
     flex: 1,
   },

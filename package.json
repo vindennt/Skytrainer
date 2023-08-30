@@ -9,6 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@miblanchard/react-native-slider": "^2.3.1",
     "@react-native-async-storage/async-storage": "^1.19.3",
     "@react-native-community/blur": "^4.3.2",
     "@react-native-community/masked-view": "^0.1.11",
@@ -48,6 +49,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
+    "@react-native-community/slider": "^4.4.3",
     "@types/": "shopify/react-native-skia",
     "@types/react": "~18.0.14",
     "@types/react-native-indicators": "^0.16.2",

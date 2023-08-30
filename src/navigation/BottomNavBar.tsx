@@ -67,6 +67,11 @@ const BottomNavBar = () => {
       compact={true}
       // TODO: Cause bar to move downards, and content to render beneath it. Might be useful for blue
       // barStyle={{ bottom: -30, position: "absolute" }}
+      // barStyle={{
+      //   backgroundColor: "rgba(10,10,10,0.5)",
+      //   // bottom: -10,
+      //   position: "absolute",
+      // }}
       safeAreaInsets={{ bottom: 10 }}
     />
   );
