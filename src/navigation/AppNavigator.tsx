@@ -25,6 +25,7 @@ import {
 import { CurrencyDisplay } from "@components/CurrencyDisplay";
 import StationSelect from "@src/screens/StationSelect";
 import { Animated } from "react-native";
+import { setGraph } from "@src/features/skytrain/skytrainSlice";
 
 const AppNavigator = () => {
   const dispatch = useDispatch<any>();
@@ -47,6 +48,7 @@ const AppNavigator = () => {
     av.addListener(() => {
       return;
     });
+    dispatch(setGraph(undefined));
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       dispatch(setSession(session));

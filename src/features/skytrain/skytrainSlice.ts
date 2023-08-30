@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { Graph, Station } from "@features/skytrainTrip/Graph";
+import { Graph, Station } from "@src/features/skytrain/Graph";
 import { EDGE_LIST } from "@src/utils/skytrain";
 
 // Builds and returns the graph from data above
@@ -36,9 +36,13 @@ const initialState: SkytrainState = {
 };
 
 const skytrainSlice = createSlice({
-  name: "skytrainTrip",
+  name: "skytrain",
   initialState,
   reducers: {
+    setGraph: (state, action) => {
+      state.skytrainGraph = buildGraph(1);
+      // console.log(state.skytrainGraph);
+    },
     setViableTrips: (state, action) => {
       state.viableTrips = action.payload;
     },
@@ -51,5 +55,6 @@ const skytrainSlice = createSlice({
   },
 });
 
-export const { setViableTrips, setChosenViableTrip } = skytrainSlice.actions;
+export const { setViableTrips, setChosenViableTrip, setGraph } =
+  skytrainSlice.actions;
 export default skytrainSlice.reducer;

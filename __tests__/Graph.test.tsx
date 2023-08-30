@@ -5,7 +5,7 @@ import {
   Station,
   newStation,
   newEdge,
-} from "@features/skytrainTrip/Graph";
+} from "@src/features/skytrain/Graph";
 
 // Template test
 test("TEMPLATE", () => {

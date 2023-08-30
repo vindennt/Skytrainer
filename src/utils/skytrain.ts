@@ -1,4 +1,4 @@
-import { Graph, Station, newStation } from "../features/skytrainTrip/Graph";
+import { Graph, Station, newStation } from "../features/skytrain/Graph";
 import { Tier } from "@src/utils/gacha";
 
 // Edge that should be built
@@ -197,6 +197,16 @@ export function getStationName(id: string): string {
   const ref = STATION_MAP.get(id);
   if (ref !== undefined) {
     return ref[0];
+  } else {
+    throw new Error("No such station ID");
+  }
+}
+
+// Gives station  of input id, index 1 being the Station in the array of data
+export function getStation(id: string): Station {
+  const ref = STATION_MAP.get(id);
+  if (ref !== undefined) {
+    return ref[1];
   } else {
     throw new Error("No such station ID");
   }
