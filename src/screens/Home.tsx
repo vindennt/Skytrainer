@@ -6,40 +6,44 @@ import {
   ImageSourcePropType,
   TouchableOpacity,
 } from "react-native";
-import { Text, IconButton, useTheme, Button } from "react-native-paper";
-import { TimeSlider } from "@src/components/TimeSlider";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { UserState, setSlider } from "@src/features/user/userSlice";
-import Icon from "react-native-vector-icons/Ionicons";
+import { Text, useTheme, Button } from "react-native-paper";
+import { useSelector } from "react-redux";
+import { UserState } from "@src/features/user/userSlice";
 import { TripBox } from "@src/components/TripBox";
 import { imageBustMap } from "@src/utils/imageMappings";
 import { StationsState } from "@src/features/stations/stationsSlice";
+import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
   const theme = useTheme();
+  const navigation = useNavigation();
   const sliderValue = useSelector(
     (state: { user: UserState }) => state.user.slider
   );
   const selectedStation = useSelector(
     (state: { stations: StationsState }) => state.stations.selectedStation
   );
+  const goToStationSelect = () => {
+    navigation.navigate("StationSelect" as never);
+  };
+
   const imageSource: ImageSourcePropType = imageBustMap[
     selectedStation
   ] as ImageSourcePropType;
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.imageContainer}>
+      <TouchableOpacity
+        style={styles.imageContainer}
+        onPress={goToStationSelect}
+      >
         <Image style={styles.image} source={imageSource} resizeMode="contain" />
       </TouchableOpacity>
       <View style={styles.timeHeader}>
         <Text style={styles.timeText}>{sliderValue} mins</Text>
         <Button
           icon="chevron-forward-outline"
-          onPress={() => {
-            console.log("pressed");
-          }}
+          onPress={goToStationSelect}
           contentStyle={{ flexDirection: "row-reverse" }}
           labelStyle={{ marginVertical: 2 }}
         >

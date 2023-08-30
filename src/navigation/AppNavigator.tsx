@@ -23,6 +23,7 @@ import {
   fetchAllStations,
 } from "@features/stations/stationsSlice";
 import { CurrencyDisplay } from "@components/CurrencyDisplay";
+import StationSelect from "@src/screens/StationSelect";
 
 const AppNavigator = () => {
   const dispatch = useDispatch<any>();
@@ -88,7 +89,10 @@ const AppNavigator = () => {
         <Stack.Screen name="Shop" component={Shop} />
         <Stack.Screen name="Gacha" component={Gacha} />
         <Stack.Screen name="Stations" component={Stations} />
-        <Stack.Screen name="Account" component={Account} />
+        <Stack.Group screenOptions={{ presentation: "modal" }}>
+          <Stack.Screen name="Account" component={Account} />
+          <Stack.Screen name="StationSelect" component={StationSelect} />
+        </Stack.Group>
       </Stack.Navigator>
     );
   };

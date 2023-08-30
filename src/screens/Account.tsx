@@ -1,24 +1,29 @@
 import { useState } from "react";
 import { supabase } from "@api/supabase";
 import { Session } from "@supabase/supabase-js";
-import { StyleSheet, View, Alert } from "react-native";
-import { Button, TextInput, Text, HelperText } from "react-native-paper";
+import { StyleSheet, View } from "react-native";
+import {
+  useTheme,
+  Divider,
+  Button,
+  TextInput,
+  Text,
+  HelperText,
+} from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik } from "formik";
 import { changeDisplayNameSchema } from "@features/user/changeDisplayNameForm";
 import { AuthState } from "@features/auth/authSlice";
-import { UserState, setDisplayName } from "@features/user/userSlice";
-import { updateDisplayName } from "@features/user/userSlice";
+import { UserState } from "@features/user/userSlice";
 import {
-  UpdateDisplayNameRequest,
   UpdateUserRequest,
-  UserUpdate,
   updateUserData,
 } from "@features/user/userSliceHelpers";
 import { getDate } from "@utils/dates";
 
 const Account = () => {
   const dispatch = useDispatch<any>();
+  const theme = useTheme();
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
@@ -54,7 +59,9 @@ const Account = () => {
   };
 
   return session && session.user ? (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       {!editingDisplayName ? (
         <View
           style={{
@@ -171,7 +178,6 @@ const styles = StyleSheet.create({
     padding: 30,
     flex: 1,
     justifyContent: "center",
-    backgroundColor: "black",
   },
   verticallySpaced: {
     paddingTop: 4,
@@ -182,5 +188,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     flexDirection: "column",
     margin: 10,
+  },
+  divider: {
+    borderBottomWidth: 1,
   },
 });
