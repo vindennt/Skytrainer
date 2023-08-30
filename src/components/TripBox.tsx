@@ -10,12 +10,25 @@ import { SkytrainState } from "@src/features/skytrain/skytrainSlice";
 import { findRandomViableTripIds } from "@src/features/skytrain/TripFinder";
 import { Station } from "@src/features/skytrain/Graph";
 import { TripReward, getRewards } from "@src/features/reward/TripRewardHandler";
+import { Session } from "@supabase/supabase-js";
+import { AuthState } from "@src/features/auth/authSlice";
+import {
+  UpdateUserRequest,
+  updateUserData,
+} from "@src/features/user/userSliceHelpers";
+import { useState } from "react";
 
 export const TripBox: React.FC = () => {
   const theme = useTheme();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
+  const session: Session | null = useSelector(
+    (state: { auth: AuthState }) => state.auth.session
+  );
   const sliderValue = useSelector(
     (state: { user: UserState }) => state.user.slider
+  );
+  const balance = useSelector(
+    (state: { user: UserState }) => state.user.balance
   );
   const selectedStation: string = useSelector(
     (state: { stations: StationsState }) => state.stations.selectedStation
@@ -26,24 +39,42 @@ export const TripBox: React.FC = () => {
   const skytrainGraph = useSelector(
     (state: { skytrain: SkytrainState }) => state.skytrain.skytrainGraph
   );
+  const [loading, setIsLoading] = useState<boolean>(false);
 
   const handleTripStart = () => {
     // TODO: implement timer function, such that the rewards are only given if timer ends without cancel
+    setIsLoading(true);
+    const frozenSliderValue: number = sliderValue;
+    const frozenSelectedStationId: string = selectedStation;
     console.log(
       getStationName(selectedStation) +
         " starting focus trip for " +
-        sliderValue
+        frozenSliderValue
     );
     const tripPath: string[] = findRandomViableTripIds(
       skytrainGraph,
       selectedStation,
-      sliderValue
+      frozenSliderValue
     );
     console.log(tripPath);
 
     const rewards: TripReward = getRewards(tripPath, stations);
-
     console.log(rewards.contributors);
+    console.log(rewards.total);
+    // TODO: Rewards should only be given if the trip was actually finished
+    const updateRequest: UpdateUserRequest = {
+      session: session,
+      update: {
+        balance: balance + rewards.total,
+        slider: frozenSliderValue,
+        last_used_station: frozenSelectedStationId,
+      },
+    };
+    dispatch(updateUserData(updateRequest));
+
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 500);
   };
 
   return (
@@ -59,8 +90,9 @@ export const TripBox: React.FC = () => {
           <Button
             labelStyle={{ marginVertical: 5 }}
             mode="contained"
-            disabled={sliderValue === 0}
+            disabled={sliderValue === 0 || loading}
             onPress={handleTripStart}
+            loading={loading}
           >
             START
           </Button>

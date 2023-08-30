@@ -17,10 +17,15 @@ import { AuthState } from "@src/features/auth/authSlice";
 import { setSession, setUser } from "@features/auth/authSlice";
 import { useTheme } from "react-native-paper";
 import { Session } from "@supabase/supabase-js";
-import { UserState, fetchAllUserData } from "@features/user/userSlice";
+import {
+  UserState,
+  fetchAllUserData,
+  setLastUsedStation,
+} from "@features/user/userSlice";
 import {
   StationsState,
   fetchAllStations,
+  setSelectedStation,
 } from "@features/stations/stationsSlice";
 import { CurrencyDisplay } from "@components/CurrencyDisplay";
 import StationSelect from "@src/screens/StationSelect";
@@ -35,10 +40,17 @@ const AppNavigator = () => {
     (state: { auth: AuthState }) => state.auth.session
   );
 
+  const lastUsedStation = useSelector(
+    (state: { user: UserState }) => state.user.last_used_station
+  );
+
   const initUserData = (session: Session) => {
     dispatch(setUser(session.user));
     dispatch(fetchAllUserData(session));
     dispatch(fetchAllStations(session));
+    if (lastUsedStation !== "000") {
+      dispatch(setSelectedStation(lastUsedStation));
+    }
   };
 
   useEffect(() => {

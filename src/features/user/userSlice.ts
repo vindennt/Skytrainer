@@ -18,6 +18,7 @@ export interface UserState {
   total_trip_time: number;
   total_trips_finished: number;
   slider: number;
+  last_used_station: string;
 }
 
 const initialState: UserState = {
@@ -32,6 +33,7 @@ const initialState: UserState = {
   total_trip_time: 0,
   total_trips_finished: 0,
   slider: 25,
+  last_used_station: "000",
 };
 
 const userSlice = createSlice({
@@ -71,6 +73,9 @@ const userSlice = createSlice({
     setSlider: (state, action) => {
       state.slider = action.payload;
     },
+    setLastUsedStation: (state, action) => {
+      state.last_used_station = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllUserData.fulfilled, (state, action) => {
@@ -87,6 +92,7 @@ const userSlice = createSlice({
       state.total_trip_time = action.payload.total_trip_time;
       state.total_trips_finished = action.payload.total_trips_finished;
       state.slider = action.payload.slider;
+      state.last_used_station = action.payload.last_used_station;
     });
     builder.addCase(updateUserData.fulfilled, (state, action) => {
       const data: UserUpdate | undefined = action.payload;
@@ -108,6 +114,8 @@ const userSlice = createSlice({
         if (data.total_trips_finished !== undefined)
           state.total_trips_finished = data.total_trips_finished;
         if (data.slider !== undefined) state.slider = data.slider;
+        if (data.last_used_station !== undefined)
+          state.last_used_station = data.last_used_station;
       }
     });
   },
@@ -125,6 +133,7 @@ export const {
   setTotalTripTime,
   setTotalTripsFinished,
   setSlider,
+  setLastUsedStation,
 } = userSlice.actions;
 // export { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
 export {

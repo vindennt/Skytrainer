@@ -15,6 +15,7 @@ export interface UserUpdate {
   total_trip_time?: number;
   total_trips_finished?: number;
   slider?: number;
+  last_used_station?: string;
 }
 
 export interface UpdateUserRequest {
