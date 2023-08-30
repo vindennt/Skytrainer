@@ -2,11 +2,13 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 // import { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
 
 import {
+  updateUserData,
   fetchAllUserData,
   updateDisplayName,
   updateBalance,
   updateTickets,
   updatePity,
+  UserUpdate,
 } from "@src/features/user/userSliceHelpers";
 
 export interface UserState {
@@ -55,7 +57,6 @@ const userSlice = createSlice({
     },
     setBalance: (state, action) => {
       state.balance = action.payload;
-      console.log("Setting balance: " + action.payload);
     },
     setTickets: (state, action) => {
       state.tickets = action.payload;
@@ -92,6 +93,29 @@ const userSlice = createSlice({
       state.total_trips_finished = action.payload.total_trips_finished;
       state.slider = action.payload.slider;
     });
+    builder.addCase(updateUserData.fulfilled, (state, action) => {
+      const data: UserUpdate | undefined = action.payload;
+      console.log("updateUserData fulfilled: " + JSON.stringify(data, null, 2));
+      // TODO: find a more elegant way to do this without typescript crying
+      if (data !== undefined) {
+        if (data.display_name !== undefined)
+          state.display_name = data.display_name;
+        if (data.created_at !== undefined) state.created_at = data.created_at;
+        if (data.last_login !== undefined) state.last_login = data.last_login;
+        if (data.balance !== undefined) state.balance = data.balance;
+        if (data.tickets !== undefined) state.tickets = data.tickets;
+        if (data.permanent_pity !== undefined)
+          state.permanent_pity = data.permanent_pity;
+        if (data.limited_pity !== undefined)
+          state.limited_pity = data.limited_pity;
+        if (data.total_trip_time !== undefined)
+          state.total_trip_time = data.total_trip_time;
+        if (data.total_trips_finished !== undefined)
+          state.total_trips_finished = data.total_trips_finished;
+        if (data.slider !== undefined) state.slider = data.slider;
+      }
+    });
+
     builder.addCase(updateDisplayName.fulfilled, (state, action) => {
       if (action.payload) state.display_name = action.payload;
       console.log("updateDisplayName fulfilled: " + state.display_name);

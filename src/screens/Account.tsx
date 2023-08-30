@@ -9,7 +9,12 @@ import { changeDisplayNameSchema } from "@features/user/changeDisplayNameForm";
 import { AuthState } from "@features/auth/authSlice";
 import { UserState, setDisplayName } from "@features/user/userSlice";
 import { updateDisplayName } from "@features/user/userSlice";
-import { UpdateDisplayNameRequest } from "@features/user/userSliceHelpers";
+import {
+  UpdateDisplayNameRequest,
+  UpdateUserRequest,
+  UserUpdate,
+  updateUserData,
+} from "@features/user/userSliceHelpers";
 import { getDate } from "@utils/dates";
 
 const Account = () => {
@@ -71,11 +76,13 @@ const Account = () => {
           onSubmit={(values) => {
             console.log(values.displayName);
             setLoading(true);
-            const updateRequest: UpdateDisplayNameRequest = {
+            const updateRequest: UpdateUserRequest = {
               session: session,
-              newDisplayName: values.displayName,
+              update: {
+                display_name: values.displayName,
+              },
             };
-            dispatch(updateDisplayName(updateRequest));
+            dispatch(updateUserData(updateRequest));
             setEditingDisplayName(false);
             setLoading(false);
           }}
