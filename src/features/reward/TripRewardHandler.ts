@@ -29,10 +29,7 @@ export const getRewards = (
 
   path.forEach((stationId) => {
     // (1/3) Add scaled contribution to cumulative total
-    const level: number | undefined = stations.get(stationId);
-    if (level === undefined) {
-      throw new Error("Missing level for " + stationId);
-    }
+    const level: number = stations.get(stationId) || 1;
     const contribution = BASE_TRIP_REWARD * REWARD_MULTIPLIERS[level];
     totalReward += contribution;
     idGen++;
