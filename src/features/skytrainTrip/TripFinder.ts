@@ -1,3 +1,4 @@
+import { getStation } from "@src/utils/skytrain";
 import { Station, Graph } from "./Graph";
 
 // Given start station and desired length, find a trip of time equal or greater than desired length
@@ -10,7 +11,7 @@ import { Station, Graph } from "./Graph";
 
 // Note about Transfer stations: Adjacent transfer stations will not loop traversal between each other
 
-export function findViableTrips(
+function findViableTrips(
   graph: Graph,
   start: Station | undefined,
   desiredLength: number
@@ -105,4 +106,20 @@ function areEqual(path1: Station[], path2: Station[]): boolean {
     }
   }
   return true;
+}
+
+// Returns one random trip from among all possible trips that could be taken
+export function findRandomViableTrips(
+  graph: Graph,
+  startId: string,
+  desiredLength: number
+): Station[] {
+  const startStation: Station = getStation(startId);
+  const viableTrips: Station[][] = findViableTrips(
+    graph,
+    startStation,
+    desiredLength
+  );
+  const randomIndex: number = Math.floor(Math.random() * viableTrips.length);
+  return viableTrips[randomIndex];
 }
