@@ -15,7 +15,9 @@ import { Session } from "@supabase/supabase-js";
 import { AuthState } from "@src/features/auth/authSlice";
 import {
   UpdateNumericalBalanceRequest,
+  UpdateUserRequest,
   updateBalance,
+  updateUserData,
 } from "@src/features/user/userSliceHelpers";
 import {
   StationUnlockRequest,
@@ -38,24 +40,27 @@ export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
-  const stations: Map<string, number> = useSelector(
-    (state: { stations: StationsState }) => state.stations.stations
-  );
   const [loading, setLoading] = useState<boolean>(false);
 
   const canBuy: boolean = balance - item.cost >= 0;
 
   const handlePurchase = () => {
     setLoading(true);
-    const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
+    const newBalance = balance - item.cost;
+    if (newBalance < 0) {
+      throw new Error(
+        "ProductCard: " + balance + " cannot afford cost " + item.cost
+      );
+    }
+    const balanceUpdateRequest: UpdateUserRequest = {
       session: session,
-      newBalance: balance - item.cost,
+      update: { balance: newBalance },
     };
     const unlockRequest: StationUnlockRequest = {
       session: session,
       stationId: item.itemid,
     };
-    dispatch(updateBalance(balanceUpdateRequest));
+    dispatch(updateUserData(balanceUpdateRequest));
     dispatch(unlockStation(unlockRequest));
     Alert.alert("Purchase success!");
     onPurchase();

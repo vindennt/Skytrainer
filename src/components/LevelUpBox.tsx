@@ -11,7 +11,9 @@ import { LEVELUP_COSTS, REWARD_MULTIPLIERS } from "@src/utils/levels";
 import { UserState } from "@src/features/user/userSlice";
 import {
   UpdateNumericalBalanceRequest,
+  UpdateUserRequest,
   updateBalance,
+  updateUserData,
 } from "@src/features/user/userSliceHelpers";
 import { AuthState } from "@src/features/auth/authSlice";
 import {
@@ -52,16 +54,26 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
   const handleLevelUp = () => {
     if (level !== undefined && level < 50) {
       setLoading(true);
-      const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
+      // const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
+      //   session: session,
+      //   newBalance: balance - cost,
+      // };
+      const newBalance = balance - cost;
+      if (newBalance < 0) {
+        throw new Error(
+          "LevelUpBox: " + balance + " cannot afford cost " + cost
+        );
+      }
+      const balanceUpdateRequest: UpdateUserRequest = {
         session: session,
-        newBalance: balance - cost,
+        update: { balance: newBalance },
       };
+      dispatch(updateUserData(balanceUpdateRequest));
       const levelUpdateRequest: StationLevelUpdateRequest = {
         session: session,
         stationId: selectedStation,
         newLevel: level + 1,
       };
-      dispatch(updateBalance(balanceUpdateRequest));
       dispatch(levelUpStation(levelUpdateRequest));
       setTimeout(() => {
         setLoading(false);

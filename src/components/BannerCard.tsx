@@ -20,9 +20,11 @@ import { StationsState } from "@src/features/stations/stationsSlice";
 import {
   UpdateNumericalBalanceRequest,
   UpdatePityRequest,
+  UpdateUserRequest,
   updateBalance,
   updatePity,
   updateTickets,
+  updateUserData,
 } from "@src/features/user/userSliceHelpers";
 import { Session } from "@supabase/supabase-js";
 import { AuthState } from "@src/features/auth/authSlice";
@@ -83,12 +85,20 @@ export const BannerCard: React.FC<BannerCardProps> = ({
     // Pity reset if reward is 5* tier, else incremented
     const newPity: number = rewardTier === Tier.FIVE_STAR ? 0 : pity + 1;
 
-    const pityUpdateRequest: UpdatePityRequest = {
+    // const pityUpdateRequest: UpdatePityRequest = {
+    //   session: session,
+    //   newPity: newPity,
+    //   isPermanent: permanent,
+    // };
+    // dispatch(updatePity(pityUpdateRequest));
+
+    const pityUpdateRequest: UpdateUserRequest = {
       session: session,
-      newPity: newPity,
-      isPermanent: permanent,
+      update: permanent
+        ? { permanent_pity: newPity }
+        : { limited_pity: newPity },
     };
-    dispatch(updatePity(pityUpdateRequest));
+    dispatch(updateUserData(pityUpdateRequest));
   };
 
   const handleUnlocks = (rewardId: string): number => {
@@ -141,6 +151,11 @@ export const BannerCard: React.FC<BannerCardProps> = ({
     }
     setIsRolling(true);
     console.log("Starting Gacha roll");
+    if (balance - price < 0) {
+      throw new Error(
+        "BannerCard: " + balance + " cannot afford cost " + price
+      );
+    }
     const rewardId: string = gachaRoll(pity);
 
     handlePity(rewardId);
@@ -149,16 +164,14 @@ export const BannerCard: React.FC<BannerCardProps> = ({
     const balanceAdjusment: number = permanent
       ? excessLevels * PERMANENT_CASHBACK_RATE
       : excessLevels * LIMITED_CASHBACK_RATE;
-    // Adjust corresponding balance
-    const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
+
+    const newBalance = balance - price + balanceAdjusment;
+    const balanceUpdateRequest: UpdateUserRequest = {
       session: session,
-      newBalance: balance - price + balanceAdjusment,
+      update: permanent ? { balance: newBalance } : { tickets: newBalance },
     };
-    if (permanent) {
-      dispatch(updateBalance(balanceUpdateRequest));
-    } else {
-      dispatch(updateTickets(balanceUpdateRequest));
-    }
+    dispatch(updateUserData(balanceUpdateRequest));
+
     if (balanceAdjusment > 0)
       Alert.alert(
         "Returned " + balanceAdjusment + " currency points as cashback"
@@ -166,7 +179,6 @@ export const BannerCard: React.FC<BannerCardProps> = ({
 
     popupCallback(rewardId);
     console.log(rewardId);
-    // setIsRolling(false);
     setTimeout(() => {
       setIsRolling(false);
     }, 1000);
