@@ -1,5 +1,5 @@
-import { getStation } from "@src/utils/skytrain";
-import { Station, Graph } from "./Graph";
+import { EDGE_LIST, getStation } from "@src/utils/skytrain";
+import { Station, Graph } from "@src/features/skytrain/Graph";
 
 // Given start station and desired length, find a trip of time equal or greater than desired length
 // RETURNS array of stations that, if visited in order, will result in a trip equal to or greater than desired trip length.
@@ -11,7 +11,7 @@ import { Station, Graph } from "./Graph";
 
 // Note about Transfer stations: Adjacent transfer stations will not loop traversal between each other
 
-function findViableTrips(
+export function findViableTrips(
   graph: Graph,
   start: Station | undefined,
   desiredLength: number
@@ -54,6 +54,7 @@ function findViableTrips(
       return;
     } else {
       // If current path is not yet viable, check neighbours to find path forward
+      // const neighbours = graph.getNeighbours(current);
       const neighbours = graph.getNeighbours(current);
       // *** Infinite loop part 1/2
       // *** If traversal is at a transfer station, delete everyone already visited, except station just visited
@@ -109,11 +110,11 @@ function areEqual(path1: Station[], path2: Station[]): boolean {
 }
 
 // Returns one random trip from among all possible trips that could be taken
-function findRandomViableTrip(
+export const findRandomViableTrip = (
   graph: Graph,
   startId: string,
   desiredLength: number
-): Station[] {
+): Station[] => {
   const startStation: Station = getStation(startId);
   const viableTrips: Station[][] = findViableTrips(
     graph,
@@ -122,7 +123,7 @@ function findRandomViableTrip(
   );
   const randomIndex: number = Math.floor(Math.random() * viableTrips.length);
   return viableTrips[randomIndex];
-}
+};
 
 // Returns string ids of random trip from among all possible trips that could be taken
 export function findRandomViableTripIds(
@@ -137,4 +138,17 @@ export function findRandomViableTripIds(
   );
   const idsOfViableTrips: string[] = viableTrip.map((station) => station.id);
   return idsOfViableTrips;
+}
+
+// Builds and returns the graph from edgelist
+// timeMultiplier represents scaling to apply to edge weights. Default is 1.
+// The edge times used are idealized from Translink's table, but may need to be multiplied by ~1.2 to be more accurate
+export function buildGraph(timeMultiplier?: number): Graph {
+  const multiplier = timeMultiplier ? timeMultiplier : 1;
+
+  const graph: Graph = new Graph();
+  EDGE_LIST.forEach((edge) => {
+    graph.addEdge(edge.start, edge.destination, edge.time * multiplier);
+  });
+  return graph;
 }

@@ -6,7 +6,7 @@ import thunk from "redux-thunk";
 import authReducer from "@features/auth/authSlice";
 import userReducer from "@features/user/userSlice";
 import stationsReducer from "@features/stations/stationsSlice";
-import skytrainReducer from "@src/features/skytrainTrip/skytrainSlice";
+import skytrainReducer from "@features/skytrain/skytrainSlice";
 
 enableMapSet(); // Initiate map functions
 

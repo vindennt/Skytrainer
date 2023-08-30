@@ -1,6 +1,6 @@
 import React from "react";
-import { Graph, Station, newStation } from "@features/skytrainTrip/Graph";
-import { findViableTrips } from "@features/skytrainTrip/TripFinder";
+import { Graph, Station, newStation } from "@src/features/skytrain/Graph";
+import { buildGraph, findViableTrips } from "@src/features/skytrain/TripFinder";
 import * as SKYTRAIN_DATA from "@src/utils/skytrain";
 
 // Template test
@@ -447,7 +447,7 @@ export function buildTestGraph(): Graph {
 }
 
 var graph: Graph = buildTestGraph();
-var comparisonGraph: Graph = SKYTRAIN_DATA.buildGraph();
+var comparisonGraph: Graph = buildGraph(1);
 // console.log(graph.getGraph());
 // console.log(comparisonGraph.getGraph());
 test("Whether imported graph is same as in-house", () => {
@@ -513,7 +513,7 @@ test("120 minute trip from Waterfront", () => {
 // TEST that every station has at least one path that satisfies a 120 minute trip
 // If this trip exists, any trip < 120 mins will exist because the findViableTrips rounds up
 describe("findViableTrips", () => {
-  const megaGraph = SKYTRAIN_DATA.buildGraph();
+  const megaGraph = buildGraph(1);
   test.each(stationsToTest)("120 minute trip from %p", (station: Station) => {
     const viableTrips = findViableTrips(megaGraph, station, 120);
     expect(viableTrips.length).toBeGreaterThan(0);
