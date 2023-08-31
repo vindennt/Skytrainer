@@ -88,6 +88,7 @@ export const YVRAirport: Station = newStation("053", "02", false);
 
 // Takes stationid key to output all the station info,
 export const STATION_MAP: Map<string, [string, Station, Tier]> = new Map();
+STATION_MAP.set("000", ["ERROR Station", Waterfront, Tier.FOUR_STAR]);
 STATION_MAP.set("001", ["Waterfront", Waterfront, Tier.FOUR_STAR]);
 STATION_MAP.set("002", ["Burrard", Burrard, Tier.FOUR_STAR]);
 STATION_MAP.set("003", ["Granville", Granville, Tier.FOUR_STAR]);
@@ -196,11 +197,21 @@ STATION_MAP.set("053", ["YVR Airport", YVRAirport, Tier.FIVE_STAR]);
 
 // Gives station Name of input id, index 0 being the name in the array of data
 export function getStationName(id: string): string {
-  const ref = STATION_MAP.get(id);
-  if (ref !== undefined) {
-    return ref[0];
-  } else {
-    throw new Error("No such station ID");
+  try {
+    const ref = STATION_MAP.get(id);
+    if (ref !== undefined) {
+      return ref[0];
+    } else {
+      throw new Error("No such station ID");
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      // throw new Error("An error occurred while getting the station name: " + error.message);
+      console.log(error.message);
+    }
+    // TODO: In database, set a default last used station to be that of the character everyone unlocks at first
+    // TODO: in database, automaticlaly unlock one cahracter
+    return "ERROR STATION";
   }
 }
 

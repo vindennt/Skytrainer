@@ -33,7 +33,7 @@ const initialState: UserState = {
   total_trip_time: 0,
   total_trips_finished: 0,
   slider: 25,
-  last_used_station: "000",
+  last_used_station: "001",
 };
 
 const userSlice = createSlice({
