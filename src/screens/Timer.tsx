@@ -13,6 +13,7 @@ const Trip = () => {
     setTimeout(() => {
       navigation.navigate("Trip" as never);
     }, 2000);
+    // TODO: it wont navigate if you cancel.
   }, []);
 
   return (

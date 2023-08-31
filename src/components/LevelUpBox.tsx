@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#454045",
     padding: 20,
     borderRadius: 12,
-    marginBottom: 30,
+    marginBottom: 20,
   },
   titleContainer: {
     flexDirection: "row",

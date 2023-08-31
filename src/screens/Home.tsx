@@ -17,6 +17,7 @@ import {
 } from "@src/features/stations/stationsSlice";
 import { useNavigation } from "@react-navigation/native";
 import { getStationName } from "@src/utils/skytrain";
+import { useMemo } from "react";
 
 const Home = () => {
   const theme = useTheme();
@@ -28,18 +29,19 @@ const Home = () => {
   const lastSetStation = useSelector(
     (state: { user: UserState }) => state.user.last_used_station
   );
-  const goToStationSelect = () => {
-    dispatch(setSelectedStation(lastSetStation));
-    navigation.navigate("Select Station" as never);
-  };
   const title = getStationName(lastSetStation) + " Station";
   const imageSource: ImageSourcePropType = imageBustMap[
     lastSetStation
   ] as ImageSourcePropType;
 
+  const goToStationSelect = () => {
+    dispatch(setSelectedStation(lastSetStation));
+    navigation.navigate("Select Station" as never);
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.stationTitleText}>{title}</Text>
+      {/* <Text style={styles.stationTitleText}>{title}</Text> */}
       <TouchableOpacity
         style={styles.imageContainer}
         onPress={goToStationSelect}

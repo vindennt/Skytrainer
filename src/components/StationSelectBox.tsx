@@ -90,8 +90,9 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     right: 30,
-    height: "100%",
+    height: "110%",
     position: "absolute",
+    // backgroundColor: "red",
     // borderRadius: 12,
   },
   selectionBox: {

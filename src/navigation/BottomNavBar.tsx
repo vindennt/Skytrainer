@@ -1,6 +1,7 @@
 import * as React from "react";
 import { BottomNavigation, useTheme, Text } from "react-native-paper";
 import { Home, Stations, Shop, Gacha } from "@screens/index";
+import Missions from "@src/screens/Missions";
 
 const BottomNavBar = () => {
   const theme = useTheme();
@@ -8,7 +9,8 @@ const BottomNavBar = () => {
   const HomeRoute = () => <Home />;
   const StationsRoute = () => <Stations />;
   const ShopRoute = () => <Shop />;
-  const GachaRoute = () => <Gacha />;
+  // const GachaRoute = () => <Gacha />;
+  const MissionsRoute = () => <Missions />;
   // const AccountRoute = () => <Account />;
 
   const [index, setIndex] = React.useState(0);
@@ -17,6 +19,14 @@ const BottomNavBar = () => {
       key: "home",
       title: "Skytrain",
       focusedIcon: "subway",
+    },
+    {
+      key: "missions",
+      title: "Missions",
+      focusedIcon: "calendar",
+      // focusedIcon: "gift-sharp",
+      // focusedIcon: "person-circle-sharp",
+      // focusedIcon: "person",
     },
     {
       key: "stations",
@@ -28,20 +38,14 @@ const BottomNavBar = () => {
       title: "Shop",
       focusedIcon: "pricetags",
     },
-    {
-      key: "gacha",
-      title: "Banners",
-      focusedIcon: "gift-sharp",
-      // focusedIcon: "person-circle-sharp",
-      // focusedIcon: "person",
-    },
   ]);
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
     stations: StationsRoute,
     shop: ShopRoute,
-    gacha: GachaRoute,
+    // gacha: GachaRoute,
+    missions: MissionsRoute,
   });
 
   return (

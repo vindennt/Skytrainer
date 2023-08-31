@@ -32,7 +32,9 @@ const Stations = () => {
   };
 
   const handleSelect = async () => {
-    navigation.goBack();
+    // TODO: MAKE IT SO THAT WHATEVER THIS STATION IS DOES NOT BECOME THE HOMESCREEN STATIon
+    // Because when click set, it forces rerender of the modal;'s statioin, which is what causes it to close abrupty if rerender mid nav animation
+    // navigation.goBack();
     setTimeout(() => {
       dispatch(setLastUsedStation(selectedStation));
     }, 180);
