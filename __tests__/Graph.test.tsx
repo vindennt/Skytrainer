@@ -1,5 +1,11 @@
 import React from "react";
-import { Graph, Edge, Station, newStation, newEdge } from "../utils/Graph";
+import {
+  Graph,
+  Edge,
+  Station,
+  newStation,
+  newEdge,
+} from "@src/features/skytrain/Graph";
 
 // Template test
 test("TEMPLATE", () => {
@@ -15,10 +21,12 @@ test("newStation; station instantiation", () => {
 
 test("newStation; station instantiation iis invalid id", () => {
   expect(() => newStation("-0", "L001")).toThrow(
-    new Error("Invalid id or lineid")
+    new Error("Invalid station id or lineid")
   );
-  expect(() => newStation("0x", "L001")).toThrow("Invalid id or lineid");
-  expect(() => newStation("", "L001")).toThrow("Invalid id or lineid");
+  expect(() => newStation("0x", "L001")).toThrow(
+    "Invalid station id or lineid"
+  );
+  expect(() => newStation("", "L001")).toThrow("Invalid station id or lineid");
 });
 
 const testStationTransfer: Station = newStation("2", "4", true);
@@ -31,10 +39,16 @@ test("newStation; station instantiation with transfer specified", () => {
 });
 
 test("newStation; station instantiation if lineid is invalid", () => {
-  expect(() => newStation("001", "L001")).toThrow("Invalid id or lineid");
-  expect(() => newStation("002", "da-r3")).toThrow("Invalid id or lineid");
-  expect(() => newStation("002", "-001")).toThrow("Invalid id or lineid");
-  expect(() => newStation("003", "")).toThrow("Invalid id or lineid");
+  expect(() => newStation("001", "L001")).toThrow(
+    "Invalid station id or lineid"
+  );
+  expect(() => newStation("002", "da-r3")).toThrow(
+    "Invalid station id or lineid"
+  );
+  expect(() => newStation("002", "-001")).toThrow(
+    "Invalid station id or lineid"
+  );
+  expect(() => newStation("003", "")).toThrow("Invalid station id or lineid");
 });
 
 const testEdgeZeroFive: Edge = newEdge(testStationZeroOne, 5);
