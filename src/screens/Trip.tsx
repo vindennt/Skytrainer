@@ -31,7 +31,12 @@ const Trip = () => {
   const slider: number = useSelector(
     (state: { user: UserState }) => state.user.slider
   );
-
+  const total_trip_time: number = useSelector(
+    (state: { user: UserState }) => state.user.total_trip_time
+  );
+  const total_trips_finished: number = useSelector(
+    (state: { user: UserState }) => state.user.total_trips_finished
+  );
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
@@ -45,6 +50,8 @@ const Trip = () => {
       update: {
         balance: balance + rewards.total,
         slider: slider,
+        total_trip_time: total_trip_time + slider,
+        total_trips_finished: total_trips_finished + 1,
         last_used_station: trip[0],
       },
     };
