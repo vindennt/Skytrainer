@@ -19,6 +19,10 @@ export interface UserState {
   total_trips_finished: number;
   slider: number;
   last_used_station: string;
+  daily_reset_time: Date;
+  last_focus_date: Date;
+  daily_focus_time: number;
+  focus_streak_days: number;
 }
 
 const initialState: UserState = {
@@ -34,6 +38,10 @@ const initialState: UserState = {
   total_trips_finished: 0,
   slider: 25,
   last_used_station: "001",
+  daily_reset_time: new Date(),
+  last_focus_date: new Date(),
+  daily_focus_time: 0,
+  focus_streak_days: 0,
 };
 
 const userSlice = createSlice({
@@ -76,6 +84,18 @@ const userSlice = createSlice({
     setLastUsedStation: (state, action) => {
       state.last_used_station = action.payload;
     },
+    setDailyResetTime: (state, action) => {
+      state.daily_reset_time = action.payload;
+    },
+    setlastFocusDate: (state, action) => {
+      state.last_focus_date = action.payload;
+    },
+    setDailyFocusTime: (state, action) => {
+      state.daily_focus_time = action.payload;
+    },
+    setFocusStreakDays: (state, action) => {
+      state.focus_streak_days = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllUserData.fulfilled, (state, action) => {
@@ -93,6 +113,10 @@ const userSlice = createSlice({
       state.total_trips_finished = action.payload.total_trips_finished;
       state.slider = action.payload.slider;
       state.last_used_station = action.payload.last_used_station;
+      state.daily_reset_time = action.payload.daily_reset_time;
+      state.last_focus_date = action.payload.last_focus_date;
+      state.daily_focus_time = action.payload.daily_focus_time;
+      state.focus_streak_days = action.payload.focus_streak_days;
     });
     builder.addCase(updateUserData.fulfilled, (state, action) => {
       const data: UserUpdate | undefined = action.payload;
@@ -116,6 +140,14 @@ const userSlice = createSlice({
         if (data.slider !== undefined) state.slider = data.slider;
         if (data.last_used_station !== undefined)
           state.last_used_station = data.last_used_station;
+        if (data.daily_reset_time !== undefined)
+          state.daily_reset_time = data.daily_reset_time;
+        if (data.last_focus_date !== undefined)
+          state.last_focus_date = data.last_focus_date;
+        if (data.daily_focus_time !== undefined)
+          state.daily_focus_time = data.daily_focus_time;
+        if (data.focus_streak_days !== undefined)
+          state.focus_streak_days = data.focus_streak_days;
       }
     });
   },
