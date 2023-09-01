@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import QuickStartCard from "@src/components/QuickStartCard";
 import * as React from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
@@ -10,6 +11,7 @@ const Missions = () => {
   return (
     <View style={styles.container}>
       <Text>Missions.</Text>
+      <QuickStartCard />
     </View>
   );
 };
