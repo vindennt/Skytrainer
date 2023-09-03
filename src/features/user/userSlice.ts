@@ -166,6 +166,10 @@ export const {
   setTotalTripsFinished,
   setSlider,
   setLastUsedStation,
+  setDailyResetTime,
+  setlastFocusDate,
+  setDailyFocusTime,
+  setFocusStreakDays,
 } = userSlice.actions;
 // export { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
 export {

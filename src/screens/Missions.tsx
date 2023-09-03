@@ -1,4 +1,5 @@
 import { useNavigation } from "@react-navigation/native";
+import DailyFocusBox from "@src/components/DailyFocusBox";
 import QuickStartCard from "@src/components/QuickStartCard";
 import * as React from "react";
 import { View, StyleSheet, FlatList } from "react-native";
@@ -11,6 +12,7 @@ const Missions = () => {
   return (
     <View style={styles.container}>
       <Text>Missions.</Text>
+      <DailyFocusBox />
       <QuickStartCard />
     </View>
   );

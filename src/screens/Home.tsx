@@ -50,14 +50,14 @@ const Home = () => {
       </TouchableOpacity>
       <View style={styles.timeHeader}>
         <Text style={styles.timeText}>{sliderValue} mins</Text>
-        <Button
+        {/* <Button
           icon="chevron-forward-outline"
           onPress={goToStationSelect}
           contentStyle={{ flexDirection: "row-reverse" }}
           labelStyle={{ marginVertical: 2 }}
         >
           Change Station
-        </Button>
+        </Button> */}
       </View>
       <TripBox />
     </View>

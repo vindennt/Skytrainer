@@ -25,7 +25,7 @@ const skytrainSlice = createSlice({
   initialState,
   reducers: {
     setGraph: (state, action) => {
-      state.skytrainGraph = buildGraph(1);
+      state.skytrainGraph = buildGraph(action.payload);
       // console.log(state.skytrainGraph);
     },
     setTrip: (state, action) => {

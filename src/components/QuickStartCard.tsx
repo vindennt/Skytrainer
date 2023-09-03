@@ -30,13 +30,15 @@ export const QuickStartCard: React.FC = ({}) => {
           onPress={() => {
             console.log("Pressed quicxkstart");
           }}
-          style={styles.quickButtonStyle}
+          style={{ alignItems: "center" }}
         >
-          <Text style={isAdd ? { fontSize: 20 } : styles.text}>
-            {isAdd ? "+" : duration}
-          </Text>
+          <View style={styles.quickButtonStyle}>
+            <Text style={isAdd ? { fontSize: 20 } : styles.text}>
+              {isAdd ? "+" : duration}
+            </Text>
+          </View>
+          <Text style={[styles.text, { marginTop: 5 }]}>{name}</Text>
         </TouchableOpacity>
-        <Text style={[styles.text, { marginTop: 5 }]}>{name}</Text>
       </View>
     );
   };
