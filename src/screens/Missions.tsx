@@ -2,11 +2,12 @@ import { useNavigation } from "@react-navigation/native";
 import DailyFocusBox from "@src/components/DailyFocusBox";
 import QuickStartCard from "@src/components/QuickStartCard";
 import { AuthState } from "@src/features/auth/authSlice";
+import { UserState } from "@src/features/user/userSlice";
 import {
   UpdateUserRequest,
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
-import { datesMatch } from "@src/utils/dates";
+import { datesMatch, getTodayDMY } from "@src/utils/dates";
 import * as React from "react";
 import { useEffect } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
@@ -23,23 +24,25 @@ const Missions = () => {
     (state: { auth: AuthState }) => state.auth.session
   );
 
-  // const dailyResetTime: Date = useSelector(
-  //   (state: { user: UserState }) => state.user.daily_reset_time
-  // );
-  // const lastFocusDate: Date | null = useSelector(
-  //   (state: { user: UserState }) => state.user.last_focus_date
-  // );
+  const dailyResetTime: Date = useSelector(
+    (state: { user: UserState }) => state.user.daily_reset_time
+  );
+  const lastFocusDate: Date | null = useSelector(
+    (state: { user: UserState }) => state.user.last_focus_date
+  );
 
   const handleDailyFocus = () => {
-    const now: Date = new Date();
+    const todayDMY: Date = getTodayDMY();
+
+    // if today is a new day, reset daily focus time
     // if (!datesMatch(new Date(lastFocusDate), now)) {
-    if (!datesMatch(now, now)) {
+    if (!datesMatch(todayDMY, new Date(lastFocusDate))) {
       console.log("XXXXX NEW DAY: Restting daily missions");
       const updateRequest: UpdateUserRequest = {
         session: session,
         update: {
           daily_focus_time: 0,
-          daily_reset_time: now,
+          daily_reset_time: todayDMY,
           // last_focus_date: now,
         },
       };
@@ -47,9 +50,10 @@ const Missions = () => {
     }
   };
 
-  useEffect(() => {
-    // const testLastLoginDate = new Date(2023, 7, 1);
-    const testLastLoginDate = new Date();
+  // TODO: Sets a focus date as a prevous date for testing purposes
+  const setOldFocusDates = () => {
+    const testLastLoginDate = new Date(2023, 7, 1);
+    // const testLastLoginDate = new Date();
     const updateRequest: UpdateUserRequest = {
       session: session,
       update: {
@@ -58,6 +62,10 @@ const Missions = () => {
       },
     };
     dispatch(updateUserData(updateRequest));
+  };
+
+  useEffect(() => {
+    // setOldFocusDates();
     handleDailyFocus();
   }, []);
 

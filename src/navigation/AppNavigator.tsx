@@ -18,15 +18,8 @@ import { AuthState } from "@src/features/auth/authSlice";
 import { setSession, setUser } from "@features/auth/authSlice";
 import { useTheme } from "react-native-paper";
 import { Session } from "@supabase/supabase-js";
+import { UserState, fetchAllUserData } from "@features/user/userSlice";
 import {
-  UserState,
-  fetchAllUserData,
-  setDailyFocusTime,
-  setLastUsedStation,
-  setlastFocusDate,
-} from "@features/user/userSlice";
-import {
-  StationsState,
   fetchAllStations,
   setSelectedStation,
 } from "@features/stations/stationsSlice";
@@ -34,11 +27,6 @@ import { CurrencyDisplay } from "@components/CurrencyDisplay";
 import StationSelect from "@src/screens/StationSelect";
 import { Animated } from "react-native";
 import { setGraph } from "@src/features/skytrain/skytrainSlice";
-import {
-  UpdateUserRequest,
-  updateUserData,
-} from "@src/features/user/userSliceHelpers";
-import { datesMatch } from "@src/utils/dates";
 
 const AppNavigator = () => {
   const dispatch = useDispatch<any>();
@@ -52,13 +40,6 @@ const AppNavigator = () => {
     (state: { user: UserState }) => state.user.last_used_station
   );
 
-  // const dailyResetTime: Date = useSelector(
-  //   (state: { user: UserState }) => state.user.daily_reset_time
-  // );
-  // const lastFocusDate: Date | null = useSelector(
-  //   (state: { user: UserState }) => state.user.last_focus_date
-  // );
-
   const initUserData = async (session: Session) => {
     dispatch(setUser(session.user));
     dispatch(fetchAllUserData(session));
@@ -66,25 +47,6 @@ const AppNavigator = () => {
     while (lastUsedStation === "000") {}
     dispatch(setSelectedStation(lastUsedStation));
   };
-
-  // At auth: checks if current date is diff than the last focused events. If yes, reset
-  // the daily total focus time
-  // const handleDailyFocus = () => {
-  //   const now: Date = new Date();
-  //   // if (!datesMatch(new Date(lastFocusDate), now)) {
-  //   if (!datesMatch(now, now)) {
-  //     console.log("XXXXX NEW DAY: Restting daily missions");
-  //     const updateRequest: UpdateUserRequest = {
-  //       session: session,
-  //       update: {
-  //         daily_focus_time: 0,
-  //         daily_reset_time: now,
-  //         // last_focus_date: now,
-  //       },
-  //     };
-  //     dispatch(updateUserData(updateRequest));
-  //   }
-  // };
 
   useEffect(() => {
     // To prevent warning that onAnimatedValueUpdate is set without listeners
@@ -94,20 +56,6 @@ const AppNavigator = () => {
       return;
     });
     dispatch(setGraph(1)); // Build graph with timescale of 1
-
-    // TODO: FOR TESTING PURPSOES OF MISSION DATES
-    // const testLastLoginDate = new Date(2023, 7, 1);
-    // // const testLastLoginDate = new Date();
-    // const updateRequest: UpdateUserRequest = {
-    //   session: session,
-    //   update: {
-    //     daily_reset_time: testLastLoginDate,
-    //     last_focus_date: testLastLoginDate,
-    //   },
-    // };
-    // dispatch(updateUserData(updateRequest));
-    // handleDailyFocus();
-    // TODO: REMOVE ABOVE AFTER TESTING
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       dispatch(setSession(session));
