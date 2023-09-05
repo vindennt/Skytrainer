@@ -52,8 +52,11 @@ export const TripBox: React.FC = () => {
     dispatch(setTrip(tripPath));
     dispatch(setRewards(rewards));
 
-    navigation.navigate("Timer" as never);
+    // TODO: After fix infinite loop, revert this to navigate to Timer
+    console.log("TripBox: Navigating to Trip");
+    navigation.navigate("Trip" as never);
     setTimeout(() => {
+      console.log("TripBox: Set is loading to false");
       setIsLoading(false);
     }, 500);
   };

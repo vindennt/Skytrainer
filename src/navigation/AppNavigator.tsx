@@ -52,12 +52,12 @@ const AppNavigator = () => {
     (state: { user: UserState }) => state.user.last_used_station
   );
 
-  const dailyResetTime: Date = useSelector(
-    (state: { user: UserState }) => state.user.daily_reset_time
-  );
-  const lastFocusDate: Date | null = useSelector(
-    (state: { user: UserState }) => state.user.last_focus_date
-  );
+  // const dailyResetTime: Date = useSelector(
+  //   (state: { user: UserState }) => state.user.daily_reset_time
+  // );
+  // const lastFocusDate: Date | null = useSelector(
+  //   (state: { user: UserState }) => state.user.last_focus_date
+  // );
 
   const initUserData = async (session: Session) => {
     dispatch(setUser(session.user));
@@ -69,21 +69,22 @@ const AppNavigator = () => {
 
   // At auth: checks if current date is diff than the last focused events. If yes, reset
   // the daily total focus time
-  const handleDailyFocus = () => {
-    const now: Date = new Date();
-    if (!datesMatch(new Date(lastFocusDate), now)) {
-      console.log("XXXXX NEW DAY: Restting daily missions");
-      const updateRequest: UpdateUserRequest = {
-        session: session,
-        update: {
-          daily_focus_time: 0,
-          daily_reset_time: now,
-          // last_focus_date: now,
-        },
-      };
-      dispatch(updateUserData(updateRequest));
-    }
-  };
+  // const handleDailyFocus = () => {
+  //   const now: Date = new Date();
+  //   // if (!datesMatch(new Date(lastFocusDate), now)) {
+  //   if (!datesMatch(now, now)) {
+  //     console.log("XXXXX NEW DAY: Restting daily missions");
+  //     const updateRequest: UpdateUserRequest = {
+  //       session: session,
+  //       update: {
+  //         daily_focus_time: 0,
+  //         daily_reset_time: now,
+  //         // last_focus_date: now,
+  //       },
+  //     };
+  //     dispatch(updateUserData(updateRequest));
+  //   }
+  // };
 
   useEffect(() => {
     // To prevent warning that onAnimatedValueUpdate is set without listeners
@@ -96,7 +97,7 @@ const AppNavigator = () => {
 
     // TODO: FOR TESTING PURPSOES OF MISSION DATES
     // const testLastLoginDate = new Date(2023, 7, 1);
-    // const testLastLoginDate = new Date();
+    // // const testLastLoginDate = new Date();
     // const updateRequest: UpdateUserRequest = {
     //   session: session,
     //   update: {
@@ -105,7 +106,7 @@ const AppNavigator = () => {
     //   },
     // };
     // dispatch(updateUserData(updateRequest));
-    handleDailyFocus();
+    // handleDailyFocus();
     // TODO: REMOVE ABOVE AFTER TESTING
 
     supabase.auth.getSession().then(({ data: { session } }) => {
