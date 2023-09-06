@@ -10,7 +10,7 @@ import {
   UpdateUserRequest,
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
-import { datesMatch } from "@src/utils/dates";
+import { datesMatch, getTodayDMY } from "@src/utils/dates";
 import { Session } from "@supabase/supabase-js";
 import * as React from "react";
 import { useEffect, useRef } from "react";
@@ -52,7 +52,7 @@ const Trip = () => {
     useSelector((state: { user: UserState }) => state.user.last_focus_date)
   );
 
-  const today: Date = new Date();
+  const today: Date = getTodayDMY();
 
   useEffect(() => {
     // TODO: remove the timeout. Its only purpose is to solve the infinite loop
