@@ -14,7 +14,12 @@ import {
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { DailyFocusRewards, FocusMilestone } from "@src/utils/missionRewards";
+import {
+  DailyFocusRewards,
+  FocusMilestoneTimes,
+} from "@src/utils/missionRewards";
+import { Tooltip } from "@components/Tooltip";
+import { GradientIcon } from "./IconGradient";
 
 interface DailyFocusBoxProps {
   popupCallback: (reward: number) => void;
@@ -22,6 +27,7 @@ interface DailyFocusBoxProps {
 
 interface DailyProgressButtonProps {
   milestone: number;
+  reward?: number;
   finished?: boolean; // determines styling if milestone met
   claimed?: boolean; // determines styling if milestone claimed\
 }
@@ -53,9 +59,9 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
   const lastFocusString: string =
     lastFocusDate === null ? "null" : lastFocusDate.toString();
 
-  const FIRST_MILESTONE: number = FocusMilestone.FIRST_MILESTONE;
-  const SECOND_MILESTONE: number = FocusMilestone.SECOND_MILESTONE;
-  const THIRD_MILESTONE: number = FocusMilestone.THIRD_MILESTONE;
+  const FIRST_MILESTONE: number = FocusMilestoneTimes.FIRST_MILESTONE;
+  const SECOND_MILESTONE: number = FocusMilestoneTimes.SECOND_MILESTONE;
+  const THIRD_MILESTONE: number = FocusMilestoneTimes.THIRD_MILESTONE;
 
   const getButtonColour = (claimed: boolean, finished: boolean): string => {
     return claimed
@@ -129,13 +135,14 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
 
   const DailyProgressButton: React.FC<DailyProgressButtonProps> = ({
     milestone,
+    reward = 0,
     finished = false,
     claimed = false,
   }) => {
     finished = dailyFocusTime >= milestone;
     claimed = dailyFocusClaimed >= milestone;
 
-    return (
+    const content = (
       <View style={styles.progressButtonStyleContainer}>
         <TouchableOpacity
           onPress={() => {
@@ -166,11 +173,33 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
         </Text>
       </View>
     );
+
+    const tooltipContent: React.ReactNode = (
+      <View style={styles.tooltip}>
+        <GradientIcon
+          name="credit-card-chip"
+          size={20}
+          colors={["white", "#faa93e", "hotpink", "cyan", "blue"]}
+          start={{ x: 0.5, y: 0.15 }}
+          end={{ x: 0.9, y: 1 }}
+          locations={[0, 0.15, 0.35, 0.7, 1]}
+        />
+        <Text style={[styles.text, { marginLeft: 6 }]}>{reward}</Text>
+      </View>
+      // <Text>Hey</Text>
+    );
+
+    return !finished ? (
+      <Tooltip content={tooltipContent}>{content}</Tooltip>
+    ) : (
+      content
+    );
   };
 
   const ZerothDailyProgressButton: React.FC = ({}) => {
     const finished: boolean = dailyFocusTime >= FIRST_MILESTONE;
     const claimed: boolean = dailyFocusClaimed >= THIRD_MILESTONE;
+
     return (
       <View style={styles.progressButtonStyleContainer}>
         <TouchableOpacity style={styles.progressButtonTouchable} disabled>
@@ -232,11 +261,20 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
         <View style={styles.progressContainer}>
           <ZerothDailyProgressButton />
           <Progressbar milestone={FIRST_MILESTONE} />
-          <DailyProgressButton milestone={FIRST_MILESTONE} />
+          <DailyProgressButton
+            milestone={FIRST_MILESTONE}
+            reward={DailyFocusRewards.FIRST_MILESTONE}
+          />
           <Progressbar milestone={SECOND_MILESTONE} />
-          <DailyProgressButton milestone={SECOND_MILESTONE} />
+          <DailyProgressButton
+            milestone={SECOND_MILESTONE}
+            reward={DailyFocusRewards.SECOND_MILESTONE}
+          />
           <Progressbar milestone={THIRD_MILESTONE} />
-          <DailyProgressButton milestone={THIRD_MILESTONE} />
+          <DailyProgressButton
+            milestone={THIRD_MILESTONE}
+            reward={DailyFocusRewards.THIRD_MILESTONE}
+          />
         </View>
         <Button onPress={handleTestReset}>Reset</Button>
       </View>
@@ -299,5 +337,9 @@ const styles = StyleSheet.create({
     height: 4,
     width: 38,
     top: 23,
+  },
+  tooltip: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
