@@ -1,5 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
 import DailyFocusBox from "@src/components/DailyFocusBox";
+import { GradientIcon } from "@src/components/IconGradient";
+import { Popup } from "@src/components/Popup";
 import QuickStartCard from "@src/components/QuickStartCard";
 import { AuthState } from "@src/features/auth/authSlice";
 import { UserState } from "@src/features/user/userSlice";
@@ -9,7 +11,7 @@ import {
 } from "@src/features/user/userSliceHelpers";
 import { datesMatch, getTodayDMY } from "@src/utils/dates";
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -30,6 +32,14 @@ const Missions = () => {
   const lastFocusDate: Date | null = useSelector(
     (state: { user: UserState }) => state.user.last_focus_date
   );
+
+  const [popupVisible, setPopupVisible] = useState<boolean>(false);
+  const [displayedReward, setDisplayedReward] = useState<number>(0);
+
+  const showPopup = (reward: number) => {
+    setDisplayedReward(reward);
+    setPopupVisible(true);
+  };
 
   const handleDailyFocus = () => {
     const todayDMY: Date = getTodayDMY();
@@ -73,8 +83,31 @@ const Missions = () => {
   return (
     <View style={styles.container}>
       <Text>Missions.</Text>
-      <DailyFocusBox />
+      <DailyFocusBox popupCallback={(reward) => showPopup(reward)} />
       <QuickStartCard />
+      <Popup
+        visible={popupVisible}
+        onClose={() => {
+          setPopupVisible(false);
+        }}
+      >
+        <View style={styles.rewardContainer}>
+          <Text style={styles.headerText}>Claimed Rewards</Text>
+          <View style={styles.rewardTextContainer}>
+            <GradientIcon
+              name="credit-card-chip"
+              size={20}
+              colors={["white", "#faa93e", "hotpink", "cyan", "blue"]}
+              start={{ x: 0.5, y: 0.15 }}
+              end={{ x: 0.9, y: 1 }}
+              locations={[0, 0.15, 0.35, 0.7, 1]}
+            />
+            <Text style={[styles.text, { marginLeft: 6 }]}>
+              {displayedReward}
+            </Text>
+          </View>
+        </View>
+      </Popup>
     </View>
   );
 };
@@ -92,5 +125,18 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+  },
+  headerText: {
+    fontSize: 20,
+    marginBottom: 20,
+  },
+  rewardTextContainer: {
+    flexDirection: "row",
+  },
+  rewardContainer: {
+    // backgroundColor: "purple",
+    alignItems: "center",
+    padding: 20,
+    borderRadius: 12,
   },
 });

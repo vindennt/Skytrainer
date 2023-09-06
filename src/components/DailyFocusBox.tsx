@@ -21,17 +21,26 @@ const SECOND_MILESTONE_REWARD: number = 10;
 const THIRD_MILESTONE: number = 15;
 const THIRD_MILESTONE_REWARD: number = 15;
 
+interface DailyFocusBoxProps {
+  popupCallback: (reward: number) => void;
+}
+
 interface DailyProgressButtonProps {
   milestone: number;
   finished?: boolean; // determines styling if milestone met
   claimed?: boolean; // determines styling if milestone claimed\
 }
 
-export const DailyFocusBox: React.FC = ({}) => {
+export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
+  popupCallback,
+}) => {
   const dispatch = useDispatch<any>();
   const theme = useTheme();
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
+  );
+  const tickets: number = useSelector(
+    (state: { user: UserState }) => state.user.tickets
   );
   const dailyFocusTime: number = useSelector(
     (state: { user: UserState }) => state.user.daily_focus_time
@@ -49,38 +58,54 @@ export const DailyFocusBox: React.FC = ({}) => {
   const lastFocusString: string =
     lastFocusDate === null ? "null" : lastFocusDate.toString();
 
-  const calculateProgressReward = (): number => {
+  // Calcualte cumulative reward to give user. Excludes any already claimed reward milestones
+  const calculateProgressReward = (milestoneClaimed: number): number => {
     let reward: number = 0;
+    // First Milestone rewards
     if (
-      dailyFocusTime >= THIRD_MILESTONE &&
-      dailyFocusClaimed < THIRD_MILESTONE
+      milestoneClaimed >= FIRST_MILESTONE &&
+      dailyFocusClaimed < FIRST_MILESTONE
+    ) {
+      reward += FIRST_MILESTONE_REWARD;
+    }
+    // Second Milestone rewards
+    if (
+      milestoneClaimed >= SECOND_MILESTONE &&
+      dailyFocusClaimed < SECOND_MILESTONE
+    ) {
+      reward += SECOND_MILESTONE_REWARD;
+    }
+    // Third Milestone rewards
+    if (
+      milestoneClaimed >= THIRD_MILESTONE &&
+      dailyFocusClaimed < THIRD_MILESTONE_REWARD
     ) {
       reward += THIRD_MILESTONE_REWARD;
     }
-
     return reward;
   };
 
-  const handleProgressClick = (milestone: number) => {
+  const handleProgressClick = (milestoneClaimed: number) => {
+    const reward = calculateProgressReward(milestoneClaimed);
     const updateRequest: UpdateUserRequest = {
       session: session,
       update: {
-        daily_focus_claimed: milestone,
-        // daily_focus_claimed: 0,
+        tickets: tickets + reward,
+        daily_focus_claimed: milestoneClaimed,
       },
     };
-    // Use an optimistic update here to avoid slow ui
+    // Below line is an optimistic update here to avoid slow ui
     // dispatch(setDailyFocusClaimed(milestone));
     dispatch(updateUserData(updateRequest));
+    popupCallback(reward);
   };
 
   const handleTestReset = () => {
     const updateRequest: UpdateUserRequest = {
       session: session,
       update: {
-        // daily_focus_claimed: milestone,
         daily_focus_claimed: 0,
-        // daily_focus_time: 0,
+        daily_focus_time: 0,
       },
     };
     // Use an optimistic update here to avoid slow ui
@@ -206,7 +231,7 @@ const styles = StyleSheet.create({
   },
   quickstartContainer: {
     flexDirection: "column",
-    backgroundColor: "green",
+    // backgroundColor: "green",
     // alignItems: "flex-end",
     // flex: 1,
     // justifyContent: "space-between",
@@ -234,7 +259,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     // alignItems: "center",
     flexDirection: "row",
-    backgroundColor: "purple",
+    // backgroundColor: "purple",
   },
   progressBar: {
     height: 6,
