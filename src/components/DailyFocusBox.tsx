@@ -20,6 +20,7 @@ import {
 } from "@src/utils/missionRewards";
 import { Tooltip } from "@components/Tooltip";
 import { GradientIcon } from "./IconGradient";
+import { Badge } from "@components/Badge";
 
 interface DailyFocusBoxProps {
   popupCallback: (reward: number) => void;
@@ -144,6 +145,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
 
     const content = (
       <View style={styles.progressButtonStyleContainer}>
+        {finished && !claimed && <Badge />}
         <TouchableOpacity
           onPress={() => {
             console.log(
