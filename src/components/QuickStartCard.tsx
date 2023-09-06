@@ -4,6 +4,17 @@ import { Text, Button, Title, IconButton } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { Session } from "@supabase/supabase-js";
 import { AuthState } from "@src/features/auth/authSlice";
+import { TripReward, getRewards } from "@src/features/reward/TripRewardHandler";
+import { findRandomViableTripIds } from "@src/features/skytrain/TripFinder";
+import {
+  setTrip,
+  setRewards,
+  SkytrainState,
+} from "@src/features/skytrain/skytrainSlice";
+import { getStationName } from "@src/utils/skytrain";
+import { StationsState } from "@src/features/stations/stationsSlice";
+import { useNavigation } from "@react-navigation/native";
+import { setSlider } from "@src/features/user/userSlice";
 
 interface QuickStartButtonProps {
   id?: string;
@@ -14,9 +25,37 @@ interface QuickStartButtonProps {
 
 export const QuickStartCard: React.FC = ({}) => {
   const dispatch = useDispatch<any>();
+  const navigation = useNavigation();
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
+  const skytrainGraph = useSelector(
+    (state: { skytrain: SkytrainState }) => state.skytrain.skytrainGraph
+  );
+  const selectedStation: string = useSelector(
+    (state: { stations: StationsState }) => state.stations.selectedStation
+  );
+  const stations: Map<string, number> = useSelector(
+    (state: { stations: StationsState }) => state.stations.stations
+  );
+
+  const handleQuickPress = (duration: number) => {
+    console.log(
+      getStationName(selectedStation) + " starting focus trip for " + duration
+    );
+    dispatch(setSlider(duration));
+    const tripPath: string[] = findRandomViableTripIds(
+      skytrainGraph,
+      selectedStation,
+      duration
+    );
+    const rewards: TripReward = getRewards(tripPath, stations);
+    dispatch(setTrip(tripPath));
+    dispatch(setRewards(rewards));
+
+    console.log("Mission: Navigating to Timer via QuickStart");
+    navigation.navigate("Timer" as never);
+  };
 
   const QuickStartButton: React.FC<QuickStartButtonProps> = ({
     id = "",
@@ -29,6 +68,11 @@ export const QuickStartCard: React.FC = ({}) => {
         <TouchableOpacity
           onPress={() => {
             console.log("Pressed quicxkstart");
+            if (isAdd) {
+              navigation.navigate("Create Quick Start" as never);
+            } else {
+              if (duration > 0) handleQuickPress(duration);
+            }
           }}
           style={{ alignItems: "center" }}
         >
@@ -64,7 +108,7 @@ export const QuickStartCard: React.FC = ({}) => {
         </View>
         <View style={styles.quickstartContainer}>
           <QuickStartButton isAdd={true} name="Add" />
-          <QuickStartButton id="d" name="Study" duration={120} />
+          <QuickStartButton id="d" name="Study" duration={20} />
           {/* TODO: Onl render this if theres <4 quickstarts  */}
         </View>
       </View>
