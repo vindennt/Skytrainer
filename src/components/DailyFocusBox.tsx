@@ -19,7 +19,7 @@ import {
   FocusMilestoneTimes,
 } from "@src/utils/missionRewards";
 import { Tooltip } from "@components/Tooltip";
-import { GradientIcon } from "./IconGradient";
+import { GradientIcon, PremiumCurrencyIcon } from "@components/IconGradient";
 import { Badge } from "@components/Badge";
 
 interface DailyFocusBoxProps {
@@ -178,14 +178,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
 
     const tooltipContent: React.ReactNode = (
       <View style={styles.tooltip}>
-        <GradientIcon
-          name="credit-card-chip"
-          size={20}
-          colors={["white", "#faa93e", "hotpink", "cyan", "blue"]}
-          start={{ x: 0.5, y: 0.15 }}
-          end={{ x: 0.9, y: 1 }}
-          locations={[0, 0.15, 0.35, 0.7, 1]}
-        />
+        <PremiumCurrencyIcon />
         <Text style={[styles.text, { marginLeft: 6 }]}>{reward}</Text>
       </View>
       // <Text>Hey</Text>

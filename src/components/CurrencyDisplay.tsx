@@ -1,6 +1,10 @@
 import { View } from "react-native";
 import { useTheme, Button, IconButton } from "react-native-paper";
-import { GradientIcon } from "@components/IconGradient";
+import {
+  CommonCurrencyIcon,
+  GradientIcon,
+  PremiumCurrencyIcon,
+} from "@components/IconGradient";
 import { useNavigation } from "@react-navigation/native";
 
 interface CurrencyDisplayProps {
@@ -49,13 +53,7 @@ export const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
       />
       {showBalance && (
         <Button
-          icon={({ size, color }) => (
-            <GradientIcon
-              name="credit-card-chip"
-              size={20}
-              colors={["#1691d9", "#1691d9"]}
-            />
-          )}
+          icon={({ size, color }) => <CommonCurrencyIcon />}
           mode="outlined"
           labelStyle={{ marginVertical: 5, color: theme.colors.onBackground }}
           // onPress={() => console.log("Pressed")}
@@ -65,16 +63,7 @@ export const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
       )}
       {showTickets && (
         <Button
-          icon={({ size, color }) => (
-            <GradientIcon
-              name="credit-card-chip"
-              size={20}
-              colors={["white", "#faa93e", "hotpink", "cyan", "blue"]}
-              start={{ x: 0.5, y: 0.15 }}
-              end={{ x: 0.9, y: 1 }}
-              locations={[0, 0.15, 0.35, 0.7, 1]}
-            />
-          )}
+          icon={({ size, color }) => <PremiumCurrencyIcon />}
           mode="outlined"
           labelStyle={{ marginVertical: 5, color: theme.colors.onBackground }}
           // onPress={() => console.log("Pressed")}

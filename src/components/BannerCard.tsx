@@ -2,7 +2,7 @@ import React from "react";
 import { useTheme, Card, Text, Button } from "react-native-paper";
 import { View, StyleSheet, Image, Alert } from "react-native";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import { GradientIcon } from "@components/IconGradient";
+import { GradientIcon, PremiumCurrencyIcon } from "@components/IconGradient";
 import {
   BannerInfo,
   DUPLICATE_LEVEL_RATE,
@@ -197,14 +197,7 @@ export const BannerCard: React.FC<BannerCardProps> = ({
             {permanent ? (
               <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
             ) : (
-              <GradientIcon
-                name="credit-card-chip"
-                size={20}
-                colors={["white", "#faa93e", "hotpink", "cyan", "blue"]}
-                start={{ x: 0.5, y: 0.15 }}
-                end={{ x: 0.9, y: 1 }}
-                locations={[0, 0.15, 0.35, 0.7, 1]}
-              />
+              <PremiumCurrencyIcon />
             )}
             <Text style={styles.priceText}>{price.toString()}</Text>
           </View>

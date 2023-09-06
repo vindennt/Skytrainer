@@ -1,6 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
 import DailyFocusBox from "@src/components/DailyFocusBox";
-import { GradientIcon } from "@src/components/IconGradient";
+import {
+  GradientIcon,
+  PremiumCurrencyIcon,
+} from "@src/components/IconGradient";
 import { Popup } from "@src/components/Popup";
 import QuickStartCard from "@src/components/QuickStartCard";
 import { AuthState } from "@src/features/auth/authSlice";
@@ -94,14 +97,7 @@ const Missions = () => {
         <View style={styles.rewardContainer}>
           <Text style={styles.headerText}>Claimed Rewards</Text>
           <View style={styles.rewardTextContainer}>
-            <GradientIcon
-              name="credit-card-chip"
-              size={20}
-              colors={["white", "#faa93e", "hotpink", "cyan", "blue"]}
-              start={{ x: 0.5, y: 0.15 }}
-              end={{ x: 0.9, y: 1 }}
-              locations={[0, 0.15, 0.35, 0.7, 1]}
-            />
+            <PremiumCurrencyIcon />
             <Text style={[styles.text, { marginLeft: 6 }]}>
               {displayedReward}
             </Text>
