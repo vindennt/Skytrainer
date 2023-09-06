@@ -33,12 +33,17 @@ export const QuickStartCard: React.FC = ({}) => {
           style={{ alignItems: "center" }}
         >
           <View style={styles.quickButtonStyle}>
-            <Text style={isAdd ? { fontSize: 20 } : styles.text}>
+            <Text
+              style={[
+                isAdd ? { fontSize: 20 } : styles.text,
+                { fontWeight: "bold" },
+              ]}
+            >
               {isAdd ? "+" : duration}
             </Text>
           </View>
-          <Text style={[styles.text, { marginTop: 5 }]}>{name}</Text>
         </TouchableOpacity>
+        <Text style={[styles.text, { marginTop: 5 }]}>{name}</Text>
       </View>
     );
   };

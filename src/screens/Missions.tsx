@@ -42,8 +42,9 @@ const Missions = () => {
         session: session,
         update: {
           daily_focus_time: 0,
+          daily_focus_claimed: 0,
           daily_reset_time: todayDMY,
-          // last_focus_date: now,
+          last_focus_date: todayDMY,
         },
       };
       dispatch(updateUserData(updateRequest));

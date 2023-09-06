@@ -23,6 +23,7 @@ export interface UserState {
   last_focus_date: Date;
   daily_focus_time: number;
   focus_streak_days: number;
+  daily_focus_claimed: number;
 }
 
 const initialState: UserState = {
@@ -42,6 +43,7 @@ const initialState: UserState = {
   last_focus_date: new Date(),
   daily_focus_time: 0,
   focus_streak_days: 0,
+  daily_focus_claimed: 0,
 };
 
 const userSlice = createSlice({
@@ -96,6 +98,9 @@ const userSlice = createSlice({
     setFocusStreakDays: (state, action) => {
       state.focus_streak_days = action.payload;
     },
+    setDailyFocusClaimed: (state, action) => {
+      state.daily_focus_claimed = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllUserData.fulfilled, (state, action) => {
@@ -117,6 +122,7 @@ const userSlice = createSlice({
       state.last_focus_date = action.payload.last_focus_date;
       state.daily_focus_time = action.payload.daily_focus_time;
       state.focus_streak_days = action.payload.focus_streak_days;
+      state.daily_focus_claimed = action.payload.daily_focus_claimed;
     });
     builder.addCase(updateUserData.fulfilled, (state, action) => {
       const data: UserUpdate | undefined = action.payload;
@@ -148,6 +154,8 @@ const userSlice = createSlice({
           state.daily_focus_time = data.daily_focus_time;
         if (data.focus_streak_days !== undefined)
           state.focus_streak_days = data.focus_streak_days;
+        if (data.daily_focus_claimed !== undefined)
+          state.daily_focus_claimed = data.daily_focus_claimed;
       }
     });
   },
@@ -170,6 +178,7 @@ export const {
   setlastFocusDate,
   setDailyFocusTime,
   setFocusStreakDays,
+  setDailyFocusClaimed,
 } = userSlice.actions;
 // export { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
 export {

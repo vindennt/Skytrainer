@@ -56,7 +56,7 @@ const Trip = () => {
 
   useEffect(() => {
     // TODO: remove the timeout. Its only purpose is to solve the infinite loop
-    console.log("XXXXXXXXXXXX Trip.tsx running");
+    console.log("Trip.tsx running");
     setTimeout(() => {
       const updateRequest: UpdateUserRequest = {
         session: session,
