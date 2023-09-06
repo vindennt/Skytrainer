@@ -7,6 +7,7 @@ import authReducer from "@features/auth/authSlice";
 import userReducer from "@features/user/userSlice";
 import stationsReducer from "@features/stations/stationsSlice";
 import skytrainReducer from "@features/skytrain/skytrainSlice";
+import navReducer from "@navigation/navSlice";
 
 enableMapSet(); // Initiate map functions
 
@@ -20,6 +21,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   stations: stationsReducer,
   skytrain: skytrainReducer,
+  nav: navReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
