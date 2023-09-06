@@ -14,13 +14,7 @@ import {
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-
-const FIRST_MILESTONE: number = 5;
-const FIRST_MILESTONE_REWARD: number = 5;
-const SECOND_MILESTONE: number = 10;
-const SECOND_MILESTONE_REWARD: number = 10;
-const THIRD_MILESTONE: number = 15;
-const THIRD_MILESTONE_REWARD: number = 15;
+import { DailyFocusRewards, FocusMilestone } from "@src/utils/missionRewards";
 
 interface DailyFocusBoxProps {
   popupCallback: (reward: number) => void;
@@ -59,6 +53,10 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
   const lastFocusString: string =
     lastFocusDate === null ? "null" : lastFocusDate.toString();
 
+  const FIRST_MILESTONE: number = FocusMilestone.FIRST_MILESTONE;
+  const SECOND_MILESTONE: number = FocusMilestone.SECOND_MILESTONE;
+  const THIRD_MILESTONE: number = FocusMilestone.THIRD_MILESTONE;
+
   const getButtonColour = (claimed: boolean, finished: boolean): string => {
     return claimed
       ? theme.colors.outline
@@ -83,21 +81,21 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
       milestoneClaimed >= FIRST_MILESTONE &&
       dailyFocusClaimed < FIRST_MILESTONE
     ) {
-      reward += FIRST_MILESTONE_REWARD;
+      reward += DailyFocusRewards.FIRST_MILESTONE;
     }
     // Second Milestone rewards
     if (
       milestoneClaimed >= SECOND_MILESTONE &&
       dailyFocusClaimed < SECOND_MILESTONE
     ) {
-      reward += SECOND_MILESTONE_REWARD;
+      reward += DailyFocusRewards.SECOND_MILESTONE;
     }
     // Third Milestone rewards
     if (
       milestoneClaimed >= THIRD_MILESTONE &&
-      dailyFocusClaimed < THIRD_MILESTONE_REWARD
+      dailyFocusClaimed < THIRD_MILESTONE
     ) {
-      reward += THIRD_MILESTONE_REWARD;
+      reward += DailyFocusRewards.THIRD_MILESTONE;
     }
     return reward;
   };
