@@ -13,6 +13,7 @@ import {
   UpdateUserRequest,
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 const FIRST_MILESTONE: number = 5;
 const FIRST_MILESTONE_REWARD: number = 5;
@@ -57,6 +58,22 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
   );
   const lastFocusString: string =
     lastFocusDate === null ? "null" : lastFocusDate.toString();
+
+  const getButtonColour = (claimed: boolean, finished: boolean): string => {
+    return claimed
+      ? theme.colors.outline
+      : finished
+      ? theme.colors.tertiary
+      : theme.colors.onSurfaceVariant;
+  };
+
+  const getIconColour = (claimed: boolean, finished: boolean): string => {
+    return claimed
+      ? theme.colors.surfaceVariant
+      : finished
+      ? theme.colors.onTertiary
+      : theme.colors.outline;
+  };
 
   // Calcualte cumulative reward to give user. Excludes any already claimed reward milestones
   const calculateProgressReward = (milestoneClaimed: number): number => {
@@ -130,33 +147,56 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
             handleProgressClick(milestone);
           }}
           disabled={!finished || claimed}
-          style={{
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "row",
-          }}
+          style={styles.progressButtonTouchable}
         >
           <View
             style={[
               styles.progressButton,
-              claimed
-                ? { backgroundColor: theme.colors.outline }
-                : finished
-                ? { backgroundColor: theme.colors.tertiary }
-                : { backgroundColor: theme.colors.onSurfaceVariant },
+              { backgroundColor: getButtonColour(claimed, finished) },
             ]}
           >
-            <Text
-              style={[
-                { fontWeight: "bold", color: theme.colors.surfaceVariant },
-                styles.text,
-              ]}
-            >
-              {milestone}
-            </Text>
+            <Icon
+              name={claimed ? "check" : "gift"}
+              color={getIconColour(claimed, finished)}
+              size={24}
+            />
           </View>
         </TouchableOpacity>
-        <Text style={[styles.text, { marginTop: 5 }]}>{milestone} mins</Text>
+        <Text style={[styles.text, { marginTop: 5 }]}>
+          {/* {milestone === FIRST_MILESTONE ? " " : ""} */}
+          {milestone} mins
+        </Text>
+      </View>
+    );
+  };
+
+  const ZerothDailyProgressButton: React.FC = ({}) => {
+    const finished: boolean = dailyFocusTime >= FIRST_MILESTONE;
+    const claimed: boolean = dailyFocusClaimed >= THIRD_MILESTONE;
+    return (
+      <View style={styles.progressButtonStyleContainer}>
+        <TouchableOpacity style={styles.progressButtonTouchable} disabled>
+          <View
+            style={[
+              styles.progressButton,
+              {
+                backgroundColor: "transparent",
+                borderWidth: 1,
+                borderColor: getButtonColour(claimed, finished),
+              },
+              // { backgroundColor: getButtonColour(claimed, finished) },
+            ]}
+          >
+            <Icon
+              name={"fire"}
+              // color={theme.colors.onSurfaceVariant}
+              // color={getIconColour(claimed, finished)}
+              color={getButtonColour(claimed, finished)}
+              size={24}
+            />
+          </View>
+        </TouchableOpacity>
+        <Text style={[styles.text, { marginTop: 5 }]}>0 mins</Text>
       </View>
     );
   };
@@ -173,11 +213,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
       <View
         style={[
           styles.progressBar,
-          claimed
-            ? { backgroundColor: theme.colors.outline }
-            : finished
-            ? { backgroundColor: theme.colors.tertiary }
-            : { backgroundColor: theme.colors.onSurfaceVariant },
+          { backgroundColor: getButtonColour(claimed, finished) },
         ]}
       ></View>
     );
@@ -189,13 +225,15 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Daily Focus</Text>
         </View>
-        <View style={styles.quickstartContainer}>
+        {/* <View style={styles.quickstartContainer}>
           <Text>{dailyFocusTime}</Text>
           <Text>Claimed: {dailyFocusClaimed}</Text>
           <Text>Daily reset: {dailyResetString}</Text>
           <Text>Last focus: {lastFocusString}</Text>
-        </View>
+        </View> */}
         <View style={styles.progressContainer}>
+          <ZerothDailyProgressButton />
+          <Progressbar milestone={FIRST_MILESTONE} />
           <DailyProgressButton milestone={FIRST_MILESTONE} />
           <Progressbar milestone={SECOND_MILESTONE} />
           <DailyProgressButton milestone={SECOND_MILESTONE} />
@@ -229,24 +267,21 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  quickstartContainer: {
-    flexDirection: "column",
-    // backgroundColor: "green",
-    // alignItems: "flex-end",
-    // flex: 1,
-    // justifyContent: "space-between",
-    // backgroundColor: "gray",
-  },
   text: {
-    fontSize: 16,
+    fontSize: 14,
   },
   progressButton: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
     borderRadius: 37,
     alignItems: "center",
     justifyContent: "center",
     // flex: 1,
+  },
+  progressButtonTouchable: {
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
   },
   progressButtonStyleContainer: {
     flexDirection: "column",
@@ -257,13 +292,14 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     justifyContent: "space-between",
+    marginTop: 20,
     // alignItems: "center",
     flexDirection: "row",
     // backgroundColor: "purple",
   },
   progressBar: {
-    height: 6,
-    width: 60,
-    top: 27,
+    height: 4,
+    width: 38,
+    top: 23,
   },
 });
