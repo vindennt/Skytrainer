@@ -55,28 +55,24 @@ const Trip = () => {
   const today: Date = getTodayDMY();
 
   useEffect(() => {
-    // TODO: remove the timeout. Its only purpose is to solve the infinite loop
     console.log("Trip.tsx running");
-    setTimeout(() => {
-      const updateRequest: UpdateUserRequest = {
-        session: session,
-        update: {
-          balance: balance + rewards.total,
-          slider: slider,
-          total_trip_time: total_trip_time + slider,
-          total_trips_finished: total_trips_finished + 1,
-          last_used_station: trip[0],
-          daily_focus_time: datesMatch(today, last_focus_date)
-            ? dailyFocusTime + slider
-            : slider,
-          // TODO: enabling these lines creates infinite loop
-          last_focus_date: today,
-          daily_reset_time: today,
-        },
-      };
-      dispatch(updateUserData(updateRequest));
-      console.log("changing ref to true");
-    }, 0);
+
+    const updateRequest: UpdateUserRequest = {
+      session: session,
+      update: {
+        balance: balance + rewards.total,
+        slider: slider,
+        total_trip_time: total_trip_time + slider,
+        total_trips_finished: total_trips_finished + 1,
+        last_used_station: trip[0],
+        daily_focus_time: datesMatch(today, last_focus_date)
+          ? dailyFocusTime + slider
+          : slider,
+        last_focus_date: today,
+        daily_reset_time: today,
+      },
+    };
+    dispatch(updateUserData(updateRequest));
   }, []);
 
   const renderItem = ({ item }: { item: RewardContributor }) => (

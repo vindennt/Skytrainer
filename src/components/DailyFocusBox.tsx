@@ -21,6 +21,8 @@ import {
 import { Tooltip } from "@components/Tooltip";
 import { GradientIcon, PremiumCurrencyIcon } from "@components/IconGradient";
 import { Badge } from "@components/Badge";
+import { setMissionBadgeVisibility } from "@src/navigation/navSlice";
+import { getTodayDMY } from "@src/utils/dates";
 
 interface DailyFocusBoxProps {
   popupCallback: (reward: number) => void;
@@ -59,6 +61,9 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
   );
   const lastFocusString: string =
     lastFocusDate === null ? "null" : lastFocusDate.toString();
+  const todayDMY: Date = getTodayDMY();
+  const resetDate: Date = new Date(todayDMY);
+  resetDate.setDate(todayDMY.getDate() - 1);
 
   const FIRST_MILESTONE: number = FocusMilestoneTimes.FIRST_MILESTONE;
   const SECOND_MILESTONE: number = FocusMilestoneTimes.SECOND_MILESTONE;
@@ -126,12 +131,15 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
     const updateRequest: UpdateUserRequest = {
       session: session,
       update: {
-        daily_focus_claimed: 0,
-        daily_focus_time: 0,
+        // daily_focus_claimed: 0,
+        // daily_focus_time: 0,
+        daily_reset_time: resetDate,
+        last_focus_date: resetDate,
       },
     };
     // Use an optimistic update here to avoid slow ui
     dispatch(updateUserData(updateRequest));
+    dispatch(setMissionBadgeVisibility(false));
   };
 
   const DailyProgressButton: React.FC<DailyProgressButtonProps> = ({
