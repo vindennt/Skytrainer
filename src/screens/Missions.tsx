@@ -12,6 +12,7 @@ import {
   UpdateUserRequest,
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
+import { setMissionBadgeVisibility } from "@src/navigation/navSlice";
 import { datesMatch, getTodayDMY } from "@src/utils/dates";
 import * as React from "react";
 import { useEffect, useState } from "react";
@@ -79,6 +80,7 @@ const Missions = () => {
   };
 
   useEffect(() => {
+    console.log("Mission useEffect");
     // setOldFocusDates();
     handleDailyFocus();
   }, []);
