@@ -1,17 +1,24 @@
 import { useNavigation } from "@react-navigation/native";
+import { LoadingIndicator } from "@src/components/LoadingIndicator";
 import { StationSelector } from "@src/components/StationSelectBox";
 import { TimeSlider } from "@src/components/TimeSlider";
+import { AuthState } from "@src/features/auth/authSlice";
 import {
   SignupDetails,
   quickstartSchema,
-} from "@src/features/quickStarts/creationForm";
+} from "@src/features/quickStart/creationForm";
+import { QuickStart } from "@src/features/quickStart/quickStartHandler";
+import {
+  NewQuickStartRequest,
+  addQuickStart,
+} from "@src/features/quickStart/quickStartSliceHelpers";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import { UserState } from "@src/features/user/userSlice";
 import { getStationName } from "@src/utils/skytrain";
 import { Formik } from "formik";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, FlatList } from "react-native";
+import { View, StyleSheet, FlatList, Alert } from "react-native";
 import {
   Button,
   HelperText,
@@ -19,11 +26,18 @@ import {
   TextInput,
   useTheme,
 } from "react-native-paper";
-import { useSelector } from "react-redux";
+import Icon from "react-native-vector-icons/Ionicons";
+import { useDispatch, useSelector } from "react-redux";
 
 const QuickStartCreator = () => {
   const theme = useTheme();
+  const dispatch = useDispatch<any>();
   const navigation = useNavigation();
+
+  const session = useSelector(
+    (state: { auth: AuthState }) => state.auth.session
+  );
+
   const sliderValue = useSelector(
     (state: { user: UserState }) => state.user.slider
   );
@@ -32,7 +46,8 @@ const QuickStartCreator = () => {
     (state: { stations: StationsState }) => state.stations.stations
   );
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
 
   const handleGoBack = () => {
     navigation.goBack();
@@ -43,7 +58,45 @@ const QuickStartCreator = () => {
     duration: sliderValue,
     station: stations.keys().next().value,
   };
-  return (
+
+  const handleQuickstartRequest = async (values: SignupDetails) => {
+    try {
+      setLoading(true);
+      console.log(
+        "Adding quickstart named: " +
+          values.name +
+          ", duration: " +
+          values.duration +
+          ", stationid: " +
+          values.station
+      );
+      if (session) {
+        const qs: QuickStart = {
+          name: values.name,
+          duration: values.duration,
+          startId: values.station,
+        };
+        const request: NewQuickStartRequest = {
+          session: session,
+          quickstart: qs,
+        };
+        await dispatch(addQuickStart(request));
+        setSuccess(true);
+        console.log(success);
+        setTimeout(() => {
+          setLoading(false);
+          handleGoBack();
+        }, 1000);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+      handleGoBack();
+    }
+  };
+
+  return !loading ? (
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
       //   style={[styles.container, { backgroundColor: "green" }]}
@@ -52,15 +105,8 @@ const QuickStartCreator = () => {
         initialValues={initialValues}
         validationSchema={quickstartSchema}
         validateOnMount={true}
-        onSubmit={(values) => {
-          console.log(
-            "Name: " +
-              values.name +
-              ", duration: " +
-              values.duration +
-              ", stationid: " +
-              values.station
-          );
+        onSubmit={async (values) => {
+          handleQuickstartRequest(values);
         }}
       >
         {({
@@ -124,6 +170,34 @@ const QuickStartCreator = () => {
           </View>
         )}
       </Formik>
+    </View>
+  ) : success ? (
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.colors.background,
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+        },
+      ]}
+    >
+      <Icon
+        name="checkmark-circle-outline"
+        color={theme.colors.onBackground}
+        size={30}
+      />
+      <Text style={styles.text}>Success!</Text>
+    </View>
+  ) : (
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: theme.colors.background, justifyContent: "center" },
+      ]}
+    >
+      <LoadingIndicator />
     </View>
   );
 };
