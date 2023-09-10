@@ -11,6 +11,9 @@ import {
   Trip,
   Signup,
   Timer,
+  StationSelect,
+  QuickStartCreator,
+  EditQuickStarts,
 } from "@screens/index";
 import BottomNavBar from "@navigation/BottomNavBar";
 import { useSelector, useDispatch } from "react-redux";
@@ -24,10 +27,9 @@ import {
   setSelectedStation,
 } from "@features/stations/stationsSlice";
 import { CurrencyDisplay } from "@components/CurrencyDisplay";
-import StationSelect from "@src/screens/StationSelect";
 import { Animated } from "react-native";
 import { setGraph } from "@src/features/skytrain/skytrainSlice";
-import QuickStartCreator from "@src/screens/QuickStartCreator";
+
 import { fetchAllQuickStarts } from "@src/features/quickStart/quickStartSliceHelpers";
 
 const AppNavigator = () => {
@@ -123,6 +125,7 @@ const AppNavigator = () => {
             name="Create Quick Start"
             component={QuickStartCreator}
           />
+          <Stack.Screen name="Edit Quickstarts" component={EditQuickStarts} />
         </Stack.Group>
       </Stack.Navigator>
     );
