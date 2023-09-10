@@ -1,61 +1,30 @@
-import { useNavigation } from "@react-navigation/native";
-import { LoadingIndicator } from "@src/components/LoadingIndicator";
-import { StationSelector } from "@src/components/StationSelectBox";
-import { TimeSlider } from "@src/components/TimeSlider";
 import { AuthState } from "@src/features/auth/authSlice";
-import {
-  SignupDetails,
-  quickstartSchema,
-} from "@src/features/quickStart/creationForm";
 import { QuickStart } from "@src/features/quickStart/quickStartHandler";
 import { QuickStartState } from "@src/features/quickStart/quickStartSlice";
 import {
   DeleteQuickStartRequest,
-  NewQuickStartRequest,
-  addQuickStart,
   deleteQuickStart,
 } from "@src/features/quickStart/quickStartSliceHelpers";
 import { StationsState } from "@src/features/stations/stationsSlice";
-import { UserState } from "@src/features/user/userSlice";
-import { getStationName } from "@src/utils/skytrain";
-import { Formik } from "formik";
 import * as React from "react";
-import { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, FlatList, Alert } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import {
-  IconButton,
-  HelperText,
-  Text,
-  TextInput,
-  useTheme,
-} from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/Ionicons";
 import { useDispatch, useSelector } from "react-redux";
 
 interface EditableQuickstartProps extends QuickStart {}
 
-const QuickStartCreator = () => {
+const EditQuickStart = () => {
   const theme = useTheme();
   const dispatch = useDispatch<any>();
-  const navigation = useNavigation();
 
   const session = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
-  const stations: Map<string, number> = useSelector(
-    (state: { stations: StationsState }) => state.stations.stations
-  );
   const quickstarts: QuickStart[] = useSelector(
     (state: { quickStart: QuickStartState }) => state.quickStart.quickstarts
   );
-
-  const [loading, setLoading] = useState<boolean>(false);
-  const [success, setSuccess] = useState<boolean>(false);
-
-  const handleGoBack = () => {
-    navigation.goBack();
-  };
 
   const EditableQuickstart: React.FC<EditableQuickstartProps> = ({
     id = "",
@@ -64,6 +33,17 @@ const QuickStartCreator = () => {
     duration = 0,
   }) => {
     const isLast: boolean = quickstarts[quickstarts.length - 1].id === id;
+
+    const handleDelete = () => {
+      if (session) {
+        const deleteRequest: DeleteQuickStartRequest = {
+          session: session,
+          id: id,
+        };
+        dispatch(deleteQuickStart(deleteRequest));
+      }
+    };
+
     return (
       <View
         style={{
@@ -75,17 +55,7 @@ const QuickStartCreator = () => {
           <Text style={styles.text}>
             {name} ({duration} mins)
           </Text>
-          <TouchableOpacity
-            onPress={() => {
-              if (session) {
-                const deleteRequest: DeleteQuickStartRequest = {
-                  session: session,
-                  id: id,
-                };
-                dispatch(deleteQuickStart(deleteRequest));
-              }
-            }}
-          >
+          <TouchableOpacity onPress={() => handleDelete}>
             <Icon
               name={"trash-outline"}
               color={theme.colors.onBackground}
@@ -118,7 +88,7 @@ const QuickStartCreator = () => {
   );
 };
 
-export default QuickStartCreator;
+export default EditQuickStart;
 
 const styles = StyleSheet.create({
   container: {
