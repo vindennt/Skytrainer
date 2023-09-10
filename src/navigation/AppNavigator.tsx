@@ -28,6 +28,7 @@ import StationSelect from "@src/screens/StationSelect";
 import { Animated } from "react-native";
 import { setGraph } from "@src/features/skytrain/skytrainSlice";
 import QuickStartCreator from "@src/screens/QuickStartCreator";
+import { fetchAllQuickStarts } from "@src/features/quickStart/quickStartSliceHelpers";
 
 const AppNavigator = () => {
   const dispatch = useDispatch<any>();
@@ -45,6 +46,7 @@ const AppNavigator = () => {
     dispatch(setUser(session.user));
     dispatch(fetchAllUserData(session));
     dispatch(fetchAllStations(session));
+    dispatch(fetchAllQuickStarts(session));
     while (lastUsedStation === "000") {}
     dispatch(setSelectedStation(lastUsedStation));
   };

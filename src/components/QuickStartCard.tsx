@@ -15,9 +15,12 @@ import { getStationName } from "@src/utils/skytrain";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import { useNavigation } from "@react-navigation/native";
 import { setSlider } from "@src/features/user/userSlice";
+import { QuickStart } from "@src/features/quickStart/quickStartHandler";
+import { QuickStartState } from "@src/features/quickStart/quickStartSlice";
 
 interface QuickStartButtonProps {
   id?: string;
+  stationId: string;
   name: string;
   duration?: number;
   isAdd?: boolean;
@@ -32,21 +35,21 @@ export const QuickStartCard: React.FC = ({}) => {
   const skytrainGraph = useSelector(
     (state: { skytrain: SkytrainState }) => state.skytrain.skytrainGraph
   );
-  const selectedStation: string = useSelector(
-    (state: { stations: StationsState }) => state.stations.selectedStation
-  );
   const stations: Map<string, number> = useSelector(
     (state: { stations: StationsState }) => state.stations.stations
   );
+  const quickstarts: QuickStart[] = useSelector(
+    (state: { quickStart: QuickStartState }) => state.quickStart.quickstarts
+  );
 
-  const handleQuickPress = (duration: number) => {
+  const handleQuickPress = (duration: number, stationId: string) => {
     console.log(
-      getStationName(selectedStation) + " starting focus trip for " + duration
+      getStationName(stationId) + " starting focus trip for " + duration
     );
     dispatch(setSlider(duration));
     const tripPath: string[] = findRandomViableTripIds(
       skytrainGraph,
-      selectedStation,
+      stationId,
       duration
     );
     const rewards: TripReward = getRewards(tripPath, stations);
@@ -59,6 +62,7 @@ export const QuickStartCard: React.FC = ({}) => {
 
   const QuickStartButton: React.FC<QuickStartButtonProps> = ({
     id = "",
+    stationId,
     name,
     duration = 0,
     isAdd = false,
@@ -67,11 +71,12 @@ export const QuickStartCard: React.FC = ({}) => {
       <View style={styles.quickButtonStyleContainer}>
         <TouchableOpacity
           onPress={() => {
-            console.log("Pressed quicxkstart");
             if (isAdd) {
               navigation.navigate("Create Quick Start" as never);
             } else {
-              if (duration > 0) handleQuickPress(duration);
+              if (duration > 0 && stationId !== "000") {
+                handleQuickPress(duration, stationId);
+              }
             }
           }}
           style={{ alignItems: "center" }}
@@ -107,9 +112,19 @@ export const QuickStartCard: React.FC = ({}) => {
           </Button>
         </View>
         <View style={styles.quickstartContainer}>
-          <QuickStartButton isAdd={true} name="Add" />
-          <QuickStartButton id="d" name="Study" duration={20} />
-          {/* TODO: Onl render this if theres <4 quickstarts  */}
+          <QuickStartButton isAdd={true} name="Add" stationId="000" />
+          {quickstarts.map((quickstart) => {
+            return (
+              <QuickStartButton
+                key={quickstart.id}
+                id={quickstart.id}
+                stationId={quickstart.stationId}
+                name={quickstart.name}
+                duration={quickstart.duration}
+              />
+            );
+          })}
+          {/* <QuickStartButton id="d" name="Study" duration={20} /> */}
         </View>
       </View>
     </View>
@@ -139,10 +154,11 @@ const styles = StyleSheet.create({
   },
   quickstartContainer: {
     flexDirection: "row",
+    paddingTop: 20,
     // alignItems: "flex-end",
     // flex: 1,
     // justifyContent: "space-between",
-    backgroundColor: "gray",
+    // backgroundColor: "gray",
   },
   quickButtonStyle: {
     width: 60,
