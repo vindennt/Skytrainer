@@ -27,8 +27,14 @@ export const fetchAllQuickStarts = createAsyncThunk(
         throw error;
       } else if (data) {
         console.log(JSON.stringify(data, null, 2));
-        data.forEach((row: QuickStart) => {
-          fetchedQuickStarts.push(row);
+        data.forEach((row) => {
+          const qsToAdd: QuickStart = {
+            id: row.id,
+            stationId: row.start_id,
+            name: row.name,
+            duration: row.duration,
+          };
+          fetchedQuickStarts.push(qsToAdd);
         });
         console.log(JSON.stringify(fetchedQuickStarts, null, 2));
       }
@@ -54,7 +60,7 @@ export const addQuickStart = createAsyncThunk(
       const newData = {
         duration: quickstart.duration,
         name: quickstart.name,
-        start_id: quickstart.startId,
+        start_id: quickstart.stationId,
       };
 
       let { data, error } = await supabase.from("quickstarts").insert(newData);
@@ -63,10 +69,6 @@ export const addQuickStart = createAsyncThunk(
         throw error;
       } else {
         return quickstart;
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message);
       }
     } finally {
       console.log("Thunk end: addQuickStart");
