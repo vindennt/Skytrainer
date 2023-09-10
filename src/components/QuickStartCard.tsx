@@ -18,11 +18,7 @@ import { setSlider } from "@src/features/user/userSlice";
 import { QuickStart } from "@src/features/quickStart/quickStartHandler";
 import { QuickStartState } from "@src/features/quickStart/quickStartSlice";
 
-interface QuickStartButtonProps {
-  id: string;
-  stationId?: string;
-  name: string;
-  duration?: number;
+interface QuickStartButtonProps extends QuickStart {
   isAdd?: boolean;
 }
 
@@ -135,7 +131,14 @@ export const QuickStartCard: React.FC = ({}) => {
             );
           })}
           {quickstarts.length < 4 && (
-            <QuickStartButton key="ADD" id="add" isAdd={true} name="Add" />
+            <QuickStartButton
+              key="ADD"
+              id="add"
+              duration={0}
+              stationId={""}
+              isAdd={true}
+              name="Add"
+            />
           )}
         </View>
       </View>

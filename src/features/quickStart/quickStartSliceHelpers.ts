@@ -3,6 +3,7 @@ import { supabase } from "@src/api/supabase";
 import { Session } from "@supabase/supabase-js";
 import { Alert } from "react-native";
 import { QuickStart } from "./quickStartHandler";
+import uuid from "react-native-uuid";
 
 export interface NewQuickStartRequest {
   session: Session;
@@ -62,7 +63,9 @@ export const addQuickStart = createAsyncThunk(
       if (!session || !session?.user)
         throw new Error("No user on the session!");
 
+      const newUUID: string | number[] = uuid.v4().toString();
       const newData = {
+        id: newUUID,
         duration: quickstart.duration,
         name: quickstart.name,
         start_id: quickstart.stationId,
@@ -73,7 +76,8 @@ export const addQuickStart = createAsyncThunk(
       if (error) {
         throw error;
       } else {
-        return quickstart;
+        console.log(newData);
+        return newData;
       }
     } finally {
       console.log("Thunk end: addQuickStart");

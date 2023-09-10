@@ -55,7 +55,7 @@ const EditQuickStart = () => {
           <Text style={styles.text}>
             {name} ({duration} mins)
           </Text>
-          <TouchableOpacity onPress={() => handleDelete}>
+          <TouchableOpacity onPress={handleDelete}>
             <Icon
               name={"trash-outline"}
               color={theme.colors.onBackground}

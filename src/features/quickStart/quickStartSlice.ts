@@ -40,8 +40,14 @@ const quickStartSlice = createSlice({
     builder.addCase(addQuickStart.fulfilled, (state, action) => {
       if (action.payload) {
         console.log("addQuickStart fulfilled");
-        console.log("Adding " + JSON.stringify(action.payload));
-        const newList: QuickStart[] = [...state.quickstarts, action.payload];
+
+        const qsToAdd: QuickStart = {
+          ...action.payload,
+          stationId: action.payload.start_id,
+        };
+        console.log("Adding " + JSON.stringify(qsToAdd));
+
+        const newList: QuickStart[] = [...state.quickstarts, qsToAdd];
         state.quickstarts = newList;
       }
     });
