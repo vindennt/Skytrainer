@@ -27,7 +27,7 @@ export interface UserState {
   focus_streak_days_record: number;
   focus_streak_days_claimed: number;
   total_trip_time_claimed: number;
-  total_trips_finished_claimed?: number;
+  total_trips_finished_claimed: number;
 }
 
 const initialState: UserState = {
