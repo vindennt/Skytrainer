@@ -1,6 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { MAX_QUICKSTARTS, QuickStart } from "./quickStartHandler";
-import { fetchAllQuickStarts, addQuickStart } from "./quickStartSliceHelpers";
+import {
+  fetchAllQuickStarts,
+  addQuickStart,
+  deleteQuickStart,
+} from "./quickStartSliceHelpers";
 
 export interface QuickStartState {
   quickstarts: QuickStart[];
@@ -33,6 +37,23 @@ const quickStartSlice = createSlice({
         console.log(action.payload);
       }
     });
+    builder.addCase(addQuickStart.fulfilled, (state, action) => {
+      if (action.payload) {
+        console.log("addQuickStart fulfilled");
+        console.log("Adding " + JSON.stringify(action.payload));
+        const newList: QuickStart[] = [...state.quickstarts, action.payload];
+        state.quickstarts = newList;
+      }
+    });
+    builder.addCase(deleteQuickStart.fulfilled, (state, action) => {
+      if (action.payload) {
+        console.log("deleteQuickStart fulfilled for id " + action.payload);
+        const newQuickstarts = state.quickstarts.filter(
+          (quickstart) => quickstart.id !== action.payload
+        );
+        state.quickstarts = newQuickstarts;
+      }
+    });
   },
 });
 
@@ -40,5 +61,6 @@ export const { addNewQuickStart } = quickStartSlice.actions;
 export {
   fetchAllQuickStarts,
   addQuickStart,
+  deleteQuickStart,
 } from "@features/quickStart/quickStartSliceHelpers";
 export default quickStartSlice.reducer;

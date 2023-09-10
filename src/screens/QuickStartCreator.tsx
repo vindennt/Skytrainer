@@ -74,7 +74,7 @@ const QuickStartCreator = () => {
         const qs: QuickStart = {
           name: values.name,
           duration: values.duration,
-          startId: values.station,
+          stationId: values.station,
         };
         const request: NewQuickStartRequest = {
           session: session,

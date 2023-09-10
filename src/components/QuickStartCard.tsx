@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Text, Button, Title, IconButton } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,8 +19,8 @@ import { QuickStart } from "@src/features/quickStart/quickStartHandler";
 import { QuickStartState } from "@src/features/quickStart/quickStartSlice";
 
 interface QuickStartButtonProps {
-  id?: string;
-  stationId: string;
+  id: string;
+  stationId?: string;
   name: string;
   duration?: number;
   isAdd?: boolean;
@@ -62,7 +62,7 @@ export const QuickStartCard: React.FC = ({}) => {
 
   const QuickStartButton: React.FC<QuickStartButtonProps> = ({
     id = "",
-    stationId,
+    stationId = "000",
     name,
     duration = 0,
     isAdd = false,
@@ -102,29 +102,41 @@ export const QuickStartCard: React.FC = ({}) => {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Quickstart</Text>
-          <Button
-            icon="chevron-forward-outline"
-            onPress={() => {}}
-            contentStyle={{ flexDirection: "row-reverse" }}
-            labelStyle={{ marginVertical: 2 }}
-          >
-            Edit
-          </Button>
+          {quickstarts.length > 0 && (
+            <Button
+              icon="chevron-forward-outline"
+              onPress={() => {
+                navigation.navigate("Edit Quickstarts" as never);
+              }}
+              contentStyle={{ flexDirection: "row-reverse" }}
+              labelStyle={{ marginVertical: 2 }}
+            >
+              Edit
+            </Button>
+          )}
         </View>
-        <View style={styles.quickstartContainer}>
-          <QuickStartButton isAdd={true} name="Add" stationId="000" />
+        <View
+          style={[
+            styles.quickstartContainer,
+            quickstarts.length >= 3 && { justifyContent: "space-between" },
+          ]}
+        >
           {quickstarts.map((quickstart) => {
             return (
-              <QuickStartButton
-                key={quickstart.id}
-                id={quickstart.id}
-                stationId={quickstart.stationId}
-                name={quickstart.name}
-                duration={quickstart.duration}
-              />
+              quickstart.id && (
+                <QuickStartButton
+                  key={quickstart.id}
+                  id={quickstart.id}
+                  stationId={quickstart.stationId}
+                  name={quickstart.name}
+                  duration={quickstart.duration}
+                />
+              )
             );
           })}
-          {/* <QuickStartButton id="d" name="Study" duration={20} /> */}
+          {quickstarts.length < 4 && (
+            <QuickStartButton key="ADD" id="add" isAdd={true} name="Add" />
+          )}
         </View>
       </View>
     </View>
@@ -136,7 +148,6 @@ export default QuickStartCard;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "#454045",
-    // padding: 20,
     padding: 20,
     paddingBottom: 20,
     borderRadius: 12,
@@ -158,6 +169,8 @@ const styles = StyleSheet.create({
     // alignItems: "flex-end",
     // flex: 1,
     // justifyContent: "space-between",
+    justifyContent: "flex-start",
+    gap: 20,
     // backgroundColor: "gray",
   },
   quickButtonStyle: {
