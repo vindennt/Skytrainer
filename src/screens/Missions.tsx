@@ -140,6 +140,7 @@ const Missions = () => {
     description,
     milestone,
     type,
+    reward,
   }) => {
     const isLast: boolean =
       MissionsList[MissionsList.length - 1].milestone === milestone;
@@ -234,6 +235,7 @@ const Missions = () => {
               description={mission.description}
               milestone={mission.milestone}
               type={mission.type}
+              reward={mission.reward}
             />
           );
         })}
