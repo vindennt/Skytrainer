@@ -16,7 +16,7 @@ import { setMissionBadgeVisibility } from "@src/navigation/navSlice";
 import { datesMatch, getTodayDMY, isConsecutiveDay } from "@src/utils/dates";
 import {
   Mission,
-  MissionData,
+  MissionType,
   MissionsList,
   RewardProgress,
 } from "@src/utils/missionRewards";
@@ -71,6 +71,9 @@ const Missions = () => {
 
   const totalTripsFinishedClaimed: number = useSelector(
     (state: { user: UserState }) => state.user.total_trips_finished_claimed
+  );
+  const tickets: number = useSelector(
+    (state: { user: UserState }) => state.user.tickets
   );
 
   const [popupVisible, setPopupVisible] = useState<boolean>(false);
@@ -146,31 +149,83 @@ const Missions = () => {
     const isLast: boolean =
       MissionsList[MissionsList.length - 1].milestone === milestone;
 
-    function getProgress(type: MissionData): RewardProgress {
+    function getProgress(type: MissionType): RewardProgress {
       let progress: number;
       let claimed: number;
+      let databaseType: string;
       switch (type) {
-        case MissionData.CONSECUTIVE_DAYS:
+        case MissionType.CONSECUTIVE_DAYS:
           progress = focusStreakDaysRecord;
           claimed = focusStreakDaysClaimed;
+          databaseType = "focus_streak_days_claimed";
           break;
-        case MissionData.TOTAL_MINS:
+        case MissionType.TOTAL_MINS:
           progress = totalTripTime;
           claimed = totalTripTimeClaimed;
+          databaseType = "total_trip_time_claimed";
           break;
-        case MissionData.TOTAL_TRIPS:
+        case MissionType.TOTAL_TRIPS:
           progress = totalTripsFinished;
           claimed = totalTripsFinishedClaimed;
+          databaseType = "total_trips_finished_claimed";
           break;
         default:
           progress = 0;
           claimed = 0;
+          databaseType = "";
       }
-      return { progress: progress, claimed: claimed };
+      return {
+        progress: progress,
+        claimed: claimed,
+        databaseType: databaseType,
+      };
     }
     const progress: RewardProgress = getProgress(type);
     const isComplete: boolean = progress.progress >= milestone;
     const isClaimed: boolean = progress.claimed >= milestone;
+
+    // Exception case: focusStreakDaysRecord does not change, so it is good for
+    // marking historically completed missions. However, for current missions, the
+    // focusStreakDays is the variable that can incremenet, so if the mission is
+    // not done, then this value is what serves as progress indicator
+    // rather than the static focusStreakDaysRecord
+    if (type === MissionType.CONSECUTIVE_DAYS && !isComplete) {
+      progress.progress = focusStreakDays;
+    }
+
+    const calculateReward = (
+      milestoneClaimed: number,
+      type: MissionType
+    ): number => {
+      const totalReward = MissionsList.reduce((totalReward, mission) => {
+        if (
+          mission.type === type &&
+          milestoneClaimed >= mission.milestone &&
+          progress.claimed < mission.milestone
+        ) {
+          return totalReward + mission.reward;
+        }
+        return totalReward;
+      }, 0);
+      return totalReward;
+      // return 0;
+    };
+
+    const handleRewardClick = () => {
+      console.log(
+        "Now getting rewards for milestone: " + milestone + " and type " + type
+      );
+      const reward = calculateReward(milestone, type);
+      const updateRequest: UpdateUserRequest = {
+        session: session,
+        update: {
+          tickets: tickets + reward,
+          [progress.databaseType]: milestone,
+        },
+      };
+      dispatch(updateUserData(updateRequest));
+      showPopup(reward);
+    };
 
     const tooltipContent: React.ReactNode = (
       <View style={styles.tooltip}>
@@ -212,7 +267,7 @@ const Missions = () => {
               {!isClaimed && <Badge />}
               <TouchableOpacity
                 disabled={isClaimed}
-                onPress={() => {}}
+                onPress={handleRewardClick}
                 style={[
                   styles.giftButton,
                   { backgroundColor: getButtonColour(isClaimed, isComplete) },
