@@ -21,6 +21,7 @@ export interface UserUpdate {
   daily_focus_time?: number;
   focus_streak_days?: number;
   daily_focus_claimed?: number;
+  focus_streak_days_record?: number;
 }
 
 export interface UpdateUserRequest {

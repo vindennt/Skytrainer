@@ -54,6 +54,10 @@ const Trip = () => {
     (state: { user: UserState }) => state.user.focus_streak_days
   );
 
+  const focusStreakDaysRecord: number = useSelector(
+    (state: { user: UserState }) => state.user.focus_streak_days_record
+  );
+
   const today: Date = getTodayDMY();
 
   useEffect(() => {
@@ -64,7 +68,7 @@ const Trip = () => {
     const newStreak: number = !isSameFocusDay
       ? isConsecutiveDay(lastFocusDate)
         ? focusStreakDays + 1
-        : 0
+        : 1
       : focusStreakDays;
 
     const updateRequest: UpdateUserRequest = {
@@ -81,6 +85,8 @@ const Trip = () => {
         last_focus_date: today,
         daily_reset_time: today,
         focus_streak_days: newStreak,
+        focus_streak_days_record:
+          newStreak > focusStreakDaysRecord ? newStreak : focusStreakDaysRecord,
       },
     };
     dispatch(updateUserData(updateRequest));
