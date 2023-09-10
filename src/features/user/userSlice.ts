@@ -25,6 +25,9 @@ export interface UserState {
   focus_streak_days: number;
   daily_focus_claimed: number;
   focus_streak_days_record: number;
+  focus_streak_days_claimed: number;
+  total_trip_time_claimed: number;
+  total_trips_finished_claimed?: number;
 }
 
 const initialState: UserState = {
@@ -46,6 +49,9 @@ const initialState: UserState = {
   focus_streak_days: 0,
   daily_focus_claimed: 0,
   focus_streak_days_record: 0,
+  focus_streak_days_claimed: 0,
+  total_trip_time_claimed: 0,
+  total_trips_finished_claimed: 0,
 };
 
 const userSlice = createSlice({
@@ -129,6 +135,11 @@ const userSlice = createSlice({
       state.focus_streak_days = action.payload.focus_streak_days;
       state.daily_focus_claimed = action.payload.daily_focus_claimed;
       state.focus_streak_days_record = action.payload.focus_streak_days_record;
+      state.focus_streak_days_claimed =
+        action.payload.focus_streak_days_claimed;
+      state.total_trip_time_claimed = action.payload.total_trip_time_claimed;
+      state.total_trips_finished_claimed =
+        action.payload.total_trips_finished_claimed;
     });
     builder.addCase(updateUserData.fulfilled, (state, action) => {
       const data: UserUpdate | undefined = action.payload;
@@ -164,6 +175,13 @@ const userSlice = createSlice({
           state.daily_focus_claimed = data.daily_focus_claimed;
         if (data.focus_streak_days_record !== undefined)
           state.focus_streak_days_record = data.focus_streak_days_record;
+        if (data.focus_streak_days_claimed !== undefined)
+          state.focus_streak_days_claimed = data.focus_streak_days_claimed;
+        if (data.total_trip_time_claimed !== undefined)
+          state.total_trip_time_claimed = data.total_trip_time_claimed;
+        if (data.total_trips_finished_claimed !== undefined)
+          state.total_trips_finished_claimed =
+            data.total_trips_finished_claimed;
       }
     });
   },
