@@ -13,7 +13,7 @@ import {
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
 import { setMissionBadgeVisibility } from "@src/navigation/navSlice";
-import { datesMatch, getTodayDMY } from "@src/utils/dates";
+import { datesMatch, getTodayDMY, isConsecutiveDay } from "@src/utils/dates";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
@@ -36,6 +36,9 @@ const Missions = () => {
   const lastFocusDate: Date | null = useSelector(
     (state: { user: UserState }) => state.user.last_focus_date
   );
+  const focusStreakDays: number = useSelector(
+    (state: { user: UserState }) => state.user.focus_streak_days
+  );
 
   const [popupVisible, setPopupVisible] = useState<boolean>(false);
   const [displayedReward, setDisplayedReward] = useState<number>(0);
@@ -47,10 +50,19 @@ const Missions = () => {
 
   const handleDailyFocus = () => {
     const todayDMY: Date = getTodayDMY();
+    const isSameFocusDay: boolean = datesMatch(
+      todayDMY,
+      new Date(lastFocusDate)
+    );
+    const newStreak: number = !isSameFocusDay
+      ? isConsecutiveDay(lastFocusDate)
+        ? focusStreakDays + 1
+        : 0
+      : focusStreakDays;
 
     // if today is a new day, reset daily focus time
     // if (!datesMatch(new Date(lastFocusDate), now)) {
-    if (!datesMatch(todayDMY, new Date(lastFocusDate))) {
+    if (!isSameFocusDay) {
       console.log("XXXXX NEW DAY: Restting daily missions");
       const updateRequest: UpdateUserRequest = {
         session: session,
@@ -59,6 +71,7 @@ const Missions = () => {
           daily_focus_claimed: 0,
           daily_reset_time: todayDMY,
           last_focus_date: todayDMY,
+          focus_streak_days: newStreak,
         },
       };
       dispatch(updateUserData(updateRequest));
