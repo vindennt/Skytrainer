@@ -14,12 +14,16 @@ import {
 } from "@src/features/user/userSliceHelpers";
 import { setMissionBadgeVisibility } from "@src/navigation/navSlice";
 import { datesMatch, getTodayDMY, isConsecutiveDay } from "@src/utils/dates";
+import { Mission, MissionData, MissionsList } from "@src/utils/missionRewards";
 import * as React from "react";
 import { useEffect, useState } from "react";
-import { View, StyleSheet, FlatList } from "react-native";
+import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
 import session from "redux-persist/es/storage/session";
+import { Badge } from "@components/Badge";
+import { ScrollView } from "react-native-gesture-handler";
 
 const Missions = () => {
   const dispatch = useDispatch<any>();
@@ -40,8 +44,25 @@ const Missions = () => {
     (state: { user: UserState }) => state.user.focus_streak_days
   );
 
+  const focusStreakDaysRecord: number = useSelector(
+    (state: { user: UserState }) => state.user.focus_streak_days_record
+  );
+
+  const totalTripTime: number = useSelector(
+    (state: { user: UserState }) => state.user.total_trip_time
+  );
+  const totalTripsFinished: number = useSelector(
+    (state: { user: UserState }) => state.user.total_trips_finished
+  );
+
   const [popupVisible, setPopupVisible] = useState<boolean>(false);
   const [displayedReward, setDisplayedReward] = useState<number>(0);
+
+  const loginStreakProgress = (milestone: number): number => {
+    if (focusStreakDaysRecord >= milestone) {
+      return focusStreakDaysRecord;
+    } else return focusStreakDays;
+  };
 
   const showPopup = (reward: number) => {
     setDisplayedReward(reward);
@@ -61,7 +82,7 @@ const Missions = () => {
 
     // if today is a new day, reset daily focus time
     // if (!datesMatch(new Date(lastFocusDate), now)) {
-    if (!datesMatch(dailyResetTime, todayDMY)) {
+    if (!datesMatch(new Date(dailyResetTime), todayDMY)) {
       console.log("XXXXX NEW DAY: Restting daily missions");
       const updateRequest: UpdateUserRequest = {
         session: session,
@@ -82,28 +103,115 @@ const Missions = () => {
     handleDailyFocus();
   }, []);
 
-  return (
-    <View style={styles.container}>
-      <Text>Missions.</Text>
-      <DailyFocusBox popupCallback={(reward) => showPopup(reward)} />
-      <QuickStartCard />
-      <Popup
-        visible={popupVisible}
-        onClose={() => {
-          setPopupVisible(false);
+  const DailyFocusMissonElement: React.FC<Mission> = ({
+    description,
+    milestone,
+    type,
+  }) => {
+    const isLast: boolean =
+      MissionsList[MissionsList.length - 1].milestone === milestone;
+
+    function getProgress(type: MissionData): number {
+      let result: number;
+      switch (type) {
+        case MissionData.CONSECUTIVE_DAYS:
+          result = focusStreakDaysRecord;
+          break;
+        case MissionData.TOTAL_MINS:
+          result = totalTripTime;
+          break;
+        case MissionData.TOTAL_TRIPS:
+          result = totalTripsFinished;
+          break;
+        default:
+          result = 0;
+      }
+      return result;
+    }
+    const progress: number = getProgress(type);
+    const isComplete: boolean = progress >= milestone;
+
+    return (
+      <View
+        style={{
+          // flex: 1,
+          borderBottomWidth: 1,
+          borderBottomColor: isLast ? "transparent" : theme.colors.onBackground,
         }}
       >
-        <View style={styles.rewardContainer}>
-          <Text style={styles.headerText}>Claimed Rewards</Text>
-          <View style={styles.rewardTextContainer}>
-            <PremiumCurrencyIcon />
-            <Text style={[styles.text, { marginLeft: 6 }]}>
-              {displayedReward}
-            </Text>
-          </View>
+        <View style={[styles.item]}>
+          <Text style={styles.text}>{description}</Text>
+          {!isComplete && (
+            <TouchableOpacity
+              disabled
+              style={[
+                styles.giftButton,
+                { borderWidth: 1, borderColor: theme.colors.onBackground },
+              ]}
+            >
+              <Text style={styles.miniText}>
+                {progress} / {milestone}
+              </Text>
+            </TouchableOpacity>
+          )}
+          {isComplete && (
+            <View>
+              <Badge />
+              <TouchableOpacity
+                onPress={() => {}}
+                style={[
+                  styles.giftButton,
+                  { backgroundColor: theme.colors.tertiary },
+                ]}
+              >
+                <Icon
+                  name={"gift"}
+                  color={theme.colors.onTertiary}
+                  // color={theme.colors.onBackground}
+                  size={24}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
         </View>
-      </Popup>
-    </View>
+      </View>
+    );
+  };
+
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.header}>Missions</Text>
+      <View style={styles.secondaryContainer}>
+        <DailyFocusBox popupCallback={(reward) => showPopup(reward)} />
+        <QuickStartCard />
+        {MissionsList.map((mission: Mission) => {
+          return (
+            <DailyFocusMissonElement
+              key={mission.description}
+              description={mission.description}
+              milestone={mission.milestone}
+              type={mission.type}
+            />
+          );
+        })}
+        <Popup
+          visible={popupVisible}
+          onClose={() => {
+            setPopupVisible(false);
+          }}
+        >
+          <View style={styles.rewardContainer}>
+            <Text style={styles.headerText}>Claimed Rewards</Text>
+            <View style={styles.rewardTextContainer}>
+              <PremiumCurrencyIcon />
+              <Text style={[styles.text, { marginLeft: 6 }]}>
+                {displayedReward}
+              </Text>
+            </View>
+          </View>
+        </Popup>
+      </View>
+    </ScrollView>
   );
 };
 
@@ -115,11 +223,25 @@ const styles = StyleSheet.create({
     // margin: 8,
     // alignItems: "center",
     // justifyContent: "center",
-    padding: 20,
+    // padding: 20,
+    paddingHorizontal: 10,
     // backgroundColor: "pink",
+  },
+  secondaryContainer: {
+    padding: 10,
   },
   text: {
     fontSize: 16,
+  },
+  miniText: {
+    fontSize: 12,
+    fontWeight: "bold",
+  },
+  header: {
+    marginLeft: 10,
+    marginVertical: 15,
+    fontSize: 30,
+    fontWeight: "700",
   },
   headerText: {
     fontSize: 20,
@@ -133,5 +255,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     borderRadius: 12,
+  },
+  item: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginVertical: 14,
+  },
+  giftButton: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 100,
+    width: 50,
+    height: 50,
+  },
+  missionList: {
+    // flex: 1,
+    // maxHeight: "100%",
   },
 });
