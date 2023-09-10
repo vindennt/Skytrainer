@@ -14,7 +14,12 @@ import {
 } from "@src/features/user/userSliceHelpers";
 import { setMissionBadgeVisibility } from "@src/navigation/navSlice";
 import { datesMatch, getTodayDMY, isConsecutiveDay } from "@src/utils/dates";
-import { Mission, MissionData, MissionsList } from "@src/utils/missionRewards";
+import {
+  Mission,
+  MissionData,
+  MissionsList,
+  RewardProgress,
+} from "@src/utils/missionRewards";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
@@ -55,6 +60,18 @@ const Missions = () => {
     (state: { user: UserState }) => state.user.total_trips_finished
   );
 
+  const focusStreakDaysClaimed: number = useSelector(
+    (state: { user: UserState }) => state.user.focus_streak_days_claimed
+  );
+
+  const totalTripTimeClaimed: number = useSelector(
+    (state: { user: UserState }) => state.user.total_trip_time_claimed
+  );
+
+  const totalTripsFinishedClaimed: number = useSelector(
+    (state: { user: UserState }) => state.user.total_trips_finished_claimed
+  );
+
   const [popupVisible, setPopupVisible] = useState<boolean>(false);
   const [displayedReward, setDisplayedReward] = useState<number>(0);
 
@@ -62,6 +79,22 @@ const Missions = () => {
     if (focusStreakDaysRecord >= milestone) {
       return focusStreakDaysRecord;
     } else return focusStreakDays;
+  };
+
+  const getButtonColour = (claimed: boolean, finished: boolean): string => {
+    return claimed
+      ? "transparent"
+      : finished
+      ? theme.colors.tertiary
+      : theme.colors.onSurfaceVariant;
+  };
+
+  const getIconColour = (claimed: boolean, finished: boolean): string => {
+    return claimed
+      ? theme.colors.onBackground
+      : finished
+      ? theme.colors.onTertiary
+      : theme.colors.outline;
   };
 
   const showPopup = (reward: number) => {
@@ -111,25 +144,31 @@ const Missions = () => {
     const isLast: boolean =
       MissionsList[MissionsList.length - 1].milestone === milestone;
 
-    function getProgress(type: MissionData): number {
-      let result: number;
+    function getProgress(type: MissionData): RewardProgress {
+      let progress: number;
+      let claimed: number;
       switch (type) {
         case MissionData.CONSECUTIVE_DAYS:
-          result = focusStreakDaysRecord;
+          progress = focusStreakDaysRecord;
+          claimed = focusStreakDaysClaimed;
           break;
         case MissionData.TOTAL_MINS:
-          result = totalTripTime;
+          progress = totalTripTime;
+          claimed = totalTripTimeClaimed;
           break;
         case MissionData.TOTAL_TRIPS:
-          result = totalTripsFinished;
+          progress = totalTripsFinished;
+          claimed = totalTripsFinishedClaimed;
           break;
         default:
-          result = 0;
+          progress = 0;
+          claimed = 0;
       }
-      return result;
+      return { progress: progress, claimed: claimed };
     }
-    const progress: number = getProgress(type);
-    const isComplete: boolean = progress >= milestone;
+    const progress: RewardProgress = getProgress(type);
+    const isComplete: boolean = progress.progress >= milestone;
+    const isClaimed: boolean = progress.claimed >= milestone;
 
     return (
       <View
@@ -140,7 +179,9 @@ const Missions = () => {
         }}
       >
         <View style={[styles.item]}>
-          <Text style={styles.text}>{description}</Text>
+          <View style={[styles.missionDescription]}>
+            <Text style={styles.text}>{description}</Text>
+          </View>
           {!isComplete && (
             <TouchableOpacity
               disabled
@@ -150,23 +191,25 @@ const Missions = () => {
               ]}
             >
               <Text style={styles.miniText}>
-                {progress} / {milestone}
+                {progress.progress} / {milestone}
               </Text>
             </TouchableOpacity>
           )}
+
           {isComplete && (
             <View>
-              <Badge />
+              {!isClaimed && <Badge />}
               <TouchableOpacity
+                disabled={isClaimed}
                 onPress={() => {}}
                 style={[
                   styles.giftButton,
-                  { backgroundColor: theme.colors.tertiary },
+                  { backgroundColor: getButtonColour(isClaimed, isComplete) },
                 ]}
               >
                 <Icon
-                  name={"gift"}
-                  color={theme.colors.onTertiary}
+                  name={isClaimed ? "check" : "gift"}
+                  color={getIconColour(isClaimed, isComplete)}
                   // color={theme.colors.onBackground}
                   size={24}
                 />
@@ -272,5 +315,9 @@ const styles = StyleSheet.create({
   missionList: {
     // flex: 1,
     // maxHeight: "100%",
+  },
+  missionDescription: {
+    flex: 1,
+    maxWidth: "80%",
   },
 });
