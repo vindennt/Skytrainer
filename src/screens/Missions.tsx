@@ -54,15 +54,14 @@ const Missions = () => {
       todayDMY,
       new Date(lastFocusDate)
     );
-    const newStreak: number = !isSameFocusDay
-      ? isConsecutiveDay(lastFocusDate)
-        ? focusStreakDays + 1
-        : 0
-      : focusStreakDays;
+    const newStreak: number =
+      isSameFocusDay || isConsecutiveDay(new Date(lastFocusDate))
+        ? focusStreakDays
+        : 0;
 
     // if today is a new day, reset daily focus time
     // if (!datesMatch(new Date(lastFocusDate), now)) {
-    if (!isSameFocusDay) {
+    if (!datesMatch(dailyResetTime, todayDMY)) {
       console.log("XXXXX NEW DAY: Restting daily missions");
       const updateRequest: UpdateUserRequest = {
         session: session,
@@ -70,7 +69,7 @@ const Missions = () => {
           daily_focus_time: 0,
           daily_focus_claimed: 0,
           daily_reset_time: todayDMY,
-          last_focus_date: todayDMY,
+          // last_focus_date: todayDMY,
           focus_streak_days: newStreak,
         },
       };
@@ -78,23 +77,8 @@ const Missions = () => {
     }
   };
 
-  // TODO: Sets a focus date as a prevous date for testing purposes
-  const setOldFocusDates = () => {
-    const testLastLoginDate = new Date(2023, 7, 1);
-    // const testLastLoginDate = new Date();
-    const updateRequest: UpdateUserRequest = {
-      session: session,
-      update: {
-        daily_reset_time: testLastLoginDate,
-        last_focus_date: testLastLoginDate,
-      },
-    };
-    dispatch(updateUserData(updateRequest));
-  };
-
   useEffect(() => {
     console.log("Mission useEffect");
-    // setOldFocusDates();
     handleDailyFocus();
   }, []);
 

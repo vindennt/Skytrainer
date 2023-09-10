@@ -52,15 +52,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
   const dailyFocusClaimed: number = useSelector(
     (state: { user: UserState }) => state.user.daily_focus_claimed
   );
-  const dailyResetTIme: Date = useSelector(
-    (state: { user: UserState }) => state.user.daily_reset_time
-  );
-  const dailyResetString: string = dailyResetTIme.toString();
-  const lastFocusDate: Date | null = useSelector(
-    (state: { user: UserState }) => state.user.last_focus_date
-  );
-  const lastFocusString: string =
-    lastFocusDate === null ? "null" : lastFocusDate.toString();
+
   const todayDMY: Date = getTodayDMY();
   const resetDate: Date = new Date(todayDMY);
   resetDate.setDate(todayDMY.getDate() - 1);

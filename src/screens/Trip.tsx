@@ -10,7 +10,7 @@ import {
   UpdateUserRequest,
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
-import { datesMatch, getTodayDMY } from "@src/utils/dates";
+import { datesMatch, getTodayDMY, isConsecutiveDay } from "@src/utils/dates";
 import { Session } from "@supabase/supabase-js";
 import * as React from "react";
 import { useEffect, useRef } from "react";
@@ -47,15 +47,25 @@ const Trip = () => {
   const dailyFocusTime: number = useSelector(
     (state: { user: UserState }) => state.user.daily_focus_time
   );
-
-  const last_focus_date: Date = new Date(
+  const lastFocusDate: Date = new Date(
     useSelector((state: { user: UserState }) => state.user.last_focus_date)
+  );
+  const focusStreakDays: number = useSelector(
+    (state: { user: UserState }) => state.user.focus_streak_days
   );
 
   const today: Date = getTodayDMY();
 
   useEffect(() => {
     console.log("Trip.tsx running");
+
+    const todayDMY: Date = getTodayDMY();
+    const isSameFocusDay: boolean = datesMatch(todayDMY, lastFocusDate);
+    const newStreak: number = !isSameFocusDay
+      ? isConsecutiveDay(lastFocusDate)
+        ? focusStreakDays + 1
+        : 0
+      : focusStreakDays;
 
     const updateRequest: UpdateUserRequest = {
       session: session,
@@ -65,11 +75,12 @@ const Trip = () => {
         total_trip_time: total_trip_time + slider,
         total_trips_finished: total_trips_finished + 1,
         last_used_station: trip[0],
-        daily_focus_time: datesMatch(today, last_focus_date)
+        daily_focus_time: datesMatch(today, lastFocusDate)
           ? dailyFocusTime + slider
           : slider,
         last_focus_date: today,
         daily_reset_time: today,
+        focus_streak_days: newStreak,
       },
     };
     dispatch(updateUserData(updateRequest));
