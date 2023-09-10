@@ -36,11 +36,11 @@ export const Tooltip: React.FC<TooltipProps> = ({
         <View
           style={{
             position: "absolute",
-            backgroundColor: "rgba(0, 0, 0, 0.6)",
+            backgroundColor: "rgba(0, 0, 0, 0.7)",
             padding: 10,
             borderRadius: 12,
             zIndex: 999, // Adjust this to control overlay order
-            bottom: 80,
+            bottom: 70,
           }}
         >
           {/* <Text>{content}</Text> */}

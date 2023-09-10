@@ -29,6 +29,7 @@ import { useDispatch, useSelector } from "react-redux";
 import session from "redux-persist/es/storage/session";
 import { Badge } from "@components/Badge";
 import { ScrollView } from "react-native-gesture-handler";
+import { Tooltip } from "@src/components/Tooltip";
 
 const Missions = () => {
   const dispatch = useDispatch<any>();
@@ -171,6 +172,13 @@ const Missions = () => {
     const isComplete: boolean = progress.progress >= milestone;
     const isClaimed: boolean = progress.claimed >= milestone;
 
+    const tooltipContent: React.ReactNode = (
+      <View style={styles.tooltip}>
+        <PremiumCurrencyIcon />
+        <Text style={[styles.text, { marginLeft: 6 }]}>{reward}</Text>
+      </View>
+    );
+
     return (
       <View
         style={{
@@ -184,17 +192,19 @@ const Missions = () => {
             <Text style={styles.text}>{description}</Text>
           </View>
           {!isComplete && (
-            <TouchableOpacity
-              disabled
-              style={[
-                styles.giftButton,
-                { borderWidth: 1, borderColor: theme.colors.onBackground },
-              ]}
-            >
-              <Text style={styles.miniText}>
-                {progress.progress} / {milestone}
-              </Text>
-            </TouchableOpacity>
+            <Tooltip content={tooltipContent}>
+              <TouchableOpacity
+                disabled
+                style={[
+                  styles.giftButton,
+                  { borderWidth: 1, borderColor: theme.colors.onBackground },
+                ]}
+              >
+                <Text style={styles.miniText}>
+                  {progress.progress} / {milestone}
+                </Text>
+              </TouchableOpacity>
+            </Tooltip>
           )}
 
           {isComplete && (
@@ -321,5 +331,9 @@ const styles = StyleSheet.create({
   missionDescription: {
     flex: 1,
     maxWidth: "80%",
+  },
+  tooltip: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
