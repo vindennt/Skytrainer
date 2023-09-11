@@ -1,20 +1,20 @@
-### Notes
+# Skytrainer
 
-- In "./node_modules/react-native-paper/src/components/MaterialCommunityIcon.tsx", change "MaterialCommunity" to "Ionicons" to ensure the BottomNavBar renders the correct icons.
-
-# GachaSim
-
-Productivity helper app where users set timers to stay away from their phones while the app goes on a Skytrain trip to gather in-app rewards.
-Motivate was React Native and habit-forming mobile gacha game design principles. Aims to grow skills in mobile development, algorithms, and full stack development.
+Mobile productivity helper app where devices will disable distracting apps to help users go on "Focus Trips." Simply set a trip timer and your device will go on a Skytrain journey,accumulating in-app rewards along the way to encourage longer Focus Trips. Rewards can be used to purchase Skytrain Stations that will all have custom comissioned artwork. By applying the habit-forming mobile gacha game design principles, the app can help users build positive habits and intrinsic discipline.
 
 # Tools
 
-ReactNative, OpenWeather, Translink Skytrain trip table, Firebase, Firestore
+React Native, PostgreSQL, Supabase Auth & Database, Typescript
 
-# Premise
+# Background
 
 Productivity tasks are linked to timers that block distracting apps using respective platform's blacklisters (e.g. iOS Focus). Habit-forming is
 encouraged by interleaving gacha design, which also provides a tangible, visual form of progress to users. Rewards are in the form of character art and
 upgrade materials. Using Translink's Skytrains allowed demonstration of a highly-tailored graph traversal algorithm that could produce a Skytrain
-trip when given a trip duration. Using the Skytrain system also provides a sense of familiarity to users in Metro Vancouver.
+trip when given a trip duration. Using the Skytrain system also provides a sense of familiarity to users in Metro Vancouver. By querying gacha data from the SQL database,
+new gacha content and characters can be injected into the app without ever needing a single update on the user side.
 Inspired by the productivity app "Forest," developed by SEEKRTECH CO.
+
+### Notes
+
+- In "./node_modules/react-native-paper/src/components/MaterialCommunityIcon.tsx", change "MaterialCommunity" to "Ionicons" to ensure the BottomNavBar renders the correct icons.
