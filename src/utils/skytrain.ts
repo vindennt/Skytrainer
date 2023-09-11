@@ -169,7 +169,7 @@ STATION_MAP.set("041", ["Olympic Village", OlympicVillage, Tier.FOUR_STAR]);
 STATION_MAP.set("042", [
   "Broadway City Hall",
   BroadwayCityHall,
-  Tier.FOUR_STAR,
+  Tier.FIVE_STAR,
 ]);
 STATION_MAP.set("043", ["King Edward", KingEdward, Tier.FOUR_STAR]);
 STATION_MAP.set("044", [

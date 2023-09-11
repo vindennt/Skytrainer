@@ -5,15 +5,29 @@ import {
   fourStarRewardTable,
   fiveStarRewardTable,
   UNIVERSAL_FIVE_STAR_PITY,
+  FOUR_STAR_BOOSTED_WEIGHT,
 } from "@src/utils/gacha";
 
 // Helper function that allows dynamic random reward generation based on weighted probability
-const getRandomReward = (rewardTable: RewardTableElement[]): string => {
+const getRandomReward = (
+  rewardTable: RewardTableElement[],
+  fourStarRateUpIds: string[] = []
+): string => {
   // Sum total weight
+  const limitedBanner: boolean = fourStarRateUpIds.length > 0;
+
   let totalWeight = 0;
   rewardTable.forEach((element) => {
     totalWeight += element.weight;
+    // Adjust total weight for 4*s on rate up
+    if (limitedBanner && fourStarRateUpIds.includes(element.id)) {
+      totalWeight += FOUR_STAR_BOOSTED_WEIGHT;
+    }
   });
+  // Addon extra weight attributed to the boosted rate for any rate up four stars
+  // fourStarRateUpIds.forEach((element) => {
+  //   totalWeight += FOUR_STAR_BOOSTED_WEIGHT;
+  // });
 
   // Roll random number based on totalWeight
   const randomNumber = Math.random() * totalWeight;
@@ -23,7 +37,11 @@ const getRandomReward = (rewardTable: RewardTableElement[]): string => {
   // Treat currentWeight as a fixed stack pointer, and the weights are accumulating up towards the randomly picked number
   let currentWeight = 0;
   for (const element of rewardTable) {
-    const weight = element.weight;
+    let weight = element.weight;
+    // If the four star is one of the limited rate ups, boost its weighted roll
+    if (limitedBanner && fourStarRateUpIds.includes(element.id)) {
+      weight += FOUR_STAR_BOOSTED_WEIGHT;
+    }
     currentWeight += weight;
     if (randomNumber < currentWeight) {
       return element.id;
@@ -39,6 +57,9 @@ export const gachaRoll = (
   limitedRateUpId: string = "",
   fourStarRateUpIds: string[] = []
 ) => {
+  console.log(
+    "Limited rate ups: " + limitedRateUpId + " and 4*: " + fourStarRateUpIds
+  );
   const limited: boolean = limitedRateUpId !== "";
   // If user is "at pity", immediately give them a random FIVE_STAR Tier reward
   console.log("Rolling with pity: " + userFiveStarPity);
@@ -56,6 +77,6 @@ export const gachaRoll = (
       ? limited
         ? limitedRateUpId
         : getRandomReward(fiveStarRewardTable)
-      : getRandomReward(fourStarRewardTable);
+      : getRandomReward(fourStarRewardTable, fourStarRateUpIds);
   }
 };

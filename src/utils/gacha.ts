@@ -130,7 +130,7 @@ export const fourStarRewardTable: RewardTableElement[] = [
   newRTE("039", 1),
   newRTE("040", 1),
   newRTE("041", 1),
-  newRTE("042", 1),
+  // newRTE("042", 1),
   newRTE("043", 1),
   newRTE("044", 1),
   newRTE("045", 1),
