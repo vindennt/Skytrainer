@@ -28,6 +28,7 @@ import {
 } from "@utils/gacha";
 import { getTier } from "@src/utils/skytrain";
 import { GachaRewardDisplay } from "@src/components/GachaRewardDisplay";
+import { selectLimitedBanner } from "@src/features/shop/shopSlice";
 
 const Shop = () => {
   const defaultBuyable: Buyable = {
@@ -47,6 +48,7 @@ const Shop = () => {
     (state: { stations: StationsState }) => state.stations.stations
   );
   const sortedShopData = sortByMapPresence(shopData, stations);
+  const limitedBanner: BannerInfo | null = useSelector(selectLimitedBanner);
 
   const handleClosePopup = () => {
     setShowPopup(false);
@@ -76,12 +78,16 @@ const Shop = () => {
       <FlatList
         ListHeaderComponent={
           <View style={styles.container}>
-            <Text style={styles.subheader}>Limited Time</Text>
-            <BannerCard
-              banner={LimitedBannerInfo}
-              popupCallback={showRewardPopup}
-              popupVisible={showPopup}
-            />
+            {limitedBanner !== null && (
+              <View>
+                <Text style={styles.subheader}>Limited Time</Text>
+                <BannerCard
+                  banner={limitedBanner}
+                  popupCallback={showRewardPopup}
+                  popupVisible={showPopup}
+                />
+              </View>
+            )}
             <Text style={styles.subheader}>Permanent</Text>
             <BannerCard
               banner={PermanentBannerInfo}

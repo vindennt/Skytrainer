@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { supabase } from "@src/api/supabase";
+import { formatDateToYYYYMMDD } from "@src/utils/dates";
 import { Session } from "@supabase/supabase-js";
 import { Alert } from "react-native";
 
@@ -10,7 +11,8 @@ export const fetchLimitedBanner = createAsyncThunk(
     try {
       if (!session?.user) throw new Error("No user on the session!");
 
-      const today: Date = new Date();
+      const today: string = formatDateToYYYYMMDD(new Date());
+      console.log(today);
 
       let { data, error, status } = await supabase
         .from("banners")
