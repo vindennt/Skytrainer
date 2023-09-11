@@ -40,30 +40,6 @@ const BottomNavBar = () => {
   //   (dailyFocusTime >= FIRST_MILESTONE && dailyFocusClaimed < FIRST_MILESTONE);
 
   const [index, setIndex] = React.useState(0);
-  // const [routes] = React.useState([
-  //   {
-  //     key: "home",
-  //     title: "Skytrain",
-  //     focusedIcon: "subway",
-  //   },
-  //   {
-  //     key: "missions",
-  //     title: "Missions",
-  //     focusedIcon: "calendar",
-  //     badge: unclaimedDailyReward,
-  //   },
-  //   {
-  //     key: "stations",
-  //     title: "Stations",
-  //     focusedIcon: "map",
-  //   },
-  //   {
-  //     key: "shop",
-  //     title: "Shop",
-  //     focusedIcon: "pricetags",
-  //   },
-  // ]);
-
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
     stations: StationsRoute,

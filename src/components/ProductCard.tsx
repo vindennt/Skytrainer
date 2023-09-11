@@ -14,9 +14,7 @@ import { UserState } from "@src/features/user/userSlice";
 import { Session } from "@supabase/supabase-js";
 import { AuthState } from "@src/features/auth/authSlice";
 import {
-  UpdateNumericalBalanceRequest,
   UpdateUserRequest,
-  updateBalance,
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
 import {

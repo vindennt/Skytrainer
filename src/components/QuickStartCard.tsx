@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
-import { Text, Button, Title, IconButton } from "react-native-paper";
+import { Text, Button, Title, IconButton, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { Session } from "@supabase/supabase-js";
 import { AuthState } from "@src/features/auth/authSlice";
@@ -25,6 +25,7 @@ interface QuickStartButtonProps extends QuickStart {
 export const QuickStartCard: React.FC = ({}) => {
   const dispatch = useDispatch<any>();
   const navigation = useNavigation();
+  const theme = useTheme();
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
@@ -75,20 +76,33 @@ export const QuickStartCard: React.FC = ({}) => {
               }
             }
           }}
-          style={{ alignItems: "center" }}
+          style={[{ alignItems: "center" }]}
         >
-          <View style={styles.quickButtonStyle}>
+          <View
+            style={[
+              styles.quickButtonStyle,
+              isAdd ? { backgroundColor: theme.colors.outline } : null,
+            ]}
+          >
             <Text
               style={[
                 isAdd ? { fontSize: 20 } : styles.text,
-                { fontWeight: "bold" },
+                // { fontWeight: "bold" },
               ]}
             >
               {isAdd ? "+" : duration}
             </Text>
           </View>
         </TouchableOpacity>
-        <Text style={[styles.text, { marginTop: 5 }]}>{name}</Text>
+        <Text
+          style={[
+            styles.text,
+            { marginTop: 5 },
+            isAdd ? { color: theme.colors.primary } : null,
+          ]}
+        >
+          {name}
+        </Text>
       </View>
     );
   };

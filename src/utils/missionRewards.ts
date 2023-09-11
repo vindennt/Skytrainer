@@ -42,6 +42,12 @@ export const MissionsList: Mission[] = [
     type: MissionType.CONSECUTIVE_DAYS,
     reward: 160,
   },
+  {
+    description: "Go on a Focus Trip 5 days in a row",
+    milestone: 5,
+    type: MissionType.CONSECUTIVE_DAYS,
+    reward: 160,
+  },
 
   {
     description: "Go on a Focus Trip 7 days in a row",
@@ -111,7 +117,7 @@ export const MissionsList: Mission[] = [
     reward: 2400,
   },
   {
-    description: "Spend 9001 minutes on Focus Trips",
+    description: "Spend over 9000 minutes on Focus Trips",
     milestone: 9001,
     type: MissionType.TOTAL_MINS,
     reward: 9001,
