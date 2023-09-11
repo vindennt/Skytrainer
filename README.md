@@ -4,7 +4,7 @@ Mobile productivity helper app where devices will disable distracting apps to he
 
 # Tools
 
-React Native, PostgreSQL, Supabase Auth & Database, Typescript
+React Native, PostgreSQL, Supabase Auth & Database, Redux Toolkit
 
 # Background
 
