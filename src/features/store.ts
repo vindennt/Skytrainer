@@ -9,6 +9,7 @@ import stationsReducer from "@features/stations/stationsSlice";
 import skytrainReducer from "@features/skytrain/skytrainSlice";
 import navReducer from "@navigation/navSlice";
 import quickStartReducer from "@features/quickStart/quickStartSlice";
+import shopReducer from "@features/shop/shopSlice";
 
 enableMapSet(); // Initiate map functions
 
@@ -24,6 +25,7 @@ const rootReducer = combineReducers({
   skytrain: skytrainReducer,
   nav: navReducer,
   quickStart: quickStartReducer,
+  shop: shopReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

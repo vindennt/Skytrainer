@@ -21,7 +21,11 @@ import { AuthState } from "@src/features/auth/authSlice";
 import { setSession, setUser } from "@features/auth/authSlice";
 import { useTheme } from "react-native-paper";
 import { Session } from "@supabase/supabase-js";
-import { UserState, fetchAllUserData } from "@features/user/userSlice";
+import {
+  UserState,
+  fetchAllUserData,
+  selectLastUsedStation,
+} from "@features/user/userSlice";
 import {
   fetchAllStations,
   setSelectedStation,
@@ -31,6 +35,7 @@ import { Animated } from "react-native";
 import { setGraph } from "@src/features/skytrain/skytrainSlice";
 
 import { fetchAllQuickStarts } from "@src/features/quickStart/quickStartSliceHelpers";
+import { fetchLimitedBanner } from "@src/features/shop/shopSliceHelpers";
 
 const AppNavigator = () => {
   const dispatch = useDispatch<any>();
@@ -39,16 +44,14 @@ const AppNavigator = () => {
   const session = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
-
-  const lastUsedStation = useSelector(
-    (state: { user: UserState }) => state.user.last_used_station
-  );
+  const lastUsedStation: string = useSelector(selectLastUsedStation);
 
   const initUserData = async (session: Session) => {
     dispatch(setUser(session.user));
     dispatch(fetchAllUserData(session));
     dispatch(fetchAllStations(session));
     dispatch(fetchAllQuickStarts(session));
+    dispatch(fetchLimitedBanner(session));
     while (lastUsedStation === "000") {}
     dispatch(setSelectedStation(lastUsedStation));
   };
