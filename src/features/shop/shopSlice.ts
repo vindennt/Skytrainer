@@ -23,10 +23,10 @@ const shopSlice = createSlice({
       if (action.payload) {
         console.log("fetchLimitedBanner fulfilled");
         console.log(JSON.stringify(action.payload));
-        // state.limitedBanner = {
-        //   type: "limited",
-        //   ...action.payload,
-        // } as BannerInfo;
+        state.limitedBanner = {
+          type: "limited",
+          ...action.payload,
+        } as BannerInfo;
       }
     });
   },
@@ -35,3 +35,6 @@ const shopSlice = createSlice({
 export { fetchLimitedBanner } from "./shopSliceHelpers";
 // export const { setLimitedBanner } = shopSlice.actions;
 export default shopSlice.reducer;
+
+export const selectLimitedBanner = (state: { shop: ShopState }) =>
+  state.shop.limitedBanner;
