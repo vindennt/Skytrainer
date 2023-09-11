@@ -37,53 +37,83 @@ export enum DailyFocusRewards {
 
 export const MissionsList: Mission[] = [
   {
-    description: "Go on at least one Focus Trip 3 days in a row",
-    milestone: 3,
+    description: "Go on a Focus Trip 2 days in a row",
+    milestone: 2,
     type: MissionType.CONSECUTIVE_DAYS,
-    reward: 10,
+    reward: 160,
   },
 
   {
     description: "Go on a Focus Trip 7 days in a row",
     milestone: 7,
     type: MissionType.CONSECUTIVE_DAYS,
-    reward: 10,
+    reward: 680,
   },
   {
     description: "Go on a Focus Trip 14 days in a row",
     milestone: 14,
     type: MissionType.CONSECUTIVE_DAYS,
-    reward: 10,
+    reward: 1600,
   },
 
   {
     description: "Go on a Focus Trip 30 days in a row",
     milestone: 30,
     type: MissionType.CONSECUTIVE_DAYS,
-    reward: 10,
+    reward: 2400,
   },
   {
     description: "Go on 3 Focus Trips",
     milestone: 3,
     type: MissionType.TOTAL_TRIPS,
-    reward: 10,
+    reward: 280,
   },
   {
     description: "Go on 10 Focus Trips",
     milestone: 10,
     type: MissionType.TOTAL_TRIPS,
-    reward: 10,
+    reward: 1600,
   },
   {
-    description: "Go on 1000 Focus Trips",
-    milestone: 1000,
+    description: "Go on 20 Focus Trips",
+    milestone: 20,
     type: MissionType.TOTAL_TRIPS,
-    reward: 10,
+    reward: 1600,
   },
-  // {
-  //   description: "Spend 9000 minutes on Focus Trips",
-  //   milestone: 9000,
-  //   type: MissionType.TOTAL_MINS,
-  //   reward: 10,
-  // },
+  {
+    description: "Spend 30 minutes on Focus Trips",
+    milestone: 30,
+    type: MissionType.TOTAL_MINS,
+    reward: 160,
+  },
+  {
+    description: "Spend 1 hour on Focus Trips",
+    milestone: 60,
+    type: MissionType.TOTAL_MINS,
+    reward: 320,
+  },
+  {
+    description: "Spend 2 hours on Focus Trips",
+    milestone: 120,
+    type: MissionType.TOTAL_MINS,
+    reward: 320,
+  },
+  {
+    description: "Spend 12 hours on Focus Trips",
+    milestone: 720,
+    type: MissionType.TOTAL_MINS,
+    reward: 1600,
+  },
+  {
+    description: "Spend 1 day's length on Focus Trips",
+    milestone: 1440,
+    type: MissionType.TOTAL_MINS,
+    reward: 2400,
+  },
+  {
+    description: "Spend 9001 minutes on Focus Trips",
+    milestone: 9001,
+    type: MissionType.TOTAL_MINS,
+    reward: 9001,
+  },
 ];

@@ -12,7 +12,25 @@ export function datesMatch(dateA: Date, dateB: Date): boolean {
 
 // Get's todays date as only DMY format.
 export function getTodayDMY(): Date {
-  const now: Date = new Date();
-  const todayYMD = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const today: Date = new Date();
+  const todayYMD = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
   return todayYMD;
+}
+
+export function isConsecutiveDay(olderDate: Date): boolean {
+  const yesterday: Date = getTodayDMY();
+  yesterday.setDate(yesterday.getDate() - 1);
+  const result: boolean =
+    olderDate.getFullYear() === yesterday.getFullYear() &&
+    olderDate.getMonth() === yesterday.getMonth() &&
+    olderDate.getDate() === yesterday.getDate();
+
+  console.log(olderDate + " vs  " + yesterday);
+  console.log(result);
+
+  return result;
 }
