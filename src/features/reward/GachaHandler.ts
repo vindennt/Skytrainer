@@ -33,15 +33,29 @@ const getRandomReward = (rewardTable: RewardTableElement[]): string => {
 };
 
 // Returns stationId of randomized reward
-export const gachaRoll = (userFiveStarPity: number): string => {
+// Currently, a rate up 5* means the 5* you roll is gauranteed to be that station id
+export const gachaRoll = (
+  userFiveStarPity: number = UNIVERSAL_FIVE_STAR_PITY,
+  limitedRateUpId: string = "",
+  fourStarRateUpIds: string[] = []
+) => {
+  const limited: boolean = limitedRateUpId !== "";
   // If user is "at pity", immediately give them a random FIVE_STAR Tier reward
   console.log("Rolling with pity: " + userFiveStarPity);
   if (userFiveStarPity === UNIVERSAL_FIVE_STAR_PITY) {
-    return getRandomReward(fiveStarRewardTable);
+    if (limited) {
+      // If Limited banner, five star means instantly give them  that station
+      return limitedRateUpId;
+    } else {
+      // If not limited, then get a random 5*
+      return getRandomReward(fiveStarRewardTable);
+    }
   } else {
     const tier = getRandomReward(tierRewardTable);
     return tier === Tier.FIVE_STAR
-      ? getRandomReward(fiveStarRewardTable)
+      ? limited
+        ? limitedRateUpId
+        : getRandomReward(fiveStarRewardTable)
       : getRandomReward(fourStarRewardTable);
   }
 };

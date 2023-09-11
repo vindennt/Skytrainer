@@ -132,7 +132,19 @@ export const BannerCard: React.FC<BannerCardProps> = ({
         "BannerCard: " + balance + " cannot afford cost " + price
       );
     }
-    const rewardId: string = gachaRoll(pity);
+
+    // Different roll call based on whether the permanent banner or not
+    let rewardId: string;
+    if (!permanent) {
+      const fourStarRateUps: string[] = [
+        banner.rateUpIdOne,
+        banner.rateUpIdTwo,
+        banner.rateUpIdThree,
+      ];
+      rewardId = gachaRoll(pity, banner.limitedStationId, fourStarRateUps);
+    } else {
+      rewardId = gachaRoll(pity);
+    }
 
     // (1/4) Handle unlocks
     // For every excess level, return some cashback to corresponding currency

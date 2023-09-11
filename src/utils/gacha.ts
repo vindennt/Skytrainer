@@ -5,6 +5,9 @@ export const DUPLICATE_LEVEL_RATE: number = 10;
 export const PERMANENT_CASHBACK_RATE: number = 50;
 export const LIMITED_CASHBACK_RATE: number = 10;
 
+// export const FIVE_STAR_BOOSTED_WEIGHT: number = 10;
+export const FOUR_STAR_BOOSTED_WEIGHT: number = 10;
+
 export const FIVE_STAR_GRADIENT: string[] = [
   "gold",
   "rgba(77, 65, 5, 0.8)",
