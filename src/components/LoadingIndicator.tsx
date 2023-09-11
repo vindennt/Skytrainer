@@ -5,5 +5,5 @@ import { View } from "react-native";
 export const LoadingIndicator: React.FC = () => {
   const theme = useTheme();
 
-  return <UIActivityIndicator color={theme.colors.onPrimary} />;
+  return <UIActivityIndicator color={theme.colors.onBackground} />;
 };

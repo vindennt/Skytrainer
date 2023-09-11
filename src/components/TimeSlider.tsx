@@ -1,12 +1,16 @@
 import Slider from "@react-native-community/slider";
 import { UserState, setSlider } from "@src/features/user/userSlice";
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import { useTheme, Button } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import Icon from "react-native-vector-icons/Ionicons";
 
-export const TimeSlider: React.FC = () => {
+interface TimeSliderProps {
+  onValueChange?: (e: string | ChangeEvent<any>) => void;
+}
+
+export const TimeSlider: React.FC<TimeSliderProps> = ({ onValueChange }) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const sliderValue = useSelector(
@@ -22,11 +26,11 @@ export const TimeSlider: React.FC = () => {
   };
   const sliderInitial: number = (sliderValue / slider.proportion) * slider.max;
 
-  const getNewValue = (value: number) => {
+  const getNewValue = (value: number): number => {
     const newValue =
       Math.round(((value / slider.max) * slider.proportion) / slider.step) *
       slider.step;
-    dispatch(setSlider(newValue));
+    return newValue;
   };
 
   return (
@@ -46,7 +50,13 @@ export const TimeSlider: React.FC = () => {
             tapToSeek={true}
             thumbTintColor="white"
             onValueChange={(value) => {
-              getNewValue(value);
+              const correctedValue = getNewValue(value);
+
+              if (onValueChange !== undefined) {
+                onValueChange(correctedValue.toString());
+              } else {
+                dispatch(setSlider(correctedValue));
+              }
             }}
             // onSlidingStart={() => setSliding("Sliding")}
             // onSlidingComplete={() => setSliding("Inactive")}

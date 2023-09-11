@@ -16,6 +16,15 @@ export interface UserUpdate {
   total_trips_finished?: number;
   slider?: number;
   last_used_station?: string;
+  daily_reset_time?: Date;
+  last_focus_date?: Date;
+  daily_focus_time?: number;
+  focus_streak_days?: number;
+  daily_focus_claimed?: number;
+  focus_streak_days_record?: number;
+  focus_streak_days_claimed?: number;
+  total_trip_time_claimed?: number;
+  total_trips_finished_claimed?: number;
 }
 
 export interface UpdateUserRequest {

@@ -8,7 +8,11 @@ import {
 } from "react-native";
 import { Text, useTheme, Button } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
-import { UserState } from "@src/features/user/userSlice";
+import {
+  UserState,
+  selectSlider,
+  selectLastUsedStation,
+} from "@src/features/user/userSlice";
 import { TripBox } from "@src/components/TripBox";
 import { imageBustMap } from "@src/utils/imageMappings";
 import {
@@ -17,25 +21,24 @@ import {
 } from "@src/features/stations/stationsSlice";
 import { useNavigation } from "@react-navigation/native";
 import { getStationName } from "@src/utils/skytrain";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { FocusMilestoneTimes } from "@src/utils/missionRewards";
+import { setMissionBadgeVisibility } from "@src/navigation/navSlice";
 
 const Home = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const sliderValue = useSelector(
-    (state: { user: UserState }) => state.user.slider
-  );
-  const lastSetStation = useSelector(
-    (state: { user: UserState }) => state.user.last_used_station
-  );
-  const title = getStationName(lastSetStation) + " Station";
+  const sliderValue = useSelector(selectSlider);
+  const lastUsedStation = useSelector(selectLastUsedStation);
+
+  const title = getStationName(lastUsedStation) + " Station";
   const imageSource: ImageSourcePropType = imageBustMap[
-    lastSetStation
+    lastUsedStation
   ] as ImageSourcePropType;
 
   const goToStationSelect = () => {
-    dispatch(setSelectedStation(lastSetStation));
+    dispatch(setSelectedStation(lastUsedStation));
     navigation.navigate("Select Station" as never);
   };
 
@@ -50,14 +53,14 @@ const Home = () => {
       </TouchableOpacity>
       <View style={styles.timeHeader}>
         <Text style={styles.timeText}>{sliderValue} mins</Text>
-        <Button
+        {/* <Button
           icon="chevron-forward-outline"
           onPress={goToStationSelect}
           contentStyle={{ flexDirection: "row-reverse" }}
           labelStyle={{ marginVertical: 2 }}
         >
           Change Station
-        </Button>
+        </Button> */}
       </View>
       <TripBox />
     </View>

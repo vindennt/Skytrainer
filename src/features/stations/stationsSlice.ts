@@ -15,7 +15,7 @@ export interface StationsState {
 
 const initialState: StationsState = {
   stations: new Map<string, number>(),
-  selectedStation: "000",
+  selectedStation: "001",
 };
 
 const stationsSlice = createSlice({

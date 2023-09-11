@@ -1,6 +1,6 @@
 import { useNavigation } from "@react-navigation/native";
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 
@@ -11,6 +11,7 @@ const Trip = () => {
   useEffect(() => {
     console.log("Timer ticking");
     setTimeout(() => {
+      console.log("Timer ticked");
       navigation.navigate("Trip" as never);
     }, 2000);
     // TODO: it wont navigate if you cancel.

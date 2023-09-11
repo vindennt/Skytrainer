@@ -19,6 +19,15 @@ export interface UserState {
   total_trips_finished: number;
   slider: number;
   last_used_station: string;
+  daily_reset_time: Date;
+  last_focus_date: Date;
+  daily_focus_time: number;
+  focus_streak_days: number;
+  daily_focus_claimed: number;
+  focus_streak_days_record: number;
+  focus_streak_days_claimed: number;
+  total_trip_time_claimed: number;
+  total_trips_finished_claimed: number;
 }
 
 const initialState: UserState = {
@@ -33,7 +42,16 @@ const initialState: UserState = {
   total_trip_time: 0,
   total_trips_finished: 0,
   slider: 25,
-  last_used_station: "000",
+  last_used_station: "001",
+  daily_reset_time: new Date(),
+  last_focus_date: new Date(),
+  daily_focus_time: 0,
+  focus_streak_days: 0,
+  daily_focus_claimed: 0,
+  focus_streak_days_record: 0,
+  focus_streak_days_claimed: 0,
+  total_trip_time_claimed: 0,
+  total_trips_finished_claimed: 0,
 };
 
 const userSlice = createSlice({
@@ -76,6 +94,24 @@ const userSlice = createSlice({
     setLastUsedStation: (state, action) => {
       state.last_used_station = action.payload;
     },
+    setDailyResetTime: (state, action) => {
+      state.daily_reset_time = action.payload;
+    },
+    setlastFocusDate: (state, action) => {
+      state.last_focus_date = action.payload;
+    },
+    setDailyFocusTime: (state, action) => {
+      state.daily_focus_time = action.payload;
+    },
+    setFocusStreakDays: (state, action) => {
+      state.focus_streak_days = action.payload;
+    },
+    setDailyFocusClaimed: (state, action) => {
+      state.daily_focus_claimed = action.payload;
+    },
+    setFocusStreakDaysRecord: (state, action) => {
+      state.focus_streak_days_record = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllUserData.fulfilled, (state, action) => {
@@ -93,6 +129,17 @@ const userSlice = createSlice({
       state.total_trips_finished = action.payload.total_trips_finished;
       state.slider = action.payload.slider;
       state.last_used_station = action.payload.last_used_station;
+      state.daily_reset_time = action.payload.daily_reset_time;
+      state.last_focus_date = action.payload.last_focus_date;
+      state.daily_focus_time = action.payload.daily_focus_time;
+      state.focus_streak_days = action.payload.focus_streak_days;
+      state.daily_focus_claimed = action.payload.daily_focus_claimed;
+      state.focus_streak_days_record = action.payload.focus_streak_days_record;
+      state.focus_streak_days_claimed =
+        action.payload.focus_streak_days_claimed;
+      state.total_trip_time_claimed = action.payload.total_trip_time_claimed;
+      state.total_trips_finished_claimed =
+        action.payload.total_trips_finished_claimed;
     });
     builder.addCase(updateUserData.fulfilled, (state, action) => {
       const data: UserUpdate | undefined = action.payload;
@@ -116,6 +163,25 @@ const userSlice = createSlice({
         if (data.slider !== undefined) state.slider = data.slider;
         if (data.last_used_station !== undefined)
           state.last_used_station = data.last_used_station;
+        if (data.daily_reset_time !== undefined)
+          state.daily_reset_time = data.daily_reset_time;
+        if (data.last_focus_date !== undefined)
+          state.last_focus_date = data.last_focus_date;
+        if (data.daily_focus_time !== undefined)
+          state.daily_focus_time = data.daily_focus_time;
+        if (data.focus_streak_days !== undefined)
+          state.focus_streak_days = data.focus_streak_days;
+        if (data.daily_focus_claimed !== undefined)
+          state.daily_focus_claimed = data.daily_focus_claimed;
+        if (data.focus_streak_days_record !== undefined)
+          state.focus_streak_days_record = data.focus_streak_days_record;
+        if (data.focus_streak_days_claimed !== undefined)
+          state.focus_streak_days_claimed = data.focus_streak_days_claimed;
+        if (data.total_trip_time_claimed !== undefined)
+          state.total_trip_time_claimed = data.total_trip_time_claimed;
+        if (data.total_trips_finished_claimed !== undefined)
+          state.total_trips_finished_claimed =
+            data.total_trips_finished_claimed;
       }
     });
   },
@@ -134,6 +200,11 @@ export const {
   setTotalTripsFinished,
   setSlider,
   setLastUsedStation,
+  setDailyResetTime,
+  setlastFocusDate,
+  setDailyFocusTime,
+  setFocusStreakDays,
+  setDailyFocusClaimed,
 } = userSlice.actions;
 // export { fetchDisplayNameBySession } from "@src/features/user/userSliceHelpers";
 export {
@@ -141,3 +212,42 @@ export {
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
 export default userSlice.reducer;
+
+export const selectUserId = (state: { user: UserState }) => state.user.user_id;
+export const selectDisplayName = (state: { user: UserState }) =>
+  state.user.display_name;
+export const selectCreatedAt = (state: { user: UserState }) =>
+  state.user.created_at;
+export const selectLastLogin = (state: { user: UserState }) =>
+  state.user.last_login;
+export const selectBalance = (state: { user: UserState }) => state.user.balance;
+export const selectTickets = (state: { user: UserState }) => state.user.tickets;
+export const selectPermanentPity = (state: { user: UserState }) =>
+  state.user.permanent_pity;
+export const selectLimitedPity = (state: { user: UserState }) =>
+  state.user.limited_pity;
+export const selectTotalTripTime = (state: { user: UserState }) =>
+  state.user.total_trip_time;
+export const selectTotalTripsFinished = (state: { user: UserState }) =>
+  state.user.total_trips_finished;
+export const selectSlider = (state: { user: UserState }) => state.user.slider;
+export const selectLastUsedStation = (state: { user: UserState }) =>
+  state.user.last_used_station;
+export const selectDailyResetTime = (state: { user: UserState }) =>
+  state.user.daily_reset_time;
+export const selectLastFocusDate = (state: { user: UserState }) =>
+  state.user.last_focus_date;
+export const selectDailyFocusTime = (state: { user: UserState }) =>
+  state.user.daily_focus_time;
+export const selectFocusStreakDays = (state: { user: UserState }) =>
+  state.user.focus_streak_days;
+export const selectDailyFocusClaimed = (state: { user: UserState }) =>
+  state.user.daily_focus_claimed;
+export const selectFocusStreakDaysRecord = (state: { user: UserState }) =>
+  state.user.focus_streak_days_record;
+export const selectFocusStreakDaysClaimed = (state: { user: UserState }) =>
+  state.user.focus_streak_days_claimed;
+export const selectTotalTripTimeClaimed = (state: { user: UserState }) =>
+  state.user.total_trip_time_claimed;
+export const selectTotalTripsFinishedClaimed = (state: { user: UserState }) =>
+  state.user.total_trips_finished_claimed;

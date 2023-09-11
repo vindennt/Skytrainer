@@ -5,14 +5,25 @@ import {
   TripReward,
 } from "@src/features/reward/TripRewardHandler";
 import { SkytrainState } from "@src/features/skytrain/skytrainSlice";
-import { UserState } from "@src/features/user/userSlice";
+import {
+  UserState,
+  selectSlider,
+  selectTotalTripTime,
+  selectTotalTripsFinished,
+  selectBalance,
+  selectDailyFocusTime,
+  selectFocusStreakDays,
+  selectFocusStreakDaysRecord,
+  selectLastFocusDate,
+} from "@src/features/user/userSlice";
 import {
   UpdateUserRequest,
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
+import { datesMatch, getTodayDMY, isConsecutiveDay } from "@src/utils/dates";
 import { Session } from "@supabase/supabase-js";
 import * as React from "react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { View, StyleSheet, FlatList } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -28,23 +39,34 @@ const Trip = () => {
   const trip: string[] = useSelector(
     (state: { skytrain: SkytrainState }) => state.skytrain.trip
   );
-  const slider: number = useSelector(
-    (state: { user: UserState }) => state.user.slider
-  );
-  const total_trip_time: number = useSelector(
-    (state: { user: UserState }) => state.user.total_trip_time
-  );
-  const total_trips_finished: number = useSelector(
-    (state: { user: UserState }) => state.user.total_trips_finished
-  );
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
-  const balance = useSelector(
-    (state: { user: UserState }) => state.user.balance
+
+  const slider: number = useSelector(selectSlider);
+  const total_trip_time: number = useSelector(selectTotalTripTime);
+  const total_trips_finished: number = useSelector(selectTotalTripsFinished);
+  const balance: number = useSelector(selectBalance);
+  const dailyFocusTime: number = useSelector(selectDailyFocusTime);
+  const focusStreakDays: number = useSelector(selectFocusStreakDays);
+  const focusStreakDaysRecord: number = useSelector(
+    selectFocusStreakDaysRecord
   );
+  const lastFocusDate: Date = new Date(useSelector(selectLastFocusDate));
+
+  const today: Date = getTodayDMY();
 
   useEffect(() => {
+    console.log("Trip.tsx running");
+
+    const todayDMY: Date = getTodayDMY();
+    const isSameFocusDay: boolean = datesMatch(todayDMY, lastFocusDate);
+    const newStreak: number = !isSameFocusDay
+      ? isConsecutiveDay(lastFocusDate)
+        ? focusStreakDays + 1
+        : 1
+      : focusStreakDays;
+
     const updateRequest: UpdateUserRequest = {
       session: session,
       update: {
@@ -53,6 +75,14 @@ const Trip = () => {
         total_trip_time: total_trip_time + slider,
         total_trips_finished: total_trips_finished + 1,
         last_used_station: trip[0],
+        daily_focus_time: datesMatch(today, lastFocusDate)
+          ? dailyFocusTime + slider
+          : slider,
+        last_focus_date: today,
+        daily_reset_time: today,
+        focus_streak_days: newStreak,
+        focus_streak_days_record:
+          newStreak > focusStreakDaysRecord ? newStreak : focusStreakDaysRecord,
       },
     };
     dispatch(updateUserData(updateRequest));

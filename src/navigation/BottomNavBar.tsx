@@ -2,6 +2,10 @@ import * as React from "react";
 import { BottomNavigation, useTheme, Text } from "react-native-paper";
 import { Home, Stations, Shop, Gacha } from "@screens/index";
 import Missions from "@src/screens/Missions";
+import { useSelector } from "react-redux";
+import { UserState } from "@src/features/user/userSlice";
+import { FocusMilestoneTimes } from "@src/utils/missionRewards";
+import { NavSliceState } from "@navigation/navSlice";
 
 const BottomNavBar = () => {
   const theme = useTheme();
@@ -13,33 +17,29 @@ const BottomNavBar = () => {
   const MissionsRoute = () => <Missions />;
   // const AccountRoute = () => <Account />;
 
-  const [index, setIndex] = React.useState(0);
-  const [routes] = React.useState([
-    {
-      key: "home",
-      title: "Skytrain",
-      focusedIcon: "subway",
-    },
-    {
-      key: "missions",
-      title: "Missions",
-      focusedIcon: "calendar",
-      // focusedIcon: "gift-sharp",
-      // focusedIcon: "person-circle-sharp",
-      // focusedIcon: "person",
-    },
-    {
-      key: "stations",
-      title: "Stations",
-      focusedIcon: "map",
-    },
-    {
-      key: "shop",
-      title: "Shop",
-      focusedIcon: "pricetags",
-    },
-  ]);
+  const routes = useSelector(
+    (state: { nav: NavSliceState }) => state.nav.routes
+  );
 
+  const dailyFocusTime: number = useSelector(
+    (state: { user: UserState }) => state.user.daily_focus_time
+  );
+  const dailyFocusClaimed: number = useSelector(
+    (state: { user: UserState }) => state.user.daily_focus_claimed
+  );
+
+  // const FIRST_MILESTONE: number = FocusMilestoneTimes.FIRST_MILESTONE;
+  // const SECOND_MILESTONE: number = FocusMilestoneTimes.SECOND_MILESTONE;
+  // const THIRD_MILESTONE: number = FocusMilestoneTimes.THIRD_MILESTONE;
+
+  // const unclaimedDailyReward: boolean =
+  //   (dailyFocusTime >= THIRD_MILESTONE &&
+  //     dailyFocusClaimed < THIRD_MILESTONE) ||
+  //   (dailyFocusTime >= SECOND_MILESTONE &&
+  //     dailyFocusClaimed < SECOND_MILESTONE) ||
+  //   (dailyFocusTime >= FIRST_MILESTONE && dailyFocusClaimed < FIRST_MILESTONE);
+
+  const [index, setIndex] = React.useState(0);
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
     stations: StationsRoute,

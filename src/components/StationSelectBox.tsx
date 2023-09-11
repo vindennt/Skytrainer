@@ -1,5 +1,5 @@
 import { getStationName } from "@src/utils/skytrain";
-import React from "react";
+import React, { ChangeEvent, useState } from "react";
 import {
   FlatList,
   View,
@@ -26,13 +26,17 @@ interface StationSelectBoxProps {
 interface StationSelectorProps {
   data: Map<string, number>;
   selectedStation: string;
+  onValueChange?: (e: string | ChangeEvent<any>) => void;
 }
 
 export const StationSelector: React.FC<StationSelectorProps> = ({
   data,
   selectedStation,
+  onValueChange,
 }) => {
   const dispatch = useDispatch<any>();
+  const [localSelectedStation, setLocalSelectedStation] =
+    useState<string>(selectedStation);
 
   const StationSelectBox: React.FC<StationSelectBoxProps> = ({
     stationId,
@@ -42,7 +46,10 @@ export const StationSelector: React.FC<StationSelectorProps> = ({
       <View style={styles.item}>
         <TouchableOpacity
           onPress={() => {
-            dispatch(setSelectedStation(stationId));
+            console.log("touched " + stationId);
+            onValueChange !== undefined
+              ? onValueChange(stationId)
+              : dispatch(setSelectedStation(stationId));
           }}
           style={
             stationId === selectedStation

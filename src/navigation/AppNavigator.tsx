@@ -11,6 +11,9 @@ import {
   Trip,
   Signup,
   Timer,
+  StationSelect,
+  QuickStartCreator,
+  EditQuickStarts,
 } from "@screens/index";
 import BottomNavBar from "@navigation/BottomNavBar";
 import { useSelector, useDispatch } from "react-redux";
@@ -18,20 +21,16 @@ import { AuthState } from "@src/features/auth/authSlice";
 import { setSession, setUser } from "@features/auth/authSlice";
 import { useTheme } from "react-native-paper";
 import { Session } from "@supabase/supabase-js";
+import { UserState, fetchAllUserData } from "@features/user/userSlice";
 import {
-  UserState,
-  fetchAllUserData,
-  setLastUsedStation,
-} from "@features/user/userSlice";
-import {
-  StationsState,
   fetchAllStations,
   setSelectedStation,
 } from "@features/stations/stationsSlice";
 import { CurrencyDisplay } from "@components/CurrencyDisplay";
-import StationSelect from "@src/screens/StationSelect";
 import { Animated } from "react-native";
 import { setGraph } from "@src/features/skytrain/skytrainSlice";
+
+import { fetchAllQuickStarts } from "@src/features/quickStart/quickStartSliceHelpers";
 
 const AppNavigator = () => {
   const dispatch = useDispatch<any>();
@@ -49,6 +48,7 @@ const AppNavigator = () => {
     dispatch(setUser(session.user));
     dispatch(fetchAllUserData(session));
     dispatch(fetchAllStations(session));
+    dispatch(fetchAllQuickStarts(session));
     while (lastUsedStation === "000") {}
     dispatch(setSelectedStation(lastUsedStation));
   };
@@ -60,7 +60,7 @@ const AppNavigator = () => {
     av.addListener(() => {
       return;
     });
-    dispatch(setGraph(undefined));
+    dispatch(setGraph(1)); // Build graph with timescale of 1
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       dispatch(setSession(session));
@@ -121,6 +121,11 @@ const AppNavigator = () => {
         <Stack.Group screenOptions={{ presentation: "modal" }}>
           <Stack.Screen name="Account" component={Account} />
           <Stack.Screen name="Select Station" component={StationSelect} />
+          <Stack.Screen
+            name="Create Quick Start"
+            component={QuickStartCreator}
+          />
+          <Stack.Screen name="Edit Quickstarts" component={EditQuickStarts} />
         </Stack.Group>
       </Stack.Navigator>
     );
