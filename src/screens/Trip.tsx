@@ -5,7 +5,17 @@ import {
   TripReward,
 } from "@src/features/reward/TripRewardHandler";
 import { SkytrainState } from "@src/features/skytrain/skytrainSlice";
-import { UserState } from "@src/features/user/userSlice";
+import {
+  UserState,
+  selectSlider,
+  selectTotalTripTime,
+  selectTotalTripsFinished,
+  selectBalance,
+  selectDailyFocusTime,
+  selectFocusStreakDays,
+  selectFocusStreakDaysRecord,
+  selectLastFocusDate,
+} from "@src/features/user/userSlice";
 import {
   UpdateUserRequest,
   updateUserData,
@@ -29,34 +39,20 @@ const Trip = () => {
   const trip: string[] = useSelector(
     (state: { skytrain: SkytrainState }) => state.skytrain.trip
   );
-  const slider: number = useSelector(
-    (state: { user: UserState }) => state.user.slider
-  );
-  const total_trip_time: number = useSelector(
-    (state: { user: UserState }) => state.user.total_trip_time
-  );
-  const total_trips_finished: number = useSelector(
-    (state: { user: UserState }) => state.user.total_trips_finished
-  );
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
-  const balance: number = useSelector(
-    (state: { user: UserState }) => state.user.balance
-  );
-  const dailyFocusTime: number = useSelector(
-    (state: { user: UserState }) => state.user.daily_focus_time
-  );
-  const lastFocusDate: Date = new Date(
-    useSelector((state: { user: UserState }) => state.user.last_focus_date)
-  );
-  const focusStreakDays: number = useSelector(
-    (state: { user: UserState }) => state.user.focus_streak_days
-  );
 
+  const slider: number = useSelector(selectSlider);
+  const total_trip_time: number = useSelector(selectTotalTripTime);
+  const total_trips_finished: number = useSelector(selectTotalTripsFinished);
+  const balance: number = useSelector(selectBalance);
+  const dailyFocusTime: number = useSelector(selectDailyFocusTime);
+  const focusStreakDays: number = useSelector(selectFocusStreakDays);
   const focusStreakDaysRecord: number = useSelector(
-    (state: { user: UserState }) => state.user.focus_streak_days_record
+    selectFocusStreakDaysRecord
   );
+  const lastFocusDate: Date = new Date(useSelector(selectLastFocusDate));
 
   const today: Date = getTodayDMY();
 

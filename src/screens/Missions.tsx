@@ -7,7 +7,19 @@ import {
 import { Popup } from "@src/components/Popup";
 import QuickStartCard from "@src/components/QuickStartCard";
 import { AuthState } from "@src/features/auth/authSlice";
-import { UserState } from "@src/features/user/userSlice";
+import {
+  UserState,
+  selectDailyResetTime,
+  selectLastFocusDate,
+  selectFocusStreakDays,
+  selectFocusStreakDaysRecord,
+  selectTotalTripTime,
+  selectTotalTripsFinished,
+  selectFocusStreakDaysClaimed,
+  selectTotalTripTimeClaimed,
+  selectTotalTripsFinishedClaimed,
+  selectTickets,
+} from "@src/features/user/userSlice";
 import {
   UpdateUserRequest,
   updateUserData,
@@ -21,7 +33,7 @@ import {
   RewardProgress,
 } from "@src/utils/missionRewards";
 import * as React from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
@@ -40,41 +52,22 @@ const Missions = () => {
     (state: { auth: AuthState }) => state.auth.session
   );
 
-  const dailyResetTime: Date = useSelector(
-    (state: { user: UserState }) => state.user.daily_reset_time
-  );
-  const lastFocusDate: Date | null = useSelector(
-    (state: { user: UserState }) => state.user.last_focus_date
-  );
-  const focusStreakDays: number = useSelector(
-    (state: { user: UserState }) => state.user.focus_streak_days
-  );
-
+  const dailyResetTime: Date = useSelector(selectDailyResetTime);
+  const lastFocusDate: Date | null = useSelector(selectLastFocusDate);
+  const focusStreakDays: number = useSelector(selectFocusStreakDays);
   const focusStreakDaysRecord: number = useSelector(
-    (state: { user: UserState }) => state.user.focus_streak_days_record
+    selectFocusStreakDaysRecord
   );
-
-  const totalTripTime: number = useSelector(
-    (state: { user: UserState }) => state.user.total_trip_time
-  );
-  const totalTripsFinished: number = useSelector(
-    (state: { user: UserState }) => state.user.total_trips_finished
-  );
-
+  const totalTripTime: number = useSelector(selectTotalTripTime);
+  const totalTripsFinished: number = useSelector(selectTotalTripsFinished);
   const focusStreakDaysClaimed: number = useSelector(
-    (state: { user: UserState }) => state.user.focus_streak_days_claimed
+    selectFocusStreakDaysClaimed
   );
-
-  const totalTripTimeClaimed: number = useSelector(
-    (state: { user: UserState }) => state.user.total_trip_time_claimed
-  );
-
+  const totalTripTimeClaimed: number = useSelector(selectTotalTripTimeClaimed);
   const totalTripsFinishedClaimed: number = useSelector(
-    (state: { user: UserState }) => state.user.total_trips_finished_claimed
+    selectTotalTripsFinishedClaimed
   );
-  const tickets: number = useSelector(
-    (state: { user: UserState }) => state.user.tickets
-  );
+  const tickets: number = useSelector(selectTickets);
 
   const [popupVisible, setPopupVisible] = useState<boolean>(false);
   const [displayedReward, setDisplayedReward] = useState<number>(0);
@@ -390,5 +383,8 @@ const styles = StyleSheet.create({
   tooltip: {
     flexDirection: "row",
     alignItems: "center",
+    width: 70,
+    // flex: 1,
+    // flexWrap: "wrap",
   },
 });

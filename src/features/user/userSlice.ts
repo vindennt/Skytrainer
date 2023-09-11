@@ -212,3 +212,42 @@ export {
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
 export default userSlice.reducer;
+
+export const selectUserId = (state: { user: UserState }) => state.user.user_id;
+export const selectDisplayName = (state: { user: UserState }) =>
+  state.user.display_name;
+export const selectCreatedAt = (state: { user: UserState }) =>
+  state.user.created_at;
+export const selectLastLogin = (state: { user: UserState }) =>
+  state.user.last_login;
+export const selectBalance = (state: { user: UserState }) => state.user.balance;
+export const selectTickets = (state: { user: UserState }) => state.user.tickets;
+export const selectPermanentPity = (state: { user: UserState }) =>
+  state.user.permanent_pity;
+export const selectLimitedPity = (state: { user: UserState }) =>
+  state.user.limited_pity;
+export const selectTotalTripTime = (state: { user: UserState }) =>
+  state.user.total_trip_time;
+export const selectTotalTripsFinished = (state: { user: UserState }) =>
+  state.user.total_trips_finished;
+export const selectSlider = (state: { user: UserState }) => state.user.slider;
+export const selectLastUsedStation = (state: { user: UserState }) =>
+  state.user.last_used_station;
+export const selectDailyResetTime = (state: { user: UserState }) =>
+  state.user.daily_reset_time;
+export const selectLastFocusDate = (state: { user: UserState }) =>
+  state.user.last_focus_date;
+export const selectDailyFocusTime = (state: { user: UserState }) =>
+  state.user.daily_focus_time;
+export const selectFocusStreakDays = (state: { user: UserState }) =>
+  state.user.focus_streak_days;
+export const selectDailyFocusClaimed = (state: { user: UserState }) =>
+  state.user.daily_focus_claimed;
+export const selectFocusStreakDaysRecord = (state: { user: UserState }) =>
+  state.user.focus_streak_days_record;
+export const selectFocusStreakDaysClaimed = (state: { user: UserState }) =>
+  state.user.focus_streak_days_claimed;
+export const selectTotalTripTimeClaimed = (state: { user: UserState }) =>
+  state.user.total_trip_time_claimed;
+export const selectTotalTripsFinishedClaimed = (state: { user: UserState }) =>
+  state.user.total_trips_finished_claimed;

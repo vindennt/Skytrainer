@@ -14,7 +14,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { Formik } from "formik";
 import { changeDisplayNameSchema } from "@features/user/changeDisplayNameForm";
 import { AuthState } from "@features/auth/authSlice";
-import { UserState } from "@features/user/userSlice";
+import {
+  UserState,
+  selectDisplayName,
+  selectCreatedAt,
+  selectTotalTripTime,
+  selectTotalTripsFinished,
+} from "@features/user/userSlice";
 import {
   UpdateUserRequest,
   updateUserData,
@@ -27,19 +33,11 @@ const Account = () => {
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
-  const displayName: string = useSelector(
-    (state: { user: UserState }) => state.user.display_name
-  );
-  const joinedDate: string = useSelector(
-    (state: { user: UserState }) => state.user.created_at
-  );
 
-  const totalTripTime: number = useSelector(
-    (state: { user: UserState }) => state.user.total_trip_time
-  );
-  const totalTripsFinished: number = useSelector(
-    (state: { user: UserState }) => state.user.total_trips_finished
-  );
+  const displayName: string = useSelector(selectDisplayName);
+  const joinedDate: string = useSelector(selectCreatedAt);
+  const totalTripTime: number = useSelector(selectTotalTripTime);
+  const totalTripsFinished: number = useSelector(selectTotalTripsFinished);
 
   const [editingDisplayName, setEditingDisplayName] = useState(false);
   const [loading, setLoading] = useState(false);

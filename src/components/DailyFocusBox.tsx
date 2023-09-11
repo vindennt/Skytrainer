@@ -8,6 +8,9 @@ import {
   UserState,
   setDailyFocusClaimed,
   setDailyFocusTime,
+  selectTickets,
+  selectDailyFocusTime,
+  selectDailyFocusClaimed,
 } from "@src/features/user/userSlice";
 import {
   UpdateUserRequest,
@@ -43,19 +46,14 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
-  const tickets: number = useSelector(
-    (state: { user: UserState }) => state.user.tickets
-  );
-  const dailyFocusTime: number = useSelector(
-    (state: { user: UserState }) => state.user.daily_focus_time
-  );
-  const dailyFocusClaimed: number = useSelector(
-    (state: { user: UserState }) => state.user.daily_focus_claimed
-  );
+
+  const tickets: number = useSelector(selectTickets);
+  const dailyFocusTime: number = useSelector(selectDailyFocusTime);
+  const dailyFocusClaimed: number = useSelector(selectDailyFocusClaimed);
 
   const todayDMY: Date = getTodayDMY();
   const resetDate: Date = new Date(todayDMY);
-  resetDate.setDate(todayDMY.getDate() - 1);
+  resetDate.setDate(todayDMY.getDate() - 2);
 
   const FIRST_MILESTONE: number = FocusMilestoneTimes.FIRST_MILESTONE;
   const SECOND_MILESTONE: number = FocusMilestoneTimes.SECOND_MILESTONE;
@@ -104,7 +102,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
     return reward;
   };
 
-  const handleProgressClick = (milestoneClaimed: number) => {
+  const handleProgressClick = async (milestoneClaimed: number) => {
     const reward = calculateProgressReward(milestoneClaimed);
     const updateRequest: UpdateUserRequest = {
       session: session,
@@ -114,16 +112,16 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
       },
     };
     // Below line is an optimistic update here to avoid slow ui
-    // dispatch(setDailyFocusClaimed(milestone));
-    dispatch(updateUserData(updateRequest));
+    // await dispatch(setDailyFocusClaimed(milestoneClaimed));
     popupCallback(reward);
+    await dispatch(updateUserData(updateRequest));
   };
 
   const handleTestReset = () => {
     const updateRequest: UpdateUserRequest = {
       session: session,
       update: {
-        // daily_focus_claimed: 0,
+        daily_focus_claimed: 0,
         // daily_focus_time: 0,
         daily_reset_time: resetDate,
         last_focus_date: resetDate,

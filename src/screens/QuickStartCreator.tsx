@@ -13,7 +13,7 @@ import {
   addQuickStart,
 } from "@src/features/quickStart/quickStartSliceHelpers";
 import { StationsState } from "@src/features/stations/stationsSlice";
-import { UserState } from "@src/features/user/userSlice";
+import { UserState, selectSlider } from "@src/features/user/userSlice";
 import { getStationName } from "@src/utils/skytrain";
 import { Formik } from "formik";
 import * as React from "react";
@@ -38,9 +38,7 @@ const QuickStartCreator = () => {
     (state: { auth: AuthState }) => state.auth.session
   );
 
-  const sliderValue = useSelector(
-    (state: { user: UserState }) => state.user.slider
-  );
+  const sliderValue = useSelector(selectSlider);
 
   const stations: Map<string, number> = useSelector(
     (state: { stations: StationsState }) => state.stations.stations
