@@ -2,6 +2,8 @@
 
 Mobile productivity helper app where devices will disable distracting apps to help users go on "Focus Trips." Simply set a trip timer and your device will go on a Skytrain journey,accumulating in-app rewards along the way to encourage longer Focus Trips. Rewards can be used to purchase Skytrain Stations that will all have custom commissioned artwork. By applying the habit-forming mobile gacha game design principles, the app can help users build positive habits and intrinsic discipline.
 
+![skytrainer 1.0 image](https://user-images.githubusercontent.com/115046730/273146900-082e43cb-e6c6-4ecb-9ad7-73f6f1aeed2b.png)
+
 # Tools
 
 React Native, PostgreSQL, Supabase Auth & Database, Redux Toolkit
