@@ -91,7 +91,16 @@ export const QuickStartCard: React.FC = ({}) => {
           style={[{ alignItems: "center" }]}
         >
           <View style={[styles.quickButtonStyle]}>
-            <Text>Go</Text>
+            <Icon
+              name="play"
+              color={
+                quickstarts.length === 0
+                  ? theme.colors.outline
+                  : theme.colors.onSurfaceVariant
+              }
+              style={{ left: 1 }}
+              size={24}
+            />
           </View>
         </TouchableOpacity>
       </View>
