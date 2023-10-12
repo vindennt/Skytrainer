@@ -17,6 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import { setSlider } from "@src/features/user/userSlice";
 import { QuickStart } from "@src/features/quickStart/quickStartHandler";
 import { QuickStartState } from "@src/features/quickStart/quickStartSlice";
+import Icon from "react-native-vector-icons/Ionicons";
 
 interface QuickStartButtonProps extends QuickStart {
   isAdd?: boolean;
@@ -62,47 +63,37 @@ export const QuickStartCard: React.FC = ({}) => {
     stationId = "000",
     name,
     duration = 0,
-    isAdd = false,
   }) => {
     return (
-      <View style={styles.quickButtonStyleContainer}>
+      <View
+        style={[
+          styles.quickButtonStyleContainer,
+          { borderColor: theme.colors.outline },
+        ]}
+      >
+        <View style={styles.quickButtonTextContainer}>
+          <Text style={[styles.textTitle, { marginTop: 5 }]}>{name}</Text>
+          <Text
+            style={[
+              styles.text,
+              // { fontWeight: "bold" },
+            ]}
+          >
+            {duration + " mins"}
+          </Text>
+        </View>
         <TouchableOpacity
           onPress={() => {
-            if (isAdd) {
-              navigation.navigate("Create Quick Start" as never);
-            } else {
-              if (duration > 0 && stationId !== "000") {
-                handleQuickPress(duration, stationId);
-              }
+            if (duration > 0 && stationId !== "000") {
+              handleQuickPress(duration, stationId);
             }
           }}
           style={[{ alignItems: "center" }]}
         >
-          <View
-            style={[
-              styles.quickButtonStyle,
-              isAdd ? { backgroundColor: theme.colors.outline } : null,
-            ]}
-          >
-            <Text
-              style={[
-                isAdd ? { fontSize: 20 } : styles.text,
-                // { fontWeight: "bold" },
-              ]}
-            >
-              {isAdd ? "+" : duration}
-            </Text>
+          <View style={[styles.quickButtonStyle]}>
+            <Text>Go</Text>
           </View>
         </TouchableOpacity>
-        <Text
-          style={[
-            styles.text,
-            { marginTop: 5 },
-            isAdd ? { color: theme.colors.primary } : null,
-          ]}
-        >
-          {name}
-        </Text>
       </View>
     );
   };
@@ -112,18 +103,37 @@ export const QuickStartCard: React.FC = ({}) => {
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Quickstart</Text>
-          {quickstarts.length > 0 && (
-            <Button
-              icon="chevron-forward-outline"
+          <View style={styles.quickActionContainer}>
+            <TouchableOpacity
               onPress={() => {
                 navigation.navigate("Edit Quickstarts" as never);
               }}
-              contentStyle={{ flexDirection: "row-reverse" }}
-              labelStyle={{ marginVertical: 2 }}
+              disabled={quickstarts.length === 0}
             >
-              Edit
-            </Button>
-          )}
+              <Icon
+                name="create-outline"
+                color={
+                  quickstarts.length === 0
+                    ? theme.colors.outline
+                    : theme.colors.onSurfaceVariant
+                }
+                size={24}
+              />
+            </TouchableOpacity>
+            {quickstarts.length < 4 && (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate("Create Quick Start" as never);
+                }}
+              >
+                <Icon
+                  name="add"
+                  color={theme.colors.onSurfaceVariant}
+                  size={28}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
         <View
           style={[
@@ -144,16 +154,6 @@ export const QuickStartCard: React.FC = ({}) => {
               )
             );
           })}
-          {quickstarts.length < 4 && (
-            <QuickStartButton
-              key="ADD"
-              id="add"
-              duration={0}
-              stationId={""}
-              isAdd={true}
-              name="Add"
-            />
-          )}
         </View>
       </View>
     </View>
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#454045",
     padding: 20,
-    paddingBottom: 20,
+    // paddingBottom: 20,
     borderRadius: 12,
     marginBottom: 20,
   },
@@ -177,36 +177,58 @@ const styles = StyleSheet.create({
     // backgroundColor: "green",
   },
   headerText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
   },
   quickstartContainer: {
-    flexDirection: "row",
-    paddingTop: 20,
-    // alignItems: "flex-end",
+    flexDirection: "column",
+    paddingTop: 16,
+    // alignItems: "flex-start",
     // flex: 1,
     // justifyContent: "space-between",
     justifyContent: "flex-start",
-    gap: 20,
+    // gap: 20,
     // backgroundColor: "gray",
   },
   quickButtonStyle: {
-    width: 60,
-    height: 60,
+    // flexWrap: "wrap",
+    width: 50,
+    height: 50,
     backgroundColor: "royalblue",
     borderRadius: 37,
     alignItems: "center",
     justifyContent: "center",
+    // marginVertical: 5,
     // flex: 1,
   },
   quickButtonStyleContainer: {
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
-    // justifyContent: "center",
+    // backgroundColor: "green",
+    justifyContent: "space-between",
+    borderTopWidth: 0.2,
+    paddingTop: 12,
     // marginHorizontal: 20,
     // marginRight: 10,
   },
+  quickButtonTextContainer: {
+    flexDirection: "column",
+    // backgroundColor: "black",
+    alignItems: "baseline",
+    justifyContent: "flex-start",
+    bottom: 5,
+  },
+  quickActionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    // backgroundColor: "green",
+  },
+
   text: {
-    fontSize: 16,
+    fontSize: 18,
+  },
+  textTitle: {
+    fontSize: 30,
   },
 });
