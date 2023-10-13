@@ -11,21 +11,23 @@ import {
   selectTickets,
   selectDailyFocusTime,
   selectDailyFocusClaimed,
+  selectFirstMilestone,
+  selectSecondMilestone,
+  selectThirdMilestone,
 } from "@src/features/user/userSlice";
 import {
   UpdateUserRequest,
   updateUserData,
 } from "@src/features/user/userSliceHelpers";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
-import {
-  DailyFocusRewards,
-  FocusMilestoneTimes,
-} from "@src/utils/missionRewards";
 import { Tooltip } from "@components/Tooltip";
 import { GradientIcon, PremiumCurrencyIcon } from "@components/IconGradient";
 import { Badge } from "@components/Badge";
 import { setMissionBadgeVisibility } from "@src/navigation/navSlice";
 import { getTodayDMY } from "@src/utils/dates";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import IoniconIcon from "react-native-vector-icons/Ionicons";
+import { DailyFocusRewards } from "@src/utils/missionRewards";
 
 interface DailyFocusBoxProps {
   popupCallback: (reward: number) => void;
@@ -55,9 +57,9 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
   const resetDate: Date = new Date(todayDMY);
   resetDate.setDate(todayDMY.getDate() - 2);
 
-  const FIRST_MILESTONE: number = FocusMilestoneTimes.FIRST_MILESTONE;
-  const SECOND_MILESTONE: number = FocusMilestoneTimes.SECOND_MILESTONE;
-  const THIRD_MILESTONE: number = FocusMilestoneTimes.THIRD_MILESTONE;
+  const FIRST_MILESTONE: number = useSelector(selectFirstMilestone);
+  const SECOND_MILESTONE: number = useSelector(selectSecondMilestone);
+  const THIRD_MILESTONE: number = useSelector(selectThirdMilestone);
 
   const getButtonColour = (claimed: boolean, finished: boolean): string => {
     return claimed
@@ -160,7 +162,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
               { backgroundColor: getButtonColour(claimed, finished) },
             ]}
           >
-            <Icon
+            <MaterialCommunityIcons
               name={claimed ? "check" : "gift"}
               color={getIconColour(claimed, finished)}
               size={24}
@@ -207,7 +209,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
               // { backgroundColor: getButtonColour(claimed, finished) },
             ]}
           >
-            <Icon
+            <MaterialCommunityIcons
               name={"fire"}
               // color={theme.colors.onSurfaceVariant}
               // color={getIconColour(claimed, finished)}
@@ -293,7 +295,7 @@ const styles = StyleSheet.create({
     // backgroundColor: "green",
   },
   headerText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
   },
   text: {
