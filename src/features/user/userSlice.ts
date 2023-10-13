@@ -28,6 +28,9 @@ export interface UserState {
   focus_streak_days_claimed: number;
   total_trip_time_claimed: number;
   total_trips_finished_claimed: number;
+  first_milestone: number;
+  second_milestone: number;
+  third_milestone: number;
 }
 
 const initialState: UserState = {
@@ -52,6 +55,9 @@ const initialState: UserState = {
   focus_streak_days_claimed: 0,
   total_trip_time_claimed: 0,
   total_trips_finished_claimed: 0,
+  first_milestone: 5,
+  second_milestone: 10,
+  third_milestone: 20,
 };
 
 const userSlice = createSlice({
@@ -112,6 +118,15 @@ const userSlice = createSlice({
     setFocusStreakDaysRecord: (state, action) => {
       state.focus_streak_days_record = action.payload;
     },
+    setFirstMilestone: (state, action) => {
+      state.first_milestone = action.payload;
+    },
+    setSecondMilestone: (state, action) => {
+      state.second_milestone = action.payload;
+    },
+    setThirdMilestone: (state, action) => {
+      state.third_milestone = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchAllUserData.fulfilled, (state, action) => {
@@ -140,6 +155,9 @@ const userSlice = createSlice({
       state.total_trip_time_claimed = action.payload.total_trip_time_claimed;
       state.total_trips_finished_claimed =
         action.payload.total_trips_finished_claimed;
+      state.first_milestone = action.payload.first_milestone;
+      state.second_milestone = action.payload.second_milestone;
+      state.third_milestone = action.payload.third_milestone;
     });
     builder.addCase(updateUserData.fulfilled, (state, action) => {
       const data: UserUpdate | undefined = action.payload;
@@ -182,6 +200,12 @@ const userSlice = createSlice({
         if (data.total_trips_finished_claimed !== undefined)
           state.total_trips_finished_claimed =
             data.total_trips_finished_claimed;
+        if (data.first_milestone !== undefined)
+          state.first_milestone = data.first_milestone;
+        if (data.second_milestone !== undefined)
+          state.second_milestone = data.second_milestone;
+        if (data.third_milestone !== undefined)
+          state.third_milestone = data.third_milestone;
       }
     });
   },
@@ -251,3 +275,9 @@ export const selectTotalTripTimeClaimed = (state: { user: UserState }) =>
   state.user.total_trip_time_claimed;
 export const selectTotalTripsFinishedClaimed = (state: { user: UserState }) =>
   state.user.total_trips_finished_claimed;
+export const selectFirstMilestone = (state: { user: UserState }) =>
+  state.user.first_milestone;
+export const selectSecondMilestone = (state: { user: UserState }) =>
+  state.user.second_milestone;
+export const selectThirdMilestone = (state: { user: UserState }) =>
+  state.user.third_milestone;
