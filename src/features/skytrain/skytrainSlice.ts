@@ -53,3 +53,7 @@ export const selectRewards = (state: { skytrain: SkytrainState }) =>
   state.skytrain.rewards;
 export const selectTrip = (state: { skytrain: SkytrainState }) =>
   state.skytrain.trip;
+export const selectSkytrainGraph = (state: { skytrain: SkytrainState }) =>
+  state.skytrain.skytrainGraph;
+export const selectCurrentQuickstartId = (state: { skytrain: SkytrainState }) =>
+  state.skytrain.currentQuickstartId;

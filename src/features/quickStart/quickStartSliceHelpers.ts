@@ -15,6 +15,12 @@ export interface DeleteQuickStartRequest {
   id: string;
 }
 
+export interface UpdateQuickStartRequest {
+  session: Session;
+  id: string;
+  date: Date;
+}
+
 export const fetchAllQuickStarts = createAsyncThunk(
   "quickStart/fetchAllQuickStarts",
   async (session: Session | null) => {
@@ -106,6 +112,34 @@ export const deleteQuickStart = createAsyncThunk(
       }
     } finally {
       console.log("Thunk end: deleteQuickStart");
+    }
+  }
+);
+
+export const updateQuickStart = createAsyncThunk(
+  "quickStart/updateQuickStart",
+  async ({ session, id, date }: UpdateQuickStartRequest) => {
+    console.log("Thunk start: updateQuickStart");
+    try {
+      if (!session || !session?.user)
+        throw new Error("No user on the session!");
+
+      const { data, error } = await supabase
+        .from("quickstarts")
+        .update({
+          last_finished: date,
+        })
+        .eq("id", id);
+
+      return { id: id, date: date };
+
+      if (error) {
+        throw error;
+      } else {
+        return id;
+      }
+    } finally {
+      console.log("Thunk end: updateQuickStart");
     }
   }
 );
