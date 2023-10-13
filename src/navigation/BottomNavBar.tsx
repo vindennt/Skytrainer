@@ -41,7 +41,7 @@ const BottomNavBar = () => {
 
   const [index, setIndex] = React.useState(0);
   const renderScene = BottomNavigation.SceneMap({
-    home: HomeRoute,
+    home: MissionsRoute,
     stations: StationsRoute,
     shop: ShopRoute,
     // gacha: GachaRoute,

@@ -134,6 +134,10 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
     dispatch(setMissionBadgeVisibility(false));
   };
 
+  const handleRouteReset = () => {
+    dispatch(setMissionBadgeVisibility(false));
+  };
+
   const DailyProgressButton: React.FC<DailyProgressButtonProps> = ({
     milestone,
     reward = 0,
@@ -272,6 +276,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
           />
         </View>
         <Button onPress={handleTestReset}>Reset</Button>
+        {/* <Button onPress={handleRouteReset}>Route Reset</Button> */}
       </View>
     </View>
   );

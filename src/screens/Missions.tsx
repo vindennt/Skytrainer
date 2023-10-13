@@ -282,7 +282,7 @@ const Missions = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Missions</Text>
+      <Text style={styles.header}>Skytrain</Text>
       <View style={styles.secondaryContainer}>
         <DailyFocusBox popupCallback={(reward) => showPopup(reward)} />
         <QuickStartCard />
