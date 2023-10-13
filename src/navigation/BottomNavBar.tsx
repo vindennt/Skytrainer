@@ -4,7 +4,7 @@ import { Home, Stations, Shop, Gacha } from "@screens/index";
 import Missions from "@src/screens/Missions";
 import { useSelector } from "react-redux";
 import { UserState } from "@src/features/user/userSlice";
-import { FocusMilestoneTimes } from "@src/utils/missionRewards";
+// import { FocusMilestoneTimes } from "@src/utils/missionRewards";
 import { NavSliceState } from "@navigation/navSlice";
 
 const BottomNavBar = () => {

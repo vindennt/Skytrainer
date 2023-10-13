@@ -1,16 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import { Text, useTheme } from "react-native-paper";
+import { Picker } from "@react-native-picker/picker";
 
-const DailyFocusThresholdPicker = () => {
+export interface PickerItem {
+  label: string;
+  value: string;
+}
+
+export interface DailyFocusThresholdPickerProps {
+  value: number;
+  onChange: (value: number) => void;
+  items: PickerItem[];
+}
+
+const DailyFocusThresholdPicker: React.FC<DailyFocusThresholdPickerProps> = ({
+  value,
+  onChange,
+  items,
+}) => {
   const theme = useTheme();
 
   return (
-    <View
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    <Picker
+      selectedValue={value}
+      onValueChange={(itemValue, itemIndex) => onChange(itemValue)}
+      itemStyle={{
+        color: theme.colors.onBackground,
+        width: 100,
+        height: 175,
+      }}
     >
-      <Text>Sample</Text>
-    </View>
+      {items.map((item) => (
+        <Picker.Item key={item.value} label={item.label} value={item.value} />
+      ))}
+    </Picker>
   );
 };
 

@@ -69,7 +69,7 @@ const Account = () => {
   };
 
   const handleEditDailyFocus = () => {
-    navigation.navigate("Edit Thresholds" as never);
+    navigation.navigate("Edit Milestones" as never);
   };
 
   return session && session.user ? (
