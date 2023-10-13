@@ -9,8 +9,8 @@ export interface PickerItem {
 }
 
 export interface DailyFocusThresholdPickerProps {
-  value: number;
-  onChange: (value: number) => void;
+  value: string;
+  onChange: (value: string) => void;
   items: PickerItem[];
 }
 

@@ -15,8 +15,8 @@ import { useNavigation } from "@react-navigation/native";
 
 interface EditPickerProps {
   label: string;
-  value: number;
-  onChange: (newValue: number) => void;
+  value: string;
+  onChange: (newValue: string) => void;
 }
 
 const EditFocusThresholds = () => {
@@ -26,9 +26,15 @@ const EditFocusThresholds = () => {
   const FIRST_MILESTONE: number = useSelector(selectFirstMilestone);
   const SECOND_MILESTONE: number = useSelector(selectSecondMilestone);
   const THIRD_MILESTONE: number = useSelector(selectThirdMilestone);
-  const [firstMilestone, setFirstMilestone] = useState(FIRST_MILESTONE);
-  const [secondMilestone, setSecondMilestone] = useState(SECOND_MILESTONE);
-  const [thirdMilestone, setThirdMilestone] = useState(THIRD_MILESTONE);
+  const [firstMilestone, setFirstMilestone] = useState<string>(
+    FIRST_MILESTONE.toString()
+  );
+  const [secondMilestone, setSecondMilestone] = useState<string>(
+    SECOND_MILESTONE.toString()
+  );
+  const [thirdMilestone, setThirdMilestone] = useState<string>(
+    THIRD_MILESTONE.toString()
+  );
 
   // Generate the list of numbers for the picker
   const step = 5;
