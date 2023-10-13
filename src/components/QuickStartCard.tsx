@@ -10,6 +10,7 @@ import {
   setTrip,
   setRewards,
   SkytrainState,
+  setQuickStartId,
 } from "@src/features/skytrain/skytrainSlice";
 import { getStationName } from "@src/utils/skytrain";
 import { Tooltip } from "@components/Tooltip";
@@ -45,7 +46,11 @@ export const QuickStartCard: React.FC = ({}) => {
   );
   const sortedQuickStarts: QuickStart[] = getSortedQuickstarts(quickstarts);
 
-  const handleQuickPress = (duration: number, stationId: string) => {
+  const handleQuickPress = (
+    duration: number,
+    stationId: string,
+    quickstartId: string
+  ) => {
     console.log(
       getStationName(stationId) + " starting focus trip for " + duration
     );
@@ -57,6 +62,7 @@ export const QuickStartCard: React.FC = ({}) => {
     );
     const rewards: TripReward = getRewards(tripPath, stations);
     dispatch(setTrip(tripPath));
+    dispatch(setQuickStartId(quickstartId));
     dispatch(setRewards(rewards));
 
     console.log("Mission: Navigating to Timer via QuickStart");
@@ -74,9 +80,9 @@ export const QuickStartCard: React.FC = ({}) => {
     const textColor: string = isAvailable
       ? theme.colors.onBackground
       : theme.colors.outline;
-    console.log(
-      name + " is available: " + isAvailable + " for date " + lastFinished
-    );
+    // console.log(
+    //   name + " is available: " + isAvailable + " for date " + lastFinished
+    // );
 
     return (
       <View
@@ -102,7 +108,7 @@ export const QuickStartCard: React.FC = ({}) => {
         <TouchableOpacity
           onPress={() => {
             if (duration > 0 && stationId !== "000") {
-              handleQuickPress(duration, stationId);
+              handleQuickPress(duration, stationId, id);
             }
           }}
           style={[{ alignItems: "center" }]}
