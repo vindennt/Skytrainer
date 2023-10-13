@@ -16,17 +16,18 @@ import { Tooltip } from "@components/Tooltip";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import { useNavigation } from "@react-navigation/native";
 import { setSlider } from "@src/features/user/userSlice";
-import { QuickStart } from "@src/features/quickStart/quickStartHandler";
+import {
+  QuickStart,
+  getSortedQuickstarts,
+} from "@src/features/quickStart/quickStartHandler";
 import { QuickStartState } from "@src/features/quickStart/quickStartSlice";
 import Icon from "react-native-vector-icons/Ionicons";
+import { MAX_QUICKSTARTS } from "@src/features/quickStart/quickStartHandler";
+import { handleQuickStartAvailability } from "@src/utils/dates";
 
-interface QuickStartButtonProps extends QuickStart {
-  isAdd?: boolean;
-}
+interface QuickStartButtonProps extends QuickStart {}
 
 export const QuickStartCard: React.FC = ({}) => {
-  const MAX_QUICKSTARTS: number = 5;
-
   const dispatch = useDispatch<any>();
   const navigation = useNavigation();
   const theme = useTheme();
@@ -42,6 +43,7 @@ export const QuickStartCard: React.FC = ({}) => {
   const quickstarts: QuickStart[] = useSelector(
     (state: { quickStart: QuickStartState }) => state.quickStart.quickstarts
   );
+  const sortedQuickStarts: QuickStart[] = getSortedQuickstarts(quickstarts);
 
   const handleQuickPress = (duration: number, stationId: string) => {
     console.log(
@@ -61,12 +63,21 @@ export const QuickStartCard: React.FC = ({}) => {
     navigation.navigate("Timer" as never);
   };
 
-  const QuickStartButton: React.FC<QuickStartButtonProps> = ({
+  const QuickStartElement: React.FC<QuickStartButtonProps> = ({
     id = "",
     stationId = "000",
     name,
     duration = 0,
+    lastFinished = null,
   }) => {
+    const isAvailable: boolean = handleQuickStartAvailability(lastFinished);
+    const textColor: string = isAvailable
+      ? theme.colors.onBackground
+      : theme.colors.outline;
+    console.log(
+      name + " is available: " + isAvailable + " for date " + lastFinished
+    );
+
     return (
       <View
         style={[
@@ -75,10 +86,13 @@ export const QuickStartCard: React.FC = ({}) => {
         ]}
       >
         <View style={styles.quickButtonTextContainer}>
-          <Text style={[styles.textTitle, { marginTop: 5 }]}>{name}</Text>
+          <Text style={[styles.textTitle, { marginTop: 5, color: textColor }]}>
+            {name}
+          </Text>
           <Text
             style={[
               styles.text,
+              { color: textColor },
               // { fontWeight: "bold" },
             ]}
           >
@@ -92,10 +106,16 @@ export const QuickStartCard: React.FC = ({}) => {
             }
           }}
           style={[{ alignItems: "center" }]}
+          disabled={!isAvailable}
         >
-          <View style={[styles.quickButtonStyle]}>
+          <View
+            style={[
+              styles.quickButtonStyle,
+              { backgroundColor: isAvailable ? "royalblue" : "gray" },
+            ]}
+          >
             <Icon
-              name="play"
+              name={isAvailable ? "play" : "checkmark-sharp"}
               color={
                 quickstarts.length === 0
                   ? theme.colors.outline
@@ -169,15 +189,16 @@ export const QuickStartCard: React.FC = ({}) => {
             quickstarts.length >= 3 && { justifyContent: "space-between" },
           ]}
         >
-          {quickstarts.map((quickstart) => {
+          {sortedQuickStarts.map((quickstart) => {
             return (
               quickstart.id && (
-                <QuickStartButton
+                <QuickStartElement
                   key={quickstart.id}
                   id={quickstart.id}
                   stationId={quickstart.stationId}
                   name={quickstart.name}
                   duration={quickstart.duration}
+                  lastFinished={quickstart.lastFinished}
                 />
               )
             );
@@ -229,7 +250,6 @@ const styles = StyleSheet.create({
     // flexWrap: "wrap",
     width: 50,
     height: 50,
-    backgroundColor: "royalblue",
     borderRadius: 37,
     alignItems: "center",
     justifyContent: "center",
@@ -245,6 +265,7 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     // marginHorizontal: 20,
     // marginRight: 10,
+    marginBottom: 10,
   },
   quickButtonTextContainer: {
     flexDirection: "column",
