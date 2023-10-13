@@ -12,6 +12,7 @@ import {
   SkytrainState,
 } from "@src/features/skytrain/skytrainSlice";
 import { getStationName } from "@src/utils/skytrain";
+import { Tooltip } from "@components/Tooltip";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import { useNavigation } from "@react-navigation/native";
 import { setSlider } from "@src/features/user/userSlice";
@@ -24,6 +25,8 @@ interface QuickStartButtonProps extends QuickStart {
 }
 
 export const QuickStartCard: React.FC = ({}) => {
+  const MAX_QUICKSTARTS: number = 5;
+
   const dispatch = useDispatch<any>();
   const navigation = useNavigation();
   const theme = useTheme();
@@ -107,6 +110,31 @@ export const QuickStartCard: React.FC = ({}) => {
     );
   };
 
+  const tooltipContent: React.ReactNode = (
+    <View style={styles.tooltip}>
+      <Text style={styles.text}>Max: 5</Text>
+    </View>
+  );
+
+  const tooltipButton: React.ReactNode = (
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate("Create Quick Start" as never);
+      }}
+      disabled={quickstarts.length >= MAX_QUICKSTARTS}
+    >
+      <Icon
+        name="add"
+        color={
+          quickstarts.length < MAX_QUICKSTARTS
+            ? theme.colors.onSurfaceVariant
+            : theme.colors.outline
+        }
+        size={28}
+      />
+    </TouchableOpacity>
+  );
+
   return (
     <View>
       <View style={styles.container}>
@@ -129,18 +157,9 @@ export const QuickStartCard: React.FC = ({}) => {
                 size={24}
               />
             </TouchableOpacity>
-            {quickstarts.length < 4 && (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate("Create Quick Start" as never);
-                }}
-              >
-                <Icon
-                  name="add"
-                  color={theme.colors.onSurfaceVariant}
-                  size={28}
-                />
-              </TouchableOpacity>
+            {quickstarts.length < MAX_QUICKSTARTS && tooltipButton}
+            {quickstarts.length >= MAX_QUICKSTARTS && (
+              <Tooltip content={tooltipContent}>{tooltipButton}</Tooltip>
             )}
           </View>
         </View>
@@ -250,5 +269,10 @@ const styles = StyleSheet.create({
   textContainer: {
     justifyContent: "center",
     alignItems: "center",
+  },
+  tooltip: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: 60,
   },
 });
