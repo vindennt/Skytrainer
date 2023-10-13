@@ -20,16 +20,21 @@ import {
   selectCreatedAt,
   selectTotalTripTime,
   selectTotalTripsFinished,
+  selectFirstMilestone,
+  selectSecondMilestone,
+  selectThirdMilestone,
 } from "@features/user/userSlice";
 import {
   UpdateUserRequest,
   updateUserData,
 } from "@features/user/userSliceHelpers";
 import { getDate } from "@utils/dates";
+import { useNavigation } from "@react-navigation/native";
 
 const Account = () => {
   const dispatch = useDispatch<any>();
   const theme = useTheme();
+  const navigation = useNavigation();
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
@@ -42,6 +47,11 @@ const Account = () => {
   const [editingDisplayName, setEditingDisplayName] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const FIRST_MILESTONE: number = useSelector(selectFirstMilestone);
+  const SECOND_MILESTONE: number = useSelector(selectSecondMilestone);
+  const THIRD_MILESTONE: number = useSelector(selectThirdMilestone);
+  const milestonesString: string = `${FIRST_MILESTONE.toString()} mins, ${SECOND_MILESTONE.toString()} mins, ${THIRD_MILESTONE.toString()} mins`;
+
   const StackedText: React.FC<{
     topText: string;
     bottomText: string | undefined;
@@ -50,10 +60,16 @@ const Account = () => {
 
     return (
       <View style={styles.textBox}>
-        <Text variant="labelMedium">{topText}</Text>
+        <Text variant="labelMedium" style={{ color: theme.colors.outline }}>
+          {topText}
+        </Text>
         <Text variant="titleMedium">{botText}</Text>
       </View>
     );
+  };
+
+  const handleEditDailyFocus = () => {
+    navigation.navigate("Edit Thresholds" as never);
   };
 
   return session && session.user ? (
@@ -70,7 +86,7 @@ const Account = () => {
         >
           <StackedText topText="Display name" bottomText={displayName} />
           <View>
-            <Button onPress={() => setEditingDisplayName(true)}>Change</Button>
+            <Button onPress={() => setEditingDisplayName(true)}>Edit</Button>
           </View>
         </View>
       ) : (
@@ -145,6 +161,13 @@ const Account = () => {
           topText="Trips Finished"
           bottomText={totalTripsFinished.toString()}
         />
+        <View style={styles.horizontallySpaced}>
+          <StackedText
+            topText="Daily Focus Milestones"
+            bottomText={milestonesString}
+          />
+          <Button onPress={handleEditDailyFocus}>Edit</Button>
+        </View>
       </View>
 
       <View
@@ -180,6 +203,10 @@ const styles = StyleSheet.create({
   verticallySpaced: {
     paddingTop: 4,
     paddingBottom: 4,
+  },
+  horizontallySpaced: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 
   textBox: {
