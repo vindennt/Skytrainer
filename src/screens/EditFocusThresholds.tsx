@@ -13,12 +13,6 @@ import {
 import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
-interface EditPickerProps {
-  label: string;
-  value: string;
-  onChange: (newValue: string) => void;
-}
-
 const EditFocusThresholds = () => {
   const theme = useTheme();
   const navigation = useNavigation();
@@ -53,51 +47,36 @@ const EditFocusThresholds = () => {
     navigation.goBack();
   };
 
-  const EditPicker: React.FC<EditPickerProps> = ({
-    label,
-    value,
-    onChange,
-  }) => {
-    return (
-      <View style={styles.horizontalContainer}>
-        <Text>{label}:</Text>
-        <DailyFocusThresholdPicker
-          value={value}
-          onChange={onChange}
-          items={numberOptions}
-        />
-        <Text>mins</Text>
-      </View>
-    );
-  };
-
   return (
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <View style={styles.verticalSpace}>
-        <View style={styles.pickerContainer}>
-          <EditPicker
-            label={"First Milestone:"}
+        <View style={styles.horizontalContainer}>
+          {/* <Text>1st:</Text> */}
+          <DailyFocusThresholdPicker
             value={firstMilestone}
             onChange={setFirstMilestone}
+            items={numberOptions}
           />
-          <EditPicker
-            label={"Second Milestone:"}
+          {/* <Text>2nd:</Text> */}
+          <DailyFocusThresholdPicker
             value={secondMilestone}
             onChange={setSecondMilestone}
+            items={numberOptions}
           />
-          <EditPicker
-            label={"Third Milestone:"}
+          {/* <Text>3rd:</Text> */}
+          <DailyFocusThresholdPicker
             value={thirdMilestone}
             onChange={setThirdMilestone}
+            items={numberOptions}
           />
         </View>
 
         <View
           style={[
             styles.horizontalContainer,
-            { justifyContent: "space-between", paddingBottom: 40 },
+            { justifyContent: "space-around", paddingBottom: 40 },
           ]}
         >
           <Button mode="outlined" onPress={handleCancel}>
@@ -128,7 +107,7 @@ const styles = StyleSheet.create({
   },
   verticalSpace: {
     flex: 1,
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",
   },
   pickerContainer: {
     alignItems: "flex-end",
