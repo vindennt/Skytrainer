@@ -43,7 +43,9 @@ const Home = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       {/* <Text style={styles.stationTitleText}>{title}</Text> */}
       <TouchableOpacity
         style={styles.imageContainer}

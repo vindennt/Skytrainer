@@ -111,7 +111,7 @@ const AppNavigator = () => {
             ),
           }}
         />
-        <Stack.Screen name="Home" component={Home} />
+
         <Stack.Group
           screenOptions={{
             headerShown: false,
@@ -124,6 +124,7 @@ const AppNavigator = () => {
         <Stack.Screen name="Gacha" component={Gacha} />
         <Stack.Screen name="Stations" component={Stations} />
         <Stack.Group screenOptions={{ presentation: "modal" }}>
+          <Stack.Screen name="Start Skytrain Trip" component={Home} />
           <Stack.Screen name="Account" component={Account} />
           <Stack.Screen name="Select Station" component={StationSelect} />
           <Stack.Screen
