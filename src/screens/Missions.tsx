@@ -128,6 +128,10 @@ const Missions = () => {
     }
   };
 
+  const handleManualTrip = () => {
+    navigation.navigate("Start Skytrain Trip" as never);
+  };
+
   useEffect(() => {
     console.log("Mission useEffect");
     handleDailyFocus();
@@ -282,10 +286,13 @@ const Missions = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.header}>Missions</Text>
+      <Text style={styles.header}>Skytrain</Text>
       <View style={styles.secondaryContainer}>
         <DailyFocusBox popupCallback={(reward) => showPopup(reward)} />
         <QuickStartCard />
+        <Button mode="contained" onPress={handleManualTrip}>
+          Start Manual Focus Trip
+        </Button>
         {MissionsList.map((mission: Mission) => {
           return (
             <DailyFocusMissonElement
@@ -297,6 +304,7 @@ const Missions = () => {
             />
           );
         })}
+
         <Popup
           visible={popupVisible}
           onClose={() => {

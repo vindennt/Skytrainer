@@ -17,18 +17,6 @@ export interface Mission {
   reward: number;
 }
 
-export enum FocusMilestone {
-  FIRST_MILESTONE,
-  SECOND_MILESTONE,
-  THIRD_MILESTONE,
-}
-
-export enum FocusMilestoneTimes {
-  FIRST_MILESTONE = 5,
-  SECOND_MILESTONE = 10,
-  THIRD_MILESTONE = 15,
-}
-
 export enum DailyFocusRewards {
   FIRST_MILESTONE = 5,
   SECOND_MILESTONE = 10,
@@ -123,3 +111,25 @@ export const MissionsList: Mission[] = [
     reward: 9001,
   },
 ];
+
+// Prevents the user from claiming a reward tier more than once
+// Returns a currentclaimed dialy focus rewards minutes adjusted for inflation
+export const readjustClaimedMinutes = (
+  firstMilestone: number,
+  secondMilestone: number,
+  thirdMilestone: number,
+  newFirstMilestone: number,
+  newSecondMilestone: number,
+  newThirdMilestone: number,
+  currentClaimedMins: number
+): number => {
+  if (currentClaimedMins >= thirdMilestone) {
+    return newThirdMilestone;
+  } else if (currentClaimedMins >= secondMilestone) {
+    return newSecondMilestone;
+  } else if (currentClaimedMins >= firstMilestone) {
+    return newFirstMilestone;
+  } else {
+    return currentClaimedMins;
+  }
+};

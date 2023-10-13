@@ -1,3 +1,5 @@
+import { DateSchema } from "yup";
+
 export const getDate = (rawDate: string) => {
   const formattedDate = new Date(Date.parse(rawDate));
   return formattedDate.toLocaleDateString();
@@ -41,4 +43,17 @@ export function formatDateToYYYYMMDD(date: Date): string {
   const day = String(date.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
+}
+
+// Returns true if the date is yesterday or earlier
+export function handleQuickStartAvailability(
+  lastFinished: Date | null
+): boolean {
+  if (lastFinished) {
+    const yesterday: Date = getTodayDMY();
+    yesterday.setDate(yesterday.getDate() - 1);
+    return lastFinished < yesterday;
+  } else {
+    return true;
+  }
 }

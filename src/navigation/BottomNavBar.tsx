@@ -4,7 +4,7 @@ import { Home, Stations, Shop, Gacha } from "@screens/index";
 import Missions from "@src/screens/Missions";
 import { useSelector } from "react-redux";
 import { UserState } from "@src/features/user/userSlice";
-import { FocusMilestoneTimes } from "@src/utils/missionRewards";
+// import { FocusMilestoneTimes } from "@src/utils/missionRewards";
 import { NavSliceState } from "@navigation/navSlice";
 
 const BottomNavBar = () => {
@@ -41,7 +41,7 @@ const BottomNavBar = () => {
 
   const [index, setIndex] = React.useState(0);
   const renderScene = BottomNavigation.SceneMap({
-    home: HomeRoute,
+    home: MissionsRoute,
     stations: StationsRoute,
     shop: ShopRoute,
     // gacha: GachaRoute,

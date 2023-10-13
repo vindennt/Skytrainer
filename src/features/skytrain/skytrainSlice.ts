@@ -12,12 +12,14 @@ export interface SkytrainState {
   skytrainGraph: Graph;
   trip: string[];
   rewards: TripReward;
+  currentQuickstartId: string | null;
 }
 
 const initialState: SkytrainState = {
   skytrainGraph: buildGraph(1),
   trip: [],
   rewards: { total: 0, contributors: [] },
+  currentQuickstartId: null,
 };
 
 const skytrainSlice = createSlice({
@@ -36,8 +38,22 @@ const skytrainSlice = createSlice({
       state.rewards = action.payload;
       console.log(state.rewards);
     },
+    setQuickStartId: (state, action) => {
+      state.currentQuickstartId = action.payload;
+      console.log(state.currentQuickstartId);
+    },
   },
 });
 
-export const { setTrip, setRewards, setGraph } = skytrainSlice.actions;
+export const { setTrip, setRewards, setGraph, setQuickStartId } =
+  skytrainSlice.actions;
 export default skytrainSlice.reducer;
+
+export const selectRewards = (state: { skytrain: SkytrainState }) =>
+  state.skytrain.rewards;
+export const selectTrip = (state: { skytrain: SkytrainState }) =>
+  state.skytrain.trip;
+export const selectSkytrainGraph = (state: { skytrain: SkytrainState }) =>
+  state.skytrain.skytrainGraph;
+export const selectCurrentQuickstartId = (state: { skytrain: SkytrainState }) =>
+  state.skytrain.currentQuickstartId;

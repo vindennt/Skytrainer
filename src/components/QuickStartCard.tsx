@@ -10,17 +10,23 @@ import {
   setTrip,
   setRewards,
   SkytrainState,
+  setQuickStartId,
 } from "@src/features/skytrain/skytrainSlice";
 import { getStationName } from "@src/utils/skytrain";
+import { Tooltip } from "@components/Tooltip";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import { useNavigation } from "@react-navigation/native";
 import { setSlider } from "@src/features/user/userSlice";
-import { QuickStart } from "@src/features/quickStart/quickStartHandler";
+import {
+  QuickStart,
+  getSortedQuickstarts,
+} from "@src/features/quickStart/quickStartHandler";
 import { QuickStartState } from "@src/features/quickStart/quickStartSlice";
+import Icon from "react-native-vector-icons/Ionicons";
+import { MAX_QUICKSTARTS } from "@src/features/quickStart/quickStartHandler";
+import { handleQuickStartAvailability } from "@src/utils/dates";
 
-interface QuickStartButtonProps extends QuickStart {
-  isAdd?: boolean;
-}
+interface QuickStartButtonProps extends QuickStart {}
 
 export const QuickStartCard: React.FC = ({}) => {
   const dispatch = useDispatch<any>();
@@ -38,8 +44,13 @@ export const QuickStartCard: React.FC = ({}) => {
   const quickstarts: QuickStart[] = useSelector(
     (state: { quickStart: QuickStartState }) => state.quickStart.quickstarts
   );
+  const sortedQuickStarts: QuickStart[] = getSortedQuickstarts(quickstarts);
 
-  const handleQuickPress = (duration: number, stationId: string) => {
+  const handleQuickPress = (
+    duration: number,
+    stationId: string,
+    quickstartId: string
+  ) => {
     console.log(
       getStationName(stationId) + " starting focus trip for " + duration
     );
@@ -51,79 +62,132 @@ export const QuickStartCard: React.FC = ({}) => {
     );
     const rewards: TripReward = getRewards(tripPath, stations);
     dispatch(setTrip(tripPath));
+    dispatch(setQuickStartId(quickstartId));
     dispatch(setRewards(rewards));
 
     console.log("Mission: Navigating to Timer via QuickStart");
     navigation.navigate("Timer" as never);
   };
 
-  const QuickStartButton: React.FC<QuickStartButtonProps> = ({
+  const QuickStartElement: React.FC<QuickStartButtonProps> = ({
     id = "",
     stationId = "000",
     name,
     duration = 0,
-    isAdd = false,
+    lastFinished = null,
   }) => {
+    const isAvailable: boolean = handleQuickStartAvailability(lastFinished);
+    const textColor: string = isAvailable
+      ? theme.colors.onBackground
+      : theme.colors.outline;
+    // console.log(
+    //   name + " is available: " + isAvailable + " for date " + lastFinished
+    // );
+
     return (
-      <View style={styles.quickButtonStyleContainer}>
+      <View
+        style={[
+          styles.quickButtonStyleContainer,
+          { borderColor: theme.colors.outline },
+        ]}
+      >
+        <View style={styles.quickButtonTextContainer}>
+          <Text style={[styles.textTitle, { marginTop: 5, color: textColor }]}>
+            {name}
+          </Text>
+          <Text
+            style={[
+              styles.text,
+              { color: textColor },
+              // { fontWeight: "bold" },
+            ]}
+          >
+            {duration + " mins"}
+          </Text>
+        </View>
         <TouchableOpacity
           onPress={() => {
-            if (isAdd) {
-              navigation.navigate("Create Quick Start" as never);
-            } else {
-              if (duration > 0 && stationId !== "000") {
-                handleQuickPress(duration, stationId);
-              }
+            if (duration > 0 && stationId !== "000") {
+              handleQuickPress(duration, stationId, id);
             }
           }}
           style={[{ alignItems: "center" }]}
+          disabled={!isAvailable}
         >
           <View
             style={[
               styles.quickButtonStyle,
-              isAdd ? { backgroundColor: theme.colors.outline } : null,
+              { backgroundColor: isAvailable ? "royalblue" : "gray" },
             ]}
           >
-            <Text
-              style={[
-                isAdd ? { fontSize: 20 } : styles.text,
-                // { fontWeight: "bold" },
-              ]}
-            >
-              {isAdd ? "+" : duration}
-            </Text>
+            <Icon
+              name={isAvailable ? "play" : "checkmark-sharp"}
+              color={
+                quickstarts.length === 0
+                  ? theme.colors.outline
+                  : theme.colors.onSurfaceVariant
+              }
+              style={{ left: 1 }}
+              size={24}
+            />
           </View>
         </TouchableOpacity>
-        <Text
-          style={[
-            styles.text,
-            { marginTop: 5 },
-            isAdd ? { color: theme.colors.primary } : null,
-          ]}
-        >
-          {name}
-        </Text>
       </View>
     );
   };
+
+  const tooltipContent: React.ReactNode = (
+    <View style={styles.tooltip}>
+      <Text style={styles.text}>Max: 5</Text>
+    </View>
+  );
+
+  const tooltipButton: React.ReactNode = (
+    <TouchableOpacity
+      onPress={() => {
+        navigation.navigate("Create Quick Start" as never);
+      }}
+      disabled={quickstarts.length >= MAX_QUICKSTARTS}
+    >
+      <Icon
+        name="add"
+        color={
+          quickstarts.length < MAX_QUICKSTARTS
+            ? theme.colors.onSurfaceVariant
+            : theme.colors.outline
+        }
+        size={28}
+      />
+    </TouchableOpacity>
+  );
 
   return (
     <View>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Quickstart</Text>
-          {quickstarts.length > 0 && (
-            <Button
-              icon="chevron-forward-outline"
+          <View style={styles.quickActionContainer}>
+            <TouchableOpacity
               onPress={() => {
                 navigation.navigate("Edit Quickstarts" as never);
               }}
-              contentStyle={{ flexDirection: "row-reverse" }}
-              labelStyle={{ marginVertical: 2 }}
+              disabled={quickstarts.length === 0}
             >
-              Edit
-            </Button>
-          )}
+              <Icon
+                name="create-outline"
+                color={
+                  quickstarts.length === 0
+                    ? theme.colors.outline
+                    : theme.colors.onSurfaceVariant
+                }
+                size={24}
+              />
+            </TouchableOpacity>
+            {quickstarts.length < MAX_QUICKSTARTS && tooltipButton}
+            {quickstarts.length >= MAX_QUICKSTARTS && (
+              <Tooltip content={tooltipContent}>{tooltipButton}</Tooltip>
+            )}
+          </View>
         </View>
         <View
           style={[
@@ -131,28 +195,26 @@ export const QuickStartCard: React.FC = ({}) => {
             quickstarts.length >= 3 && { justifyContent: "space-between" },
           ]}
         >
-          {quickstarts.map((quickstart) => {
+          {sortedQuickStarts.map((quickstart) => {
             return (
               quickstart.id && (
-                <QuickStartButton
+                <QuickStartElement
                   key={quickstart.id}
                   id={quickstart.id}
                   stationId={quickstart.stationId}
                   name={quickstart.name}
                   duration={quickstart.duration}
+                  lastFinished={quickstart.lastFinished}
                 />
               )
             );
           })}
-          {quickstarts.length < 4 && (
-            <QuickStartButton
-              key="ADD"
-              id="add"
-              duration={0}
-              stationId={""}
-              isAdd={true}
-              name="Add"
-            />
+          {quickstarts.length === 0 && (
+            <View style={styles.textContainer}>
+              <Text style={{ color: theme.colors.outline }}>
+                No quickstarts created. Let's make one!
+              </Text>
+            </View>
           )}
         </View>
       </View>
@@ -166,7 +228,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#454045",
     padding: 20,
-    paddingBottom: 20,
+    // paddingBottom: 20,
     borderRadius: 12,
     marginBottom: 20,
   },
@@ -177,36 +239,67 @@ const styles = StyleSheet.create({
     // backgroundColor: "green",
   },
   headerText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
   },
   quickstartContainer: {
-    flexDirection: "row",
-    paddingTop: 20,
-    // alignItems: "flex-end",
+    flexDirection: "column",
+    paddingTop: 16,
+    // alignItems: "flex-start",
     // flex: 1,
     // justifyContent: "space-between",
     justifyContent: "flex-start",
-    gap: 20,
+    // gap: 20,
     // backgroundColor: "gray",
   },
   quickButtonStyle: {
-    width: 60,
-    height: 60,
-    backgroundColor: "royalblue",
+    // flexWrap: "wrap",
+    width: 50,
+    height: 50,
     borderRadius: 37,
     alignItems: "center",
     justifyContent: "center",
+    // marginVertical: 5,
     // flex: 1,
   },
   quickButtonStyleContainer: {
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "center",
-    // justifyContent: "center",
+    // backgroundColor: "green",
+    justifyContent: "space-between",
+    borderTopWidth: 0.2,
+    paddingTop: 12,
     // marginHorizontal: 20,
     // marginRight: 10,
+    marginBottom: 10,
   },
+  quickButtonTextContainer: {
+    flexDirection: "column",
+    // backgroundColor: "black",
+    alignItems: "baseline",
+    justifyContent: "flex-start",
+    bottom: 5,
+  },
+  quickActionContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    // backgroundColor: "green",
+  },
+
   text: {
-    fontSize: 16,
+    fontSize: 18,
+  },
+  textTitle: {
+    fontSize: 30,
+  },
+  textContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  tooltip: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: 60,
   },
 });

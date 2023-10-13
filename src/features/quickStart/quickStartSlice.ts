@@ -4,6 +4,7 @@ import {
   fetchAllQuickStarts,
   addQuickStart,
   deleteQuickStart,
+  updateQuickStart,
 } from "./quickStartSliceHelpers";
 
 export interface QuickStartState {
@@ -44,6 +45,7 @@ const quickStartSlice = createSlice({
         const qsToAdd: QuickStart = {
           ...action.payload,
           stationId: action.payload.start_id,
+          lastFinished: null,
         };
         console.log("Adding " + JSON.stringify(qsToAdd));
 
@@ -60,6 +62,26 @@ const quickStartSlice = createSlice({
         state.quickstarts = newQuickstarts;
       }
     });
+    builder.addCase(updateQuickStart.fulfilled, (state, action) => {
+      if (
+        action.payload &&
+        typeof action.payload === "object" &&
+        "id" in action.payload &&
+        "date" in action.payload
+      ) {
+        console.log("updateQuickStart fulfilled");
+        console.log("Updating " + action.payload.id + action.payload.date);
+        const id: string = action.payload.id;
+        const date: Date = action.payload.date;
+
+        state.quickstarts.map((quickstart) => {
+          if (quickstart.id === id) {
+            quickstart.lastFinished = date;
+          }
+        });
+        console.log("updateQuickStart: done updating local state");
+      }
+    });
   },
 });
 
@@ -68,5 +90,6 @@ export {
   fetchAllQuickStarts,
   addQuickStart,
   deleteQuickStart,
+  updateQuickStart,
 } from "@features/quickStart/quickStartSliceHelpers";
 export default quickStartSlice.reducer;

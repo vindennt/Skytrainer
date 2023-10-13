@@ -36,6 +36,8 @@ import { setGraph } from "@src/features/skytrain/skytrainSlice";
 
 import { fetchAllQuickStarts } from "@src/features/quickStart/quickStartSliceHelpers";
 import { fetchLimitedBanner } from "@src/features/shop/shopSliceHelpers";
+import DailyFocusThresholdPicker from "@src/components/DailyFocusThresholdPicker";
+import EditFocusThresholds from "@src/screens/EditFocusThresholds";
 
 const AppNavigator = () => {
   const dispatch = useDispatch<any>();
@@ -109,7 +111,7 @@ const AppNavigator = () => {
             ),
           }}
         />
-        <Stack.Screen name="Home" component={Home} />
+
         <Stack.Group
           screenOptions={{
             headerShown: false,
@@ -122,8 +124,13 @@ const AppNavigator = () => {
         <Stack.Screen name="Gacha" component={Gacha} />
         <Stack.Screen name="Stations" component={Stations} />
         <Stack.Group screenOptions={{ presentation: "modal" }}>
+          <Stack.Screen name="Start Skytrain Trip" component={Home} />
           <Stack.Screen name="Account" component={Account} />
           <Stack.Screen name="Select Station" component={StationSelect} />
+          <Stack.Screen
+            name="Edit Milestones"
+            component={EditFocusThresholds}
+          />
           <Stack.Screen
             name="Create Quick Start"
             component={QuickStartCreator}

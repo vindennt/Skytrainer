@@ -24,12 +24,12 @@ const initialState: NavSliceState = {
       title: "Skytrain",
       focusedIcon: "subway",
     },
-    {
-      key: "missions",
-      title: "Missions",
-      focusedIcon: "calendar",
-      badge: true,
-    },
+    // {
+    //   key: "missions",
+    //   title: "Missions",
+    //   focusedIcon: "calendar",
+    //   badge: true,
+    // },
     {
       key: "stations",
       title: "Stations",
@@ -54,16 +54,17 @@ const navSlice = createSlice({
     setMissionBadgeVisibility: (state, action) => {
       state.routes = [
         {
-          key: "home",
+          key: "missions",
           title: "Skytrain",
           focusedIcon: "subway",
-        },
-        {
-          key: "missions",
-          title: "Missions",
-          focusedIcon: "calendar",
           badge: action.payload,
         },
+        // {
+        //   key: "missions",
+        //   title: "Missions",
+        //   focusedIcon: "calendar",
+        //   badge: action.payload,
+        // },
         {
           key: "stations",
           title: "Stations",
