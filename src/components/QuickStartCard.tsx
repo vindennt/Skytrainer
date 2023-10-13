@@ -163,6 +163,13 @@ export const QuickStartCard: React.FC = ({}) => {
               )
             );
           })}
+          {quickstarts.length === 0 && (
+            <View style={styles.textContainer}>
+              <Text style={{ color: theme.colors.outline }}>
+                No quickstarts created. Let's make one!
+              </Text>
+            </View>
+          )}
         </View>
       </View>
     </View>
@@ -239,5 +246,9 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     fontSize: 30,
+  },
+  textContainer: {
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
