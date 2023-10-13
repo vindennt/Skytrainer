@@ -39,6 +39,7 @@ export const fetchAllQuickStarts = createAsyncThunk(
             stationId: row.start_id,
             name: row.name,
             duration: row.duration,
+            lastFinished: row.last_finished,
           };
           fetchedQuickStarts.push(qsToAdd);
         });

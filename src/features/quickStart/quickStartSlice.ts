@@ -44,6 +44,7 @@ const quickStartSlice = createSlice({
         const qsToAdd: QuickStart = {
           ...action.payload,
           stationId: action.payload.start_id,
+          lastFinished: null,
         };
         console.log("Adding " + JSON.stringify(qsToAdd));
 
