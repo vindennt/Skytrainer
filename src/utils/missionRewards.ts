@@ -111,3 +111,25 @@ export const MissionsList: Mission[] = [
     reward: 9001,
   },
 ];
+
+// Prevents the user from claiming a reward tier more than once
+// Returns a currentclaimed dialy focus rewards minutes adjusted for inflation
+export const readjustClaimedMinutes = (
+  firstMilestone: number,
+  secondMilestone: number,
+  thirdMilestone: number,
+  newFirstMilestone: number,
+  newSecondMilestone: number,
+  newThirdMilestone: number,
+  currentClaimedMins: number
+): number => {
+  if (currentClaimedMins >= thirdMilestone) {
+    return newThirdMilestone;
+  } else if (currentClaimedMins >= secondMilestone) {
+    return newSecondMilestone;
+  } else if (currentClaimedMins >= firstMilestone) {
+    return newFirstMilestone;
+  } else {
+    return currentClaimedMins;
+  }
+};

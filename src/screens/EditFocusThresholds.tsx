@@ -6,6 +6,7 @@ import DailyFocusThresholdPicker, {
   PickerItem,
 } from "@src/components/DailyFocusThresholdPicker";
 import {
+  selectDailyFocusClaimed,
   selectFirstMilestone,
   selectSecondMilestone,
   selectThirdMilestone,
@@ -19,6 +20,7 @@ import {
 import { AuthState } from "@src/features/auth/authSlice";
 import { Session } from "@supabase/supabase-js";
 import { LoadingIndicator } from "@src/components/LoadingIndicator";
+import { readjustClaimedMinutes } from "@src/utils/missionRewards";
 
 const EditFocusThresholds = () => {
   const theme = useTheme();
@@ -27,6 +29,7 @@ const EditFocusThresholds = () => {
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
+  const dailyFocusClaimed: number = useSelector(selectDailyFocusClaimed);
 
   const FIRST_MILESTONE: number = useSelector(selectFirstMilestone);
   const SECOND_MILESTONE: number = useSelector(selectSecondMilestone);
@@ -65,12 +68,23 @@ const EditFocusThresholds = () => {
       firstMilestoneInt < secondMilestoneInt &&
       secondMilestoneInt < thirdMilestoneInt
     ) {
+      const readjustedClaimedMins: number = readjustClaimedMinutes(
+        FIRST_MILESTONE,
+        SECOND_MILESTONE,
+        THIRD_MILESTONE,
+        firstMilestoneInt,
+        secondMilestoneInt,
+        thirdMilestoneInt,
+        dailyFocusClaimed
+      );
+
       const updateRequest: UpdateUserRequest = {
         session: session,
         update: {
           first_milestone: firstMilestoneInt,
           second_milestone: secondMilestoneInt,
           third_milestone: thirdMilestoneInt,
+          daily_focus_claimed: readjustedClaimedMins,
         },
       };
       await dispatch(updateUserData(updateRequest));
@@ -110,11 +124,19 @@ const EditFocusThresholds = () => {
             items={numberOptions}
           />
         </View>
+        <Text style={{ padding: 30, color: theme.colors.outline }}>
+          Note: Any Daily Focus Rewards that are already claimed will not be
+          able to be claimed again until the next day.
+        </Text>
 
         <View
           style={[
             styles.horizontalContainer,
-            { justifyContent: "space-evenly", paddingBottom: 40 },
+            {
+              justifyContent: "space-evenly",
+              paddingBottom: 40,
+              width: "100%",
+            },
           ]}
         >
           <Button mode="outlined" onPress={handleCancel}>
@@ -150,6 +172,7 @@ const styles = StyleSheet.create({
   },
   verticalSpace: {
     flex: 1,
+    alignItems: "center",
     justifyContent: "space-evenly",
   },
   pickerContainer: {

@@ -28,7 +28,6 @@ const DailyFocusThresholdPicker: React.FC<DailyFocusThresholdPickerProps> = ({
       itemStyle={{
         color: theme.colors.onBackground,
         width: 100,
-        height: 175,
       }}
     >
       {items.map((item) => (
