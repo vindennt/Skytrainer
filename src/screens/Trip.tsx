@@ -4,7 +4,11 @@ import {
   RewardContributor,
   TripReward,
 } from "@src/features/reward/TripRewardHandler";
-import { SkytrainState } from "@src/features/skytrain/skytrainSlice";
+import {
+  SkytrainState,
+  selectRewards,
+  selectTrip,
+} from "@src/features/skytrain/skytrainSlice";
 import {
   UserState,
   selectSlider,
@@ -33,12 +37,9 @@ const Trip = () => {
   const theme = useTheme();
   const dispatch = useDispatch<any>();
   const navigation = useNavigation();
-  const rewards: TripReward = useSelector(
-    (state: { skytrain: SkytrainState }) => state.skytrain.rewards
-  );
-  const trip: string[] = useSelector(
-    (state: { skytrain: SkytrainState }) => state.skytrain.trip
-  );
+  const rewards: TripReward = useSelector(selectRewards);
+
+  const trip: string[] = useSelector(selectTrip);
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );

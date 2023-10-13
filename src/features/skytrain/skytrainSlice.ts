@@ -48,3 +48,8 @@ const skytrainSlice = createSlice({
 export const { setTrip, setRewards, setGraph, setQuickStartId } =
   skytrainSlice.actions;
 export default skytrainSlice.reducer;
+
+export const selectRewards = (state: { skytrain: SkytrainState }) =>
+  state.skytrain.rewards;
+export const selectTrip = (state: { skytrain: SkytrainState }) =>
+  state.skytrain.trip;
