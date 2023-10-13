@@ -10,12 +10,23 @@ import {
   selectSecondMilestone,
   selectThirdMilestone,
 } from "@src/features/user/userSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
+import {
+  UpdateUserRequest,
+  updateUserData,
+} from "@src/features/user/userSliceHelpers";
+import { AuthState } from "@src/features/auth/authSlice";
+import { Session } from "@supabase/supabase-js";
+import { LoadingIndicator } from "@src/components/LoadingIndicator";
 
 const EditFocusThresholds = () => {
   const theme = useTheme();
+  const dispatch = useDispatch<any>();
   const navigation = useNavigation();
+  const session: Session | null = useSelector(
+    (state: { auth: AuthState }) => state.auth.session
+  );
 
   const FIRST_MILESTONE: number = useSelector(selectFirstMilestone);
   const SECOND_MILESTONE: number = useSelector(selectSecondMilestone);
@@ -30,6 +41,8 @@ const EditFocusThresholds = () => {
     THIRD_MILESTONE.toString()
   );
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   // Generate the list of numbers for the picker
   const step = 5;
   let curr = 5;
@@ -42,7 +55,32 @@ const EditFocusThresholds = () => {
     })
   );
 
-  const handleSubmission = () => {};
+  const handleSubmission = async () => {
+    setLoading(true);
+    const firstMilestoneInt = parseInt(firstMilestone);
+    const secondMilestoneInt = parseInt(secondMilestone);
+    const thirdMilestoneInt = parseInt(thirdMilestone);
+
+    if (
+      firstMilestoneInt < secondMilestoneInt &&
+      secondMilestoneInt < thirdMilestoneInt
+    ) {
+      const updateRequest: UpdateUserRequest = {
+        session: session,
+        update: {
+          first_milestone: firstMilestoneInt,
+          second_milestone: secondMilestoneInt,
+          third_milestone: thirdMilestoneInt,
+        },
+      };
+      await dispatch(updateUserData(updateRequest));
+      navigation.goBack();
+    } else {
+      alert("Please check that the milestones are in ascending order.");
+    }
+    setLoading(false);
+  };
+
   const handleCancel = () => {
     navigation.goBack();
   };
@@ -76,13 +114,18 @@ const EditFocusThresholds = () => {
         <View
           style={[
             styles.horizontalContainer,
-            { justifyContent: "space-around", paddingBottom: 40 },
+            { justifyContent: "space-evenly", paddingBottom: 40 },
           ]}
         >
           <Button mode="outlined" onPress={handleCancel}>
             Cancel
           </Button>
-          <Button mode="contained" onPress={handleSubmission}>
+          <Button
+            mode="contained"
+            onPress={handleSubmission}
+            disabled={loading}
+            loading={loading}
+          >
             Submit
           </Button>
         </View>
