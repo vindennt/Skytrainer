@@ -48,11 +48,14 @@ export const QuickStartCard: React.FC = ({}) => {
   );
   const sortedQuickStarts: QuickStart[] = getSortedQuickstarts(quickstarts);
 
+  const [loading, setIsLoading] = useState<boolean>(false);
+
   const handleQuickPress = async (
     duration: number,
     stationId: string,
     quickstartId: string
   ) => {
+    setIsLoading(true);
     console.log(
       getStationName(stationId) +
         ", id " +
@@ -74,8 +77,7 @@ export const QuickStartCard: React.FC = ({}) => {
 
     console.log("Mission: Navigating to Timer via QuickStart");
     navigation.navigate("Timer" as never);
-
-    return;
+    setIsLoading(false);
   };
 
   const QuickStartElement: React.FC<QuickStartButtonProps> = ({
@@ -121,7 +123,7 @@ export const QuickStartCard: React.FC = ({}) => {
             }
           }}
           style={[{ alignItems: "center" }]}
-          disabled={!isAvailable}
+          disabled={!isAvailable || loading}
         >
           <View
             style={[
