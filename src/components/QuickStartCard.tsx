@@ -11,11 +11,15 @@ import {
   setRewards,
   SkytrainState,
   setQuickStartId,
+  selectCurrentQuickstartId,
 } from "@src/features/skytrain/skytrainSlice";
 import { getStationName } from "@src/utils/skytrain";
 import { Tooltip } from "@components/Tooltip";
-import { StationsState } from "@src/features/stations/stationsSlice";
-import { useNavigation } from "@react-navigation/native";
+import {
+  StationsState,
+  setSelectedStation,
+} from "@src/features/stations/stationsSlice";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { setSlider } from "@src/features/user/userSlice";
 import {
   QuickStart,
@@ -32,9 +36,7 @@ export const QuickStartCard: React.FC = ({}) => {
   const dispatch = useDispatch<any>();
   const navigation = useNavigation();
   const theme = useTheme();
-  const session: Session | null = useSelector(
-    (state: { auth: AuthState }) => state.auth.session
-  );
+
   const skytrainGraph = useSelector(
     (state: { skytrain: SkytrainState }) => state.skytrain.skytrainGraph
   );
@@ -46,14 +48,19 @@ export const QuickStartCard: React.FC = ({}) => {
   );
   const sortedQuickStarts: QuickStart[] = getSortedQuickstarts(quickstarts);
 
-  const handleQuickPress = (
+  const handleQuickPress = async (
     duration: number,
     stationId: string,
     quickstartId: string
   ) => {
     console.log(
-      getStationName(stationId) + " starting focus trip for " + duration
+      getStationName(stationId) +
+        ", id " +
+        stationId +
+        ", starting focus trip for " +
+        duration
     );
+
     dispatch(setSlider(duration));
     const tripPath: string[] = findRandomViableTripIds(
       skytrainGraph,
@@ -67,6 +74,8 @@ export const QuickStartCard: React.FC = ({}) => {
 
     console.log("Mission: Navigating to Timer via QuickStart");
     navigation.navigate("Timer" as never);
+
+    return;
   };
 
   const QuickStartElement: React.FC<QuickStartButtonProps> = ({

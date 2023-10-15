@@ -19,6 +19,7 @@ import {
   selectTotalTripTimeClaimed,
   selectTotalTripsFinishedClaimed,
   selectTickets,
+  selectLastUsedStation,
 } from "@src/features/user/userSlice";
 import {
   UpdateUserRequest,
@@ -50,6 +51,8 @@ import {
   selectCurrentQuickstartId,
   setQuickStartId,
 } from "@src/features/skytrain/skytrainSlice";
+import { setSelectedStation } from "@src/features/stations/stationsSlice";
+import { LoadingIndicator } from "@src/components/LoadingIndicator";
 
 const Missions = () => {
   const dispatch = useDispatch<any>();
@@ -79,6 +82,8 @@ const Missions = () => {
 
   const [popupVisible, setPopupVisible] = useState<boolean>(false);
   const [displayedReward, setDisplayedReward] = useState<number>(0);
+
+  const lastUsedStation: string = useSelector(selectLastUsedStation);
 
   const currentQuickstartId: string | null = useSelector(
     selectCurrentQuickstartId
@@ -141,7 +146,7 @@ const Missions = () => {
   };
 
   const handleQuickStartUpdate = (quickstartId: string) => {
-    console.log("handleQuickStartUpdate would run now");
+    console.log("handleQuickStartUpdate running");
     if (session) {
       const updateRequest: UpdateQuickStartRequest = {
         session: session,
@@ -159,10 +164,11 @@ const Missions = () => {
 
   useEffect(() => {
     console.log("Mission useEffect");
+    dispatch(setSelectedStation(lastUsedStation));
     handleDailyFocus();
-    // if (currentQuickstartId !== null) {
-    //   handleQuickStartUpdate(currentQuickstartId);
-    // }
+    if (currentQuickstartId !== null) {
+      handleQuickStartUpdate(currentQuickstartId);
+    }
   }, []);
 
   const DailyFocusMissonElement: React.FC<Mission> = ({
@@ -311,8 +317,9 @@ const Missions = () => {
       </View>
     );
   };
-
-  return (
+  return lastUsedStation === "000" ? (
+    <LoadingIndicator></LoadingIndicator>
+  ) : (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Skytrain</Text>
       <View style={styles.secondaryContainer}>
