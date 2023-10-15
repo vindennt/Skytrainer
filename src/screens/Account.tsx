@@ -31,6 +31,8 @@ import {
 } from "@features/user/userSliceHelpers";
 import { getDate } from "@utils/dates";
 import { useNavigation } from "@react-navigation/native";
+import { Appearance } from "react-native";
+import { selectDarkTheme, setIsDarkTheme } from "@src/navigation/navSlice";
 
 const Account = () => {
   const dispatch = useDispatch<any>();
@@ -53,7 +55,7 @@ const Account = () => {
   const THIRD_MILESTONE: number = useSelector(selectThirdMilestone);
   const milestonesString: string = `${FIRST_MILESTONE.toString()} mins, ${SECOND_MILESTONE.toString()} mins, ${THIRD_MILESTONE.toString()} mins`;
 
-  const [isSwitchOn, setIsSwitchOn] = useState(false);
+  const isDdarkTheme: boolean = useSelector(selectDarkTheme);
 
   const StackedText: React.FC<{
     topText: string;
@@ -76,7 +78,7 @@ const Account = () => {
   };
 
   const handleDarkModeSwitch = () => {
-    setIsSwitchOn(!isSwitchOn);
+    dispatch(setIsDarkTheme(!isDdarkTheme));
   };
 
   return session && session.user ? (
@@ -168,7 +170,7 @@ const Account = () => {
         </View>
         <View style={styles.horizontallySpaced}>
           <StackedText topText="Theme" bottomText={"Dark Mode"} />
-          <Switch value={isSwitchOn} onValueChange={handleDarkModeSwitch} />
+          <Switch value={isDdarkTheme} onValueChange={handleDarkModeSwitch} />
         </View>
         <StackedText topText="Joined" bottomText={getDate(joinedDate)} />
 

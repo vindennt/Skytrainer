@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
+import { NavigationContainer } from "@react-navigation/native";
+import {
+  useTheme,
+  MD3DarkTheme as darkTheme,
+  MD3LightTheme as lightTheme,
+  Provider as PaperProvider,
+} from "react-native-paper";
+import { StatusBar } from "react-native";
 import { supabase } from "@api/supabase";
 import {
   Login,
@@ -19,7 +27,6 @@ import BottomNavBar from "@navigation/BottomNavBar";
 import { useSelector, useDispatch } from "react-redux";
 import { AuthState } from "@src/features/auth/authSlice";
 import { setSession, setUser } from "@features/auth/authSlice";
-import { useTheme } from "react-native-paper";
 import { Session } from "@supabase/supabase-js";
 import {
   UserState,
@@ -39,10 +46,12 @@ import { fetchLimitedBanner } from "@src/features/shop/shopSliceHelpers";
 import DailyFocusThresholdPicker from "@src/components/DailyFocusThresholdPicker";
 import EditFocusThresholds from "@src/screens/EditFocusThresholds";
 import Missions from "@src/screens/Missions";
+import { selectDarkTheme } from "./navSlice";
 
 const AppNavigator = () => {
   const dispatch = useDispatch<any>();
-  const theme = useTheme();
+  const isDdarkTheme: boolean = useSelector(selectDarkTheme);
+  const theme = isDdarkTheme ? darkTheme : lightTheme;
 
   const session = useSelector(
     (state: { auth: AuthState }) => state.auth.session
@@ -162,17 +171,22 @@ const AppNavigator = () => {
   };
 
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      {session && session.user ? (
-        <Stack.Screen name="Inside" component={InsideStack} />
-      ) : (
-        <Stack.Screen name="Outside" component={OutsideStack} />
-      )}
-    </Stack.Navigator>
+    <PaperProvider theme={theme}>
+      <NavigationContainer>
+        <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          {session && session.user ? (
+            <Stack.Screen name="Inside" component={InsideStack} />
+          ) : (
+            <Stack.Screen name="Outside" component={OutsideStack} />
+          )}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </PaperProvider>
   );
 };
 
