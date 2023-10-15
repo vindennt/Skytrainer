@@ -60,23 +60,8 @@ const Trip = () => {
     selectFocusStreakDaysRecord
   );
   const lastFocusDate: Date = new Date(useSelector(selectLastFocusDate));
-  const currentQuickstartId: string | null = useSelector(
-    selectCurrentQuickstartId
-  );
 
   const today: Date = getTodayDMY();
-
-  const handleQuickStartUpdate = (quickstartId: string) => {
-    if (session) {
-      const updateRequest: UpdateQuickStartRequest = {
-        session: session,
-        id: quickstartId,
-        date: today,
-      };
-      dispatch(updateQuickStart(updateRequest));
-    }
-    dispatch(setQuickStartId(null));
-  };
 
   useEffect(() => {
     console.log("Trip.tsx running");
@@ -108,10 +93,6 @@ const Trip = () => {
       },
     };
     dispatch(updateUserData(updateRequest));
-
-    if (currentQuickstartId !== null) {
-      handleQuickStartUpdate(currentQuickstartId);
-    }
   }, []);
 
   const renderItem = ({ item }: { item: RewardContributor }) => (

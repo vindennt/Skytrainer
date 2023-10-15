@@ -92,7 +92,7 @@ const EditFocusThresholds = () => {
     } else {
       alert("Please check that the milestones are in ascending order.");
     }
-    setLoading(false);
+    // setLoading(false);
   };
 
   const handleCancel = () => {

@@ -38,6 +38,7 @@ import { fetchAllQuickStarts } from "@src/features/quickStart/quickStartSliceHel
 import { fetchLimitedBanner } from "@src/features/shop/shopSliceHelpers";
 import DailyFocusThresholdPicker from "@src/components/DailyFocusThresholdPicker";
 import EditFocusThresholds from "@src/screens/EditFocusThresholds";
+import Missions from "@src/screens/Missions";
 
 const AppNavigator = () => {
   const dispatch = useDispatch<any>();
@@ -46,7 +47,6 @@ const AppNavigator = () => {
   const session = useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
-  const lastUsedStation: string = useSelector(selectLastUsedStation);
 
   const initUserData = async (session: Session) => {
     dispatch(setUser(session.user));
@@ -54,8 +54,6 @@ const AppNavigator = () => {
     dispatch(fetchAllStations(session));
     dispatch(fetchAllQuickStarts(session));
     dispatch(fetchLimitedBanner(session));
-    while (lastUsedStation === "000") {}
-    dispatch(setSelectedStation(lastUsedStation));
   };
 
   useEffect(() => {
@@ -120,6 +118,7 @@ const AppNavigator = () => {
           <Stack.Screen name="Trip" component={Trip} />
           <Stack.Screen name="Timer" component={Timer} />
         </Stack.Group>
+        <Stack.Screen name="Missions" component={Missions} />
         <Stack.Screen name="Shop" component={Shop} />
         <Stack.Screen name="Gacha" component={Gacha} />
         <Stack.Screen name="Stations" component={Stations} />

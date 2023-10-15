@@ -19,6 +19,7 @@ import {
   selectTotalTripTimeClaimed,
   selectTotalTripsFinishedClaimed,
   selectTickets,
+  selectLastUsedStation,
 } from "@src/features/user/userSlice";
 import {
   UpdateUserRequest,
@@ -42,6 +43,16 @@ import session from "redux-persist/es/storage/session";
 import { Badge } from "@components/Badge";
 import { ScrollView } from "react-native-gesture-handler";
 import { Tooltip } from "@src/components/Tooltip";
+import {
+  UpdateQuickStartRequest,
+  updateQuickStart,
+} from "@src/features/quickStart/quickStartSliceHelpers";
+import {
+  selectCurrentQuickstartId,
+  setQuickStartId,
+} from "@src/features/skytrain/skytrainSlice";
+import { setSelectedStation } from "@src/features/stations/stationsSlice";
+import { LoadingIndicator } from "@src/components/LoadingIndicator";
 
 const Missions = () => {
   const dispatch = useDispatch<any>();
@@ -71,6 +82,12 @@ const Missions = () => {
 
   const [popupVisible, setPopupVisible] = useState<boolean>(false);
   const [displayedReward, setDisplayedReward] = useState<number>(0);
+
+  const lastUsedStation: string = useSelector(selectLastUsedStation);
+
+  const currentQuickstartId: string | null = useSelector(
+    selectCurrentQuickstartId
+  );
 
   const loginStreakProgress = (milestone: number): number => {
     if (focusStreakDaysRecord >= milestone) {
@@ -128,13 +145,30 @@ const Missions = () => {
     }
   };
 
+  const handleQuickStartUpdate = (quickstartId: string) => {
+    console.log("handleQuickStartUpdate running");
+    if (session) {
+      const updateRequest: UpdateQuickStartRequest = {
+        session: session,
+        id: quickstartId,
+        date: getTodayDMY(),
+      };
+      dispatch(updateQuickStart(updateRequest));
+    }
+    dispatch(setQuickStartId(null));
+  };
+
   const handleManualTrip = () => {
     navigation.navigate("Start Skytrain Trip" as never);
   };
 
   useEffect(() => {
     console.log("Mission useEffect");
+    dispatch(setSelectedStation(lastUsedStation));
     handleDailyFocus();
+    if (currentQuickstartId !== null) {
+      handleQuickStartUpdate(currentQuickstartId);
+    }
   }, []);
 
   const DailyFocusMissonElement: React.FC<Mission> = ({
@@ -283,8 +317,9 @@ const Missions = () => {
       </View>
     );
   };
-
-  return (
+  return lastUsedStation === "000" ? (
+    <LoadingIndicator></LoadingIndicator>
+  ) : (
     <ScrollView style={styles.container}>
       <Text style={styles.header}>Skytrain</Text>
       <View style={styles.secondaryContainer}>
