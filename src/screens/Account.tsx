@@ -9,6 +9,7 @@ import {
   TextInput,
   Text,
   HelperText,
+  Switch,
 } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik } from "formik";
@@ -52,6 +53,8 @@ const Account = () => {
   const THIRD_MILESTONE: number = useSelector(selectThirdMilestone);
   const milestonesString: string = `${FIRST_MILESTONE.toString()} mins, ${SECOND_MILESTONE.toString()} mins, ${THIRD_MILESTONE.toString()} mins`;
 
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
+
   const StackedText: React.FC<{
     topText: string;
     bottomText: string | undefined;
@@ -72,10 +75,15 @@ const Account = () => {
     navigation.navigate("Edit Milestones" as never);
   };
 
+  const handleDarkModeSwitch = () => {
+    setIsSwitchOn(!isSwitchOn);
+  };
+
   return session && session.user ? (
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
+      <StackedText topText="Email" bottomText={session.user.email} />
       {!editingDisplayName ? (
         <View
           style={{
@@ -151,8 +159,19 @@ const Account = () => {
         </Formik>
       )}
       <View style={styles.verticallySpaced}>
-        <StackedText topText="Email" bottomText={session.user.email} />
+        <View style={styles.horizontallySpaced}>
+          <StackedText
+            topText="Daily Focus Milestones"
+            bottomText={milestonesString}
+          />
+          <Button onPress={handleEditDailyFocus}>Edit</Button>
+        </View>
+        <View style={styles.horizontallySpaced}>
+          <StackedText topText="Theme" bottomText={"Dark Mode"} />
+          <Switch value={isSwitchOn} onValueChange={handleDarkModeSwitch} />
+        </View>
         <StackedText topText="Joined" bottomText={getDate(joinedDate)} />
+
         <StackedText
           topText="Total Time Skytraining"
           bottomText={totalTripTime.toString()}
@@ -161,13 +180,6 @@ const Account = () => {
           topText="Trips Finished"
           bottomText={totalTripsFinished.toString()}
         />
-        <View style={styles.horizontallySpaced}>
-          <StackedText
-            topText="Daily Focus Milestones"
-            bottomText={milestonesString}
-          />
-          <Button onPress={handleEditDailyFocus}>Edit</Button>
-        </View>
       </View>
 
       <View
@@ -207,6 +219,7 @@ const styles = StyleSheet.create({
   horizontallySpaced: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
 
   textBox: {
