@@ -76,6 +76,7 @@ const Trip = () => {
       dispatch(updateQuickStart(updateRequest));
     }
     dispatch(setQuickStartId(null));
+    console.log("handleQuickStartUpdate would run now");
   };
 
   useEffect(() => {
@@ -109,9 +110,9 @@ const Trip = () => {
     };
     dispatch(updateUserData(updateRequest));
 
-    if (currentQuickstartId !== null) {
-      handleQuickStartUpdate(currentQuickstartId);
-    }
+    // if (currentQuickstartId !== null) {
+    //   handleQuickStartUpdate(currentQuickstartId);
+    // }
   }, []);
 
   const renderItem = ({ item }: { item: RewardContributor }) => (

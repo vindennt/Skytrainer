@@ -42,6 +42,14 @@ import session from "redux-persist/es/storage/session";
 import { Badge } from "@components/Badge";
 import { ScrollView } from "react-native-gesture-handler";
 import { Tooltip } from "@src/components/Tooltip";
+import {
+  UpdateQuickStartRequest,
+  updateQuickStart,
+} from "@src/features/quickStart/quickStartSliceHelpers";
+import {
+  selectCurrentQuickstartId,
+  setQuickStartId,
+} from "@src/features/skytrain/skytrainSlice";
 
 const Missions = () => {
   const dispatch = useDispatch<any>();
@@ -71,6 +79,10 @@ const Missions = () => {
 
   const [popupVisible, setPopupVisible] = useState<boolean>(false);
   const [displayedReward, setDisplayedReward] = useState<number>(0);
+
+  const currentQuickstartId: string | null = useSelector(
+    selectCurrentQuickstartId
+  );
 
   const loginStreakProgress = (milestone: number): number => {
     if (focusStreakDaysRecord >= milestone) {
@@ -128,6 +140,19 @@ const Missions = () => {
     }
   };
 
+  const handleQuickStartUpdate = (quickstartId: string) => {
+    console.log("handleQuickStartUpdate would run now");
+    if (session) {
+      const updateRequest: UpdateQuickStartRequest = {
+        session: session,
+        id: quickstartId,
+        date: getTodayDMY(),
+      };
+      dispatch(updateQuickStart(updateRequest));
+    }
+    dispatch(setQuickStartId(null));
+  };
+
   const handleManualTrip = () => {
     navigation.navigate("Start Skytrain Trip" as never);
   };
@@ -135,6 +160,9 @@ const Missions = () => {
   useEffect(() => {
     console.log("Mission useEffect");
     handleDailyFocus();
+    // if (currentQuickstartId !== null) {
+    //   handleQuickStartUpdate(currentQuickstartId);
+    // }
   }, []);
 
   const DailyFocusMissonElement: React.FC<Mission> = ({
