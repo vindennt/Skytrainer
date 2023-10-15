@@ -50,9 +50,10 @@ export function handleQuickStartAvailability(
   lastFinished: Date | null
 ): boolean {
   if (lastFinished) {
+    const today: Date = getTodayDMY();
     const yesterday: Date = getTodayDMY();
     yesterday.setDate(yesterday.getDate() - 1);
-    return lastFinished < yesterday;
+    return !datesMatch(today, yesterday);
   } else {
     return true;
   }
