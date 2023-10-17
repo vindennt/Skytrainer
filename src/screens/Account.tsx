@@ -65,7 +65,10 @@ const Account = () => {
 
     return (
       <View style={styles.textBox}>
-        <Text variant="labelMedium" style={{ color: theme.colors.outline }}>
+        <Text
+          variant="labelMedium"
+          style={{ color: theme.colors.outlineVariant }}
+        >
           {topText}
         </Text>
         <Text variant="titleMedium">{botText}</Text>
@@ -193,7 +196,8 @@ const Account = () => {
         <Button
           onPress={() => supabase.auth.signOut()}
           icon="exit-outline"
-          // mode="outlined"
+          style={{ width: "100%" }}
+          mode="contained"
         >
           Sign Out
         </Button>
