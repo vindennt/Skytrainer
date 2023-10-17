@@ -1,7 +1,7 @@
 import { getStationName } from "@src/utils/skytrain";
 import React, { useState } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
-import { Text, Button, Title } from "react-native-paper";
+import { Text, Button, Title, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { UIActivityIndicator } from "react-native-indicators";
 import { useDispatch, useSelector } from "react-redux";
@@ -28,6 +28,7 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
   selectedStation,
   levelData,
 }) => {
+  const theme = useTheme();
   const dispatch = useDispatch<any>();
   const level: number | undefined = levelData.get(selectedStation);
   const cost: number = level ? LEVELUP_COSTS[level] : -1;
@@ -82,16 +83,23 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
   };
 
   return (
-    <View>
-      <View style={styles.titleContainer}>
+    <View style={{ backgroundColor: theme.colors.background }}>
+      <View style={[styles.titleContainer]}>
         <Title style={styles.headerText}>
-          {getStationName(selectedStation)}
+          {getStationName(selectedStation)} Station
         </Title>
-        <Title>Lv. {levelData.get(selectedStation)}</Title>
+        {/* <Title>Lv. {levelData.get(selectedStation)}</Title> */}
       </View>
       <View style={styles.container}>
+        <Text style={styles.levelText}>
+          Lv. {levelData.get(selectedStation)}
+        </Text>
         <View style={styles.subtextContainer}>
-          <Text style={styles.subtextText}>{subText}</Text>
+          <Text
+            style={[styles.subtextText, { color: theme.colors.outlineVariant }]}
+          >
+            {subText}
+          </Text>
         </View>
 
         <View style={styles.levelUpTextContainer}>
@@ -108,7 +116,11 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
             disabled={!canBuy || loading}
             loading={loading}
           >
-            {buttonText}
+            <Text
+              style={[styles.buttonText, { color: theme.colors.onPrimary }]}
+            >
+              {buttonText}
+            </Text>
           </Button>
         </View>
       </View>
@@ -118,14 +130,15 @@ export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#454045",
-    padding: 20,
+    // backgroundColor: "#454045",
+    // padding: 20,
     // flex: 1,
     borderRadius: 12,
     marginBottom: 20,
     // position: "absolute",
   },
   titleContainer: {
+    paddingTop: 10,
     flexDirection: "row",
     justifyContent: "space-between",
   },
@@ -133,8 +146,8 @@ const styles = StyleSheet.create({
     // marginBottom: 8,
   },
   headerText: {
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 20,
+    fontWeight: "600",
   },
   costText: {
     flex: 1,
@@ -142,6 +155,10 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginRight: 16,
     marginLeft: 6,
+  },
+  levelText: {
+    fontSize: 16,
+    marginBottom: 10,
   },
   levelUpTextContainer: {
     flexDirection: "row",
@@ -160,6 +177,11 @@ const styles = StyleSheet.create({
     // borderRadius: 12,
     flex: 1,
   },
+  buttonText: {
+    // fontSize: 16,
+    fontWeight: "bold",
+  },
+
   costContainer: {
     flexDirection: "row",
     flex: 1,
