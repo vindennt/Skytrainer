@@ -29,6 +29,7 @@ import {
 import { getTier } from "@src/utils/skytrain";
 import { GachaRewardDisplay } from "@src/components/GachaRewardDisplay";
 import { selectLimitedBanner } from "@src/features/shop/shopSlice";
+import TabControl from "@src/components/TabControl";
 
 const Shop = () => {
   const defaultBuyable: Buyable = {
@@ -37,6 +38,9 @@ const Shop = () => {
     itemid: "001",
     category: "00",
   };
+  const limitedText: string = "Limited Banner";
+  const permanentText: string = "Permanent Banner";
+
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [selectedItem, setSelectedItem] = useState<Buyable>(defaultBuyable);
   const [gachaPopup, setGachaPopup] = useState<boolean>(false);
@@ -49,6 +53,11 @@ const Shop = () => {
   );
   const sortedShopData = sortByMapPresence(shopData, stations);
   const limitedBanner: BannerInfo | null = useSelector(selectLimitedBanner);
+
+  const tabOptions: string[] = limitedBanner
+    ? [limitedText, permanentText]
+    : [permanentText];
+  const [selectedTab, setSelectedTab] = useState<number>(0);
 
   const handleClosePopup = () => {
     setShowPopup(false);
@@ -78,22 +87,32 @@ const Shop = () => {
       <FlatList
         ListHeaderComponent={
           <View style={styles.container}>
-            {limitedBanner !== null && (
+            <TabControl
+              index={selectedTab}
+              onChange={setSelectedTab}
+              options={tabOptions}
+            />
+            {limitedBanner !== null &&
+              tabOptions[selectedTab] === limitedText && (
+                <View>
+                  {/* <Text style={styles.subheader}>Limited Time</Text> */}
+                  <BannerCard
+                    banner={limitedBanner}
+                    popupCallback={showRewardPopup}
+                    popupVisible={showPopup}
+                  />
+                </View>
+              )}
+            {/* <Text style={styles.subheader}>Permanent</Text> */}
+            {tabOptions[selectedTab] === permanentText && (
               <View>
-                <Text style={styles.subheader}>Limited Time</Text>
                 <BannerCard
-                  banner={limitedBanner}
+                  banner={PermanentBannerInfo}
                   popupCallback={showRewardPopup}
                   popupVisible={showPopup}
                 />
               </View>
             )}
-            <Text style={styles.subheader}>Permanent</Text>
-            <BannerCard
-              banner={PermanentBannerInfo}
-              popupCallback={showRewardPopup}
-              popupVisible={showPopup}
-            />
             <Text style={styles.subheader}>Stations</Text>
           </View>
         }
