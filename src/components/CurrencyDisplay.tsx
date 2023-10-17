@@ -37,9 +37,10 @@ export const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
     <View style={styles.container}>
       <IconButton
         icon="person-circle-outline"
-        size={30}
+        size={28}
         onPress={goToAccount}
         style={{ right: 15 }}
+        iconColor={theme.colors.onPrimary}
       />
       <View
         style={[

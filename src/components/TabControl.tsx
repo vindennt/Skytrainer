@@ -17,7 +17,10 @@ const TabControl: React.FC<TabControlProps> = ({
 
   return (
     <View
-      style={[styles.container, { backgroundColor: theme.colors.secondary }]}
+      style={[
+        styles.container,
+        { backgroundColor: theme.colors.surfaceVariant },
+      ]}
     >
       {options.map((option, indexKey) => (
         <TouchableOpacity
@@ -44,7 +47,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 3,
+    padding: 2,
     borderRadius: 12,
   },
   tab: {
