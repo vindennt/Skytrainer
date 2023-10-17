@@ -57,8 +57,8 @@ const BottomNavBar = () => {
       theme={{
         colors: {
           secondaryContainer: "transparent", // select wrapper colour
-          onSecondaryContainer: "white", // active icon colour
-          onSurfaceVariant: theme.colors.outline, // inactive icon colour
+          onSecondaryContainer: theme.colors.primary, // active icon colour
+          onSurfaceVariant: theme.colors.backdrop, // inactive icon colour
         },
         fonts: {
           labelMedium: {
@@ -77,7 +77,7 @@ const BottomNavBar = () => {
       //   position: "absolute",
       // }}
       barStyle={{
-        backgroundColor: theme.colors.elevation.level2,
+        backgroundColor: theme.colors.surface,
       }}
       safeAreaInsets={{ bottom: 10 }}
     />
