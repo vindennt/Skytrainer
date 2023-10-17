@@ -26,6 +26,9 @@ export const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
     item.itemid
   ] as ImageSourcePropType;
   const isOwned = stations.has(item.itemid);
+  const textColor = isOwned
+    ? theme.colors.onSurfaceDisabled
+    : theme.colors.onBackground;
 
   return (
     <TouchableOpacity style={styles.item} onPress={onPress} disabled={isOwned}>
@@ -34,21 +37,25 @@ export const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
           styles.container,
           {
             backgroundColor: isOwned
-              ? theme.colors.onSurfaceDisabled
-              : theme.colors.inverseOnSurface,
+              ? theme.colors.surfaceDisabled
+              : theme.colors.secondary,
           },
         ]}
       >
         <Image source={imageSource} style={styles.image} resizeMode="contain" />
-        <Text style={styles.productName}>{item.name}</Text>
+        <Text style={[styles.productName, { color: textColor }]}>
+          {item.name}
+        </Text>
         {!isOwned ? (
           <View style={styles.price}>
             <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
-            <Text style={styles.priceText}>{item.cost}</Text>
+            <Text style={[styles.priceText, { color: textColor }]}>
+              {item.cost}
+            </Text>
           </View>
         ) : (
           <View style={styles.price}>
-            <Text style={styles.text}>Owned</Text>
+            <Text style={[styles.text, { color: textColor }]}>Owned</Text>
           </View>
         )}
       </View>

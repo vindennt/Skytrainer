@@ -183,12 +183,7 @@ export const BannerCard: React.FC<BannerCardProps> = ({
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: theme.colors.inverseOnSurface },
-      ]}
-    >
+    <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
       <View style={styles.imageContainer}>
         <Image
           source={require("@src/public/images/banner_001.png")}
