@@ -195,7 +195,7 @@ export const BannerCard: React.FC<BannerCardProps> = ({
         <Text variant="titleLarge" style={styles.titleText}>
           {banner.title}
         </Text>
-        <Text style={[styles.dateText, { color: theme.colors.outline }]}>
+        <Text style={[styles.dateText, { color: theme.colors.outlineVariant }]}>
           {dateInfo}
         </Text>
         <Text style={styles.subText}>{banner.description}</Text>

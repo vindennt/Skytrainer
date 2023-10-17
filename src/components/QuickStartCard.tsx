@@ -90,7 +90,7 @@ export const QuickStartCard: React.FC = ({}) => {
     const isAvailable: boolean = handleQuickStartAvailability(lastFinished);
     const textColor: string = isAvailable
       ? theme.colors.onBackground
-      : theme.colors.outline;
+      : theme.colors.outlineVariant;
     // console.log(
     //   name + " is available: " + isAvailable + " for date " + lastFinished
     // );
@@ -138,7 +138,9 @@ export const QuickStartCard: React.FC = ({}) => {
             <Icon
               name={isAvailable ? "play" : "checkmark-sharp"}
               color={
-                isAvailable ? theme.colors.onPrimary : theme.colors.outline
+                isAvailable
+                  ? theme.colors.onPrimary
+                  : theme.colors.outlineVariant
               }
               style={{ left: 1 }}
               size={24}
