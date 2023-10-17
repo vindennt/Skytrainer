@@ -9,15 +9,19 @@ import {
 import { Text, Button } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { ProductCard } from "@src/components/ProductCard";
-import { ProductBox } from "@components/ProductBox";
+import ProductBox from "@components/ProductBox";
 import { Popup } from "@components/Popup";
-import { shopData, Buyable } from "@src/utils/shop";
+import {
+  shopData,
+  Buyable,
+  sortByCategory,
+  StationTabCategories,
+} from "@src/utils/shop";
 import { sortByMapPresence } from "@features/shop/Shop";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import { BannerCard } from "@src/components/BannerCard";
-
 import {
   BannerInfo,
   PermanentBannerInfo,
@@ -52,12 +56,19 @@ const Shop = () => {
     (state: { stations: StationsState }) => state.stations.stations
   );
   const sortedShopData = sortByMapPresence(shopData, stations);
+
   const limitedBanner: BannerInfo | null = useSelector(selectLimitedBanner);
 
-  const tabOptions: string[] = limitedBanner
+  const bannerTabOptions: string[] = limitedBanner
     ? [limitedText, permanentText]
     : [permanentText];
-  const [selectedTab, setSelectedTab] = useState<number>(0);
+  const [selectedBannerTab, setSelectedBannerTab] = useState<number>(0);
+  const [selectedStationTab, setSelectedStationTab] = useState<number>(0);
+  const stationsTabOptions: string[] = ["All", "EXP", "CND", "MLN", "EGN"];
+  const filteredShopData = sortByCategory(
+    sortedShopData,
+    StationTabCategories[selectedStationTab].value
+  );
 
   const handleClosePopup = () => {
     setShowPopup(false);
@@ -88,12 +99,12 @@ const Shop = () => {
         ListHeaderComponent={
           <View style={styles.container}>
             <TabControl
-              index={selectedTab}
-              onChange={setSelectedTab}
-              options={tabOptions}
+              index={selectedBannerTab}
+              onChange={setSelectedBannerTab}
+              options={bannerTabOptions}
             />
             {limitedBanner !== null &&
-              tabOptions[selectedTab] === limitedText && (
+              bannerTabOptions[selectedBannerTab] === limitedText && (
                 <View>
                   {/* <Text style={styles.subheader}>Limited Time</Text> */}
                   <BannerCard
@@ -104,7 +115,7 @@ const Shop = () => {
                 </View>
               )}
             {/* <Text style={styles.subheader}>Permanent</Text> */}
-            {tabOptions[selectedTab] === permanentText && (
+            {bannerTabOptions[selectedBannerTab] === permanentText && (
               <View>
                 <BannerCard
                   banner={PermanentBannerInfo}
@@ -114,9 +125,16 @@ const Shop = () => {
               </View>
             )}
             <Text style={styles.subheader}>Stations</Text>
+            <View style={styles.tabContainer}>
+              <TabControl
+                index={selectedStationTab}
+                onChange={setSelectedStationTab}
+                options={stationsTabOptions}
+              />
+            </View>
           </View>
         }
-        data={sortedShopData}
+        data={filteredShopData}
         renderItem={renderShopItem}
         keyExtractor={(item) => item.itemid}
         numColumns={2}
@@ -172,5 +190,8 @@ const styles = StyleSheet.create({
     // marginVertical: 15,
     fontSize: 24,
     fontWeight: "400",
+  },
+  tabContainer: {
+    marginVertical: 10,
   },
 });

@@ -1,4 +1,5 @@
 import { StationsState } from "@src/features/stations/stationsSlice";
+import { memo } from "react";
 import { imageIconMap } from "@src/utils/imageMappings";
 import { Buyable } from "@src/utils/shop";
 import {
@@ -17,7 +18,9 @@ interface ProductBoxProps {
   onPress: () => void;
 }
 
-export const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
+const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
+  console.log("rendering product box");
+
   const theme = useTheme();
   const stations: Map<string, number> = useSelector(
     (state: { stations: StationsState }) => state.stations.stations
@@ -62,6 +65,8 @@ export const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
     </TouchableOpacity>
   );
 };
+
+export default memo(ProductBox);
 
 const styles = StyleSheet.create({
   container: {
