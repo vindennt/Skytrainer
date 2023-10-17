@@ -173,7 +173,11 @@ const Account = () => {
         </View>
         <View style={styles.horizontallySpaced}>
           <StackedText topText="Theme" bottomText={"Dark Mode"} />
-          <Switch value={isDdarkTheme} onValueChange={handleDarkModeSwitch} />
+          <Switch
+            value={isDdarkTheme}
+            onValueChange={handleDarkModeSwitch}
+            color={theme.colors.onPrimary}
+          />
         </View>
         <StackedText topText="Joined" bottomText={getDate(joinedDate)} />
 
@@ -193,6 +197,13 @@ const Account = () => {
           { width: "100%", alignItems: "center" },
         ]}
       >
+        <Button
+          onPress={() => navigation.navigate("Achievements" as never)}
+          style={{ width: "100%" }}
+          mode="outline"
+        >
+          Achievements
+        </Button>
         <Button
           onPress={() => supabase.auth.signOut()}
           icon="exit-outline"

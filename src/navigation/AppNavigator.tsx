@@ -48,6 +48,7 @@ import EditFocusThresholds from "@src/screens/EditFocusThresholds";
 import Missions from "@src/screens/Missions";
 import { selectDarkTheme } from "./navSlice";
 import { DARK_THEME, LIGHT_THEME } from "../../assets/themes";
+import Achievements from "@src/screens/Achievements";
 
 const AppNavigator = () => {
   const dispatch = useDispatch<any>();
@@ -135,6 +136,7 @@ const AppNavigator = () => {
         <Stack.Group screenOptions={{ presentation: "modal" }}>
           <Stack.Screen name="Start Skytrain Trip" component={Home} />
           <Stack.Screen name="Account" component={Account} />
+          <Stack.Screen name="Achievements" component={Achievements} />
           <Stack.Screen name="Select Station" component={StationSelect} />
           <Stack.Screen
             name="Edit Milestones"
