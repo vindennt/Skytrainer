@@ -1,22 +1,13 @@
-import { getStationName } from "@src/utils/skytrain";
 import React, { ChangeEvent, useState } from "react";
 import {
   FlatList,
   View,
   Image,
   StyleSheet,
-  TouchableOpacity,
   ImageSourcePropType,
 } from "react-native";
-import { Text, Button, useTheme } from "react-native-paper";
-import {
-  StationsState,
-  fetchAllStations,
-  setSelectedStation,
-  unlockStation,
-} from "@features/stations/stationsSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { imageBustMap, imageIconMap } from "@src/utils/imageMappings";
+import { imageBustMap } from "@src/utils/imageMappings";
+import StationSelectItem from "@components/StationSelectItem";
 
 interface StationSelectBoxProps {
   stationId: string;
@@ -34,46 +25,15 @@ export const StationSelector: React.FC<StationSelectorProps> = ({
   selectedStation,
   onValueChange,
 }) => {
-  const theme = useTheme();
-  const dispatch = useDispatch<any>();
-  const [localSelectedStation, setLocalSelectedStation] =
-    useState<string>(selectedStation);
-
-  const StationSelectBox: React.FC<StationSelectBoxProps> = ({
-    stationId,
-    level,
-  }) => {
-    const imageSource: ImageSourcePropType = imageIconMap[
-      stationId
-    ] as ImageSourcePropType;
-
-    return (
-      <View style={styles.item}>
-        <TouchableOpacity
-          onPress={() => {
-            console.log("touched " + stationId);
-            onValueChange !== undefined
-              ? onValueChange(stationId)
-              : dispatch(setSelectedStation(stationId));
-          }}
-          style={[
-            stationId === selectedStation
-              ? styles.clickSelectorBoxSelected && {
-                  backgroundColor: theme.colors.secondary,
-                  borderRadius: 12,
-                }
-              : styles.clickSelectorBoxUnSelected,
-          ]}
-        >
-          <Image style={styles.iconImage} source={imageSource} />
-          {/* <Text style={styles.stationText}>{getStationName(stationId)}</Text> */}
-        </TouchableOpacity>
-      </View>
-    );
-  };
+  useState<string>(selectedStation);
 
   const renderSelectItem = ({ item }: { item: [string, number] }) => (
-    <StationSelectBox stationId={item[0]} level={item[1]} />
+    <StationSelectItem
+      stationId={item[0]}
+      selectedStation={selectedStation}
+      level={item[1]}
+      onValueChange={onValueChange}
+    />
   );
 
   // Cast to ImageSourcePropType or else compiler complains that the type cannot be inferred
@@ -85,9 +45,6 @@ export const StationSelector: React.FC<StationSelectorProps> = ({
     <View style={styles.container}>
       <Image style={styles.image} source={imageSource} />
       <View style={styles.emptyImageOverlay}></View>
-      {/* <View style={styles.image}>
-        <StationImage stationId={selectedStation} type={ImageType.BUST} />
-      </View> */}
       <FlatList
         style={styles.selectionList}
         data={[...data]}
