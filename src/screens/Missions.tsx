@@ -99,7 +99,7 @@ const Missions = () => {
     return claimed
       ? "transparent"
       : finished
-      ? theme.colors.tertiary
+      ? theme.colors.tertiaryContainer
       : theme.colors.onSurfaceVariant;
   };
 
@@ -107,7 +107,7 @@ const Missions = () => {
     return claimed
       ? theme.colors.onBackground
       : finished
-      ? theme.colors.onTertiary
+      ? theme.colors.onTertiaryContainer
       : theme.colors.outline;
   };
 
@@ -269,8 +269,8 @@ const Missions = () => {
       <View
         style={{
           // flex: 1,
-          borderBottomWidth: 1,
-          borderBottomColor: isLast ? "transparent" : theme.colors.onBackground,
+          borderBottomWidth: 0.2,
+          borderBottomColor: isLast ? "transparent" : theme.colors.outline,
         }}
       >
         <View style={[styles.item]}>
@@ -283,7 +283,7 @@ const Missions = () => {
                 disabled
                 style={[
                   styles.giftButton,
-                  { borderWidth: 1, borderColor: theme.colors.onBackground },
+                  { borderWidth: 1, borderColor: theme.colors.outline },
                 ]}
               >
                 <Text style={styles.miniText}>

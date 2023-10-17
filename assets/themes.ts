@@ -74,7 +74,7 @@ export const DARK_THEME = {
     secondary: "#30303F",
     onSecondary: "#1F99DE",
     outlineVariant: "#768BBF",
-    outline: "#30303F",
+    outline: "#585873",
     backdrop: "#6E6E7B",
     tertiary: "#0099C6",
     tertiaryContainer: "#FDC426",

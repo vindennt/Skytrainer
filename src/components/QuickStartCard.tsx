@@ -128,16 +128,16 @@ export const QuickStartCard: React.FC = ({}) => {
           <View
             style={[
               styles.quickButtonStyle,
-              { backgroundColor: isAvailable ? "royalblue" : "gray" },
+              {
+                backgroundColor: isAvailable
+                  ? theme.colors.primary
+                  : theme.colors.surfaceDisabled,
+              },
             ]}
           >
             <Icon
               name={isAvailable ? "play" : "checkmark-sharp"}
-              color={
-                quickstarts.length === 0
-                  ? theme.colors.outline
-                  : theme.colors.onSurfaceVariant
-              }
+              color={theme.colors.onPrimary}
               style={{ left: 1 }}
               size={24}
             />
@@ -237,8 +237,8 @@ export default QuickStartCard;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#454045",
-    padding: 20,
+    // backgroundColor: "#454045",
+    // padding: 20,
     // paddingBottom: 20,
     borderRadius: 12,
     marginBottom: 20,
