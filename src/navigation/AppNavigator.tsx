@@ -47,11 +47,12 @@ import DailyFocusThresholdPicker from "@src/components/DailyFocusThresholdPicker
 import EditFocusThresholds from "@src/screens/EditFocusThresholds";
 import Missions from "@src/screens/Missions";
 import { selectDarkTheme } from "./navSlice";
+import { DARK_THEME, LIGHT_THEME } from "../../assets/themes";
 
 const AppNavigator = () => {
   const dispatch = useDispatch<any>();
   const isDdarkTheme: boolean = useSelector(selectDarkTheme);
-  const theme = isDdarkTheme ? darkTheme : lightTheme;
+  const theme = isDdarkTheme ? DARK_THEME : LIGHT_THEME;
 
   const session = useSelector(
     (state: { auth: AuthState }) => state.auth.session
