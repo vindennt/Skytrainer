@@ -4,6 +4,7 @@ import {
   unlockStation,
   levelUpStation,
 } from "./stationsSliceHelpers";
+import { Station } from "../skytrain/Graph";
 
 // Represents the station id and level of user's unlocked stations
 // string: station id, number: station level
@@ -71,3 +72,8 @@ export {
   levelUpStation,
 } from "@src/features/stations/stationsSliceHelpers";
 export default stationsSlice.reducer;
+
+export const selectStations = (state: { stations: StationsState }) =>
+  state.stations.stations;
+export const selectSelectedStation = (state: { stations: StationsState }) =>
+  state.stations.selectedStation;

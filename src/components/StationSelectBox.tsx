@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from "react";
+import React, { useCallback } from "react";
 import {
   FlatList,
   View,
@@ -8,31 +8,32 @@ import {
 } from "react-native";
 import { imageBustMap } from "@src/utils/imageMappings";
 import StationSelectItem from "@components/StationSelectItem";
-
-interface StationSelectBoxProps {
-  stationId: string;
-  level: number;
-}
+import {
+  selectSelectedStation,
+  selectStations,
+} from "@src/features/stations/stationsSlice";
+import { useSelector } from "react-redux";
 
 interface StationSelectorProps {
-  data: Map<string, number>;
-  selectedStation: string;
-  onValueChange?: (e: string | ChangeEvent<any>) => void;
+  onValueChange: (stationId: string) => void;
 }
 
 export const StationSelector: React.FC<StationSelectorProps> = ({
-  data,
-  selectedStation,
   onValueChange,
 }) => {
-  useState<string>(selectedStation);
+  const selectedStation = useSelector(selectSelectedStation);
+  const data = useSelector(selectStations);
+
+  const memoizedCallback = useCallback((stationId: string) => {
+    onValueChange(stationId);
+  }, []);
 
   const renderSelectItem = ({ item }: { item: [string, number] }) => (
     <StationSelectItem
       stationId={item[0]}
       selectedStation={selectedStation}
       level={item[1]}
-      onValueChange={onValueChange}
+      onValueChange={memoizedCallback}
     />
   );
 
@@ -66,51 +67,16 @@ const styles = StyleSheet.create({
     right: 30,
     height: "110%",
     position: "absolute",
-    // backgroundColor: "red",
-    // borderRadius: 12,
-  },
-  iconImage: {
-    // flex: 1,
-    // width: "80%",
-    // right: 30,
-    // height: "80%",
-    // position: "absolute",
-    // backgroundColor: "red",
-    // borderRadius: 12,
-    // flex: 1,
-    flexGrow: 1,
-    width: "100%",
-    height: 70,
-    // height: 40,
-    resizeMode: "contain",
-    marginVertical: 10,
   },
   selectionList: {
     flex: 1,
-    // marginLeft: 16,
     borderRadius: 12,
-    // width: 30,
-    // backgroundColor: "#454045",
-    // padding: 10,
-  },
-  item: {
-    flex: 1,
-    // alignItems: "flex-start",
-    // borderBottomWidth: 1,
-    // borderBottomColor: "gray",
-    // backgroundColor: "green",
   },
   stationText: {
     flex: 1,
     marginVertical: 10,
     fontSize: 16,
     paddingHorizontal: 10,
-  },
-  clickSelectorBoxSelected: {
-    flex: 1,
-  },
-  clickSelectorBoxUnSelected: {
-    flex: 1,
   },
   emptyImageOverlay: {
     width: "70%",

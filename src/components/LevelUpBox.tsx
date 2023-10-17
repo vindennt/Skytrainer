@@ -18,18 +18,17 @@ import {
   StationLevelUpdateRequest,
   levelUpStation,
 } from "@features/stations/stationsSliceHelpers";
+import {
+  selectSelectedStation,
+  selectStations,
+} from "@src/features/stations/stationsSlice";
 
-interface LevelUpBoxProps {
-  selectedStation: string;
-  levelData: Map<string, number>;
-}
-
-export const LevelUpBox: React.FC<LevelUpBoxProps> = ({
-  selectedStation,
-  levelData,
-}) => {
+export const LevelUpBox: React.FC = () => {
   const theme = useTheme();
   const dispatch = useDispatch<any>();
+  const levelData = useSelector(selectStations);
+  const selectedStation = useSelector(selectSelectedStation);
+
   const level: number | undefined = levelData.get(selectedStation);
   const cost: number = level ? LEVELUP_COSTS[level] : -1;
   const currentMultiplier: number = level ? REWARD_MULTIPLIERS[level] : -1;

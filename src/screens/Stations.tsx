@@ -1,25 +1,26 @@
 import * as React from "react";
 import { View, StyleSheet } from "react-native";
 import { Text } from "react-native-paper";
-import { StationsState } from "@features/stations/stationsSlice";
-import { useSelector } from "react-redux";
 import { StationSelector } from "@src/components/StationSelectBox";
 import { LevelUpBox } from "@src/components/LevelUpBox";
+import { useDispatch } from "react-redux";
+import { setSelectedStation } from "@src/features/stations/stationsSlice";
+import { useCallback } from "react";
 
 const Stations = () => {
-  const stations: Map<string, number> = useSelector(
-    (state: { stations: StationsState }) => state.stations.stations
-  );
-  const selectedStation: string = useSelector(
-    (state: { stations: StationsState }) => state.stations.selectedStation
-  );
+  const dispatch = useDispatch<any>();
+
+  const memoizedCallback = useCallback((stationId: string) => {
+    console.log("Stations level callback");
+    dispatch(setSelectedStation(stationId));
+  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Stations</Text>
       <View style={styles.contentContainer}>
-        <StationSelector data={stations} selectedStation={selectedStation} />
-        <LevelUpBox selectedStation={selectedStation} levelData={stations} />
+        <StationSelector onValueChange={memoizedCallback} />
+        <LevelUpBox />
       </View>
     </View>
   );
