@@ -15,6 +15,7 @@ export const LIGHT_THEME = {
     onTertiaryContainer: "#17375C", // navy
     surfaceDisabled: "#CAD7DF", // non touchable
     onSurfaceDisabled: "#87919C", // on non touchable
+    text: "#000000",
 
     // primary: "rgb(120, 69, 172)",
     // onPrimary: "rgb(255, 255, 255)",
@@ -73,13 +74,14 @@ export const DARK_THEME = {
     secondary: "#30303F",
     onSecondary: "#1F99DE",
     outlineVariant: "#768BBF",
-    outline: "#323243",
+    outline: "#30303F",
     backdrop: "#6E6E7B",
     tertiary: "#0099C6",
     tertiaryContainer: "#FDC426",
     onTertiaryContainer: "#17375C",
     surfaceDisabled: "#A9A9B6",
     onSurfaceDisabled: "#FFFFFF",
+    text: "#FFFFFF",
 
     // primary: "rgb(220, 184, 255)",
     // onPrimary: "rgb(71, 12, 122)",
