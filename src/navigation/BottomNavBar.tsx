@@ -54,6 +54,7 @@ const BottomNavBar = () => {
       onIndexChange={setIndex}
       renderScene={renderScene}
       // labeled={false}
+      activeColor={theme.colors.onPrimary}
       theme={{
         colors: {
           secondaryContainer: "transparent", // select wrapper colour
