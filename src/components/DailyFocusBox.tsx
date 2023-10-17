@@ -263,7 +263,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
     <View>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Daily Focus</Text>
+          <Text style={styles.headerText}>Daily Progress</Text>
         </View>
         {/* <View style={styles.quickstartContainer}>
           <Text>{dailyFocusTime}</Text>

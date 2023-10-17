@@ -179,7 +179,7 @@ export const QuickStartCard: React.FC = ({}) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Quickstart</Text>
+        <Text style={styles.headerText}>Daily tasks</Text>
         <View style={styles.quickActionContainer}>
           <TouchableOpacity
             onPress={() => {
