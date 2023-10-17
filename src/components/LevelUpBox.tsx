@@ -120,8 +120,10 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#454045",
     padding: 20,
+    // flex: 1,
     borderRadius: 12,
     marginBottom: 20,
+    // position: "absolute",
   },
   titleContainer: {
     flexDirection: "row",
