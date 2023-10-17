@@ -57,7 +57,7 @@ const BottomNavBar = () => {
       theme={{
         colors: {
           secondaryContainer: "transparent", // select wrapper colour
-          onSecondaryContainer: theme.colors.primary, // active icon colour
+          onSecondaryContainer: theme.colors.onPrimary, // active icon colour
           onSurfaceVariant: theme.colors.backdrop, // inactive icon colour
         },
         fonts: {

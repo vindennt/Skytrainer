@@ -131,13 +131,15 @@ export const QuickStartCard: React.FC = ({}) => {
               {
                 backgroundColor: isAvailable
                   ? theme.colors.primary
-                  : theme.colors.surfaceDisabled,
+                  : "transparent",
               },
             ]}
           >
             <Icon
               name={isAvailable ? "play" : "checkmark-sharp"}
-              color={theme.colors.onPrimary}
+              color={
+                isAvailable ? theme.colors.onPrimary : theme.colors.outline
+              }
               style={{ left: 1 }}
               size={24}
             />
