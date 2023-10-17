@@ -320,15 +320,17 @@ const Missions = () => {
   return lastUsedStation === "000" ? (
     <LoadingIndicator></LoadingIndicator>
   ) : (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.header}>Skytrain</Text>
       <View style={styles.secondaryContainer}>
         <DailyFocusBox popupCallback={(reward) => showPopup(reward)} />
-        <QuickStartCard />
+        <View style={{ flex: 1 }}>
+          <QuickStartCard />
+        </View>
         <Button mode="contained" onPress={handleManualTrip}>
           Start Manual Focus Trip
         </Button>
-        {MissionsList.map((mission: Mission) => {
+        {/* {MissionsList.map((mission: Mission) => {
           return (
             <DailyFocusMissonElement
               key={mission.description}
@@ -338,7 +340,7 @@ const Missions = () => {
               reward={mission.reward}
             />
           );
-        })}
+        })} */}
 
         <Popup
           visible={popupVisible}
@@ -357,7 +359,7 @@ const Missions = () => {
           </View>
         </Popup>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -366,14 +368,17 @@ export default Missions;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    // flexWrap: "wrap",
+    // maxHeight: "100%",
     // margin: 8,
     // alignItems: "center",
     // justifyContent: "center",
     // padding: 20,
     paddingHorizontal: 10,
-    // backgroundColor: "pink",
+    // backgroundColor: "gray",
   },
   secondaryContainer: {
+    flex: 1,
     padding: 10,
   },
   text: {

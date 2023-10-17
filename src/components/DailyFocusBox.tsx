@@ -295,7 +295,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
           </View>
         </View>
 
-        <Button onPress={handleTestReset}>Reset</Button>
+        {/* <Button onPress={handleTestReset}>Reset</Button> */}
         {/* <Button onPress={handleRouteReset}>Route Reset</Button> */}
       </View>
     </View>
@@ -306,11 +306,12 @@ export default DailyFocusBox;
 
 const styles = StyleSheet.create({
   container: {
+    // flex: 1,
     // backgroundColor: "#454045",
     // padding: 20,
     paddingBottom: 20,
     borderRadius: 12,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   headerContainer: {
     flexDirection: "row",

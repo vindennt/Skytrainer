@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
 import { Text, Button, Title, IconButton, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { Session } from "@supabase/supabase-js";
@@ -177,61 +177,63 @@ export const QuickStartCard: React.FC = ({}) => {
   );
 
   return (
-    <View>
-      <View style={styles.container}>
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Quickstart</Text>
-          <View style={styles.quickActionContainer}>
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("Edit Quickstarts" as never);
-              }}
-              disabled={quickstarts.length === 0}
-            >
-              <Icon
-                name="create-outline"
-                color={
-                  quickstarts.length === 0
-                    ? theme.colors.outline
-                    : theme.colors.onSurfaceVariant
-                }
-                size={24}
-              />
-            </TouchableOpacity>
-            {quickstarts.length < MAX_QUICKSTARTS && tooltipButton}
-            {quickstarts.length >= MAX_QUICKSTARTS && (
-              <Tooltip content={tooltipContent}>{tooltipButton}</Tooltip>
-            )}
-          </View>
-        </View>
-        <View
-          style={[
-            styles.quickstartContainer,
-            quickstarts.length >= 3 && { justifyContent: "space-between" },
-          ]}
-        >
-          {sortedQuickStarts.map((quickstart) => {
-            return (
-              quickstart.id && (
-                <QuickStartElement
-                  key={quickstart.id}
-                  id={quickstart.id}
-                  stationId={quickstart.stationId}
-                  name={quickstart.name}
-                  duration={quickstart.duration}
-                  lastFinished={quickstart.lastFinished}
-                />
-              )
-            );
-          })}
-          {quickstarts.length === 0 && (
-            <View style={styles.textContainer}>
-              <Text style={{ color: theme.colors.outline }}>
-                No quickstarts created. Let's make one!
-              </Text>
-            </View>
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>Quickstart</Text>
+        <View style={styles.quickActionContainer}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Edit Quickstarts" as never);
+            }}
+            disabled={quickstarts.length === 0}
+          >
+            <Icon
+              name="create-outline"
+              color={
+                quickstarts.length === 0
+                  ? theme.colors.outline
+                  : theme.colors.onSurfaceVariant
+              }
+              size={24}
+            />
+          </TouchableOpacity>
+          {quickstarts.length < MAX_QUICKSTARTS && tooltipButton}
+          {quickstarts.length >= MAX_QUICKSTARTS && (
+            <Tooltip content={tooltipContent}>{tooltipButton}</Tooltip>
           )}
         </View>
+      </View>
+      <View
+        style={[
+          styles.quickstartContainer,
+          quickstarts.length >= 3 && { justifyContent: "space-between" },
+        ]}
+      >
+        <View style={{ flex: 1 }}>
+          <ScrollView style={styles.scrollContainer}>
+            {sortedQuickStarts.map((quickstart) => {
+              return (
+                quickstart.id && (
+                  <QuickStartElement
+                    key={quickstart.id}
+                    id={quickstart.id}
+                    stationId={quickstart.stationId}
+                    name={quickstart.name}
+                    duration={quickstart.duration}
+                    lastFinished={quickstart.lastFinished}
+                  />
+                )
+              );
+            })}
+          </ScrollView>
+        </View>
+        {quickstarts.length === 0 && (
+          <View style={styles.textContainer}>
+            <Text style={{ color: theme.colors.outline }}>
+              No quickstarts created. Let's make one!
+            </Text>
+          </View>
+        )}
       </View>
     </View>
   );
@@ -241,11 +243,12 @@ export default QuickStartCard;
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "#454045",
+    flex: 1,
+    // backgroundColor: "purple",
     // padding: 20,
     // paddingBottom: 20,
     borderRadius: 12,
-    marginBottom: 20,
+    // marginTop: 20,
   },
   headerContainer: {
     flexDirection: "row",
@@ -261,11 +264,11 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     paddingTop: 16,
     // alignItems: "flex-start",
-    // flex: 1,
+    flex: 1,
     // justifyContent: "space-between",
     justifyContent: "flex-start",
     // gap: 20,
-    // backgroundColor: "gray",
+    // backgroundColor: "black",
   },
   quickButtonStyle: {
     // flexWrap: "wrap",
@@ -275,9 +278,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     // marginVertical: 5,
-    // flex: 1,
   },
   quickButtonStyleContainer: {
+    // flex: 1,
     flexDirection: "row",
     alignItems: "center",
     // backgroundColor: "green",
@@ -316,5 +319,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     width: 60,
+  },
+  scrollContainer: {
+    flex: 1,
+    // backgroundColor: "green",
+    // flexWrap: "wrap",
+    // flexGrow: 1,
+    // height: 200,
   },
 });
