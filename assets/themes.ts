@@ -69,9 +69,9 @@ export const LIGHT_THEME = {
 
 export const DARK_THEME = {
   colors: {
-    background: "#1B1B1F",
+    background: "#1C1C23",
     onBackground: "#FFFFFF",
-    surface: "#1E1E27",
+    surface: "#21212B",
     onSurface: "#FFFFFF",
     surfaceVariant: "#30303F",
     onSurfaceVariant: "#5A5A71",

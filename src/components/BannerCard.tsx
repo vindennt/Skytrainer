@@ -215,7 +215,11 @@ export const BannerCard: React.FC<BannerCardProps> = ({
             disabled={!canBuy || isRolling || popupVisible}
             loading={isRolling}
           >
-            ROLL
+            <Text
+              style={[styles.buttonText, { color: theme.colors.onPrimary }]}
+            >
+              ROLL x1
+            </Text>
           </Button>
         </View>
       </View>
@@ -233,7 +237,7 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     // marginTop: 10,
-    padding: 30,
+    padding: 16,
   },
   image: {
     flex: 1,
@@ -265,6 +269,7 @@ const styles = StyleSheet.create({
   },
   button: {
     // borderRadius: 12
+    fontWeight: "bold",
   },
   price: {
     // marginTop: 78,
@@ -275,5 +280,8 @@ const styles = StyleSheet.create({
   priceText: {
     marginLeft: 6,
     fontSize: 16,
+  },
+  buttonText: {
+    fontWeight: "bold",
   },
 });

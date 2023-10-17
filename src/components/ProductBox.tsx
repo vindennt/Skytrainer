@@ -66,9 +66,9 @@ export const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 18,
-    paddingTop: 16,
-    paddingHorizontal: 26,
-    paddingBottom: 24,
+    paddingTop: 12,
+    paddingHorizontal: 18,
+    paddingBottom: 16,
     flex: 1,
   },
   image: {
@@ -78,11 +78,11 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "500",
     position: "absolute",
 
     top: 167,
-    left: 26,
+    left: 18,
   },
   price: {
     marginTop: 78,
