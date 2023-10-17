@@ -45,7 +45,7 @@ export const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
       <View
         style={[
           styles.rowContainer,
-          // { borderBottomWidth: 1, borderColor: theme.colors.outline },
+          { borderBottomWidth: 0.5, borderColor: theme.colors.outline },
         ]}
       >
         {showBalance && (
