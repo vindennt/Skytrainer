@@ -12,7 +12,7 @@ export const LIGHT_THEME = {
     onSecondary: "#085DA9",
     outlineVariant: "#ABB7D3", // secondary text
     outline: "#D4DDE0", // divider
-    backdrop: "#B6BFC5", // icon disabled
+    backdrop: "#9CA6AC", // icon disabled
     tertiary: "#0099C6", // notification
     tertiaryContainer: "#FDC426", // gold
     onTertiaryContainer: "#17375C", // navy
@@ -81,7 +81,7 @@ export const DARK_THEME = {
     onSecondary: "#1F99DE",
     outlineVariant: "#8A93A8",
     outline: "#585873",
-    backdrop: "#6E6E7B",
+    backdrop: "#8F8FA3",
     tertiary: "#0099C6",
     tertiaryContainer: "#FDC426",
     onTertiaryContainer: "#17375C",

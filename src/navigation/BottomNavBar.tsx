@@ -63,7 +63,7 @@ const BottomNavBar = () => {
         },
         fonts: {
           labelMedium: {
-            fontSize: 10,
+            fontSize: 11,
             letterSpacing: 0.1,
             lineHeight: 10,
           },
