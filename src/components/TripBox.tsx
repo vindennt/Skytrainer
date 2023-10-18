@@ -8,10 +8,15 @@ import {
   selectLastUsedStation,
   setSlider,
 } from "@src/features/user/userSlice";
-import { StationsState } from "@src/features/stations/stationsSlice";
+import {
+  StationsState,
+  selectSelectedStation,
+  selectStations,
+} from "@src/features/stations/stationsSlice";
 import { getStationName } from "@src/utils/skytrain";
 import {
   SkytrainState,
+  selectSkytrainGraph,
   setRewards,
   setTrip,
 } from "@src/features/skytrain/skytrainSlice";
@@ -25,35 +30,25 @@ import DailyFocusThresholdPicker, {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export const TripBox: React.FC = () => {
-  const theme = useTheme();
   const dispatch = useDispatch<any>();
   const navigation = useNavigation();
+  const selectedStation = useSelector(selectSelectedStation);
+  const stations: Map<string, number> = useSelector(selectStations);
+  const skytrainGraph = useSelector(selectSkytrainGraph);
 
-  const sliderValue = useSelector(
-    (state: { user: UserState }) => state.user.slider
-  );
-
-  const selectedStation: string = useSelector(
-    (state: { stations: StationsState }) => state.stations.selectedStation
-  );
-  const lastUsedStation = useSelector(selectLastUsedStation);
-
-  const stations: Map<string, number> = useSelector(
-    (state: { stations: StationsState }) => state.stations.stations
-  );
-  const skytrainGraph = useSelector(
-    (state: { skytrain: SkytrainState }) => state.skytrain.skytrainGraph
-  );
   const [loading, setIsLoading] = useState<boolean>(false);
+  const [pickerValue, setPickerValue] = useState<number>(25);
 
-  const [pickerValue, setPickerValue] = useState<string>(
-    sliderValue.toString()
-  );
+  const pickerOnChange = (value: string) => {
+    const intValue: number = parseInt(value);
+    setPickerValue(intValue);
+  };
 
   const handleTripStart = () => {
-    const pickerValueNumber: number = parseInt(pickerValue);
+    const pickerValueNumber: number = pickerValue;
 
     // TODO: implement timer function, such that the rewards are only given if timer ends without cancel
+    dispatch(setSlider(pickerValueNumber));
     setIsLoading(true);
     console.log(
       getStationName(selectedStation) +
@@ -69,7 +64,6 @@ export const TripBox: React.FC = () => {
     dispatch(setTrip(tripPath));
     dispatch(setRewards(rewards));
 
-    // TODO: After fix infinite loop, revert this to navigate to Timer
     console.log("TripBox: Navigating to Timer");
     navigation.navigate("Timer" as never);
     setTimeout(() => {
@@ -89,8 +83,8 @@ export const TripBox: React.FC = () => {
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Start focus trip for</Text>
           <DailyFocusThresholdPicker
-            value={pickerValue}
-            onChange={setPickerValue}
+            value={pickerValue.toString()}
+            onChange={pickerOnChange}
             items={OPTIONS_FIVE_ONE_TWENTY}
           />
           <Text style={styles.headerText}>mins</Text>
@@ -99,7 +93,7 @@ export const TripBox: React.FC = () => {
       <Button
         labelStyle={{ marginVertical: 5 }}
         mode="contained"
-        disabled={sliderValue === 0 || loading}
+        disabled={pickerValue === 0 || loading}
         onPress={handleTripStart}
         loading={loading}
       >
