@@ -211,7 +211,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
 
   const ZerothDailyProgressButton: React.FC = ({}) => {
     const finished: boolean = dailyFocusTime >= FIRST_MILESTONE;
-    const claimed: boolean = dailyFocusClaimed >= THIRD_MILESTONE;
+    const claimed: boolean = dailyFocusTime > 0;
 
     return (
       <View style={styles.progressButtonStyleContainer}>
@@ -222,7 +222,9 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
               {
                 backgroundColor: "transparent",
                 borderWidth: 3,
-                borderColor: getButtonColour(claimed, finished),
+                borderColor: claimed
+                  ? getIconColour(claimed, finished)
+                  : getButtonColour(claimed, finished),
               },
               // { backgroundColor: getButtonColour(claimed, finished) },
             ]}
@@ -231,7 +233,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
               name={"fire"}
               // color={theme.colors.onSurfaceVariant}
               // color={getIconColour(claimed, finished)}
-              color={getButtonColour(claimed, finished)}
+              color={getIconColour(claimed, finished)}
               size={24}
             />
           </View>
