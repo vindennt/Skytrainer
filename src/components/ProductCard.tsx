@@ -25,6 +25,7 @@ import { StationsState } from "@src/features/stations/stationsSlice";
 import { useState } from "react";
 import { LINE_ICON, getLineInfo } from "@src/utils/skytrain";
 import { BlurView } from "expo-blur";
+import { selectDarkTheme } from "@src/navigation/navSlice";
 
 interface ProductCard {
   item: Buyable;
@@ -33,6 +34,7 @@ interface ProductCard {
 
 export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
   const theme = useTheme();
+  const isDark = useSelector(selectDarkTheme);
   const dispatch = useDispatch<any>();
   const balance: number = useSelector(
     (state: { user: UserState }) => state.user.balance
@@ -76,7 +78,11 @@ export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
 
   return (
     <View style={styles.parentContainer}>
-      <BlurView intensity={15} style={[styles.container]}>
+      <BlurView
+        intensity={50}
+        tint={isDark ? "dark" : "light"}
+        style={[styles.container]}
+      >
         <View
           style={[
             styles.innerContainer,
@@ -123,17 +129,19 @@ const styles = StyleSheet.create({
     marginVertical: "20%",
     borderRadius: 18,
     overflow: "hidden",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.2)",
     // backgroundColor: "gray",
   },
   container: {
     flex: 1,
-    borderRadius: 18,
+    // borderRadius: 18,
     // marginTop: 40,
     // padding: 20,
   },
   innerContainer: {
     flex: 1,
-    borderRadius: 18,
+    // borderRadius: 18,
     padding: 20,
     // marginTop: 40,
   },
