@@ -210,16 +210,13 @@ export const BannerCard: React.FC<BannerCardProps> = ({
           </View>
           <Button
             style={styles.button}
-            mode="contained"
             onPress={handlePressBuy}
+            mode="contained"
             disabled={!canBuy || isRolling || popupVisible}
             loading={isRolling}
+            labelStyle={[styles.buttonText, { color: theme.colors.onPrimary }]}
           >
-            <Text
-              style={[styles.buttonText, { color: theme.colors.onPrimary }]}
-            >
-              ROLL x1
-            </Text>
+            ROLL x1
           </Button>
         </View>
       </View>
@@ -231,7 +228,7 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 20,
     // padding: 22,
-    flex: 1,
+    // flex: 1,
     width: "100%",
     borderRadius: 12,
   },
@@ -266,14 +263,16 @@ const styles = StyleSheet.create({
     marginTop: 30,
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "flex-end",
+    fontWeight: "bold",
   },
   button: {
     // borderRadius: 12
-    fontWeight: "bold",
+    // fontWeight: "bold",
   },
   price: {
     // marginTop: 78,
-    marginTop: 22,
+    // marginTop: 22,
     flexDirection: "row",
     // fontWeight: "bold",
   },
