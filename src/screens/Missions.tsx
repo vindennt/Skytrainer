@@ -124,7 +124,7 @@ const Missions = () => {
           <QuickStartCard />
         </View>
         <Button mode="contained" onPress={handleManualTrip}>
-          Start Manual Focus Trip
+          Start a Focus Trip
         </Button>
         <Popup
           visible={popupVisible}
@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
     // padding: 20,
     paddingHorizontal: 10,
+    paddingBottom: 10,
     // backgroundColor: "gray",
   },
   secondaryContainer: {
