@@ -23,6 +23,7 @@ import {
 } from "@src/features/stations/stationsSliceHelpers";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import { useState } from "react";
+import { LINE_ICON, getLineInfo } from "@src/utils/skytrain";
 
 interface ProductCard {
   item: Buyable;
@@ -41,6 +42,7 @@ export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const canBuy: boolean = balance - item.cost >= 0;
+  const lineInfo = getLineInfo(item.itemid);
 
   const handlePurchase = () => {
     setLoading(true);
@@ -75,6 +77,10 @@ export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
     <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
       <Image source={imageSource} style={styles.image} resizeMode="contain" />
       <Text style={styles.productName}>{item.name}</Text>
+      <View style={styles.horizontalContainer}>
+        <Icon name={LINE_ICON} size={20} color={lineInfo.colour} />
+        <Text style={styles.levelText}>{lineInfo.name}</Text>
+      </View>
       <View style={styles.bottomText}>
         <View style={styles.price}>
           <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
@@ -98,16 +104,18 @@ export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     borderRadius: 18,
-    paddingHorizontal: 30,
+    // paddingHorizontal: 30,
     // margin: 20,
-    // padding: 30,
+    padding: 30,
     // height: 300,
     height: "80%",
     // width: "90%",
     // width: 150,
     // flex: 1,
     // flexWrap: "wrap",
+    marginTop: 40,
   },
   image: {
     // flex: 1,
@@ -132,6 +140,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     // fontWeight: "bold",
   },
+  levelText: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
   priceText: {
     marginLeft: 6,
     fontSize: 16,
@@ -140,5 +152,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  horizontalContainer: {
+    flexDirection: "row",
+    gap: 8,
+    marginVertical: 5,
+    right: 5,
   },
 });

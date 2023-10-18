@@ -24,12 +24,28 @@ function edgeToBuild(
 }
 
 // Takes lineid to output name
-export const LINE_MAP: Map<string, string> = new Map<string, string>([
-  ["00", "Expo Line"],
-  ["01", "Millenium Line"],
-  ["02", "Canada Line"],
-  ["03", "Millenium Evergreen Extension"],
+export const LINE_MAP: Map<string, string[]> = new Map<string, string[]>([
+  ["00", ["Expo Line", "#085CA8"]],
+  ["01", ["Millenium Line", "#FFD301"]],
+  ["02", ["Canada Line", "#0099C6"]],
+  ["03", ["Evergreen Extension", "#2F746B"]],
 ]);
+
+export const LINE_ICON: string = "train-variant";
+// export const LINE_ICON: string = "relation-many-to-many";
+// export const LINE_ICON: string = "transit-connection-variant";
+// export const LINE_ICON: string = "transit-connection-horizontal";
+
+export function getLineInfo(stationId: string): {
+  name: string | undefined;
+  colour: string | undefined;
+} {
+  const station = getStation(stationId);
+  const lineInfo = LINE_MAP.get(station.lineid);
+  const lineText: string | undefined = lineInfo ? lineInfo[0] : undefined;
+  const lineColour: string | undefined = lineInfo ? lineInfo[1] : undefined;
+  return { name: lineText, colour: lineColour };
+}
 
 // All stations
 export const Waterfront: Station = newStation("001", "00", true);

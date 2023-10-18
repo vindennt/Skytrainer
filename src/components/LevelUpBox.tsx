@@ -1,4 +1,10 @@
-import { getStationName } from "@src/utils/skytrain";
+import {
+  LINE_MAP,
+  getLineInfo,
+  getStation,
+  getStationName,
+  LINE_ICON,
+} from "@src/utils/skytrain";
 import React, { useState } from "react";
 import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Text, Button, Title, useTheme } from "react-native-paper";
@@ -49,6 +55,8 @@ export const LevelUpBox: React.FC = () => {
     ? `Current level: Rewards \u00D7${currentMultiplier}`
     : `Next level: Rewards \u00D7${currentMultiplier} → \u00D7${nextMultiplier}`;
 
+  const lineInfo = getLineInfo(selectedStation);
+
   const handleLevelUp = () => {
     if (level !== undefined && level < 50) {
       setLoading(true);
@@ -93,6 +101,10 @@ export const LevelUpBox: React.FC = () => {
         <Text style={styles.levelText}>
           Lv. {levelData.get(selectedStation)}
         </Text>
+        <View style={styles.horizontalContainer}>
+          <Icon name={LINE_ICON} size={20} color={lineInfo.colour} />
+          <Text style={styles.levelText}>{lineInfo.name}</Text>
+        </View>
         <View style={styles.subtextContainer}>
           <Text
             style={[styles.subtextText, { color: theme.colors.outlineVariant }]}
@@ -186,5 +198,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  horizontalContainer: {
+    flexDirection: "row",
+    gap: 8,
   },
 });
