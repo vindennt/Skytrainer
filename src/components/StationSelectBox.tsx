@@ -13,15 +13,18 @@ import {
   selectStations,
 } from "@src/features/stations/stationsSlice";
 import { useSelector } from "react-redux";
+import { selectLastUsedStation } from "@src/features/user/userSlice";
 
 interface StationSelectorProps {
   onValueChange: (stationId: string) => void;
+  value?: string;
 }
 
 export const StationSelector: React.FC<StationSelectorProps> = ({
   onValueChange,
+  value = useSelector(selectSelectedStation),
 }) => {
-  const selectedStation = useSelector(selectSelectedStation);
+  const selectedStation = value;
   const data = useSelector(selectStations);
 
   const memoizedCallback = useCallback((stationId: string) => {

@@ -40,7 +40,7 @@ const styles = StyleSheet.create({
   },
   header: {
     marginLeft: 10,
-    marginVertical: 15,
+    marginTop: 15,
     fontSize: 30,
     fontWeight: "700",
   },

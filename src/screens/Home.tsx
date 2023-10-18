@@ -35,11 +35,11 @@ const Home = () => {
 
   const title = getStationName(lastUsedStation) + " Station";
   const imageSource: ImageSourcePropType = imageBustMap[
-    lastUsedStation
+    selectedStation
   ] as ImageSourcePropType;
 
   const goToStationSelect = () => {
-    dispatch(setSelectedStation(lastUsedStation));
+    dispatch(setSelectedStation(selectedStation));
     navigation.navigate("Select Station" as never);
   };
 

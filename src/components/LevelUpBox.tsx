@@ -4,7 +4,7 @@ import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Text, Button, Title, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { UIActivityIndicator } from "react-native-indicators";
-import { useDispatch, useSelector } from "react-redux";
+import * as reactRedux from "react-redux";
 import { MAX_LEVEL } from "@src/utils/levels";
 import { Session } from "@supabase/supabase-js";
 import { LEVELUP_COSTS, REWARD_MULTIPLIERS } from "@src/utils/levels";
@@ -25,18 +25,18 @@ import {
 
 export const LevelUpBox: React.FC = () => {
   const theme = useTheme();
-  const dispatch = useDispatch<any>();
-  const levelData = useSelector(selectStations);
-  const selectedStation = useSelector(selectSelectedStation);
+  const dispatch = reactRedux.useDispatch<any>();
+  const levelData = reactRedux.useSelector(selectStations);
+  const selectedStation = reactRedux.useSelector(selectSelectedStation);
 
   const level: number | undefined = levelData.get(selectedStation);
   const cost: number = level ? LEVELUP_COSTS[level] : -1;
   const currentMultiplier: number = level ? REWARD_MULTIPLIERS[level] : -1;
   const nextMultiplier: number = level ? REWARD_MULTIPLIERS[level + 1] : -1;
-  const balance: number = useSelector(
+  const balance: number = reactRedux.useSelector(
     (state: { user: UserState }) => state.user.balance
   );
-  const session: Session | null = useSelector(
+  const session: Session | null = reactRedux.useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
   const canBuy: boolean =

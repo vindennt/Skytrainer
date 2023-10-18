@@ -200,7 +200,7 @@ const Account = () => {
         <Button
           onPress={() => navigation.navigate("Achievements" as never)}
           style={{ width: "100%" }}
-          mode="outline"
+          mode="outlined"
         >
           Achievements
         </Button>

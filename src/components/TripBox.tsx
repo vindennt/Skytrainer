@@ -3,7 +3,11 @@ import { View, StyleSheet } from "react-native";
 import { useTheme, Text, Button } from "react-native-paper";
 import { TimeSlider } from "@src/components/TimeSlider";
 import { useSelector, useDispatch } from "react-redux";
-import { UserState, setSlider } from "@src/features/user/userSlice";
+import {
+  UserState,
+  selectLastUsedStation,
+  setSlider,
+} from "@src/features/user/userSlice";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import { getStationName } from "@src/utils/skytrain";
 import {
@@ -32,6 +36,8 @@ export const TripBox: React.FC = () => {
   const selectedStation: string = useSelector(
     (state: { stations: StationsState }) => state.stations.selectedStation
   );
+  const lastUsedStation = useSelector(selectLastUsedStation);
+
   const stations: Map<string, number> = useSelector(
     (state: { stations: StationsState }) => state.stations.stations
   );
@@ -82,7 +88,6 @@ export const TripBox: React.FC = () => {
         </View>
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Start focus trip for</Text>
-          {/* <TimeSlider /> */}
           <DailyFocusThresholdPicker
             value={pickerValue}
             onChange={setPickerValue}

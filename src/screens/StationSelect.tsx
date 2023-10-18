@@ -3,6 +3,7 @@ import { View, FlatList, StyleSheet } from "react-native";
 import { useTheme, Text, Button, Title } from "react-native-paper";
 import {
   StationsState,
+  selectSelectedStation,
   setSelectedStation,
 } from "@features/stations/stationsSlice";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,30 +17,24 @@ const Stations = () => {
   const dispatch = useDispatch<any>();
   const navigation = useNavigation();
   const theme = useTheme();
-
-  const stations: Map<string, number> = useSelector(
-    (state: { stations: StationsState }) => state.stations.stations
-  );
-
-  const selectedStation: string = useSelector(
-    (state: { stations: StationsState }) => state.stations.selectedStation
-  );
-
-  const title = getStationName(selectedStation) + " Station";
+  const selectedStation: string = useSelector(selectSelectedStation);
+  const [currentSelectedStation, setCurrentSelectedStation] =
+    useState<string>(selectedStation);
+  const title = getStationName(currentSelectedStation) + " Station";
 
   const handleGoBack = () => {
     navigation.goBack();
   };
 
   const handleSelect = async () => {
-    // TODO: MAKE IT SO THAT WHATEVER THIS STATION IS DOES NOT BECOME THE HOMESCREEN STATIon
-    // Because when click set, it forces rerender of the modal;'s statioin, which is what causes it to close abrupty if rerender mid nav animation
     navigation.goBack();
     setTimeout(() => {
-      dispatch(setLastUsedStation(selectedStation));
+      dispatch(setSelectedStation(currentSelectedStation));
     }, 180);
-    // dispatch(setLastUsedStation(selectedStation));
-    // navigation.goBack();
+  };
+
+  const onValueChange = (stationId: string) => {
+    dispatch(setSelectedStation(stationId));
   };
 
   return (
@@ -47,7 +42,10 @@ const Stations = () => {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <View style={styles.selectorContainer}>
-        <StationSelector data={stations} selectedStation={selectedStation} />
+        <StationSelector
+          onValueChange={setCurrentSelectedStation}
+          value={currentSelectedStation}
+        />
       </View>
       <View
         style={[

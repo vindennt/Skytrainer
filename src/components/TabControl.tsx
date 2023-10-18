@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     padding: 1,
   },
   tabText: {
-    fontSize: 16,
+    fontSize: 14,
   },
 });
 

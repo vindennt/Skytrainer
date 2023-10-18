@@ -1,4 +1,7 @@
 import { useNavigation } from "@react-navigation/native";
+import DailyFocusThresholdPicker, {
+  OPTIONS_FIVE_ONE_TWENTY,
+} from "@src/components/DailyFocusThresholdPicker";
 import { LoadingIndicator } from "@src/components/LoadingIndicator";
 import { StationSelector } from "@src/components/StationSelectBox";
 import { TimeSlider } from "@src/components/TimeSlider";
@@ -12,13 +15,30 @@ import {
   NewQuickStartRequest,
   addQuickStart,
 } from "@src/features/quickStart/quickStartSliceHelpers";
-import { StationsState } from "@src/features/stations/stationsSlice";
-import { UserState, selectSlider } from "@src/features/user/userSlice";
+import {
+  StationsState,
+  selectSelectedStation,
+  setSelectedStation,
+} from "@src/features/stations/stationsSlice";
+import {
+  UserState,
+  selectLastUsedStation,
+  selectSlider,
+} from "@src/features/user/userSlice";
+import { imageBustMap } from "@src/utils/imageMappings";
 import { getStationName } from "@src/utils/skytrain";
 import { Formik } from "formik";
 import * as React from "react";
 import { useEffect, useRef, useState } from "react";
-import { View, StyleSheet, FlatList, Alert } from "react-native";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  Alert,
+  TouchableOpacity,
+  Image,
+  ImageSourcePropType,
+} from "react-native";
 import {
   Button,
   HelperText,
@@ -40,6 +60,7 @@ const QuickStartCreator = () => {
 
   const sliderValue = useSelector(selectSlider);
 
+  const selectedStation: string = useSelector(selectSelectedStation);
   const stations: Map<string, number> = useSelector(
     (state: { stations: StationsState }) => state.stations.stations
   );
@@ -54,7 +75,16 @@ const QuickStartCreator = () => {
   const initialValues: SignupDetails = {
     name: "",
     duration: sliderValue,
-    station: stations.keys().next().value,
+    station: selectedStation,
+  };
+
+  const lastUsedStation = useSelector(selectLastUsedStation);
+  const imageSource: ImageSourcePropType = imageBustMap[
+    selectedStation
+  ] as ImageSourcePropType;
+  const goToStationSelect = () => {
+    dispatch(setSelectedStation(selectedStation));
+    navigation.navigate("Select Station" as never);
   };
 
   const handleQuickstartRequest = async (values: SignupDetails) => {
@@ -66,13 +96,14 @@ const QuickStartCreator = () => {
           ", duration: " +
           values.duration +
           ", stationid: " +
-          values.station
+          selectedStation
       );
       if (session) {
         const qs: QuickStart = {
           name: values.name,
           duration: values.duration,
-          stationId: values.station,
+          stationId: selectedStation,
+          lastFinished: null,
         };
         const request: NewQuickStartRequest = {
           session: session,
@@ -116,7 +147,7 @@ const QuickStartCreator = () => {
           handleSubmit,
           isValid,
         }) => (
-          <View>
+          <View style={{ flex: 1 }}>
             <TextInput
               label="Title*"
               placeholder="e.g. Read, Workout, Study, Meditate"
@@ -130,40 +161,49 @@ const QuickStartCreator = () => {
             >
               {errors.name}
             </HelperText>
-            <View style={styles.centerContainer}>
-              <Text style={styles.text}>
-                Focus trip length: {values.duration} mins
-              </Text>
+
+            <View style={styles.horizontalContainer}>
+              <Text style={styles.headerText}>Set focus trip for</Text>
+              <DailyFocusThresholdPicker
+                value={values.duration.toString()}
+                onChange={handleChange("duration")}
+                items={OPTIONS_FIVE_ONE_TWENTY}
+              />
+              <Text style={styles.headerText}>mins</Text>
             </View>
-            <TimeSlider onValueChange={handleChange("duration")} />
+
             <HelperText type="error" visible={errors.duration !== undefined}>
               {errors.duration}
             </HelperText>
-            <View style={styles.selectorContainer}>
-              <View style={styles.centerContainer}>
-                <Text style={styles.text}>
-                  Start at: {getStationName(values.station)} Station
-                </Text>
-              </View>
-              <StationSelector
-                data={stations}
-                selectedStation={values.station}
-                onValueChange={handleChange("station")}
+            <TouchableOpacity
+              style={styles.imageContainer}
+              onPress={goToStationSelect}
+            >
+              <Image
+                style={styles.image}
+                source={imageSource}
+                resizeMode="contain"
               />
-            </View>
-            <View style={styles.buttonContainer}>
-              <Button mode="outlined" onPress={handleGoBack}>
-                Cancel
-              </Button>
-              <Button
-                disabled={!isValid || loading}
-                loading={loading}
-                onPress={() => handleSubmit()}
-                mode="contained"
-                style={styles.button}
-              >
-                Create
-              </Button>
+            </TouchableOpacity>
+
+            <View style={styles.verticalContainer}>
+              <Text style={styles.headerText}>
+                Start at: {getStationName(selectedStation)} Station
+              </Text>
+              <View style={styles.buttonContainer}>
+                <Button mode="outlined" onPress={handleGoBack}>
+                  Cancel
+                </Button>
+                <Button
+                  disabled={!isValid || loading}
+                  loading={loading}
+                  onPress={() => handleSubmit()}
+                  mode="contained"
+                  style={styles.button}
+                >
+                  Create
+                </Button>
+              </View>
             </View>
           </View>
         )}
@@ -204,7 +244,7 @@ export default QuickStartCreator;
 
 const styles = StyleSheet.create({
   container: {
-    padding: 30,
+    padding: 20,
     flex: 1,
   },
   text: {
@@ -213,21 +253,55 @@ const styles = StyleSheet.create({
   centerContainer: {
     alignItems: "center",
     marginBottom: 10,
+    // flex: 1,
   },
   selectorContainer: {
+    flex: 1,
     // paddingHorizontal: 20,
     // flex: 1,
-    height: "64%",
+    height: "50%",
     // backgroundColor: "pink",
   },
   button: {
     margin: 20,
   },
   buttonContainer: {
+    // flex: 1,
     // backgroundColor: "green",
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
     // paddingBottom: 40,
+    width: "100%",
+  },
+  headerText: { fontWeight: "bold" },
+  timeText: {
+    fontSize: 24,
+    // fontWeight: "500",
+  },
+  horizontalContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  verticalContainer: {
+    flex: 1,
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+
+  image: {
+    flex: 1,
+    width: "180%",
+    // right: 30,
+    height: "140%",
+    position: "absolute",
+  },
+  imageContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
   },
 });

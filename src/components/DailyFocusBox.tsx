@@ -173,7 +173,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
               styles.progressButton,
               { backgroundColor: getButtonColour(claimed, finished) },
               {
-                borderWidth: 4,
+                borderWidth: 3,
                 borderColor: claimed
                   ? getIconColour(claimed, finished)
                   : getButtonColour(claimed, finished),
@@ -221,7 +221,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
               styles.progressButton,
               {
                 backgroundColor: "transparent",
-                borderWidth: 4,
+                borderWidth: 3,
                 borderColor: getButtonColour(claimed, finished),
               },
               // { backgroundColor: getButtonColour(claimed, finished) },
@@ -354,9 +354,10 @@ const styles = StyleSheet.create({
     // backgroundColor: "purple",
   },
   progressBar: {
-    height: 4,
-    width: 56,
-    top: 23,
+    height: 3,
+    width: 54,
+    top: 24,
+    right: 0.5,
   },
   tooltip: {
     flexDirection: "row",

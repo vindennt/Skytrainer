@@ -22,7 +22,7 @@ const StationSelectItem: React.FC<StationSelectBoxProps> = ({
   level,
   onValueChange,
 }) => {
-  console.log("rendering station select box");
+  // console.log("rendering station select box");
 
   const theme = useTheme();
   const imageSource: ImageSourcePropType = imageIconMap[

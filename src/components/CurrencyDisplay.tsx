@@ -45,17 +45,17 @@ export const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
       <View
         style={[
           styles.rowContainer,
-          { borderBottomWidth: 0.5, borderColor: theme.colors.outline },
+          // { borderBottomWidth: 0.5, borderColor: theme.colors.outline },
         ]}
       >
         {showBalance && (
-          <View style={[styles.currencyContainer, { marginRight: "20%" }]}>
+          <View style={[styles.currencyContainer, { marginRight: "0%" }]}>
             <CommonCurrencyIcon />
             <Text style={styles.text}>{balance.toString()}</Text>
           </View>
         )}
         {showTickets && (
-          <View style={[styles.currencyContainer]}>
+          <View style={[styles.currencyContainer, { marginRight: "0%" }]}>
             <PremiumCurrencyIcon />
             <Text style={styles.text}>{tickets.toString()}</Text>
           </View>
@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "space-around",
     paddingBottom: 4,
     // backgroundColor: "pink",
   },
