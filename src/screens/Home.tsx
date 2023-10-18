@@ -17,12 +17,12 @@ import { TripBox } from "@src/components/TripBox";
 import { imageBustMap } from "@src/utils/imageMappings";
 import {
   StationsState,
+  selectSelectedStation,
   setSelectedStation,
 } from "@src/features/stations/stationsSlice";
 import { useNavigation } from "@react-navigation/native";
 import { getStationName } from "@src/utils/skytrain";
 import { useEffect, useMemo } from "react";
-import { FocusMilestoneTimes } from "@src/utils/missionRewards";
 import { setMissionBadgeVisibility } from "@src/navigation/navSlice";
 
 const Home = () => {
@@ -31,6 +31,7 @@ const Home = () => {
   const navigation = useNavigation();
   const sliderValue = useSelector(selectSlider);
   const lastUsedStation = useSelector(selectLastUsedStation);
+  const selectedStation = useSelector(selectSelectedStation);
 
   const title = getStationName(lastUsedStation) + " Station";
   const imageSource: ImageSourcePropType = imageBustMap[
@@ -46,24 +47,12 @@ const Home = () => {
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
-      {/* <Text style={styles.stationTitleText}>{title}</Text> */}
       <TouchableOpacity
         style={styles.imageContainer}
         onPress={goToStationSelect}
       >
         <Image style={styles.image} source={imageSource} resizeMode="contain" />
       </TouchableOpacity>
-      <View style={styles.timeHeader}>
-        <Text style={styles.timeText}>{sliderValue} mins</Text>
-        {/* <Button
-          icon="chevron-forward-outline"
-          onPress={goToStationSelect}
-          contentStyle={{ flexDirection: "row-reverse" }}
-          labelStyle={{ marginVertical: 2 }}
-        >
-          Change Station
-        </Button> */}
-      </View>
       <TripBox />
     </View>
   );
@@ -79,14 +68,15 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   timeText: {
-    fontSize: 40,
-    fontWeight: "500",
+    fontSize: 24,
+    // fontWeight: "500",
   },
   timeHeader: {
     flexDirection: "row",
     alignItems: "flex-end",
-    justifyContent: "space-between",
-    marginBottom: 8,
+    backgroundColor: "red",
+    // justifyContent: "space-between",
+    // marginBottom: 8,
   },
   image: {
     width: "100%",

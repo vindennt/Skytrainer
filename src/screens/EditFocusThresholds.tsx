@@ -3,6 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import DailyFocusThresholdPicker, {
+  OPTIONS_FIVE_ONE_TWENTY,
   PickerItem,
 } from "@src/components/DailyFocusThresholdPicker";
 import {
@@ -46,17 +47,7 @@ const EditFocusThresholds = () => {
 
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Generate the list of numbers for the picker
-  const step = 5;
-  let curr = 5;
-  const max = 120;
-  const numberOptions: PickerItem[] = Array.from(
-    { length: (max - curr) / step + 1 },
-    (_, index) => ({
-      label: `${curr + index * step}`,
-      value: `${curr + index * step}`,
-    })
-  );
+  const numberOptions: PickerItem[] = OPTIONS_FIVE_ONE_TWENTY;
 
   const handleSubmission = async () => {
     setLoading(true);

@@ -14,6 +14,18 @@ export interface DailyFocusThresholdPickerProps {
   items: PickerItem[];
 }
 
+// Generate the list of numbers for the picker
+const step = 5;
+let curr = 5;
+const max = 120;
+export const OPTIONS_FIVE_ONE_TWENTY: PickerItem[] = Array.from(
+  { length: (max - curr) / step + 1 },
+  (_, index) => ({
+    label: `${curr + index * step}`,
+    value: `${curr + index * step}`,
+  })
+);
+
 const DailyFocusThresholdPicker: React.FC<DailyFocusThresholdPickerProps> = ({
   value,
   onChange,

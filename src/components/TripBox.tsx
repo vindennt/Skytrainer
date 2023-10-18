@@ -3,7 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { useTheme, Text, Button } from "react-native-paper";
 import { TimeSlider } from "@src/components/TimeSlider";
 import { useSelector, useDispatch } from "react-redux";
-import { UserState } from "@src/features/user/userSlice";
+import { UserState, setSlider } from "@src/features/user/userSlice";
 import { StationsState } from "@src/features/stations/stationsSlice";
 import { getStationName } from "@src/utils/skytrain";
 import {
@@ -15,6 +15,10 @@ import { findRandomViableTripIds } from "@src/features/skytrain/TripFinder";
 import { TripReward, getRewards } from "@src/features/reward/TripRewardHandler";
 import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
+import DailyFocusThresholdPicker, {
+  OPTIONS_FIVE_ONE_TWENTY,
+} from "./DailyFocusThresholdPicker";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export const TripBox: React.FC = () => {
   const theme = useTheme();
@@ -24,6 +28,7 @@ export const TripBox: React.FC = () => {
   const sliderValue = useSelector(
     (state: { user: UserState }) => state.user.slider
   );
+
   const selectedStation: string = useSelector(
     (state: { stations: StationsState }) => state.stations.selectedStation
   );
@@ -35,18 +40,24 @@ export const TripBox: React.FC = () => {
   );
   const [loading, setIsLoading] = useState<boolean>(false);
 
+  const [pickerValue, setPickerValue] = useState<string>(
+    sliderValue.toString()
+  );
+
   const handleTripStart = () => {
+    const pickerValueNumber: number = parseInt(pickerValue);
+
     // TODO: implement timer function, such that the rewards are only given if timer ends without cancel
     setIsLoading(true);
     console.log(
       getStationName(selectedStation) +
         " starting focus trip for " +
-        sliderValue
+        pickerValueNumber
     );
     const tripPath: string[] = findRandomViableTripIds(
       skytrainGraph,
       selectedStation,
-      sliderValue
+      pickerValueNumber
     );
     const rewards: TripReward = getRewards(tripPath, stations);
     dispatch(setTrip(tripPath));
@@ -62,47 +73,63 @@ export const TripBox: React.FC = () => {
   };
 
   return (
-    <View>
-      <View
-        style={[
-          styles.tripContainer,
-          { backgroundColor: theme.colors.secondaryContainer },
-        ]}
-      >
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Focus Trip</Text>
-          <Button
-            labelStyle={{ marginVertical: 5 }}
-            mode="contained"
-            disabled={sliderValue === 0 || loading}
-            onPress={handleTripStart}
-            loading={loading}
-          >
-            START
-          </Button>
+    <SafeAreaView>
+      <View style={[styles.tripContainer, { backgroundColor: "transparent" }]}>
+        <View style={styles.timeHeader}>
+          <Text style={styles.timeText}>
+            Start at {getStationName(selectedStation)} Station
+          </Text>
         </View>
-        <TimeSlider />
+        <View style={styles.headerContainer}>
+          <Text style={styles.headerText}>Start focus trip for</Text>
+          {/* <TimeSlider /> */}
+          <DailyFocusThresholdPicker
+            value={pickerValue}
+            onChange={setPickerValue}
+            items={OPTIONS_FIVE_ONE_TWENTY}
+          />
+          <Text style={styles.headerText}>mins</Text>
+        </View>
       </View>
-    </View>
+      <Button
+        labelStyle={{ marginVertical: 5 }}
+        mode="contained"
+        disabled={sliderValue === 0 || loading}
+        onPress={handleTripStart}
+        loading={loading}
+      >
+        START
+      </Button>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   tripContainer: {
-    padding: 18,
-    borderRadius: 10,
-    // flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  accountButton: {
-    position: "absolute",
-    right: 20,
+  horizontalContainer: {
+    // flex: 1,
+    flexDirection: "row",
   },
   headerContainer: {
+    // flex: 1,
     flexDirection: "row",
     // backgroundColor: "pink",
-    justifyContent: "space-between",
+    // justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 18,
+    // marginBottom: 18,
   },
   headerText: { fontWeight: "bold" },
+  timeText: {
+    fontSize: 24,
+    // fontWeight: "500",
+  },
+  timeHeader: {
+    flexDirection: "row",
+    alignItems: "flex-end",
+    // justifyContent: "space-between",
+    // marginBottom: 8,
+  },
 });
