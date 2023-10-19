@@ -17,11 +17,13 @@ const Stations = () => {
   }, []);
 
   return (
-    <Layout>
+    <Layout position="absolute">
       <View style={styles.container}>
         <Text style={styles.header}>Stations</Text>
         <View style={styles.contentContainer}>
-          <StationSelector onValueChange={memoizedCallback} />
+          <View style={styles.selectorContainer}>
+            <StationSelector onValueChange={memoizedCallback} />
+          </View>
           <LevelUpBox />
         </View>
       </View>
@@ -32,16 +34,20 @@ export default Stations;
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     // paddingTop: 10,
 
     flex: 1,
     width: "100%",
   },
   contentContainer: {
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     // paddingTop: 10,
     flex: 1,
+  },
+  selectorContainer: {
+    flex: 1,
+    // paddingLeft: 50,
   },
   header: {
     marginLeft: 10,

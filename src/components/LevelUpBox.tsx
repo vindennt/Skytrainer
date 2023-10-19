@@ -28,6 +28,9 @@ import {
   selectSelectedStation,
   selectStations,
 } from "@src/features/stations/stationsSlice";
+import { BlurView } from "expo-blur";
+import { selectDarkTheme } from "@src/navigation/navSlice";
+import { useSelector } from "react-redux";
 
 export const LevelUpBox: React.FC = () => {
   const theme = useTheme();
@@ -45,6 +48,8 @@ export const LevelUpBox: React.FC = () => {
   const session: Session | null = reactRedux.useSelector(
     (state: { auth: AuthState }) => state.auth.session
   );
+
+  const isDark: boolean = useSelector(selectDarkTheme);
   const canBuy: boolean =
     balance >= cost && level !== undefined && level < MAX_LEVEL;
   const [loading, setLoading] = useState<boolean>(false);
@@ -90,76 +95,93 @@ export const LevelUpBox: React.FC = () => {
   };
 
   return (
-    <View style={{ backgroundColor: theme.colors.background }}>
-      <View style={[styles.titleContainer]}>
-        <Title style={styles.headerText}>
-          {getStationName(selectedStation)} Station
-        </Title>
-        {/* <Title>Lv. {levelData.get(selectedStation)}</Title> */}
-      </View>
-      <View style={styles.container}>
-        <Text style={styles.levelText}>
-          Lv. {levelData.get(selectedStation)}
-        </Text>
-        <View style={styles.horizontalContainer}>
-          <Icon name={LINE_ICON} size={20} color={lineInfo.colour} />
-          <Text style={styles.levelText}>{lineInfo.name}</Text>
-        </View>
-        <View style={styles.subtextContainer}>
-          <Text
-            style={[styles.subtextText, { color: theme.colors.outlineVariant }]}
-          >
-            {subText}
+    <BlurView
+      intensity={80}
+      tint={isDark ? "dark" : "light"}
+      style={[styles.outerContainer]}
+    >
+      <View style={{ backgroundColor: theme.colors.primaryContainer }}>
+        <View style={styles.container}>
+          <View style={[styles.titleContainer]}>
+            <Title style={styles.headerText}>
+              {getStationName(selectedStation)} Station
+            </Title>
+            {/* <Title>Lv. {levelData.get(selectedStation)}</Title> */}
+          </View>
+          <View style={[styles.horizontalContainer, { right: 4 }]}>
+            <Icon name={LINE_ICON} size={20} color={lineInfo.colour} />
+            <Text style={styles.levelText}>{lineInfo.name}</Text>
+          </View>
+          <Text style={styles.levelText}>
+            Lv. {levelData.get(selectedStation)}
           </Text>
-        </View>
-
-        <View style={styles.levelUpTextContainer}>
-          {!maxLevel && (
-            <View style={styles.costContainer}>
-              <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
-              <Text style={styles.costText}>{cost}</Text>
-            </View>
-          )}
-          <Button
-            style={styles.button}
-            onPress={() => handleLevelUp()}
-            mode="contained"
-            disabled={!canBuy || loading}
-            loading={loading}
-          >
+          <View style={styles.subtextContainer}>
             <Text
-              style={[styles.buttonText, { color: theme.colors.onPrimary }]}
+              style={[
+                styles.subtextText,
+                { color: theme.colors.outlineVariant },
+              ]}
             >
-              {buttonText}
+              {subText}
             </Text>
-          </Button>
+          </View>
+
+          <View style={styles.levelUpTextContainer}>
+            {!maxLevel && (
+              <View style={styles.costContainer}>
+                <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
+                <Text style={styles.costText}>{cost}</Text>
+              </View>
+            )}
+            <Button
+              style={styles.button}
+              onPress={() => handleLevelUp()}
+              mode="contained"
+              disabled={!canBuy || loading}
+              loading={loading}
+            >
+              <Text
+                style={[styles.buttonText, { color: theme.colors.onPrimary }]}
+              >
+                {buttonText}
+              </Text>
+            </Button>
+          </View>
         </View>
       </View>
-    </View>
+    </BlurView>
   );
 };
 
 const styles = StyleSheet.create({
+  outerContainer: {
+    position: "absolute",
+    width: "100%",
+    bottom: 85,
+    // flex: 1,
+    // margin: -20,
+    // paddingBottom: 85
+  },
   container: {
     // backgroundColor: "#454045",
     // padding: 20,
     // flex: 1,
+    padding: 15,
     borderRadius: 12,
-    marginBottom: 20,
+    // marginBottom: 20,
     // position: "absolute",
   },
   titleContainer: {
-    paddingTop: 10,
+    // flex: 1,
+    // paddingTop: 10,
+    // paddingLeft: 15,
     flexDirection: "row",
     justifyContent: "space-between",
   },
   subtextContainer: {
     // marginBottom: 8,
   },
-  headerText: {
-    fontSize: 20,
-    fontWeight: "600",
-  },
+  headerText: { flex: 1, fontSize: 20, fontWeight: "600" },
   costText: {
     flex: 1,
     // fontWeight: "bold",
@@ -169,7 +191,7 @@ const styles = StyleSheet.create({
   },
   levelText: {
     fontSize: 16,
-    marginBottom: 10,
+    marginBottom: 4,
   },
   levelUpTextContainer: {
     flexDirection: "row",
