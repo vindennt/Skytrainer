@@ -19,7 +19,7 @@ export const LIGHT_THEME = {
     surfaceDisabled: "#CAD7DF", // non touchable
     onSurfaceDisabled: "#87919C", // on non touchable
     text: "#000000",
-    primaryContainer: "rgba(248, 250, 253, 0.1)",
+    primaryContainer: "rgba(248, 250, 253, 0.4)",
 
     // primary: "rgb(120, 69, 172)",
     // onPrimary: "rgb(255, 255, 255)",
@@ -89,7 +89,7 @@ export const DARK_THEME = {
     surfaceDisabled: "#A9A9B6",
     onSurfaceDisabled: "#FFFFFF",
     text: "#FFFFFF",
-    primaryContainer: "rgba(30, 30, 42, 0.5)",
+    primaryContainer: "rgba(30, 30, 62, 0.1)",
 
     // primary: "rgb(220, 184, 255)",
     // onPrimary: "rgb(71, 12, 122)",

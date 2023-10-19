@@ -78,11 +78,7 @@ export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
 
   return (
     <View style={styles.parentContainer}>
-      <BlurView
-        intensity={50}
-        tint={isDark ? "dark" : "light"}
-        style={[styles.container]}
-      >
+      <BlurView intensity={50} tint="dark" style={[styles.container]}>
         <View
           style={[
             styles.innerContainer,
