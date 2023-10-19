@@ -34,6 +34,8 @@ import { getTier } from "@src/utils/skytrain";
 import { GachaRewardDisplay } from "@src/components/GachaRewardDisplay";
 import { selectLimitedBanner } from "@src/features/shop/shopSlice";
 import TabControl from "@src/components/TabControl";
+import Layout from "@src/components/Layout";
+import { BlurView } from "expo-blur";
 
 const Shop = () => {
   const defaultBuyable: Buyable = {
@@ -92,75 +94,79 @@ const Shop = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Shop</Text>
+    <Layout position="absolute">
+      <View style={styles.container}>
+        <Text style={styles.header}>Shop</Text>
 
-      <FlatList
-        ListHeaderComponent={
-          <View style={styles.container}>
-            <TabControl
-              index={selectedBannerTab}
-              onChange={setSelectedBannerTab}
-              options={bannerTabOptions}
-            />
-            {limitedBanner !== null &&
-              bannerTabOptions[selectedBannerTab] === limitedText && (
+        <FlatList
+          ListHeaderComponent={
+            <View style={styles.container}>
+              <TabControl
+                index={selectedBannerTab}
+                onChange={setSelectedBannerTab}
+                options={bannerTabOptions}
+              />
+
+              {limitedBanner !== null &&
+                bannerTabOptions[selectedBannerTab] === limitedText && (
+                  <View>
+                    {/* <Text style={styles.subheader}>Limited Time</Text> */}
+                    <BannerCard
+                      banner={limitedBanner}
+                      popupCallback={showRewardPopup}
+                      popupVisible={showPopup}
+                    />
+                  </View>
+                )}
+              {/* <Text style={styles.subheader}>Permanent</Text> */}
+              {bannerTabOptions[selectedBannerTab] === permanentText && (
                 <View>
-                  {/* <Text style={styles.subheader}>Limited Time</Text> */}
                   <BannerCard
-                    banner={limitedBanner}
+                    banner={PermanentBannerInfo}
                     popupCallback={showRewardPopup}
                     popupVisible={showPopup}
                   />
                 </View>
               )}
-            {/* <Text style={styles.subheader}>Permanent</Text> */}
-            {bannerTabOptions[selectedBannerTab] === permanentText && (
-              <View>
-                <BannerCard
-                  banner={PermanentBannerInfo}
-                  popupCallback={showRewardPopup}
-                  popupVisible={showPopup}
+              <Text style={styles.subheader}>Stations</Text>
+              <View style={styles.tabContainer}>
+                <TabControl
+                  index={selectedStationTab}
+                  onChange={setSelectedStationTab}
+                  options={stationsTabOptions}
                 />
               </View>
-            )}
-            <Text style={styles.subheader}>Stations</Text>
-            <View style={styles.tabContainer}>
-              <TabControl
-                index={selectedStationTab}
-                onChange={setSelectedStationTab}
-                options={stationsTabOptions}
-              />
             </View>
-          </View>
-        }
-        data={filteredShopData}
-        renderItem={renderShopItem}
-        keyExtractor={(item) => item.itemid}
-        numColumns={2}
-        contentContainerStyle={styles.flatListContent}
-      />
-      <Popup
-        visible={showPopup}
-        onClose={handleClosePopup}
-        {...(gachaPopup
-          ? {
-              closeOnTapAnywhere: true,
-              closeButtonVisible: false,
-              backgroundColours:
-                getTier(rewardId) === Tier.FIVE_STAR
-                  ? FIVE_STAR_GRADIENT
-                  : FOUR_STAR_GRADIENT,
-            }
-          : { closeOnTapAnywhere: false, closeButtonVisible: true })}
-      >
-        {gachaPopup ? (
-          <GachaRewardDisplay stationId={rewardId} />
-        ) : (
-          <ProductCard item={selectedItem} onPurchase={handleClosePopup} />
-        )}
-      </Popup>
-    </View>
+          }
+          data={filteredShopData}
+          renderItem={renderShopItem}
+          keyExtractor={(item) => item.itemid}
+          numColumns={2}
+          contentContainerStyle={styles.flatListContent}
+        />
+
+        <Popup
+          visible={showPopup}
+          onClose={handleClosePopup}
+          {...(gachaPopup
+            ? {
+                closeOnTapAnywhere: true,
+                closeButtonVisible: false,
+                backgroundColours:
+                  getTier(rewardId) === Tier.FIVE_STAR
+                    ? FIVE_STAR_GRADIENT
+                    : FOUR_STAR_GRADIENT,
+              }
+            : { closeOnTapAnywhere: false, closeButtonVisible: true })}
+        >
+          {gachaPopup ? (
+            <GachaRewardDisplay stationId={rewardId} />
+          ) : (
+            <ProductCard item={selectedItem} onPurchase={handleClosePopup} />
+          )}
+        </Popup>
+      </View>
+    </Layout>
   );
 };
 

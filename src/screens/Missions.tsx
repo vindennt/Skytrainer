@@ -31,6 +31,7 @@ import {
 } from "@src/features/skytrain/skytrainSlice";
 import { setSelectedStation } from "@src/features/stations/stationsSlice";
 import { LoadingIndicator } from "@src/components/LoadingIndicator";
+import Layout from "@src/components/Layout";
 
 const Missions = () => {
   const dispatch = useDispatch<any>();
@@ -116,34 +117,36 @@ const Missions = () => {
   return lastUsedStation === "000" ? (
     <LoadingIndicator></LoadingIndicator>
   ) : (
-    <View style={styles.container}>
-      <Text style={styles.header}>Skytrain</Text>
-      <View style={styles.secondaryContainer}>
-        <DailyFocusBox popupCallback={(reward) => showPopup(reward)} />
-        <View style={{ flex: 1 }}>
-          <QuickStartCard />
-        </View>
-        <Button mode="contained" onPress={handleManualTrip}>
-          Start a Focus Trip
-        </Button>
-        <Popup
-          visible={popupVisible}
-          onClose={() => {
-            setPopupVisible(false);
-          }}
-        >
-          <View style={styles.rewardContainer}>
-            <Text style={styles.headerText}>Claimed Rewards</Text>
-            <View style={styles.rewardTextContainer}>
-              <PremiumCurrencyIcon />
-              <Text style={[styles.text, { marginLeft: 6 }]}>
-                {displayedReward}
-              </Text>
-            </View>
+    <Layout>
+      <View style={styles.container}>
+        <Text style={styles.header}>Skytrain</Text>
+        <View style={styles.secondaryContainer}>
+          <DailyFocusBox popupCallback={(reward) => showPopup(reward)} />
+          <View style={{ flex: 1 }}>
+            <QuickStartCard />
           </View>
-        </Popup>
+          <Button mode="contained" onPress={handleManualTrip}>
+            Start a Focus Trip
+          </Button>
+          <Popup
+            visible={popupVisible}
+            onClose={() => {
+              setPopupVisible(false);
+            }}
+          >
+            <View style={styles.rewardContainer}>
+              <Text style={styles.headerText}>Claimed Rewards</Text>
+              <View style={styles.rewardTextContainer}>
+                <PremiumCurrencyIcon />
+                <Text style={[styles.text, { marginLeft: 6 }]}>
+                  {displayedReward}
+                </Text>
+              </View>
+            </View>
+          </Popup>
+        </View>
       </View>
-    </View>
+    </Layout>
   );
 };
 

@@ -6,6 +6,7 @@ import { LevelUpBox } from "@src/components/LevelUpBox";
 import { useDispatch } from "react-redux";
 import { setSelectedStation } from "@src/features/stations/stationsSlice";
 import { useCallback } from "react";
+import Layout from "@src/components/Layout";
 
 const Stations = () => {
   const dispatch = useDispatch<any>();
@@ -16,13 +17,15 @@ const Stations = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Stations</Text>
-      <View style={styles.contentContainer}>
-        <StationSelector onValueChange={memoizedCallback} />
-        <LevelUpBox />
+    <Layout>
+      <View style={styles.container}>
+        <Text style={styles.header}>Stations</Text>
+        <View style={styles.contentContainer}>
+          <StationSelector onValueChange={memoizedCallback} />
+          <LevelUpBox />
+        </View>
       </View>
-    </View>
+    </Layout>
   );
 };
 export default Stations;
@@ -31,7 +34,9 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 10,
     // paddingTop: 10,
+
     flex: 1,
+    width: "100%",
   },
   contentContainer: {
     paddingHorizontal: 10,
