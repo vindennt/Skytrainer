@@ -31,6 +31,7 @@ import {
 import { getTodayDMY, datesMatch, isConsecutiveDay } from "@src/utils/dates";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useDispatch, useSelector } from "react-redux";
+import { Popup } from "@src/components/Popup";
 
 const Achievements = () => {
   const theme = useTheme();
@@ -221,6 +222,24 @@ const Achievements = () => {
               </TouchableOpacity>
             </View>
           )}
+          <Popup
+            visible={popupVisible}
+            onClose={() => {
+              setPopupVisible(false);
+            }}
+          >
+            <View style={styles.rewardContainer}>
+              <Text style={[styles.headerText, { color: "white" }]}>
+                Claimed Rewards
+              </Text>
+              <View style={styles.rewardTextContainer}>
+                <PremiumCurrencyIcon />
+                <Text style={[styles.text, { marginLeft: 6, color: "white" }]}>
+                  {displayedReward}
+                </Text>
+              </View>
+            </View>
+          </Popup>
         </View>
       </View>
     );
@@ -284,10 +303,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   rewardTextContainer: {
+    // flex: 1,
     flexDirection: "row",
+    // justifyContent: "center",
+    alignItems: "center",
   },
   rewardContainer: {
+    flex: 1,
     // backgroundColor: "purple",
+    justifyContent: "center",
     alignItems: "center",
     padding: 20,
     borderRadius: 12,
