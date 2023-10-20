@@ -135,10 +135,12 @@ const Missions = () => {
             }}
           >
             <View style={styles.rewardContainer}>
-              <Text style={styles.headerText}>Claimed Rewards</Text>
+              <Text style={[styles.headerText, { color: "white" }]}>
+                Claimed Rewards
+              </Text>
               <View style={styles.rewardTextContainer}>
                 <PremiumCurrencyIcon />
-                <Text style={[styles.text, { marginLeft: 6 }]}>
+                <Text style={[styles.text, { marginLeft: 6, color: "white" }]}>
                   {displayedReward}
                 </Text>
               </View>
@@ -187,10 +189,15 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   rewardTextContainer: {
+    // flex: 1,
     flexDirection: "row",
+    // justifyContent: "center",
+    alignItems: "center",
   },
   rewardContainer: {
+    flex: 1,
     // backgroundColor: "purple",
+    justifyContent: "center",
     alignItems: "center",
     padding: 20,
     borderRadius: 12,

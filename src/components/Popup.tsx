@@ -39,7 +39,7 @@ export const Popup: React.FC<PopupProps> = ({
   const popupContent = (
     // <View style={[styles.popupOverlay, { backgroundColor: backgroundColour }]}>
     <LinearGradient style={styles.popupOverlay} colors={backgroundColours}>
-      <BlurView intensity={10} style={styles.blurContainer}>
+      <BlurView intensity={30} tint="dark" style={styles.blurContainer}>
         <View style={styles.popup}>
           {children}
           {closeButtonVisible && (
