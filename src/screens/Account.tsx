@@ -33,10 +33,12 @@ import { getDate } from "@utils/dates";
 import { useNavigation } from "@react-navigation/native";
 import { Appearance } from "react-native";
 import { selectDarkTheme, setIsDarkTheme } from "@src/navigation/navSlice";
+import { TEXTBOX_DARK_THEME, TEXTBOX_LIGHT_THEME } from "../../assets/themes";
 
 const Account = () => {
   const dispatch = useDispatch<any>();
   const theme = useTheme();
+  const isDark = useSelector(selectDarkTheme);
   const navigation = useNavigation();
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
@@ -88,6 +90,14 @@ const Account = () => {
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
+      <Button
+        onPress={() => navigation.navigate("Achievements" as never)}
+        icon="trophy"
+        style={styles.button}
+        mode="contained"
+      >
+        Achievements
+      </Button>
       <StackedText topText="Email" bottomText={session.user.email} />
       {!editingDisplayName ? (
         <View
@@ -99,7 +109,12 @@ const Account = () => {
         >
           <StackedText topText="Display name" bottomText={displayName} />
           <View>
-            <Button onPress={() => setEditingDisplayName(true)}>Edit</Button>
+            <Button
+              onPress={() => setEditingDisplayName(true)}
+              labelStyle={{ color: theme.colors.onPrimary }}
+            >
+              Edit
+            </Button>
           </View>
         </View>
       ) : (
@@ -132,16 +147,20 @@ const Account = () => {
           }) => (
             <View style={styles.verticallySpaced}>
               <TextInput
-                label="Change display name"
+                label="Enter new display name"
                 value={values.displayName}
-                placeholder={displayName}
+                mode="outlined"
+                // placeholder={displayName}
                 onChangeText={handleChange("displayName")}
                 onBlur={() => setFieldTouched("displayName")}
                 autoCapitalize={"none"}
+                theme={isDark ? TEXTBOX_DARK_THEME : TEXTBOX_LIGHT_THEME}
+                // textColor={theme.colors.onSurface}
               />
               <HelperText
                 type="info"
                 visible={errors.displayName !== undefined}
+                style={{ color: theme.colors.error }}
               >
                 {errors.displayName}
               </HelperText>
@@ -153,6 +172,7 @@ const Account = () => {
               >
                 <Button
                   onPress={() => handleSubmit()}
+                  mode="contained"
                   disabled={!isValid || loading}
                   loading={loading}
                 >
@@ -169,7 +189,12 @@ const Account = () => {
             topText="Daily Focus Milestones"
             bottomText={milestonesString}
           />
-          <Button onPress={handleEditDailyFocus}>Edit</Button>
+          <Button
+            onPress={handleEditDailyFocus}
+            labelStyle={{ color: theme.colors.onPrimary }}
+          >
+            Edit
+          </Button>
         </View>
         <View style={styles.horizontallySpaced}>
           <StackedText topText="Theme" bottomText={"Dark Mode"} />
@@ -198,16 +223,9 @@ const Account = () => {
         ]}
       >
         <Button
-          onPress={() => navigation.navigate("Achievements" as never)}
-          style={{ width: "100%" }}
-          mode="outlined"
-        >
-          Achievements
-        </Button>
-        <Button
           onPress={() => supabase.auth.signOut()}
           icon="exit-outline"
-          style={{ width: "100%" }}
+          style={styles.button}
           mode="contained"
         >
           Sign Out
@@ -246,5 +264,9 @@ const styles = StyleSheet.create({
   },
   divider: {
     borderBottomWidth: 1,
+  },
+  button: {
+    width: "100%",
+    marginVertical: 5,
   },
 });

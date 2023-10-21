@@ -6,7 +6,9 @@ export const LIGHT_THEME = {
     onSurface: "#000000",
     surfaceVariant: "#DADEE3",
     onSurfaceVariant: "#FFFFFF",
-    primary: "#DADEE3",
+    // primary: "#085DA9",
+    // onPrimary: "white",
+    primary: "#DFE5ED",
     onPrimary: "#085DA9",
     secondary: "#F8FAFD",
     onSecondary: "#085DA9",
@@ -16,7 +18,7 @@ export const LIGHT_THEME = {
     tertiary: "#0099C6", // notification
     tertiaryContainer: "#FDC426", // gold
     onTertiaryContainer: "#17375C", // navy
-    surfaceDisabled: "#CAD7DF", // non touchable
+    surfaceDisabled: "#F0F4FB", // non touchable
     onSurfaceDisabled: "#87919C", // on non touchable
     text: "#000000",
     primaryContainer: "rgba(248, 250, 253, 0.4)",
@@ -68,6 +70,16 @@ export const LIGHT_THEME = {
   },
 };
 
+export const TEXTBOX_LIGHT_THEME = {
+  colors: {
+    ...LIGHT_THEME.colors,
+    primary: LIGHT_THEME.colors.onPrimary,
+    background: LIGHT_THEME.colors.primary,
+    onSurfaceVariant: LIGHT_THEME.colors.onPrimary,
+    outline: "transparent",
+  },
+};
+
 export const DARK_THEME = {
   colors: {
     background: "#1C1C23",
@@ -76,7 +88,7 @@ export const DARK_THEME = {
     onSurface: "#FFFFFF",
     surfaceVariant: "#30303F",
     onSurfaceVariant: "#5A5A71",
-    primary: "#30303F",
+    primary: "#353546",
     onPrimary: "#1F99DE",
     secondary: "#30303F",
     onSecondary: "#1F99DE",
@@ -86,8 +98,8 @@ export const DARK_THEME = {
     tertiary: "#0099C6",
     tertiaryContainer: "#FDC426",
     onTertiaryContainer: "#17375C",
-    surfaceDisabled: "#A9A9B6",
-    onSurfaceDisabled: "#FFFFFF",
+    surfaceDisabled: "#272734",
+    onSurfaceDisabled: "#87919C",
     text: "#FFFFFF",
     primaryContainer: "rgba(30, 30, 62, 0.1)",
 
@@ -135,5 +147,15 @@ export const DARK_THEME = {
     onNewColor: "rgb(71, 12, 122)",
     newColorContainer: "rgb(95, 43, 146)",
     onNewColorContainer: "rgb(240, 219, 255)",
+  },
+};
+
+export const TEXTBOX_DARK_THEME = {
+  colors: {
+    ...DARK_THEME.colors,
+    primary: DARK_THEME.colors.onPrimary,
+    background: DARK_THEME.colors.primary,
+    onSurfaceVariant: DARK_THEME.colors.onPrimary,
+    outline: "transparent",
   },
 };
