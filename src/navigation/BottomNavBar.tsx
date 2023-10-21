@@ -73,10 +73,8 @@ const BottomNavBar = () => {
         },
       }}
       compact={true}
-      // TODO: Cause bar to move downards, and content to render beneath it. Might be useful for blue
-      // barStyle={{ bottom: -30, position: "absolute" }}
       barStyle={{
-        backgroundColor: "rgba(0,0,0,0)",
+        backgroundColor: "transparent",
         // backgroundColor: theme.colors.primaryContainer,
         // bottom: -10,
         position: "absolute",
