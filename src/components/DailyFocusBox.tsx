@@ -63,7 +63,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
 
   const getButtonColour = (claimed: boolean, finished: boolean): string => {
     return claimed
-      ? "transparent"
+      ? theme.colors.background
       : finished
       ? theme.colors.tertiaryContainer
       : theme.colors.surfaceDisabled;
@@ -220,7 +220,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
             style={[
               styles.progressButton,
               {
-                backgroundColor: "transparent",
+                backgroundColor: theme.colors.background,
                 borderWidth: 3,
                 borderColor: claimed
                   ? getIconColour(claimed, finished)
@@ -334,6 +334,7 @@ const styles = StyleSheet.create({
     borderRadius: 37,
     alignItems: "center",
     justifyContent: "center",
+    zIndex: 999,
     // flex: 1,
   },
   progressButtonTouchable: {
@@ -347,6 +348,7 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
     // marginHorizontal: 20,
     // marginRight: 10,
+    zIndex: 999,
   },
   progressContainer: {
     justifyContent: "space-between",
@@ -356,8 +358,9 @@ const styles = StyleSheet.create({
     // backgroundColor: "purple",
   },
   progressBar: {
+    // flex: 1,
     height: 3,
-    width: 54,
+    width: 80,
     top: 24,
     right: 0.5,
   },
@@ -367,6 +370,7 @@ const styles = StyleSheet.create({
   },
   progressBarContainer: {
     flex: 1,
+    zIndex: 1,
     width: "100%",
     position: "absolute",
     flexDirection: "row",
