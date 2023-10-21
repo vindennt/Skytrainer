@@ -153,7 +153,7 @@ export const QuickStartCard: React.FC = ({}) => {
 
   const tooltipContent: React.ReactNode = (
     <View style={styles.tooltip}>
-      <Text style={styles.text}>Max: 5</Text>
+      <Text style={[styles.text, { color: "white" }]}>Max: 5</Text>
     </View>
   );
 
@@ -168,7 +168,7 @@ export const QuickStartCard: React.FC = ({}) => {
         name="add"
         color={
           quickstarts.length < MAX_QUICKSTARTS
-            ? theme.colors.onSurfaceVariant
+            ? theme.colors.onPrimary
             : theme.colors.outline
         }
         size={28}
@@ -190,9 +190,9 @@ export const QuickStartCard: React.FC = ({}) => {
             <Icon
               name="create-outline"
               color={
-                quickstarts.length === 0
-                  ? theme.colors.outline
-                  : theme.colors.onSurfaceVariant
+                quickstarts.length > 0
+                  ? theme.colors.onPrimary
+                  : theme.colors.outline
               }
               size={24}
             />
