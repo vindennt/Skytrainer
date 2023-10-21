@@ -70,12 +70,19 @@ export const LIGHT_THEME = {
   },
 };
 
+// export const BUTTON_LIGHT_THEME = {
+//   colors: {
+//     ...LIGHT_THEME.colors,
+//     primary: LIGHT_THEME.colors.onPrimary,
+//   },
+// };
+
 export const TEXTBOX_LIGHT_THEME = {
   colors: {
     ...LIGHT_THEME.colors,
     primary: LIGHT_THEME.colors.onPrimary,
     background: LIGHT_THEME.colors.primary,
-    onSurfaceVariant: LIGHT_THEME.colors.onPrimary,
+    onSurfaceVariant: LIGHT_THEME.colors.backdrop,
     outline: "transparent",
   },
 };
@@ -150,12 +157,19 @@ export const DARK_THEME = {
   },
 };
 
+// export const BUTTON_DARK_THEME = {
+//   colors: {
+//     ...DARK_THEME.colors,
+//     primary: DARK_THEME.colors.onPrimary,
+//   },
+// };
+
 export const TEXTBOX_DARK_THEME = {
   colors: {
     ...DARK_THEME.colors,
     primary: DARK_THEME.colors.onPrimary,
     background: DARK_THEME.colors.primary,
-    onSurfaceVariant: DARK_THEME.colors.onPrimary,
+    onSurfaceVariant: DARK_THEME.colors.backdrop,
     outline: "transparent",
   },
 };

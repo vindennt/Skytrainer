@@ -11,10 +11,15 @@ import {
 import { View, StyleSheet, Alert } from "react-native";
 import { Formik } from "formik";
 import { initialValues, signupSchema } from "@features/auth/signupForm";
+import { selectDarkTheme } from "@src/navigation/navSlice";
+import { useSelector } from "react-redux";
+import { TEXTBOX_DARK_THEME, TEXTBOX_LIGHT_THEME } from "../../assets/themes";
 
 const Signup = () => {
   const theme = useTheme();
   const navigation = useNavigation();
+  const isDark = useSelector(selectDarkTheme);
+  const textBoxTheme = isDark ? TEXTBOX_DARK_THEME : TEXTBOX_LIGHT_THEME;
 
   const [loading, setLoading] = useState(false);
 
@@ -72,10 +77,12 @@ const Signup = () => {
           <View>
             <TextInput
               label="Display name*"
+              mode="outlined"
               //   placeholder="Display name"
               value={values.displayName}
               onChangeText={handleChange("displayName")}
               onBlur={() => setFieldTouched("displayName")}
+              theme={textBoxTheme}
             />
           </View>
           <HelperText
@@ -89,12 +96,14 @@ const Signup = () => {
           </HelperText>
           <View>
             <TextInput
+              mode="outlined"
               label="Email*"
               //   placeholder="email@address.com"
               value={values.email}
               onChangeText={handleChange("email")}
               onBlur={() => setFieldTouched("email")}
               autoCapitalize="none"
+              theme={textBoxTheme}
             />
           </View>
           <HelperText
@@ -106,12 +115,14 @@ const Signup = () => {
           <View>
             <TextInput
               label="Password*"
+              mode="outlined"
               //   placeholder="Password"
               value={values.password}
               onChangeText={handleChange("password")}
               onBlur={() => setFieldTouched("password")}
               autoCapitalize="none"
               secureTextEntry={true}
+              theme={textBoxTheme}
             />
           </View>
           <HelperText
@@ -125,12 +136,14 @@ const Signup = () => {
           <View>
             <TextInput
               label="Confirm Password*"
+              mode="outlined"
               //   placeholder="Confirm Password"
               value={values.confirmPassword}
               onChangeText={handleChange("confirmPassword")}
               onBlur={() => setFieldTouched("confirmPassword")}
               autoCapitalize="none"
               secureTextEntry={true}
+              theme={textBoxTheme}
             />
           </View>
           <HelperText
@@ -146,6 +159,7 @@ const Signup = () => {
             disabled={!isValid || loading}
             loading={loading}
             onPress={() => handleSubmit()}
+            mode="contained"
           >
             Submit
           </Button>
