@@ -274,22 +274,24 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
           <Text>Last focus: {lastFocusString}</Text>
         </View> */}
         <View style={styles.progressContainer}>
-          <ZerothDailyProgressButton />
-          {/* <Progressbar milestone={FIRST_MILESTONE} /> */}
-          <DailyProgressButton
-            milestone={FIRST_MILESTONE}
-            reward={DailyFocusRewards.FIRST_MILESTONE}
-          />
-          {/* <Progressbar milestone={SECOND_MILESTONE} /> */}
-          <DailyProgressButton
-            milestone={SECOND_MILESTONE}
-            reward={DailyFocusRewards.SECOND_MILESTONE}
-          />
-          {/* <Progressbar milestone={THIRD_MILESTONE} /> */}
-          <DailyProgressButton
-            milestone={THIRD_MILESTONE}
-            reward={DailyFocusRewards.THIRD_MILESTONE}
-          />
+          <View style={styles.progressButtonContainer}>
+            <ZerothDailyProgressButton />
+            {/* <Progressbar milestone={FIRST_MILESTONE} /> */}
+            <DailyProgressButton
+              milestone={FIRST_MILESTONE}
+              reward={DailyFocusRewards.FIRST_MILESTONE}
+            />
+            {/* <Progressbar milestone={SECOND_MILESTONE} /> */}
+            <DailyProgressButton
+              milestone={SECOND_MILESTONE}
+              reward={DailyFocusRewards.SECOND_MILESTONE}
+            />
+            {/* <Progressbar milestone={THIRD_MILESTONE} /> */}
+            <DailyProgressButton
+              milestone={THIRD_MILESTONE}
+              reward={DailyFocusRewards.THIRD_MILESTONE}
+            />
+          </View>
           <View style={styles.progressBarContainer}>
             <Progressbar milestone={FIRST_MILESTONE} />
             <Progressbar milestone={SECOND_MILESTONE} />
@@ -334,7 +336,6 @@ const styles = StyleSheet.create({
     borderRadius: 37,
     alignItems: "center",
     justifyContent: "center",
-    zIndex: 999,
     // flex: 1,
   },
   progressButtonTouchable: {
@@ -348,7 +349,6 @@ const styles = StyleSheet.create({
     // justifyContent: "center",
     // marginHorizontal: 20,
     // marginRight: 10,
-    zIndex: 999,
   },
   progressContainer: {
     justifyContent: "space-between",
@@ -356,6 +356,7 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     flexDirection: "row",
     // backgroundColor: "purple",
+    // zIndex: 1, // Should not matter
   },
   progressBar: {
     // flex: 1,
@@ -370,10 +371,16 @@ const styles = StyleSheet.create({
   },
   progressBarContainer: {
     flex: 1,
-    zIndex: 1,
     width: "100%",
     position: "absolute",
     flexDirection: "row",
     justifyContent: "space-evenly",
+    zIndex: 1,
+  },
+  progressButtonContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    zIndex: 999,
   },
 });
