@@ -13,17 +13,28 @@ interface Props {
 const Layout: React.FC<Props> = ({ children, position }) => {
   const theme = useTheme();
   const isDark: boolean = useSelector(selectDarkTheme);
+  const isAbsolute: boolean = position === "absolute";
 
   return (
     <View style={[styles.container]}>
       {children}
+      {isAbsolute && (
+        <BlurView
+          intensity={isDark ? 35 : 50}
+          tint="default"
+          style={[
+            styles.glassLine,
+            !isDark && { backgroundColor: "rgba(0, 0, 0, 0.2)" },
+          ]}
+        />
+      )}
+
       <BlurView
-        intensity={100}
-        tint={isDark ? "dark" : "light"}
+        intensity={80}
+        tint={isDark ? "dark" : isAbsolute ? "light" : "default"}
         style={[
           styles.footer,
-          { backgroundColor: theme.colors.primaryContainer },
-          position === "absolute" && { position: "absolute", bottom: 0 },
+          isAbsolute && { position: "absolute", bottom: 0 },
         ]}
       />
     </View>
@@ -33,10 +44,16 @@ const Layout: React.FC<Props> = ({ children, position }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    flexDirection: "column",
   },
   footer: {
     height: 85, // adjust height as needed
     width: "100%",
+  },
+  glassLine: {
+    height: 1,
+    bottom: 85,
+    backgroundColor: "transparent",
   },
 });
 
