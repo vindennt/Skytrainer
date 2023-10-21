@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   UserState,
   selectLastUsedStation,
+  selectSlider,
   setSlider,
 } from "@src/features/user/userSlice";
 import {
@@ -35,9 +36,10 @@ export const TripBox: React.FC = () => {
   const selectedStation = useSelector(selectSelectedStation);
   const stations: Map<string, number> = useSelector(selectStations);
   const skytrainGraph = useSelector(selectSkytrainGraph);
+  const slider = useSelector(selectSlider);
 
   const [loading, setIsLoading] = useState<boolean>(false);
-  const [pickerValue, setPickerValue] = useState<number>(25);
+  const [pickerValue, setPickerValue] = useState<number>(slider);
 
   const pickerOnChange = (value: string) => {
     const intValue: number = parseInt(value);
