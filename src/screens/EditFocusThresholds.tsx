@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import { Button, Text, useTheme } from "react-native-paper";
+import { Button, HelperText, Text, useTheme } from "react-native-paper";
 import { Picker } from "@react-native-picker/picker";
 import DailyFocusThresholdPicker, {
   OPTIONS_FIVE_ONE_TWENTY,
@@ -45,20 +45,20 @@ const EditFocusThresholds = () => {
     THIRD_MILESTONE.toString()
   );
 
+  const firstMilestoneInt = parseInt(firstMilestone);
+  const secondMilestoneInt = parseInt(secondMilestone);
+  const thirdMilestoneInt = parseInt(thirdMilestone);
   const [loading, setLoading] = useState<boolean>(false);
+  const validMilestoneOrder: boolean =
+    firstMilestoneInt < secondMilestoneInt &&
+    secondMilestoneInt < thirdMilestoneInt;
 
   const numberOptions: PickerItem[] = OPTIONS_FIVE_ONE_TWENTY;
 
   const handleSubmission = async () => {
     setLoading(true);
-    const firstMilestoneInt = parseInt(firstMilestone);
-    const secondMilestoneInt = parseInt(secondMilestone);
-    const thirdMilestoneInt = parseInt(thirdMilestone);
 
-    if (
-      firstMilestoneInt < secondMilestoneInt &&
-      secondMilestoneInt < thirdMilestoneInt
-    ) {
+    if (validMilestoneOrder) {
       const readjustedClaimedMins: number = readjustClaimedMinutes(
         FIRST_MILESTONE,
         SECOND_MILESTONE,
@@ -115,7 +115,10 @@ const EditFocusThresholds = () => {
             items={numberOptions}
           />
         </View>
-        <Text style={{ padding: 30, color: theme.colors.outline }}>
+        <HelperText type="error" visible={!validMilestoneOrder}>
+          {"Milestones must be in ascending order."}
+        </HelperText>
+        <Text style={{ padding: 30, color: theme.colors.onBackground }}>
           Note: Any Daily Focus Rewards that are already claimed will not be
           able to be claimed again until the next day.
         </Text>
@@ -130,13 +133,17 @@ const EditFocusThresholds = () => {
             },
           ]}
         >
-          <Button mode="outlined" onPress={handleCancel}>
+          <Button
+            mode="outlined"
+            onPress={handleCancel}
+            labelStyle={{ color: theme.colors.onPrimary }}
+          >
             Cancel
           </Button>
           <Button
             mode="contained"
             onPress={handleSubmission}
-            disabled={loading}
+            disabled={loading || !validMilestoneOrder}
             loading={loading}
           >
             Submit
