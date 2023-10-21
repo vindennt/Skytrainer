@@ -20,11 +20,21 @@ const Layout: React.FC<Props> = ({ children, position }) => {
       {children}
       {isAbsolute && (
         <BlurView
-          intensity={isDark ? 35 : 50}
-          tint="default"
+          // intensity={isDark ? 35 : 50}
+          // tint="default"
+          // style={[
+          //   styles.glassLine,
+          //   !isDark && { backgroundColor: "rgba(0, 0, 0, 0.2)" },
+          // ]}
+          intensity={60}
+          tint={isDark ? "dark" : "default"}
           style={[
             styles.glassLine,
-            !isDark && { backgroundColor: "rgba(0, 0, 0, 0.2)" },
+            {
+              backgroundColor: isDark
+                ? "rgba(255, 255, 255, 0.2)"
+                : "rgba(0, 0, 0, 0.10)",
+            },
           ]}
         />
       )}
@@ -51,7 +61,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   glassLine: {
-    height: 1,
+    height: 1.5,
     bottom: 85,
     backgroundColor: "transparent",
   },

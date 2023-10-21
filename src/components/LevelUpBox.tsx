@@ -96,7 +96,18 @@ export const LevelUpBox: React.FC = () => {
 
   return (
     <View style={styles.verticalContainer}>
-      <BlurView intensity={70} tint="default" style={[styles.glassLine]} />
+      <BlurView
+        intensity={60}
+        tint={isDark ? "dark" : "default"}
+        style={[
+          styles.glassLine,
+          {
+            backgroundColor: isDark
+              ? "rgba(255, 255, 255, 0.10)"
+              : "rgba(0, 0, 0, 0.10)",
+          },
+        ]}
+      />
       <BlurView
         intensity={80}
         tint={isDark ? "dark" : "light"}
@@ -234,7 +245,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   glassLine: {
-    height: 1.5,
+    height: 2,
     // backgroundColor: "transparent",
   },
 });
