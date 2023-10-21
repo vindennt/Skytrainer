@@ -125,8 +125,12 @@ const Missions = () => {
           <View style={{ flex: 1 }}>
             <QuickStartCard />
           </View>
-          <Button mode="contained" onPress={handleManualTrip}>
-            Start a Focus Trip
+          <Button
+            style={styles.button}
+            mode="contained"
+            onPress={handleManualTrip}
+          >
+            Manual Focus Trip
           </Button>
           <Popup
             visible={popupVisible}
@@ -229,5 +233,8 @@ const styles = StyleSheet.create({
     width: 70,
     // flex: 1,
     // flexWrap: "wrap",
+  },
+  button: {
+    borderRadius: 12,
   },
 });

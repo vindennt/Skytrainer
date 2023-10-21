@@ -92,7 +92,7 @@ const Account = () => {
     >
       <Button
         onPress={() => navigation.navigate("Achievements" as never)}
-        icon="trophy"
+        // icon="trophy"
         style={styles.button}
         mode="contained"
       >
@@ -224,7 +224,8 @@ const Account = () => {
       >
         <Button
           onPress={() => supabase.auth.signOut()}
-          icon="exit-outline"
+          // icon="exit-outline"
+          labelStyle={{ color: theme.colors.error }}
           style={styles.button}
           mode="contained"
         >
@@ -268,5 +269,6 @@ const styles = StyleSheet.create({
   button: {
     width: "100%",
     marginVertical: 5,
+    borderRadius: 12,
   },
 });

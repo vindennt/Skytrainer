@@ -164,6 +164,7 @@ const Trip = () => {
         }}
         style={styles.button}
         labelStyle={{ fontSize: 16 }} // icon size
+        mode="contained"
       >
         Return
       </Button>
@@ -188,6 +189,7 @@ const styles = StyleSheet.create({
   },
   button: {
     marginTop: 80,
+    width: "100%",
   },
   item: {
     flexDirection: "row",

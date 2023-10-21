@@ -91,7 +91,8 @@ export const TripBox: React.FC = () => {
         </View>
       </View>
       <Button
-        labelStyle={{ marginVertical: 5 }}
+        // labelStyle={{ marginVertical: 5 }}
+        style={styles.button}
         mode="contained"
         disabled={pickerValue === 0 || loading}
         onPress={handleTripStart}
@@ -130,5 +131,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     // justifyContent: "space-between",
     // marginBottom: 8,
+  },
+  button: {
+    borderRadius: 12,
   },
 });
