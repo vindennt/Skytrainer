@@ -109,7 +109,7 @@ export const QuickStartCard: React.FC = ({}) => {
           <Text
             style={[
               styles.text,
-              { color: textColor },
+              { color: textColor, fontFamily: "Nothing" },
               // { fontWeight: "bold" },
             ]}
           >
