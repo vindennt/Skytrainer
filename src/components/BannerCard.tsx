@@ -214,7 +214,7 @@ export const BannerCard: React.FC<BannerCardProps> = ({
             mode="contained"
             disabled={!canBuy || isRolling || popupVisible}
             loading={isRolling}
-            labelStyle={[styles.buttonText, { color: theme.colors.onPrimary }]}
+            labelStyle={[styles.buttonText]}
           >
             ROLL x1
           </Button>

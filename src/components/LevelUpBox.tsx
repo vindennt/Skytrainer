@@ -95,61 +95,60 @@ export const LevelUpBox: React.FC = () => {
   };
 
   return (
-    <BlurView
-      intensity={80}
-      tint={isDark ? "dark" : "light"}
-      style={[styles.outerContainer]}
-    >
-      <View style={{ backgroundColor: theme.colors.primaryContainer }}>
-        <View style={styles.container}>
-          <View style={[styles.titleContainer]}>
-            <Title style={styles.headerText}>
-              {getStationName(selectedStation)} Station
-            </Title>
-            {/* <Title>Lv. {levelData.get(selectedStation)}</Title> */}
-          </View>
-          <View style={[styles.horizontalContainer, { right: 4 }]}>
-            <Icon name={LINE_ICON} size={20} color={lineInfo.colour} />
-            <Text style={styles.levelText}>{lineInfo.name}</Text>
-          </View>
-          <Text style={styles.levelText}>
-            Lv. {levelData.get(selectedStation)}
-          </Text>
-          <View style={styles.subtextContainer}>
-            <Text
-              style={[
-                styles.subtextText,
-                { color: theme.colors.outlineVariant },
-              ]}
-            >
-              {subText}
+    <View style={styles.verticalContainer}>
+      <BlurView
+        intensity={80}
+        tint={isDark ? "dark" : "light"}
+        style={[styles.outerContainer]}
+      >
+        <View style={{ backgroundColor: theme.colors.primaryContainer }}>
+          <View style={styles.container}>
+            <View style={[styles.titleContainer]}>
+              <Title style={styles.headerText}>
+                {getStationName(selectedStation)} Station
+              </Title>
+              {/* <Title>Lv. {levelData.get(selectedStation)}</Title> */}
+            </View>
+            <View style={[styles.horizontalContainer, { right: 4 }]}>
+              <Icon name={LINE_ICON} size={20} color={lineInfo.colour} />
+              <Text style={styles.levelText}>{lineInfo.name}</Text>
+            </View>
+            <Text style={styles.levelText}>
+              Lv. {levelData.get(selectedStation)}
             </Text>
-          </View>
-
-          <View style={styles.levelUpTextContainer}>
-            {!maxLevel && (
-              <View style={styles.costContainer}>
-                <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
-                <Text style={styles.costText}>{cost}</Text>
-              </View>
-            )}
-            <Button
-              style={styles.button}
-              onPress={() => handleLevelUp()}
-              mode="contained"
-              disabled={!canBuy || loading}
-              loading={loading}
-            >
+            <View style={styles.subtextContainer}>
               <Text
-                style={[styles.buttonText, { color: theme.colors.onPrimary }]}
+                style={[
+                  styles.subtextText,
+                  { color: theme.colors.outlineVariant },
+                ]}
+              >
+                {subText}
+              </Text>
+            </View>
+
+            <View style={styles.levelUpTextContainer}>
+              {!maxLevel && (
+                <View style={styles.costContainer}>
+                  <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
+                  <Text style={styles.costText}>{cost}</Text>
+                </View>
+              )}
+              <Button
+                style={styles.button}
+                onPress={() => handleLevelUp()}
+                mode="contained"
+                disabled={!canBuy || loading}
+                loading={loading}
+                labelStyle={[styles.buttonText]}
               >
                 {buttonText}
-              </Text>
-            </Button>
+              </Button>
+            </View>
           </View>
         </View>
-      </View>
-    </BlurView>
+      </BlurView>
+    </View>
   );
 };
 
@@ -161,6 +160,8 @@ const styles = StyleSheet.create({
     // flex: 1,
     // margin: -20,
     // paddingBottom: 85
+    borderTopWidth: 1.4,
+    borderColor: "rgba(0, 0, 0, 0.1)",
   },
   container: {
     // backgroundColor: "#454045",
@@ -170,6 +171,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     // marginBottom: 20,
     // position: "absolute",
+  },
+  verticalContainer: {
+    flexDirection: "column",
+    // flex: 1,
   },
   titleContainer: {
     // flex: 1,
@@ -224,5 +229,10 @@ const styles = StyleSheet.create({
   horizontalContainer: {
     flexDirection: "row",
     gap: 8,
+  },
+  glassLine: {
+    height: 1,
+    // bottom: 85,
+    backgroundColor: "transparent",
   },
 });
