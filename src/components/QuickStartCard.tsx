@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, TouchableOpacity, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+} from "react-native";
 import { Text, Button, Title, IconButton, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
 import { Session } from "@supabase/supabase-js";
@@ -29,6 +36,8 @@ import { QuickStartState } from "@src/features/quickStart/quickStartSlice";
 import Icon from "react-native-vector-icons/Ionicons";
 import { MAX_QUICKSTARTS } from "@src/features/quickStart/quickStartHandler";
 import { handleQuickStartAvailability } from "@src/utils/dates";
+import { LinearGradient } from "expo-linear-gradient";
+import { selectDarkTheme } from "@src/navigation/navSlice";
 
 interface QuickStartButtonProps extends QuickStart {}
 
@@ -36,6 +45,7 @@ export const QuickStartCard: React.FC = ({}) => {
   const dispatch = useDispatch<any>();
   const navigation = useNavigation();
   const theme = useTheme();
+  const isDark = useSelector(selectDarkTheme);
 
   const skytrainGraph = useSelector(
     (state: { skytrain: SkytrainState }) => state.skytrain.skytrainGraph
@@ -48,6 +58,17 @@ export const QuickStartCard: React.FC = ({}) => {
   );
   const sortedQuickStarts: QuickStart[] = getSortedQuickstarts(quickstarts);
 
+  const [isAtEnd, setIsAtEnd] = useState(false);
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+
+    // Calculate the position of the scroll
+    const isAtEnd =
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - 10;
+
+    setIsAtEnd(isAtEnd);
+    console.log(isAtEnd);
+  };
   const [loading, setIsLoading] = useState<boolean>(false);
 
   const handleQuickPress = async (
@@ -210,7 +231,11 @@ export const QuickStartCard: React.FC = ({}) => {
         ]}
       >
         <View style={{ flex: 1 }}>
-          <ScrollView style={styles.scrollContainer}>
+          <ScrollView
+            style={styles.scrollContainer}
+            scrollEventThrottle={160}
+            onScroll={handleScroll}
+          >
             {sortedQuickStarts.map((quickstart) => {
               return (
                 quickstart.id && (
@@ -226,6 +251,25 @@ export const QuickStartCard: React.FC = ({}) => {
               );
             })}
           </ScrollView>
+          {/* <View style={{ height: 0, backgroundColor: "transparent" }}> */}
+          {!isAtEnd && (
+            <LinearGradient
+              style={{
+                position: "absolute",
+                bottom: 0,
+                width: "100%",
+                height: "25%",
+              }}
+              // Note: something about React Native Paper theme makes these colors unusable with theme hook
+              colors={[
+                isDark ? "rgba(28, 28, 35, 0)" : "rgba(255, 255, 255, 0)",
+                theme.colors.background,
+              ]}
+              locations={[0, 0.95]}
+              // pointerEvents={"none"}
+            />
+          )}
+          {/* </View> */}
         </View>
         {quickstarts.length === 0 && (
           <View style={styles.textContainer}>
