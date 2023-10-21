@@ -1,4 +1,7 @@
-import { StationsState } from "@src/features/stations/stationsSlice";
+import {
+  StationsState,
+  selectStations,
+} from "@src/features/stations/stationsSlice";
 import { memo } from "react";
 import { imageIconMap } from "@src/utils/imageMappings";
 import { Buyable } from "@src/utils/shop";
@@ -12,6 +15,7 @@ import {
 import { useTheme, Text, Title, Button } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector } from "react-redux";
+import { selectDarkTheme } from "@src/navigation/navSlice";
 
 interface ProductBoxProps {
   item: Buyable;
@@ -20,11 +24,10 @@ interface ProductBoxProps {
 
 const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
   console.log("rendering product box");
-
   const theme = useTheme();
-  const stations: Map<string, number> = useSelector(
-    (state: { stations: StationsState }) => state.stations.stations
-  );
+  const isDark = useSelector(selectDarkTheme);
+  const stations = useSelector(selectStations);
+
   const imageSource: ImageSourcePropType = imageIconMap[
     item.itemid
   ] as ImageSourcePropType;
@@ -41,8 +44,11 @@ const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
           {
             backgroundColor: isOwned
               ? theme.colors.surfaceDisabled
-              : theme.colors.secondary,
+              : isDark
+              ? theme.colors.secondary
+              : theme.colors.background,
           },
+          !isDark && !isOwned && styles.lightItem,
         ]}
       >
         <Image source={imageSource} style={styles.image} resizeMode="contain" />
@@ -104,5 +110,11 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
     maxWidth: "45%",
+  },
+  lightItem: {
+    shadowOpacity: 0.15,
+    shadowColor: "black",
+    shadowRadius: 15,
+    shadowOffset: { width: 0, height: 7 },
   },
 });
