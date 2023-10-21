@@ -96,6 +96,7 @@ export const LevelUpBox: React.FC = () => {
 
   return (
     <View style={styles.verticalContainer}>
+      <BlurView intensity={70} tint="default" style={[styles.glassLine]} />
       <BlurView
         intensity={80}
         tint={isDark ? "dark" : "light"}
@@ -153,15 +154,21 @@ export const LevelUpBox: React.FC = () => {
 };
 
 const styles = StyleSheet.create({
-  outerContainer: {
+  verticalContainer: {
+    flexDirection: "column",
     position: "absolute",
     width: "100%",
     bottom: 85,
     // flex: 1,
+  },
+  outerContainer: {
+    // position: "absolute",
+    width: "100%",
+    // bottom: 85,
+    // flex: 1,
     // margin: -20,
     // paddingBottom: 85
-    borderTopWidth: 1.4,
-    borderColor: "rgba(0, 0, 0, 0.1)",
+    // borderTopWidth: 1.4,
   },
   container: {
     // backgroundColor: "#454045",
@@ -171,10 +178,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     // marginBottom: 20,
     // position: "absolute",
-  },
-  verticalContainer: {
-    flexDirection: "column",
-    // flex: 1,
   },
   titleContainer: {
     // flex: 1,
@@ -231,8 +234,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   glassLine: {
-    height: 1,
-    // bottom: 85,
-    backgroundColor: "transparent",
+    height: 1.5,
+    // backgroundColor: "transparent",
   },
 });
