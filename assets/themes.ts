@@ -12,7 +12,7 @@ export const LIGHT_THEME = {
     onPrimary: "#085DA9",
     secondary: "#F8FAFD",
     onSecondary: "#085DA9",
-    outlineVariant: "#ABB7D3", // secondary text
+    outlineVariant: "#6D7383", // secondary text
     outline: "#D4DDE0", // divider
     backdrop: "#849097", // icon disabled
     tertiary: "#0099C6", // notification
