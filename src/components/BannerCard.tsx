@@ -34,7 +34,11 @@ import { getStationName, getTier } from "@utils/skytrain";
 
 interface BannerCardProps {
   banner: BannerInfo;
-  popupCallback: (rewardId: string) => void;
+  popupCallback: (
+    rewardId: string,
+    levelUpMessage: string,
+    refundMessage: string
+  ) => void;
   popupVisible: boolean;
 }
 
@@ -77,6 +81,9 @@ export const BannerCard: React.FC<BannerCardProps> = ({
       : " ";
   const [isRolling, setIsRolling] = useState<boolean>(false);
 
+  let levelUpMessage: string = "";
+  let refundMessage: string = "";
+
   const handleUnlocks = (rewardId: string): number => {
     let excessLevels = 0;
     const currentLevel = stations.get(rewardId);
@@ -99,14 +106,9 @@ export const BannerCard: React.FC<BannerCardProps> = ({
           newLevel: newLevel > MAX_LEVEL ? MAX_LEVEL : newLevel,
         };
         dispatch(levelUpStation(levelUpdateRequest));
-        Alert.alert(
-          getStationName(rewardId) +
-            " grew from level " +
-            stations.get(rewardId) +
-            " to level " +
-            levelUpdateRequest.newLevel +
-            "."
-        );
+        levelUpMessage = `Level ${stations.get(rewardId)} → ${
+          levelUpdateRequest.newLevel
+        }`;
       }
 
       // If not owned yet, unlock the station
@@ -170,13 +172,14 @@ export const BannerCard: React.FC<BannerCardProps> = ({
     // (4/4) dispatch changes to redux and server
     dispatch(updateUserData(balanceUpdateRequest));
 
-    if (balanceAdjusment > 0)
-      Alert.alert(
-        "Returned " + balanceAdjusment + " currency points as cashback"
-      );
+    if (balanceAdjusment > 0) {
+      refundMessage = `${balanceAdjusment}`;
+    }
 
-    popupCallback(rewardId);
+    popupCallback(rewardId, levelUpMessage, refundMessage);
     console.log(rewardId);
+    console.log(levelUpMessage);
+    console.log(refundMessage);
     setTimeout(() => {
       setIsRolling(false);
     }, 500);
