@@ -313,9 +313,8 @@ const styles = StyleSheet.create({
     // flex: 1,
     // backgroundColor: "#454045",
     // padding: 20,
-    paddingBottom: 20,
-    borderRadius: 12,
-    marginBottom: 10,
+    // paddingBottom: 20,
+    marginBottom: 20,
   },
   headerContainer: {
     flexDirection: "row",

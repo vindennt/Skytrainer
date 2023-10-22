@@ -115,7 +115,7 @@ const Missions = () => {
   }, []);
 
   return lastUsedStation === "000" ? (
-    <LoadingIndicator></LoadingIndicator>
+    <LoadingIndicator />
   ) : (
     <Layout>
       <View style={styles.container}>
@@ -127,6 +127,7 @@ const Missions = () => {
           </View>
           <Button
             style={styles.button}
+            labelStyle={styles.text}
             mode="contained"
             onPress={handleManualTrip}
           >
@@ -173,10 +174,12 @@ const styles = StyleSheet.create({
   },
   secondaryContainer: {
     flex: 1,
-    padding: 10,
+    paddingHorizontal: 10,
+    paddingBottom: 10,
   },
   text: {
-    fontSize: 16,
+    // fontSize: 16,
+    fontWeight: "400",
   },
   miniText: {
     fontSize: 12,
@@ -184,9 +187,10 @@ const styles = StyleSheet.create({
   },
   header: {
     marginLeft: 10,
-    marginVertical: 15,
+    paddingBottom: 15,
     fontSize: 30,
     fontWeight: "700",
+    // fontFamily: "Nothing",
   },
   headerText: {
     fontSize: 20,
