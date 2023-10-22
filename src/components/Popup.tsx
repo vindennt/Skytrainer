@@ -14,6 +14,7 @@ import {
   useTheme,
 } from "react-native-paper";
 import { BlurView } from "expo-blur";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface PopupProps {
   visible: boolean;
@@ -22,6 +23,7 @@ interface PopupProps {
   backgroundColours?: string[];
   children?: React.ReactNode;
   closeOnTapAnywhere?: boolean;
+  showCloseOnTapAnywhereMessage?: boolean;
   closeButtonVisible?: boolean;
 }
 
@@ -32,6 +34,7 @@ export const Popup: React.FC<PopupProps> = ({
   backgroundColours = ["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.8)"], // default backgroudn colour is fade
   children,
   closeOnTapAnywhere = true,
+  showCloseOnTapAnywhereMessage = true,
   closeButtonVisible = false,
 }) => {
   const theme = useTheme();
@@ -54,10 +57,8 @@ export const Popup: React.FC<PopupProps> = ({
             // <Button onPress={onClose}>Close</Button>
           )}
         </View>
-        {closeOnTapAnywhere && (
-          <Text style={[styles.text, styles.outsideMessage]}>
-            Tap anywhere to close
-          </Text>
+        {closeOnTapAnywhere && showCloseOnTapAnywhereMessage && (
+          <Text style={[styles.text, styles.outsideMessage]}></Text>
         )}
       </BlurView>
     </LinearGradient>
@@ -80,6 +81,7 @@ export const Popup: React.FC<PopupProps> = ({
 const styles = StyleSheet.create({
   popupOverlay: {
     flex: 1,
+    width: "100%",
     justifyContent: "center",
     alignItems: "center",
     // backgroundColor: "white",
@@ -88,7 +90,7 @@ const styles = StyleSheet.create({
   popup: {
     flex: 1,
     // backgroundColor: "#fff",
-    padding: 30,
+    padding: 20,
     // margin: 20,
     borderRadius: 8,
     elevation: 5,
@@ -112,9 +114,9 @@ const styles = StyleSheet.create({
   outsideMessage: {
     // flex: 1,
     color: "white",
-    margin: 30,
-    position: "absolute",
-    bottom: 70,
+    // margin: 30,
+    // position: "absolute",
+    bottom: "6%",
   },
   blurContainer: {
     alignItems: "center",
