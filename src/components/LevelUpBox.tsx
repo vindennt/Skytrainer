@@ -6,7 +6,7 @@ import {
   LINE_ICON,
 } from "@src/utils/skytrain";
 import React, { useState } from "react";
-import { View, TouchableOpacity, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { Text, Button, Title, useTheme } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { UIActivityIndicator } from "react-native-indicators";
@@ -115,18 +115,6 @@ export const LevelUpBox: React.FC = () => {
         },
       ]}
     >
-      {/* <BlurView
-        intensity={60}
-        tint={isDark ? "dark" : "default"}
-        style={[
-          styles.glassLine,
-          {
-            backgroundColor: isDark
-              ? "rgba(255, 255, 255, 0.10)"
-              : "rgba(0, 0, 0, 0.10)",
-          },
-        ]}
-      /> */}
       <BlurView
         intensity={50}
         tint={isDark ? "dark" : "light"}

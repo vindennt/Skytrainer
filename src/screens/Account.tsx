@@ -92,6 +92,7 @@ const Account = () => {
     >
       <Button
         onPress={() => navigation.navigate("Achievements" as never)}
+        labelStyle={styles.text}
         // icon="trophy"
         style={styles.button}
         mode="contained"
@@ -225,7 +226,7 @@ const Account = () => {
         <Button
           onPress={() => supabase.auth.signOut()}
           // icon="exit-outline"
-          labelStyle={{ color: theme.colors.error }}
+          labelStyle={[styles.text, { color: theme.colors.error }]}
           style={styles.button}
           mode="contained"
         >
@@ -257,7 +258,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-
+  text: {
+    fontWeight: "400",
+  },
   textBox: {
     alignItems: "flex-start",
     flexDirection: "column",

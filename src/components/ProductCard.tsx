@@ -78,7 +78,11 @@ export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
 
   return (
     <View style={styles.parentContainer}>
-      <BlurView intensity={50} tint="dark" style={[styles.container]}>
+      <BlurView
+        intensity={50}
+        tint={isDark ? "dark" : "light"}
+        style={[styles.container]}
+      >
         <View
           style={[
             styles.innerContainer,
@@ -109,6 +113,7 @@ export const ProductCard: React.FC<ProductCard> = ({ item, onPurchase }) => {
               }}
               disabled={!canBuy || loading}
               loading={loading}
+              labelStyle={styles.buttonText}
             >
               BUY
             </Button>
@@ -182,6 +187,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 8,
     marginVertical: 5,
-    right: 5,
+    right: 2,
+    // right: 5,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

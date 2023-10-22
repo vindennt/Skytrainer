@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useFonts } from "expo-font";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import {
@@ -47,10 +48,15 @@ import DailyFocusThresholdPicker from "@src/components/DailyFocusThresholdPicker
 import EditFocusThresholds from "@src/screens/EditFocusThresholds";
 import Missions from "@src/screens/Missions";
 import { selectDarkTheme } from "./navSlice";
-import { DARK_THEME, LIGHT_THEME } from "../../assets/themes";
+import { DARK_THEME, LIGHT_THEME } from "@assets/themes";
 import Achievements from "@src/screens/Achievements";
+import { LoadingIndicator } from "@src/components/LoadingIndicator";
 
 const AppNavigator = () => {
+  const [fontsLoaded] = useFonts({
+    Nothing: require("@assets/fonts/nothing-font-5x7.ttf"),
+  });
+
   const dispatch = useDispatch<any>();
   const isDdarkTheme: boolean = useSelector(selectDarkTheme);
   const theme = isDdarkTheme ? DARK_THEME : LIGHT_THEME;
@@ -74,6 +80,7 @@ const AppNavigator = () => {
     av.addListener(() => {
       return;
     });
+
     dispatch(setGraph(1)); // Build graph with timescale of 1
 
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -101,7 +108,7 @@ const AppNavigator = () => {
         initialRouteName="Bottom Nav"
         screenOptions={{
           // headerShown: false,
-          headerTintColor: theme.colors.inverseSurface,
+          headerTintColor: theme.colors.onBackground,
           headerStyle: {
             backgroundColor: theme.colors.background,
           },
@@ -158,9 +165,9 @@ const AppNavigator = () => {
         initialRouteName="Login"
         screenOptions={{
           // headerShown: false,
-          headerTintColor: theme.colors.inverseSurface,
+          headerTintColor: theme.colors.onBackground,
           headerStyle: {
-            backgroundColor: theme.colors.secondaryContainer,
+            backgroundColor: theme.colors.background,
           },
           headerTransparent: true,
           headerShadowVisible: false,
@@ -173,7 +180,10 @@ const AppNavigator = () => {
     );
   };
 
-  return (
+  return !fontsLoaded ? (
+    <LoadingIndicator />
+  ) : (
+    // return (
     <PaperProvider theme={theme}>
       <NavigationContainer>
         <StatusBar barStyle="light-content" backgroundColor="#6a51ae" />

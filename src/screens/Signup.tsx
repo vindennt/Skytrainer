@@ -13,7 +13,7 @@ import { Formik } from "formik";
 import { initialValues, signupSchema } from "@features/auth/signupForm";
 import { selectDarkTheme } from "@src/navigation/navSlice";
 import { useSelector } from "react-redux";
-import { TEXTBOX_DARK_THEME, TEXTBOX_LIGHT_THEME } from "../../assets/themes";
+import { TEXTBOX_DARK_THEME, TEXTBOX_LIGHT_THEME } from "@assets/themes";
 
 const Signup = () => {
   const theme = useTheme();

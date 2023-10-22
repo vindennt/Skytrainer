@@ -23,7 +23,7 @@ interface ProductBoxProps {
 }
 
 const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
-  console.log("rendering product box");
+  // console.log("rendering product box");
   const theme = useTheme();
   const isDark = useSelector(selectDarkTheme);
   const stations = useSelector(selectStations);

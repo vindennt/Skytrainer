@@ -80,6 +80,7 @@ const EditQuickStart = () => {
               stationId={quickstart.stationId}
               name={quickstart.name}
               duration={quickstart.duration}
+              lastFinished={quickstart.lastFinished}
             />
           )
         );

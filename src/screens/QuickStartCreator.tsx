@@ -1,3 +1,4 @@
+import { TEXTBOX_DARK_THEME, TEXTBOX_LIGHT_THEME } from "@assets/themes";
 import { useNavigation } from "@react-navigation/native";
 import DailyFocusThresholdPicker, {
   OPTIONS_FIVE_ONE_TWENTY,
@@ -25,6 +26,7 @@ import {
   selectLastUsedStation,
   selectSlider,
 } from "@src/features/user/userSlice";
+import { selectDarkTheme } from "@src/navigation/navSlice";
 import { imageBustMap } from "@src/utils/imageMappings";
 import { getStationName } from "@src/utils/skytrain";
 import { Formik } from "formik";
@@ -51,6 +53,9 @@ import { useDispatch, useSelector } from "react-redux";
 
 const QuickStartCreator = () => {
   const theme = useTheme();
+  const isDark = useSelector(selectDarkTheme);
+  const textBoxTheme = isDark ? TEXTBOX_DARK_THEME : TEXTBOX_LIGHT_THEME;
+
   const dispatch = useDispatch<any>();
   const navigation = useNavigation();
 
@@ -152,8 +157,10 @@ const QuickStartCreator = () => {
               label="Title*"
               placeholder="e.g. Read, Workout, Study, Meditate"
               value={values.name}
+              mode="outlined"
               onChangeText={handleChange("name")}
               onChange={() => setFieldTouched("name")}
+              theme={textBoxTheme}
             />
             <HelperText
               type="error"
@@ -191,7 +198,11 @@ const QuickStartCreator = () => {
                 Start at: {getStationName(selectedStation)} Station
               </Text>
               <View style={styles.buttonContainer}>
-                <Button mode="outlined" onPress={handleGoBack}>
+                <Button
+                  mode="outlined"
+                  onPress={handleGoBack}
+                  labelStyle={{ color: theme.colors.onPrimary }}
+                >
                   Cancel
                 </Button>
                 <Button

@@ -10,7 +10,7 @@ import {
   // BUTTON_LIGHT_THEME,
   TEXTBOX_DARK_THEME,
   TEXTBOX_LIGHT_THEME,
-} from "../../assets/themes";
+} from "@assets/themes";
 import { useSelector } from "react-redux";
 import { selectDarkTheme } from "@src/navigation/navSlice";
 

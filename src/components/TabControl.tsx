@@ -16,12 +16,7 @@ const TabControl: React.FC<TabControlProps> = ({
   const theme = useTheme();
 
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: theme.colors.surfaceVariant },
-      ]}
-    >
+    <View style={[styles.container, { backgroundColor: theme.colors.primary }]}>
       {options.map((option, indexKey) => (
         <TouchableOpacity
           key={indexKey}
