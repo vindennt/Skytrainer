@@ -8,6 +8,8 @@ import {
   NativeSyntheticEvent,
   ImageSourcePropType,
   Image,
+  Animated,
+  Easing,
 } from "react-native";
 import { Text, Button, Title, IconButton, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -62,17 +64,43 @@ export const QuickStartCard: React.FC = ({}) => {
   const sortedQuickStarts: QuickStart[] = getSortedQuickstarts(quickstarts);
 
   const [isAtEnd, setIsAtEnd] = useState(false);
+
+  const fadeAnim: Animated.Value = React.useRef(new Animated.Value(1)).current;
+  const fadeIn = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 160,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start();
+  };
+  const fadeOut = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 160,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start();
+  };
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
 
     // Calculate the position of the scroll
+
     const buffer = 10;
     const isAtEnd =
       layoutMeasurement.height + contentOffset.y >= contentSize.height - buffer;
 
-    setIsAtEnd(isAtEnd);
-    console.log(isAtEnd);
+    // setIsAtEnd(isAtEnd);
+    if (isAtEnd) {
+      console.log("fading out");
+      fadeOut();
+    } else {
+      console.log("fading in");
+      fadeIn();
+    }
   };
+
   const [loading, setIsLoading] = useState<boolean>(false);
 
   const handleQuickPress = async (
@@ -279,14 +307,20 @@ export const QuickStartCard: React.FC = ({}) => {
             })}
           </ScrollView>
 
-          {/* <View style={{ height: 0, backgroundColor: "transparent" }}> */}
-          {!isAtEnd && (
+          <Animated.View
+            style={{
+              position: "absolute",
+              bottom: 0,
+              width: "100%",
+              height: "5%",
+              opacity: fadeAnim,
+              pointerEvents: "box-only",
+            }}
+          >
             <LinearGradient
               style={{
-                position: "absolute",
-                bottom: 0,
-                width: "100%",
-                height: "25%",
+                flex: 1,
+                // backgroundColor: "red",
               }}
               // Note: something about React Native Paper theme makes these colors unusable with theme hook
               colors={[
@@ -294,10 +328,8 @@ export const QuickStartCard: React.FC = ({}) => {
                 theme.colors.background,
               ]}
               locations={[0, 0.95]}
-              // pointerEvents={"none"}
             />
-          )}
-          {/* </View> */}
+          </Animated.View>
         </View>
       </View>
     </View>
