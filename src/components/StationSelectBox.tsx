@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   FlatList,
   View,
@@ -14,6 +14,8 @@ import {
 } from "@src/features/stations/stationsSlice";
 import { useSelector } from "react-redux";
 import { selectLastUsedStation } from "@src/features/user/userSlice";
+import { Animated } from "react-native";
+import { Easing } from "react-native";
 
 interface StationSelectorProps {
   onValueChange: (stationId: string) => void;
@@ -33,6 +35,56 @@ export const StationSelector: React.FC<StationSelectorProps> = ({
     onValueChange(stationId);
   }, []);
 
+  const slideAnim: Animated.Value = useRef(new Animated.Value(0)).current;
+  const fadeAnim: Animated.Value = useRef(new Animated.Value(1)).current;
+
+  const fadeIn = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 200,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const fadeOut = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 120,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const slideIn = () => {
+    Animated.timing(slideAnim, {
+      toValue: 0,
+      duration: 160,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const slideOut = () => {
+    Animated.timing(slideAnim, {
+      toValue: 300,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  useEffect(() => {
+    if (!selectorVisible) {
+      console.log("fading out");
+      slideOut();
+      fadeOut();
+    } else {
+      console.log("fading in");
+      slideIn();
+      fadeIn();
+    }
+  }),
+    [];
+
   const renderSelectItem = ({ item }: { item: [string, number] }) => (
     <StationSelectItem
       stationId={item[0]}
@@ -51,14 +103,21 @@ export const StationSelector: React.FC<StationSelectorProps> = ({
     <View style={styles.container}>
       <Image style={styles.image} source={imageSource} />
       <View style={styles.emptyImageOverlay}></View>
-      {selectorVisible && (
+
+      <Animated.View
+        style={{
+          flex: 1,
+          opacity: fadeAnim,
+          transform: [{ translateX: slideAnim }],
+        }}
+      >
         <FlatList
           style={styles.selectionList}
           data={[...data]}
           renderItem={renderSelectItem}
           keyExtractor={(item) => item[0]} // Assuming each key is unique
         />
-      )}
+      </Animated.View>
     </View>
   );
 };

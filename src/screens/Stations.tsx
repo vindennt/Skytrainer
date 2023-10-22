@@ -4,13 +4,15 @@ import {
   StyleSheet,
   TouchableOpacity,
   TouchableWithoutFeedback,
+  Animated,
+  Easing,
 } from "react-native";
 import { Button, Text, useTheme } from "react-native-paper";
 import { StationSelector } from "@src/components/StationSelectBox";
 import { LevelUpBox } from "@src/components/LevelUpBox";
 import { useDispatch, useSelector } from "react-redux";
 import { setSelectedStation } from "@src/features/stations/stationsSlice";
-import { useCallback, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Icon from "react-native-vector-icons/Ionicons";
 import Layout from "@src/components/Layout";
 import {
@@ -24,19 +26,62 @@ const Stations = () => {
   const [isViewingMode, setIsViewingMode] = useState<boolean>(false);
   const levelUpMode = useSelector(selectLevelingUpMode);
 
+  const fadeAnim: Animated.Value = useRef(new Animated.Value(1)).current;
+  const slideAnim: Animated.Value = useRef(new Animated.Value(0)).current;
   const handleToggleViewingMode = () => {
-    setIsViewingMode(!isViewingMode);
+    if (!isViewingMode) {
+      console.log("fading out");
+      setIsViewingMode(true);
+      slideOut();
+      fadeOut();
+    } else {
+      console.log("fading in");
+      setIsViewingMode(false);
+      slideIn();
+      fadeIn();
+    }
+  };
+
+  const fadeIn = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 200,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const fadeOut = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 120,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const slideIn = () => {
+    Animated.timing(slideAnim, {
+      toValue: 0,
+      duration: 160,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const slideOut = () => {
+    Animated.timing(slideAnim, {
+      toValue: -300,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const handleExitToggleViewingMode = () => {
+    if (isViewingMode) handleToggleViewingMode();
   };
 
   const handleExitLevelMode = () => {
     dispatch(setLevelingUpMode(false));
-  };
-
-  const handleOverlayPress = () => {
-    if (isViewingMode) {
-      console.log("Overlay pressed");
-      setIsViewingMode(false);
-    }
   };
 
   const memoizedCallback = useCallback((stationId: string) => {
@@ -48,44 +93,52 @@ const Stations = () => {
     <Layout position="relative">
       <TouchableWithoutFeedback
         style={styles.overlay}
-        onPress={handleOverlayPress}
+        onPress={handleExitToggleViewingMode}
       >
         <View style={styles.container}>
           <View style={styles.contentContainer}>
-            {!isViewingMode && (
-              <View style={styles.headerContainer}>
-                <Text style={styles.header}>Stations</Text>
-                {levelUpMode ? (
-                  <TouchableOpacity onPress={handleExitLevelMode}>
-                    <Text
-                      style={[
-                        styles.buttonText,
-                        { color: theme.colors.onPrimary },
-                      ]}
-                    >
-                      Done
-                    </Text>
+            <Animated.View
+              style={[styles.headerContainer, { opacity: fadeAnim }]}
+            >
+              <Text style={styles.header}>Stations</Text>
+              {levelUpMode ? (
+                <TouchableOpacity onPress={handleExitLevelMode}>
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      { color: theme.colors.onPrimary },
+                    ]}
+                  >
+                    Done
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                !isViewingMode && (
+                  <TouchableOpacity onPress={handleToggleViewingMode}>
+                    <Icon
+                      name="eye-off-outline"
+                      color={theme.colors.onPrimary}
+                      size={24}
+                    />
                   </TouchableOpacity>
-                ) : (
-                  !isViewingMode && (
-                    <TouchableOpacity onPress={handleToggleViewingMode}>
-                      <Icon
-                        name={isViewingMode ? "eye-outline" : "eye-off-outline"}
-                        color={theme.colors.onPrimary}
-                        size={24}
-                      />
-                    </TouchableOpacity>
-                  )
-                )}
-              </View>
-            )}
+                )
+              )}
+            </Animated.View>
+
             <View style={styles.selectorContainer}>
               <StationSelector
                 onValueChange={memoizedCallback}
                 selectorVisible={!isViewingMode && !levelUpMode}
               />
             </View>
-            {!isViewingMode && <LevelUpBox />}
+            <Animated.View
+              style={{
+                opacity: fadeAnim,
+                transform: [{ translateX: slideAnim }],
+              }}
+            >
+              <LevelUpBox />
+            </Animated.View>
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -126,10 +179,13 @@ const styles = StyleSheet.create({
   },
   overlay: {
     zIndex: 999,
+    opacity: 1,
     flex: 1,
     position: "absolute",
     width: "100%",
     height: "100%",
+
+    backgroundColor: "red",
   },
   buttonText: {
     fontSize: 16,
