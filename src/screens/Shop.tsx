@@ -6,7 +6,7 @@ import {
   FlatList,
   ScrollView,
 } from "react-native";
-import { Text, Button } from "react-native-paper";
+import { Text, Button, useTheme } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { ProductCard } from "@src/components/ProductCard";
 import ProductBox from "@components/ProductBox";
@@ -38,6 +38,7 @@ import Layout from "@src/components/Layout";
 import { BlurView } from "expo-blur";
 
 const Shop = () => {
+  const theme = useTheme();
   const defaultBuyable: Buyable = {
     name: "Waterfront",
     cost: 10,
@@ -52,6 +53,8 @@ const Shop = () => {
   const [gachaPopup, setGachaPopup] = useState<boolean>(false);
 
   const [rewardId, setRewardId] = useState<string>("001");
+  const [levelUpMessage, setLevelUpMessage] = useState<string>("");
+  const [refundMessage, setRefundMessage] = useState<string>("");
 
   let stations: Map<string, number> = new Map<string, number>();
   stations = useSelector(
@@ -87,10 +90,20 @@ const Shop = () => {
     return <ProductBox item={item} onPress={() => handleItemPress(item)} />;
   };
 
-  const showRewardPopup = (rewardId: string) => {
+  // const showRewardPopup = (rewardId: string) => {
+  //   setRewardId(rewardId);
+  // };
+
+  const showRewardPopup = (
+    rewardId: string,
+    levelUpMessage: string,
+    refundMessage: string
+  ) => {
+    setRewardId(rewardId);
+    setLevelUpMessage(levelUpMessage);
+    setRefundMessage(refundMessage);
     setShowPopup(true);
     setGachaPopup(true);
-    setRewardId(rewardId);
   };
 
   return (
@@ -128,6 +141,12 @@ const Shop = () => {
                   />
                 </View>
               )}
+              <View
+                style={[
+                  styles.divider,
+                  { backgroundColor: theme.colors.outline },
+                ]}
+              />
               <Text style={styles.subheader}>Stations</Text>
               <View style={styles.tabContainer}>
                 <TabControl
@@ -160,7 +179,11 @@ const Shop = () => {
             : { closeOnTapAnywhere: false, closeButtonVisible: true })}
         >
           {gachaPopup ? (
-            <GachaRewardDisplay stationId={rewardId} />
+            <GachaRewardDisplay
+              stationId={rewardId}
+              levelUpMessage={levelUpMessage}
+              refundMessage={refundMessage}
+            />
           ) : (
             <ProductCard item={selectedItem} onPurchase={handleClosePopup} />
           )}
@@ -176,6 +199,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 10,
+    // paddingTop: 10,
   },
   flatListContent: {
     width: "100%",
@@ -187,17 +211,23 @@ const styles = StyleSheet.create({
   },
   header: {
     marginLeft: 10,
-    marginVertical: 15,
+    paddingBottom: 15,
     fontSize: 30,
     fontWeight: "700",
+    //  fontFamily: "Nothing",
   },
   subheader: {
     // marginLeft: 10,
     // marginVertical: 15,
     fontSize: 24,
-    fontWeight: "400",
+    fontWeight: "500",
   },
   tabContainer: {
     marginVertical: 10,
+  },
+  divider: {
+    width: "100%",
+    height: 0.2,
+    marginBottom: 15,
   },
 });
