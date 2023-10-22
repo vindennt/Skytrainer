@@ -176,19 +176,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
-    top: 15,
   },
   imageMask: {
     position: "absolute",
     width: "100%",
     height: "100%",
-    top: 15,
   },
   overlay: {
     backgroundColor: "black",
     flex: 1,
     width: 1000,
-    top: 15,
   },
   overlayView: {
     flex: 1,
@@ -196,7 +193,6 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     zIndex: 999,
-    top: 15,
   },
   textContainer: {
     alignItems: "center",
