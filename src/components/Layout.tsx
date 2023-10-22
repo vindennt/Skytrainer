@@ -18,35 +18,43 @@ const Layout: React.FC<Props> = ({ children, position }) => {
   return (
     <View style={[styles.container]}>
       {children}
-      {isAbsolute && (
-        <BlurView
-          // intensity={isDark ? 35 : 50}
-          // tint="default"
-          // style={[
-          //   styles.glassLine,
-          //   !isDark && { backgroundColor: "rgba(0, 0, 0, 0.2)" },
-          // ]}
-          intensity={60}
-          tint={isDark ? "dark" : "default"}
+      {isAbsolute ? (
+        <View>
+          <BlurView
+            // intensity={isDark ? 35 : 50}
+            // tint="default"
+            // style={[
+            //   styles.glassLine,
+            //   !isDark && { backgroundColor: "rgba(0, 0, 0, 0.2)" },
+            // ]}
+            intensity={60}
+            tint={isDark ? "dark" : "default"}
+            style={[
+              styles.glassLine,
+              {
+                backgroundColor: isDark
+                  ? "rgba(255, 255, 255, 0.2)"
+                  : "rgba(0, 0, 0, 0.10)",
+              },
+            ]}
+          />
+          <BlurView
+            intensity={80}
+            tint={isDark ? "dark" : isAbsolute ? "light" : "default"}
+            style={[
+              styles.footer,
+              isAbsolute && { position: "absolute", bottom: 0 },
+            ]}
+          />
+        </View>
+      ) : (
+        <View
           style={[
-            styles.glassLine,
-            {
-              backgroundColor: isDark
-                ? "rgba(255, 255, 255, 0.2)"
-                : "rgba(0, 0, 0, 0.10)",
-            },
+            styles.footer,
+            isAbsolute && { position: "absolute", bottom: 0 },
           ]}
         />
       )}
-
-      <BlurView
-        intensity={80}
-        tint={isDark ? "dark" : isAbsolute ? "light" : "default"}
-        style={[
-          styles.footer,
-          isAbsolute && { position: "absolute", bottom: 0 },
-        ]}
-      />
     </View>
   );
 };
