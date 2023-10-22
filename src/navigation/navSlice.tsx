@@ -15,6 +15,8 @@ export interface NavSliceState {
         badge: boolean;
       }
   )[];
+  darkTheme: boolean;
+  levelingUpMode: boolean;
 }
 
 const initialState: NavSliceState = {
@@ -41,6 +43,8 @@ const initialState: NavSliceState = {
       focusedIcon: "pricetags",
     },
   ],
+  darkTheme: true,
+  levelingUpMode: false,
 };
 
 const navSlice = createSlice({
@@ -49,6 +53,14 @@ const navSlice = createSlice({
   reducers: {
     setRoutes: (state, action) => {
       state.routes = action.payload;
+      // console.log(state.skytrainGraph);
+    },
+    setIsDarkTheme: (state, action) => {
+      state.darkTheme = action.payload;
+      // console.log(state.skytrainGraph);
+    },
+    setLevelingUpMode: (state, action) => {
+      state.levelingUpMode = action.payload;
       // console.log(state.skytrainGraph);
     },
     setMissionBadgeVisibility: (state, action) => {
@@ -80,5 +92,14 @@ const navSlice = createSlice({
   },
 });
 
-export const { setRoutes, setMissionBadgeVisibility } = navSlice.actions;
+export const {
+  setRoutes,
+  setMissionBadgeVisibility,
+  setIsDarkTheme,
+  setLevelingUpMode,
+} = navSlice.actions;
 export default navSlice.reducer;
+export const selectDarkTheme = (state: { nav: NavSliceState }) =>
+  state.nav.darkTheme;
+export const selectLevelingUpMode = (state: { nav: NavSliceState }) =>
+  state.nav.levelingUpMode;

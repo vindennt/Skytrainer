@@ -1,5 +1,5 @@
-import { View } from "react-native";
-import { useTheme, Button, IconButton } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
+import { useTheme, Button, IconButton, Text } from "react-native-paper";
 import {
   CommonCurrencyIcon,
   GradientIcon,
@@ -34,43 +34,61 @@ export const CurrencyDisplay: React.FC<CurrencyDisplayProps> = ({
   }
 
   return (
-    <View
-      style={{
-        flex: 1,
-        width: "100%",
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        // paddingRight: 5,
-        // marginTop: 5,
-      }}
-    >
+    <View style={styles.container}>
       <IconButton
         icon="person-circle-outline"
-        size={30}
+        size={28}
         onPress={goToAccount}
-        style={{ right: 15 }}
+        style={{ right: 15, marginLeft: 0 }}
+        iconColor={theme.colors.onPrimary}
       />
-      {showBalance && (
-        <Button
-          icon={({ size, color }) => <CommonCurrencyIcon />}
-          mode="outlined"
-          labelStyle={{ marginVertical: 5, color: theme.colors.onBackground }}
-          // onPress={() => console.log("Pressed")}
-        >
-          {balance.toString()}
-        </Button>
-      )}
-      {showTickets && (
-        <Button
-          icon={({ size, color }) => <PremiumCurrencyIcon />}
-          mode="outlined"
-          labelStyle={{ marginVertical: 5, color: theme.colors.onBackground }}
-          // onPress={() => console.log("Pressed")}
-        >
-          {tickets.toString()}
-        </Button>
-      )}
+      <View
+        style={[
+          styles.rowContainer,
+          // { borderBottomWidth: 0.5, borderColor: theme.colors.outline },
+        ]}
+      >
+        {showBalance && (
+          <View style={[styles.currencyContainer, { marginRight: "0%" }]}>
+            <CommonCurrencyIcon />
+            <Text style={styles.text}>{balance.toString()}</Text>
+          </View>
+        )}
+        {showTickets && (
+          <View style={[styles.currencyContainer, { marginRight: "0%" }]}>
+            <PremiumCurrencyIcon />
+            <Text style={styles.text}>{tickets.toString()}</Text>
+          </View>
+        )}
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 10,
+  },
+  rowContainer: {
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-around",
+    paddingBottom: 4,
+    // backgroundColor: "pink",
+  },
+  currencyContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+  },
+  text: {
+    fontSize: 16,
+    fontWeight: "500",
+  },
+});

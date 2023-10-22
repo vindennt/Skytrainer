@@ -6,6 +6,14 @@ export interface Buyable {
   // TODO: add  flavour text
 }
 
+export const StationTabCategories = [
+  { key: "All", value: "all" },
+  { key: "EXP", value: "00" },
+  { key: "CND", value: "01" },
+  { key: "MLN", value: "02" },
+  { key: "EGN", value: "03" },
+];
+
 export const shopData: Buyable[] = [
   { name: "Waterfront", cost: 10, itemid: "001", category: "00" },
   { name: "Burrard", cost: 1, itemid: "002", category: "00" },
@@ -71,3 +79,15 @@ export const shopData: Buyable[] = [
   { name: "Sea Island Centre", cost: 10, itemid: "051", category: "02" },
   { name: "YVR Airport", cost: 10, itemid: "053", category: "02" },
 ];
+
+export const sortByCategory = (
+  data: Buyable[],
+  category: string
+): Buyable[] => {
+  if (category === "all") return data;
+
+  const filteredData = data.filter((item) => item.category === category);
+  filteredData.sort((a, b) => a.category.localeCompare(b.category));
+
+  return filteredData;
+};

@@ -1,70 +1,97 @@
-import { getStationName } from "@src/utils/skytrain";
-import React, { ChangeEvent, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   FlatList,
   View,
   Image,
   StyleSheet,
-  TouchableOpacity,
   ImageSourcePropType,
 } from "react-native";
-import { Text, Button } from "react-native-paper";
+import { imageBustMap } from "@src/utils/imageMappings";
+import StationSelectItem from "@components/StationSelectItem";
 import {
-  StationsState,
-  fetchAllStations,
-  setSelectedStation,
-  unlockStation,
-} from "@features/stations/stationsSlice";
-import { useDispatch, useSelector } from "react-redux";
-import { imageBustMap, imageIconMap } from "@src/utils/imageMappings";
-
-interface StationSelectBoxProps {
-  stationId: string;
-  level: number;
-}
+  selectSelectedStation,
+  selectStations,
+} from "@src/features/stations/stationsSlice";
+import { useSelector } from "react-redux";
+import { selectLastUsedStation } from "@src/features/user/userSlice";
+import { Animated } from "react-native";
+import { Easing } from "react-native";
 
 interface StationSelectorProps {
-  data: Map<string, number>;
-  selectedStation: string;
-  onValueChange?: (e: string | ChangeEvent<any>) => void;
+  onValueChange: (stationId: string) => void;
+  selectorVisible?: boolean;
+  value?: string;
 }
 
 export const StationSelector: React.FC<StationSelectorProps> = ({
-  data,
-  selectedStation,
   onValueChange,
+  selectorVisible = true,
+  value = useSelector(selectSelectedStation),
 }) => {
-  const dispatch = useDispatch<any>();
-  const [localSelectedStation, setLocalSelectedStation] =
-    useState<string>(selectedStation);
+  const selectedStation = value;
+  const data = useSelector(selectStations);
 
-  const StationSelectBox: React.FC<StationSelectBoxProps> = ({
-    stationId,
-    level,
-  }) => {
-    return (
-      <View style={styles.item}>
-        <TouchableOpacity
-          onPress={() => {
-            console.log("touched " + stationId);
-            onValueChange !== undefined
-              ? onValueChange(stationId)
-              : dispatch(setSelectedStation(stationId));
-          }}
-          style={
-            stationId === selectedStation
-              ? styles.clickSelectorBoxSelected
-              : styles.clickSelectorBoxUnSelected
-          }
-        >
-          <Text style={styles.stationText}>{getStationName(stationId)}</Text>
-        </TouchableOpacity>
-      </View>
-    );
+  const memoizedCallback = useCallback((stationId: string) => {
+    onValueChange(stationId);
+  }, []);
+
+  const slideAnim: Animated.Value = useRef(new Animated.Value(0)).current;
+  const fadeAnim: Animated.Value = useRef(new Animated.Value(1)).current;
+
+  const fadeIn = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 200,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start();
   };
 
+  const fadeOut = () => {
+    Animated.timing(fadeAnim, {
+      toValue: 0,
+      duration: 120,
+      easing: Easing.ease,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const slideIn = () => {
+    Animated.timing(slideAnim, {
+      toValue: 0,
+      duration: 160,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  const slideOut = () => {
+    Animated.timing(slideAnim, {
+      toValue: 300,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  useEffect(() => {
+    if (!selectorVisible) {
+      console.log("fading out");
+      slideOut();
+      fadeOut();
+    } else {
+      console.log("fading in");
+      slideIn();
+      fadeIn();
+    }
+  }),
+    [];
+
   const renderSelectItem = ({ item }: { item: [string, number] }) => (
-    <StationSelectBox stationId={item[0]} level={item[1]} />
+    <StationSelectItem
+      stationId={item[0]}
+      selectedStation={selectedStation}
+      level={item[1]}
+      onValueChange={memoizedCallback}
+    />
   );
 
   // Cast to ImageSourcePropType or else compiler complains that the type cannot be inferred
@@ -76,15 +103,21 @@ export const StationSelector: React.FC<StationSelectorProps> = ({
     <View style={styles.container}>
       <Image style={styles.image} source={imageSource} />
       <View style={styles.emptyImageOverlay}></View>
-      {/* <View style={styles.image}>
-        <StationImage stationId={selectedStation} type={ImageType.BUST} />
-      </View> */}
-      <FlatList
-        style={styles.selectionBox}
-        data={[...data]}
-        renderItem={renderSelectItem}
-        keyExtractor={(item) => item[0]} // Assuming each key is unique
-      />
+
+      <Animated.View
+        style={{
+          flex: 1,
+          opacity: fadeAnim,
+          transform: [{ translateX: slideAnim }],
+        }}
+      >
+        <FlatList
+          style={styles.selectionList}
+          data={[...data]}
+          renderItem={renderSelectItem}
+          keyExtractor={(item) => item[0]} // Assuming each key is unique
+        />
+      </Animated.View>
     </View>
   );
 };
@@ -93,40 +126,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
+    justifyContent: "flex-start",
   },
   image: {
-    width: "100%",
-    right: 30,
-    height: "110%",
-    position: "absolute",
-    // backgroundColor: "red",
-    // borderRadius: 12,
-  },
-  selectionBox: {
-    marginLeft: 16,
-    borderRadius: 12,
-    width: 30,
-    // backgroundColor: "#454045",
-    // padding: 10,
-  },
-  item: {
     flex: 1,
-    // alignItems: "flex-start",
-    borderBottomWidth: 1,
-    borderBottomColor: "gray",
-    // backgroundColor: "green",
+    width: "100%",
+    height: "100%",
+    position: "absolute",
+    // right: 30,
+  },
+  selectionList: {
+    flex: 1,
+    borderRadius: 12,
   },
   stationText: {
+    flex: 1,
     marginVertical: 10,
     fontSize: 16,
     paddingHorizontal: 10,
   },
-  clickSelectorBoxSelected: {
-    backgroundColor: "royalblue",
-    borderRadius: 8,
-  },
-  clickSelectorBoxUnSelected: {},
   emptyImageOverlay: {
-    width: "60%",
+    width: "70%",
   },
 });

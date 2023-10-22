@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { UserState } from "@src/features/user/userSlice";
 // import { FocusMilestoneTimes } from "@src/utils/missionRewards";
 import { NavSliceState } from "@navigation/navSlice";
+import { View } from "react-native";
 
 const BottomNavBar = () => {
   const theme = useTheme();
@@ -49,38 +50,41 @@ const BottomNavBar = () => {
   });
 
   return (
+    // <View>
     <BottomNavigation
       navigationState={{ index, routes }}
       onIndexChange={setIndex}
       renderScene={renderScene}
       // labeled={false}
+      activeColor={theme.colors.onPrimary}
       theme={{
+        ...theme,
         colors: {
           secondaryContainer: "transparent", // select wrapper colour
-          onSecondaryContainer: "white", // active icon colour
-          onSurfaceVariant: theme.colors.outline, // inactive icon colour
+          onSecondaryContainer: theme.colors.onPrimary, // active icon colour
+          onSurfaceVariant: theme.colors.backdrop, // inactive icon colour
         },
         fonts: {
           labelMedium: {
-            fontSize: 10,
+            fontSize: 11,
             letterSpacing: 0.1,
             lineHeight: 10,
           },
         },
       }}
       compact={true}
-      // TODO: Cause bar to move downards, and content to render beneath it. Might be useful for blue
-      // barStyle={{ bottom: -30, position: "absolute" }}
-      // barStyle={{
-      //   backgroundColor: "rgba(10,10,10,0.5)",
-      //   // bottom: -10,
-      //   position: "absolute",
-      // }}
       barStyle={{
-        backgroundColor: theme.colors.elevation.level2,
+        backgroundColor: "transparent",
+        // backgroundColor: theme.colors.primaryContainer,
+        // bottom: -10,
+        position: "absolute",
       }}
+      // barStyle={{
+      //   backgroundColor: theme.colors.surface,
+      // }}
       safeAreaInsets={{ bottom: 10 }}
     />
+    // </View>
   );
 };
 

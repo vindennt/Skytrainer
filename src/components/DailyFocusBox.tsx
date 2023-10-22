@@ -63,18 +63,26 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
 
   const getButtonColour = (claimed: boolean, finished: boolean): string => {
     return claimed
-      ? theme.colors.outline
+      ? theme.colors.background
       : finished
-      ? theme.colors.tertiary
-      : theme.colors.onSurfaceVariant;
+      ? theme.colors.tertiaryContainer
+      : theme.colors.surfaceDisabled;
   };
 
   const getIconColour = (claimed: boolean, finished: boolean): string => {
     return claimed
-      ? theme.colors.surfaceVariant
+      ? theme.colors.tertiaryContainer
       : finished
-      ? theme.colors.onTertiary
-      : theme.colors.outline;
+      ? theme.colors.onTertiaryContainer
+      : theme.colors.onSurfaceDisabled;
+  };
+
+  const getProgressColour = (claimed: boolean, finished: boolean): string => {
+    return claimed
+      ? theme.colors.tertiaryContainer
+      : finished
+      ? theme.colors.tertiaryContainer
+      : theme.colors.surfaceDisabled;
   };
 
   // Calcualte cumulative reward to give user. Excludes any already claimed reward milestones
@@ -164,6 +172,12 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
             style={[
               styles.progressButton,
               { backgroundColor: getButtonColour(claimed, finished) },
+              {
+                borderWidth: 3,
+                borderColor: claimed
+                  ? getIconColour(claimed, finished)
+                  : getButtonColour(claimed, finished),
+              },
             ]}
           >
             <MaterialCommunityIcons
@@ -197,7 +211,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
 
   const ZerothDailyProgressButton: React.FC = ({}) => {
     const finished: boolean = dailyFocusTime >= FIRST_MILESTONE;
-    const claimed: boolean = dailyFocusClaimed >= THIRD_MILESTONE;
+    const claimed: boolean = dailyFocusTime > 0;
 
     return (
       <View style={styles.progressButtonStyleContainer}>
@@ -206,9 +220,11 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
             style={[
               styles.progressButton,
               {
-                backgroundColor: "transparent",
-                borderWidth: 1,
-                borderColor: getButtonColour(claimed, finished),
+                backgroundColor: theme.colors.background,
+                borderWidth: 3,
+                borderColor: claimed
+                  ? getIconColour(claimed, finished)
+                  : getButtonColour(claimed, finished),
               },
               // { backgroundColor: getButtonColour(claimed, finished) },
             ]}
@@ -217,7 +233,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
               name={"fire"}
               // color={theme.colors.onSurfaceVariant}
               // color={getIconColour(claimed, finished)}
-              color={getButtonColour(claimed, finished)}
+              color={getIconColour(claimed, finished)}
               size={24}
             />
           </View>
@@ -239,7 +255,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
       <View
         style={[
           styles.progressBar,
-          { backgroundColor: getButtonColour(claimed, finished) },
+          { backgroundColor: getProgressColour(claimed, finished) },
         ]}
       ></View>
     );
@@ -249,7 +265,7 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
     <View>
       <View style={styles.container}>
         <View style={styles.headerContainer}>
-          <Text style={styles.headerText}>Daily Focus</Text>
+          <Text style={styles.headerText}>Daily Progress</Text>
         </View>
         {/* <View style={styles.quickstartContainer}>
           <Text>{dailyFocusTime}</Text>
@@ -258,24 +274,32 @@ export const DailyFocusBox: React.FC<DailyFocusBoxProps> = ({
           <Text>Last focus: {lastFocusString}</Text>
         </View> */}
         <View style={styles.progressContainer}>
-          <ZerothDailyProgressButton />
-          <Progressbar milestone={FIRST_MILESTONE} />
-          <DailyProgressButton
-            milestone={FIRST_MILESTONE}
-            reward={DailyFocusRewards.FIRST_MILESTONE}
-          />
-          <Progressbar milestone={SECOND_MILESTONE} />
-          <DailyProgressButton
-            milestone={SECOND_MILESTONE}
-            reward={DailyFocusRewards.SECOND_MILESTONE}
-          />
-          <Progressbar milestone={THIRD_MILESTONE} />
-          <DailyProgressButton
-            milestone={THIRD_MILESTONE}
-            reward={DailyFocusRewards.THIRD_MILESTONE}
-          />
+          <View style={styles.progressButtonContainer}>
+            <ZerothDailyProgressButton />
+            {/* <Progressbar milestone={FIRST_MILESTONE} /> */}
+            <DailyProgressButton
+              milestone={FIRST_MILESTONE}
+              reward={DailyFocusRewards.FIRST_MILESTONE}
+            />
+            {/* <Progressbar milestone={SECOND_MILESTONE} /> */}
+            <DailyProgressButton
+              milestone={SECOND_MILESTONE}
+              reward={DailyFocusRewards.SECOND_MILESTONE}
+            />
+            {/* <Progressbar milestone={THIRD_MILESTONE} /> */}
+            <DailyProgressButton
+              milestone={THIRD_MILESTONE}
+              reward={DailyFocusRewards.THIRD_MILESTONE}
+            />
+          </View>
+          <View style={styles.progressBarContainer}>
+            <Progressbar milestone={FIRST_MILESTONE} />
+            <Progressbar milestone={SECOND_MILESTONE} />
+            <Progressbar milestone={THIRD_MILESTONE} />
+          </View>
         </View>
-        <Button onPress={handleTestReset}>Reset</Button>
+
+        {/* <Button onPress={handleTestReset}>Reset</Button> */}
         {/* <Button onPress={handleRouteReset}>Route Reset</Button> */}
       </View>
     </View>
@@ -286,11 +310,10 @@ export default DailyFocusBox;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#454045",
+    // flex: 1,
+    // backgroundColor: "#454045",
     // padding: 20,
-    padding: 20,
-    paddingBottom: 20,
-    borderRadius: 12,
+    // paddingBottom: 20,
     marginBottom: 20,
   },
   headerContainer: {
@@ -332,14 +355,31 @@ const styles = StyleSheet.create({
     // alignItems: "center",
     flexDirection: "row",
     // backgroundColor: "purple",
+    // zIndex: 1, // Should not matter
   },
   progressBar: {
-    height: 4,
-    width: 38,
-    top: 23,
+    // flex: 1,
+    height: 3,
+    width: 80,
+    top: 24,
+    right: 0.5,
   },
   tooltip: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  progressBarContainer: {
+    flex: 1,
+    width: "100%",
+    position: "absolute",
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    zIndex: 1,
+  },
+  progressButtonContainer: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    zIndex: 999,
   },
 });

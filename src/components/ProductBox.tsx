@@ -1,4 +1,8 @@
-import { StationsState } from "@src/features/stations/stationsSlice";
+import {
+  StationsState,
+  selectStations,
+} from "@src/features/stations/stationsSlice";
+import { memo } from "react";
 import { imageIconMap } from "@src/utils/imageMappings";
 import { Buyable } from "@src/utils/shop";
 import {
@@ -11,21 +15,26 @@ import {
 import { useTheme, Text, Title, Button } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { useSelector } from "react-redux";
+import { selectDarkTheme } from "@src/navigation/navSlice";
 
 interface ProductBoxProps {
   item: Buyable;
   onPress: () => void;
 }
 
-export const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
+const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
+  // console.log("rendering product box");
   const theme = useTheme();
-  const stations: Map<string, number> = useSelector(
-    (state: { stations: StationsState }) => state.stations.stations
-  );
+  const isDark = useSelector(selectDarkTheme);
+  const stations = useSelector(selectStations);
+
   const imageSource: ImageSourcePropType = imageIconMap[
     item.itemid
   ] as ImageSourcePropType;
   const isOwned = stations.has(item.itemid);
+  const textColor = isOwned
+    ? theme.colors.onSurfaceDisabled
+    : theme.colors.onBackground;
 
   return (
     <TouchableOpacity style={styles.item} onPress={onPress} disabled={isOwned}>
@@ -34,21 +43,28 @@ export const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
           styles.container,
           {
             backgroundColor: isOwned
-              ? theme.colors.onSurfaceDisabled
-              : theme.colors.inverseOnSurface,
+              ? theme.colors.surfaceDisabled
+              : isDark
+              ? theme.colors.secondary
+              : theme.colors.background,
           },
+          !isDark && !isOwned && styles.lightItem,
         ]}
       >
         <Image source={imageSource} style={styles.image} resizeMode="contain" />
-        <Text style={styles.productName}>{item.name}</Text>
+        <Text style={[styles.productName, { color: textColor }]}>
+          {item.name}
+        </Text>
         {!isOwned ? (
           <View style={styles.price}>
             <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
-            <Text style={styles.priceText}>{item.cost}</Text>
+            <Text style={[styles.priceText, { color: textColor }]}>
+              {item.cost}
+            </Text>
           </View>
         ) : (
           <View style={styles.price}>
-            <Text style={styles.text}>Owned</Text>
+            <Text style={[styles.text, { color: textColor }]}>Owned</Text>
           </View>
         )}
       </View>
@@ -56,12 +72,14 @@ export const ProductBox: React.FC<ProductBoxProps> = ({ item, onPress }) => {
   );
 };
 
+export default memo(ProductBox);
+
 const styles = StyleSheet.create({
   container: {
     borderRadius: 18,
-    paddingTop: 16,
-    paddingHorizontal: 26,
-    paddingBottom: 24,
+    paddingTop: 12,
+    paddingHorizontal: 18,
+    paddingBottom: 16,
     flex: 1,
   },
   image: {
@@ -71,11 +89,11 @@ const styles = StyleSheet.create({
   },
   productName: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "500",
     position: "absolute",
 
     top: 167,
-    left: 26,
+    left: 18,
   },
   price: {
     marginTop: 78,
@@ -92,5 +110,11 @@ const styles = StyleSheet.create({
     flex: 1,
     margin: 10,
     maxWidth: "45%",
+  },
+  lightItem: {
+    shadowOpacity: 0.15,
+    shadowColor: "black",
+    shadowRadius: 15,
+    shadowOffset: { width: 0, height: 7 },
   },
 });

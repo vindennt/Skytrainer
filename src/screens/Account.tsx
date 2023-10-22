@@ -9,6 +9,7 @@ import {
   TextInput,
   Text,
   HelperText,
+  Switch,
 } from "react-native-paper";
 import { useSelector, useDispatch } from "react-redux";
 import { Formik } from "formik";
@@ -30,10 +31,14 @@ import {
 } from "@features/user/userSliceHelpers";
 import { getDate } from "@utils/dates";
 import { useNavigation } from "@react-navigation/native";
+import { Appearance } from "react-native";
+import { selectDarkTheme, setIsDarkTheme } from "@src/navigation/navSlice";
+import { TEXTBOX_DARK_THEME, TEXTBOX_LIGHT_THEME } from "../../assets/themes";
 
 const Account = () => {
   const dispatch = useDispatch<any>();
   const theme = useTheme();
+  const isDark = useSelector(selectDarkTheme);
   const navigation = useNavigation();
   const session: Session | null = useSelector(
     (state: { auth: AuthState }) => state.auth.session
@@ -52,6 +57,8 @@ const Account = () => {
   const THIRD_MILESTONE: number = useSelector(selectThirdMilestone);
   const milestonesString: string = `${FIRST_MILESTONE.toString()} mins, ${SECOND_MILESTONE.toString()} mins, ${THIRD_MILESTONE.toString()} mins`;
 
+  const isDdarkTheme: boolean = useSelector(selectDarkTheme);
+
   const StackedText: React.FC<{
     topText: string;
     bottomText: string | undefined;
@@ -60,7 +67,10 @@ const Account = () => {
 
     return (
       <View style={styles.textBox}>
-        <Text variant="labelMedium" style={{ color: theme.colors.outline }}>
+        <Text
+          variant="labelMedium"
+          style={{ color: theme.colors.outlineVariant }}
+        >
           {topText}
         </Text>
         <Text variant="titleMedium">{botText}</Text>
@@ -72,10 +82,24 @@ const Account = () => {
     navigation.navigate("Edit Milestones" as never);
   };
 
+  const handleDarkModeSwitch = () => {
+    dispatch(setIsDarkTheme(!isDdarkTheme));
+  };
+
   return session && session.user ? (
     <View
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
+      <Button
+        onPress={() => navigation.navigate("Achievements" as never)}
+        labelStyle={styles.text}
+        // icon="trophy"
+        style={styles.button}
+        mode="contained"
+      >
+        Achievements
+      </Button>
+      <StackedText topText="Email" bottomText={session.user.email} />
       {!editingDisplayName ? (
         <View
           style={{
@@ -86,7 +110,12 @@ const Account = () => {
         >
           <StackedText topText="Display name" bottomText={displayName} />
           <View>
-            <Button onPress={() => setEditingDisplayName(true)}>Edit</Button>
+            <Button
+              onPress={() => setEditingDisplayName(true)}
+              labelStyle={{ color: theme.colors.onPrimary }}
+            >
+              Edit
+            </Button>
           </View>
         </View>
       ) : (
@@ -119,16 +148,20 @@ const Account = () => {
           }) => (
             <View style={styles.verticallySpaced}>
               <TextInput
-                label="Change display name"
+                label="Enter new display name"
                 value={values.displayName}
-                placeholder={displayName}
+                mode="outlined"
+                // placeholder={displayName}
                 onChangeText={handleChange("displayName")}
                 onBlur={() => setFieldTouched("displayName")}
                 autoCapitalize={"none"}
+                theme={isDark ? TEXTBOX_DARK_THEME : TEXTBOX_LIGHT_THEME}
+                // textColor={theme.colors.onSurface}
               />
               <HelperText
                 type="info"
                 visible={errors.displayName !== undefined}
+                style={{ color: theme.colors.error }}
               >
                 {errors.displayName}
               </HelperText>
@@ -140,6 +173,7 @@ const Account = () => {
               >
                 <Button
                   onPress={() => handleSubmit()}
+                  mode="contained"
                   disabled={!isValid || loading}
                   loading={loading}
                 >
@@ -151,8 +185,28 @@ const Account = () => {
         </Formik>
       )}
       <View style={styles.verticallySpaced}>
-        <StackedText topText="Email" bottomText={session.user.email} />
+        <View style={styles.horizontallySpaced}>
+          <StackedText
+            topText="Daily Focus Milestones"
+            bottomText={milestonesString}
+          />
+          <Button
+            onPress={handleEditDailyFocus}
+            labelStyle={{ color: theme.colors.onPrimary }}
+          >
+            Edit
+          </Button>
+        </View>
+        <View style={styles.horizontallySpaced}>
+          <StackedText topText="Theme" bottomText={"Dark Mode"} />
+          <Switch
+            value={isDdarkTheme}
+            onValueChange={handleDarkModeSwitch}
+            color={theme.colors.onPrimary}
+          />
+        </View>
         <StackedText topText="Joined" bottomText={getDate(joinedDate)} />
+
         <StackedText
           topText="Total Time Skytraining"
           bottomText={totalTripTime.toString()}
@@ -161,13 +215,6 @@ const Account = () => {
           topText="Trips Finished"
           bottomText={totalTripsFinished.toString()}
         />
-        <View style={styles.horizontallySpaced}>
-          <StackedText
-            topText="Daily Focus Milestones"
-            bottomText={milestonesString}
-          />
-          <Button onPress={handleEditDailyFocus}>Edit</Button>
-        </View>
       </View>
 
       <View
@@ -178,8 +225,10 @@ const Account = () => {
       >
         <Button
           onPress={() => supabase.auth.signOut()}
-          icon="exit-outline"
-          // mode="outlined"
+          // icon="exit-outline"
+          labelStyle={[styles.text, { color: theme.colors.error }]}
+          style={styles.button}
+          mode="contained"
         >
           Sign Out
         </Button>
@@ -207,8 +256,11 @@ const styles = StyleSheet.create({
   horizontallySpaced: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
   },
-
+  text: {
+    fontWeight: "400",
+  },
   textBox: {
     alignItems: "flex-start",
     flexDirection: "column",
@@ -216,5 +268,10 @@ const styles = StyleSheet.create({
   },
   divider: {
     borderBottomWidth: 1,
+  },
+  button: {
+    width: "100%",
+    marginVertical: 5,
+    borderRadius: 12,
   },
 });

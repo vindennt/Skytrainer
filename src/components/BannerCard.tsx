@@ -34,7 +34,11 @@ import { getStationName, getTier } from "@utils/skytrain";
 
 interface BannerCardProps {
   banner: BannerInfo;
-  popupCallback: (rewardId: string) => void;
+  popupCallback: (
+    rewardId: string,
+    levelUpMessage: string,
+    refundMessage: string
+  ) => void;
   popupVisible: boolean;
 }
 
@@ -77,6 +81,9 @@ export const BannerCard: React.FC<BannerCardProps> = ({
       : " ";
   const [isRolling, setIsRolling] = useState<boolean>(false);
 
+  let levelUpMessage: string = "";
+  let refundMessage: string = "";
+
   const handleUnlocks = (rewardId: string): number => {
     let excessLevels = 0;
     const currentLevel = stations.get(rewardId);
@@ -99,14 +106,9 @@ export const BannerCard: React.FC<BannerCardProps> = ({
           newLevel: newLevel > MAX_LEVEL ? MAX_LEVEL : newLevel,
         };
         dispatch(levelUpStation(levelUpdateRequest));
-        Alert.alert(
-          getStationName(rewardId) +
-            " grew from level " +
-            stations.get(rewardId) +
-            " to level " +
-            levelUpdateRequest.newLevel +
-            "."
-        );
+        levelUpMessage = `Level ${stations.get(rewardId)} → ${
+          levelUpdateRequest.newLevel
+        }`;
       }
 
       // If not owned yet, unlock the station
@@ -170,25 +172,21 @@ export const BannerCard: React.FC<BannerCardProps> = ({
     // (4/4) dispatch changes to redux and server
     dispatch(updateUserData(balanceUpdateRequest));
 
-    if (balanceAdjusment > 0)
-      Alert.alert(
-        "Returned " + balanceAdjusment + " currency points as cashback"
-      );
+    if (balanceAdjusment > 0) {
+      refundMessage = `${balanceAdjusment}`;
+    }
 
-    popupCallback(rewardId);
+    popupCallback(rewardId, levelUpMessage, refundMessage);
     console.log(rewardId);
+    console.log(levelUpMessage);
+    console.log(refundMessage);
     setTimeout(() => {
       setIsRolling(false);
     }, 500);
   };
 
   return (
-    <View
-      style={[
-        styles.container,
-        { backgroundColor: theme.colors.inverseOnSurface },
-      ]}
-    >
+    <View style={[styles.container, { backgroundColor: theme.colors.surface }]}>
       <View style={styles.imageContainer}>
         <Image
           source={require("@src/public/images/banner_001.png")}
@@ -200,7 +198,7 @@ export const BannerCard: React.FC<BannerCardProps> = ({
         <Text variant="titleLarge" style={styles.titleText}>
           {banner.title}
         </Text>
-        <Text style={[styles.dateText, { color: theme.colors.outline }]}>
+        <Text style={[styles.dateText, { color: theme.colors.outlineVariant }]}>
           {dateInfo}
         </Text>
         <Text style={styles.subText}>{banner.description}</Text>
@@ -215,12 +213,13 @@ export const BannerCard: React.FC<BannerCardProps> = ({
           </View>
           <Button
             style={styles.button}
-            mode="contained"
             onPress={handlePressBuy}
+            mode="contained"
             disabled={!canBuy || isRolling || popupVisible}
             loading={isRolling}
+            labelStyle={[styles.buttonText]}
           >
-            ROLL
+            ROLL x1
           </Button>
         </View>
       </View>
@@ -232,13 +231,13 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 20,
     // padding: 22,
-    flex: 1,
+    // flex: 1,
     width: "100%",
     borderRadius: 12,
   },
   contentContainer: {
     // marginTop: 10,
-    padding: 30,
+    padding: 16,
   },
   image: {
     flex: 1,
@@ -267,18 +266,24 @@ const styles = StyleSheet.create({
     marginTop: 30,
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "flex-end",
+    fontWeight: "bold",
   },
   button: {
     // borderRadius: 12
+    // fontWeight: "bold",
   },
   price: {
     // marginTop: 78,
-    marginTop: 22,
+    // marginTop: 22,
     flexDirection: "row",
     // fontWeight: "bold",
   },
   priceText: {
     marginLeft: 6,
     fontSize: 16,
+  },
+  buttonText: {
+    fontWeight: "bold",
   },
 });

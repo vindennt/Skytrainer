@@ -10,7 +10,9 @@
       "@store/*": ["./src/store/*"],
       "@navigation/*": ["./src/navigation/*"],
       "@components/*": ["./src/components/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
+      "@assets/*": ["./assets/*"],
+      "react": ["./node_modules/@types/react"]
     }
   }
 }

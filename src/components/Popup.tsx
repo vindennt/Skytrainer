@@ -13,6 +13,8 @@ import {
   Button as PaperButton,
   useTheme,
 } from "react-native-paper";
+import { BlurView } from "expo-blur";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface PopupProps {
   visible: boolean;
@@ -21,6 +23,7 @@ interface PopupProps {
   backgroundColours?: string[];
   children?: React.ReactNode;
   closeOnTapAnywhere?: boolean;
+  showCloseOnTapAnywhereMessage?: boolean;
   closeButtonVisible?: boolean;
 }
 
@@ -31,6 +34,7 @@ export const Popup: React.FC<PopupProps> = ({
   backgroundColours = ["rgba(0, 0, 0, 0.8)", "rgba(0, 0, 0, 0.8)"], // default backgroudn colour is fade
   children,
   closeOnTapAnywhere = true,
+  showCloseOnTapAnywhereMessage = true,
   closeButtonVisible = false,
 }) => {
   const theme = useTheme();
@@ -38,25 +42,25 @@ export const Popup: React.FC<PopupProps> = ({
   const popupContent = (
     // <View style={[styles.popupOverlay, { backgroundColor: backgroundColour }]}>
     <LinearGradient style={styles.popupOverlay} colors={backgroundColours}>
-      <View style={styles.popup}>
-        {children}
-        {closeButtonVisible && (
-          <IconButton
-            icon="close"
-            size={20}
-            // size={10}
-            mode="outlined"
-            onPress={onClose}
-            style={styles.closeButton}
-          />
-          // <Button onPress={onClose}>Close</Button>
+      <BlurView intensity={30} tint="dark" style={styles.blurContainer}>
+        <View style={styles.popup}>
+          {children}
+          {closeButtonVisible && (
+            <IconButton
+              icon="close"
+              size={20}
+              // size={10}
+              mode="outlined"
+              onPress={onClose}
+              style={styles.closeButton}
+            />
+            // <Button onPress={onClose}>Close</Button>
+          )}
+        </View>
+        {closeOnTapAnywhere && showCloseOnTapAnywhereMessage && (
+          <Text style={[styles.text, styles.outsideMessage]}></Text>
         )}
-      </View>
-      {closeOnTapAnywhere && (
-        <Text style={[styles.text, styles.outsideMessage]}>
-          Tap anywhere to close
-        </Text>
-      )}
+      </BlurView>
     </LinearGradient>
     // </View>
   );
@@ -77,14 +81,16 @@ export const Popup: React.FC<PopupProps> = ({
 const styles = StyleSheet.create({
   popupOverlay: {
     flex: 1,
+    width: "100%",
     justifyContent: "center",
     alignItems: "center",
     // backgroundColor: "white",
     // backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   popup: {
+    flex: 1,
     // backgroundColor: "#fff",
-    padding: 30,
+    padding: 20,
     // margin: 20,
     borderRadius: 8,
     elevation: 5,
@@ -94,6 +100,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   closeButton: {
+    // flex: 1,
     marginTop: 30,
     color: "blue",
     textAlign: "center",
@@ -105,9 +112,15 @@ const styles = StyleSheet.create({
     // top: -4,
   },
   outsideMessage: {
+    // flex: 1,
     color: "white",
-    margin: 30,
-    position: "absolute",
-    bottom: 70,
+    // margin: 30,
+    // position: "absolute",
+    bottom: "6%",
+  },
+  blurContainer: {
+    alignItems: "center",
+    flex: 1,
+    width: "100%",
   },
 });
