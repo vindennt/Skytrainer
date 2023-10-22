@@ -6,6 +6,8 @@ import {
   ScrollView,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  ImageSourcePropType,
+  Image,
 } from "react-native";
 import { Text, Button, Title, IconButton, useTheme } from "react-native-paper";
 import { useDispatch, useSelector } from "react-redux";
@@ -38,6 +40,7 @@ import { MAX_QUICKSTARTS } from "@src/features/quickStart/quickStartHandler";
 import { handleQuickStartAvailability } from "@src/utils/dates";
 import { LinearGradient } from "expo-linear-gradient";
 import { selectDarkTheme } from "@src/navigation/navSlice";
+import { imageIconMap } from "@src/utils/imageMappings";
 
 interface QuickStartButtonProps extends QuickStart {}
 
@@ -63,8 +66,9 @@ export const QuickStartCard: React.FC = ({}) => {
     const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
 
     // Calculate the position of the scroll
+    const buffer = 10;
     const isAtEnd =
-      layoutMeasurement.height + contentOffset.y >= contentSize.height - 10;
+      layoutMeasurement.height + contentOffset.y >= contentSize.height - buffer;
 
     setIsAtEnd(isAtEnd);
     console.log(isAtEnd);
@@ -115,6 +119,9 @@ export const QuickStartCard: React.FC = ({}) => {
     // console.log(
     //   name + " is available: " + isAvailable + " for date " + lastFinished
     // );
+    const imageSource: ImageSourcePropType = imageIconMap[
+      stationId
+    ] as ImageSourcePropType;
 
     return (
       <View
@@ -123,19 +130,31 @@ export const QuickStartCard: React.FC = ({}) => {
           { borderColor: theme.colors.outline },
         ]}
       >
-        <View style={styles.quickButtonTextContainer}>
-          <Text style={[styles.textTitle, { marginTop: 5, color: textColor }]}>
-            {name}
-          </Text>
-          <Text
-            style={[
-              styles.text,
-              { color: textColor, fontFamily: "Nothing" },
-              // { fontWeight: "bold" },
-            ]}
-          >
-            {duration + " mins"}
-          </Text>
+        <View style={styles.horizontalContainer}>
+          <Image style={styles.iconImage} source={imageSource} />
+          <View style={styles.quickButtonTextContainer}>
+            <Text
+              style={[
+                styles.textTitle,
+                {
+                  marginTop: 5,
+                  color: textColor,
+                  // fontFamily: "Nothing",
+                },
+              ]}
+            >
+              {name}
+            </Text>
+            <Text
+              style={[
+                styles.text,
+                { color: textColor, fontFamily: "Nothing" },
+                // { fontWeight: "bold" },
+              ]}
+            >
+              {duration + " mins"}
+            </Text>
+          </View>
         </View>
         <TouchableOpacity
           onPress={() => {
@@ -224,12 +243,20 @@ export const QuickStartCard: React.FC = ({}) => {
           )}
         </View>
       </View>
+
       <View
         style={[
           styles.quickstartContainer,
           quickstarts.length >= 3 && { justifyContent: "space-between" },
         ]}
       >
+        {quickstarts.length === 0 && (
+          <View style={styles.textContainer}>
+            <Text style={{ color: theme.colors.outlineVariant }}>
+              No quickstarts created. Let's make one!
+            </Text>
+          </View>
+        )}
         <View style={{ flex: 1 }}>
           <ScrollView
             style={styles.scrollContainer}
@@ -251,6 +278,7 @@ export const QuickStartCard: React.FC = ({}) => {
               );
             })}
           </ScrollView>
+
           {/* <View style={{ height: 0, backgroundColor: "transparent" }}> */}
           {!isAtEnd && (
             <LinearGradient
@@ -271,13 +299,6 @@ export const QuickStartCard: React.FC = ({}) => {
           )}
           {/* </View> */}
         </View>
-        {quickstarts.length === 0 && (
-          <View style={styles.textContainer}>
-            <Text style={{ color: theme.colors.outline }}>
-              No quickstarts created. Let's make one!
-            </Text>
-          </View>
-        )}
       </View>
     </View>
   );
@@ -299,6 +320,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     // backgroundColor: "green",
+  },
+  horizontalContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
   headerText: {
     fontSize: 18,
@@ -370,5 +395,14 @@ const styles = StyleSheet.create({
     // flexWrap: "wrap",
     // flexGrow: 1,
     // height: 200,
+  },
+  iconImage: {
+    flexGrow: 1,
+    width: 50,
+    maxWidth: 50,
+    height: 50,
+    // resizeMode: "contain",
+    // marginVertical: 10,
+    marginRight: 20,
   },
 });
