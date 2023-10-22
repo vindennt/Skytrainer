@@ -47,8 +47,8 @@ const EditQuickStart = () => {
     return (
       <View
         style={{
-          borderBottomWidth: 1,
-          borderBottomColor: isLast ? "transparent" : theme.colors.onBackground,
+          borderBottomWidth: 0.5,
+          borderBottomColor: isLast ? "transparent" : theme.colors.outline,
         }}
       >
         <View style={[styles.item]}>
@@ -56,11 +56,7 @@ const EditQuickStart = () => {
             {name} ({duration} mins)
           </Text>
           <TouchableOpacity onPress={handleDelete}>
-            <Icon
-              name={"trash-outline"}
-              color={theme.colors.onBackground}
-              size={20}
-            />
+            <Icon name={"trash-outline"} color={theme.colors.error} size={20} />
           </TouchableOpacity>
         </View>
       </View>
