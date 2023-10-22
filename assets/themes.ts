@@ -1,4 +1,8 @@
+import { Platform } from "react-native";
+import { MD3LightTheme, MD3DarkTheme } from "react-native-paper";
+
 export const LIGHT_THEME = {
+  ...MD3LightTheme,
   colors: {
     background: "#FFFFFF",
     onBackground: "#000000",
@@ -22,6 +26,7 @@ export const LIGHT_THEME = {
     onSurfaceDisabled: "#87919C", // on non touchable
     text: "#000000",
     primaryContainer: "rgba(248, 250, 253, 0.4)",
+    inverseSurface: "rgba(255, 255, 255, 0)",
 
     // primary: "rgb(120, 69, 172)",
     // onPrimary: "rgb(255, 255, 255)",
@@ -49,7 +54,7 @@ export const LIGHT_THEME = {
     // outlineVariant: "rgb(204, 196, 206)",
     shadow: "rgb(0, 0, 0)",
     scrim: "rgb(0, 0, 0)",
-    inverseSurface: "rgb(50, 47, 51)",
+    // inverseSurface: "rgb(50, 47, 51)",
     inverseOnSurface: "rgb(245, 239, 244)",
     inversePrimary: "rgb(220, 184, 255)",
     elevation: {
@@ -68,6 +73,7 @@ export const LIGHT_THEME = {
     newColorContainer: "rgb(240, 219, 255)",
     onNewColorContainer: "rgb(44, 0, 81)",
   },
+  // fonts: configureFonts({ config: fontConfig }),
 };
 
 // export const BUTTON_LIGHT_THEME = {
@@ -88,6 +94,7 @@ export const TEXTBOX_LIGHT_THEME = {
 };
 
 export const DARK_THEME = {
+  ...MD3DarkTheme,
   colors: {
     background: "#1C1C23",
     onBackground: "#FFFFFF",
@@ -109,6 +116,7 @@ export const DARK_THEME = {
     onSurfaceDisabled: "#87919C",
     text: "#FFFFFF",
     primaryContainer: "rgba(30, 30, 62, 0.1)",
+    inverseSurface: "rgba(28, 28, 35, 0)",
 
     // primary: "rgb(220, 184, 255)",
     // onPrimary: "rgb(71, 12, 122)",
@@ -136,7 +144,7 @@ export const DARK_THEME = {
     // outlineVariant: "rgb(74, 69, 78)",
     shadow: "rgb(0, 0, 0)",
     scrim: "rgb(0, 0, 0)",
-    inverseSurface: "rgb(231, 225, 229)",
+    // inverseSurface: "rgb(231, 225, 229)",
     inverseOnSurface: "rgb(50, 47, 51)",
     inversePrimary: "rgb(120, 69, 172)",
     elevation: {
