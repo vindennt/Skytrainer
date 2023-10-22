@@ -29,7 +29,11 @@ import {
   selectStations,
 } from "@src/features/stations/stationsSlice";
 import { BlurView } from "expo-blur";
-import { selectDarkTheme } from "@src/navigation/navSlice";
+import {
+  selectDarkTheme,
+  selectLevelingUpMode,
+  setLevelingUpMode,
+} from "@src/navigation/navSlice";
 import { useSelector } from "react-redux";
 
 export const LevelUpBox: React.FC = () => {
@@ -50,6 +54,7 @@ export const LevelUpBox: React.FC = () => {
   );
 
   const isDark: boolean = useSelector(selectDarkTheme);
+  const levelUpMode = useSelector(selectLevelingUpMode);
   const canBuy: boolean =
     balance >= cost && level !== undefined && level < MAX_LEVEL;
   const [loading, setLoading] = useState<boolean>(false);
@@ -62,8 +67,12 @@ export const LevelUpBox: React.FC = () => {
 
   const lineInfo = getLineInfo(selectedStation);
 
+  const handleToggleLevelingMode = () => {
+    dispatch(setLevelingUpMode(!levelUpMode));
+  };
+
   const handleLevelUp = () => {
-    if (level !== undefined && level < 50) {
+    if (level !== undefined && level < MAX_LEVEL) {
       setLoading(true);
       // const balanceUpdateRequest: UpdateNumericalBalanceRequest = {
       //   session: session,
@@ -95,8 +104,18 @@ export const LevelUpBox: React.FC = () => {
   };
 
   return (
-    <View style={styles.verticalContainer}>
-      <BlurView
+    <View
+      style={[
+        styles.verticalContainer,
+        {
+          borderColor: isDark
+            ? "rgba(255, 255, 255, 0.10)"
+            : "rgba(0, 0, 0, 0.10)",
+          width: levelUpMode ? "100%" : "70%",
+        },
+      ]}
+    >
+      {/* <BlurView
         intensity={60}
         tint={isDark ? "dark" : "default"}
         style={[
@@ -107,17 +126,17 @@ export const LevelUpBox: React.FC = () => {
               : "rgba(0, 0, 0, 0.10)",
           },
         ]}
-      />
+      /> */}
       <BlurView
-        intensity={80}
+        intensity={50}
         tint={isDark ? "dark" : "light"}
-        style={[styles.outerContainer]}
+        style={[styles.outerContainer, { borderRadius: 12 }]}
       >
         <View style={{ backgroundColor: theme.colors.primaryContainer }}>
           <View style={styles.container}>
             <View style={[styles.titleContainer]}>
               <Title style={styles.headerText}>
-                {getStationName(selectedStation)} Station
+                {getStationName(selectedStation)}
               </Title>
               {/* <Title>Lv. {levelData.get(selectedStation)}</Title> */}
             </View>
@@ -128,34 +147,49 @@ export const LevelUpBox: React.FC = () => {
             <Text style={styles.levelText}>
               Lv. {levelData.get(selectedStation)}
             </Text>
-            <View style={styles.subtextContainer}>
-              <Text
-                style={[
-                  styles.subtextText,
-                  { color: theme.colors.outlineVariant },
-                ]}
-              >
-                {subText}
-              </Text>
-            </View>
+            {levelUpMode && (
+              <View style={styles.subtextContainer}>
+                <Text
+                  style={[
+                    styles.subtextText,
+                    { color: theme.colors.outlineVariant },
+                  ]}
+                >
+                  {subText}
+                </Text>
+              </View>
+            )}
 
             <View style={styles.levelUpTextContainer}>
-              {!maxLevel && (
+              {levelUpMode && (
                 <View style={styles.costContainer}>
                   <Icon name="credit-card-chip" size={20} color={"#1691d9"} />
                   <Text style={styles.costText}>{cost}</Text>
+                  <Button
+                    style={styles.button}
+                    onPress={() => handleLevelUp()}
+                    mode="contained"
+                    disabled={!canBuy || loading}
+                    loading={loading}
+                    labelStyle={[styles.buttonText]}
+                  >
+                    {buttonText}
+                  </Button>
                 </View>
               )}
-              <Button
-                style={styles.button}
-                onPress={() => handleLevelUp()}
-                mode="contained"
-                disabled={!canBuy || loading}
-                loading={loading}
-                labelStyle={[styles.buttonText]}
-              >
-                {buttonText}
-              </Button>
+
+              {!levelUpMode && (
+                <Button
+                  style={styles.button}
+                  onPress={handleToggleLevelingMode}
+                  mode="contained"
+                  disabled={!canBuy || loading}
+                  loading={loading}
+                  labelStyle={[styles.buttonText]}
+                >
+                  {buttonText}
+                </Button>
+              )}
             </View>
           </View>
         </View>
@@ -168,31 +202,35 @@ const styles = StyleSheet.create({
   verticalContainer: {
     flexDirection: "column",
     position: "absolute",
-    width: "100%",
-    bottom: 85,
+    // width: "100%",
+    bottom: 0,
+    borderRadius: 18,
+    overflow: "hidden",
+
+    borderWidth: 1,
     // flex: 1,
   },
   outerContainer: {
     // position: "absolute",
     width: "100%",
     // bottom: 85,
+    borderRadius: 18,
     // flex: 1,
     // margin: -20,
     // paddingBottom: 85
-    // borderTopWidth: 1.4,
   },
   container: {
     // backgroundColor: "#454045",
     // padding: 20,
     // flex: 1,
-    padding: 15,
-    borderRadius: 12,
-    // marginBottom: 20,
+    paddingTop: 5,
+    paddingHorizontal: 15,
+    // paddingBottom: 15,
+    // borderRadius: 12,
     // position: "absolute",
   },
   titleContainer: {
     // flex: 1,
-    // paddingTop: 10,
     // paddingLeft: 15,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -203,7 +241,7 @@ const styles = StyleSheet.create({
   headerText: { flex: 1, fontSize: 20, fontWeight: "600" },
   costText: {
     flex: 1,
-    // fontWeight: "bold",
+    // fontWeight: "bold ",
     fontSize: 16,
     marginRight: 16,
     marginLeft: 6,
@@ -228,6 +266,7 @@ const styles = StyleSheet.create({
   button: {
     // borderRadius: 12,
     flex: 1,
+    marginVertical: 15,
   },
   buttonText: {
     // fontSize: 16,

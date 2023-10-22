@@ -41,7 +41,7 @@ const StationSelectItem: React.FC<StationSelectBoxProps> = ({
         style={[
           stationId === selectedStation
             ? styles.clickSelectorBoxSelected && {
-                backgroundColor: theme.colors.secondary,
+                backgroundColor: theme.colors.primary,
                 borderRadius: 12,
               }
             : styles.clickSelectorBoxUnSelected,

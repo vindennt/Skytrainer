@@ -17,11 +17,13 @@ import { selectLastUsedStation } from "@src/features/user/userSlice";
 
 interface StationSelectorProps {
   onValueChange: (stationId: string) => void;
+  selectorVisible?: boolean;
   value?: string;
 }
 
 export const StationSelector: React.FC<StationSelectorProps> = ({
   onValueChange,
+  selectorVisible = true,
   value = useSelector(selectSelectedStation),
 }) => {
   const selectedStation = value;
@@ -49,12 +51,14 @@ export const StationSelector: React.FC<StationSelectorProps> = ({
     <View style={styles.container}>
       <Image style={styles.image} source={imageSource} />
       <View style={styles.emptyImageOverlay}></View>
-      <FlatList
-        style={styles.selectionList}
-        data={[...data]}
-        renderItem={renderSelectItem}
-        keyExtractor={(item) => item[0]} // Assuming each key is unique
-      />
+      {selectorVisible && (
+        <FlatList
+          style={styles.selectionList}
+          data={[...data]}
+          renderItem={renderSelectItem}
+          keyExtractor={(item) => item[0]} // Assuming each key is unique
+        />
+      )}
     </View>
   );
 };
@@ -63,13 +67,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
+    justifyContent: "flex-start",
   },
   image: {
     flex: 1,
     width: "100%",
-    right: 30,
-    height: "110%",
+    height: "100%",
     position: "absolute",
+    // right: 30,
   },
   selectionList: {
     flex: 1,

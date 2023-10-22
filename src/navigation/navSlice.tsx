@@ -16,6 +16,7 @@ export interface NavSliceState {
       }
   )[];
   darkTheme: boolean;
+  levelingUpMode: boolean;
 }
 
 const initialState: NavSliceState = {
@@ -43,6 +44,7 @@ const initialState: NavSliceState = {
     },
   ],
   darkTheme: true,
+  levelingUpMode: false,
 };
 
 const navSlice = createSlice({
@@ -55,6 +57,10 @@ const navSlice = createSlice({
     },
     setIsDarkTheme: (state, action) => {
       state.darkTheme = action.payload;
+      // console.log(state.skytrainGraph);
+    },
+    setLevelingUpMode: (state, action) => {
+      state.levelingUpMode = action.payload;
       // console.log(state.skytrainGraph);
     },
     setMissionBadgeVisibility: (state, action) => {
@@ -86,8 +92,14 @@ const navSlice = createSlice({
   },
 });
 
-export const { setRoutes, setMissionBadgeVisibility, setIsDarkTheme } =
-  navSlice.actions;
+export const {
+  setRoutes,
+  setMissionBadgeVisibility,
+  setIsDarkTheme,
+  setLevelingUpMode,
+} = navSlice.actions;
 export default navSlice.reducer;
 export const selectDarkTheme = (state: { nav: NavSliceState }) =>
   state.nav.darkTheme;
+export const selectLevelingUpMode = (state: { nav: NavSliceState }) =>
+  state.nav.levelingUpMode;

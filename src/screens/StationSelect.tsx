@@ -55,7 +55,11 @@ const Stations = () => {
       >
         <Text style={styles.title}>{title}</Text>
         <View style={styles.buttonContainer}>
-          <Button mode="outlined" onPress={handleGoBack}>
+          <Button
+            mode="outlined"
+            onPress={handleGoBack}
+            labelStyle={{ color: theme.colors.onPrimary }}
+          >
             Cancel
           </Button>
           <Button mode="contained" onPress={handleSelect}>
